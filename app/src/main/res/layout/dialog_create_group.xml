@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@color/dark_purple_2">
+
+    <!-- Group Name -->
+    <TextView
+        android:id="@+id/groupNameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Group Name:"
+        android:textColor="@color/light_purple"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/groupNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/groupNameLabel"
+        android:hint="Enter group name"
+        android:backgroundTint="@color/light_purple"
+        android:textColor="@color/light_purple"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Group Description -->
+    <TextView
+        android:id="@+id/groupDescriptionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Group Description:"
+        android:textColor="@color/light_purple"
+        android:textSize="18sp"
+        android:layout_below="@id/groupNameEditText"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/groupDescriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/groupDescriptionLabel"
+        android:hint="Enter group description"
+        android:backgroundTint="@color/light_purple"
+        android:textColor="@color/light_purple"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Group Type -->
+    <TextView
+        android:id="@+id/groupTypeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Group Type:"
+        android:textColor="@color/light_purple"
+        android:textSize="18sp"
+        android:layout_below="@id/groupDescriptionEditText"
+        android:layout_marginTop="16dp"/>
+
+    <Spinner
+        android:id="@+id/groupTypeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/groupTypeLabel"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/light_purple"
+        android:textColor="@color/light_purple"
+        android:textSize="16sp"
+        android:dropDownWidth="match_parent"/>
+
+    <!-- Private Group Code Layout -->
+    <LinearLayout
+        android:id="@+id/privateGroupCodeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/groupCodeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group Code:"
+            android:textColor="@color/light_purple"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/groupCodeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter group code"
+            android:backgroundTint="@color/light_purple"
+            android:textColor="@color/light_purple"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+    <!-- Create Button -->
+    <Button
+        android:id="@+id/createButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/groupTypeSpinner"
+        android:layout_marginTop="16dp"
+        android:text="Create"
+        android:textColor="@color/light_purple"
+        android:background="@drawable/input_rounded_corners" />
+</RelativeLayout>
