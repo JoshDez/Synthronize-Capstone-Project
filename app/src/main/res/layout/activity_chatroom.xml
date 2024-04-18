@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/dark_purple_2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Chatroom">
+
+    <RelativeLayout
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/dark_purple_2"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerVertical="true">
+
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/back_icon"
+                app:tint="@color/light_purple" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/chatroomCircleIV"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/profile_not_selected"/>
+
+            <TextView
+                android:id="@+id/chatRoomNameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="25dp"
+                android:textColor="@color/light_purple"
+                android:text="@string/User"/>
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true">
+
+            <ImageButton
+                android:id="@+id/searchBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/search_icon"
+                app:tint="@color/light_purple" />
+
+        </LinearLayout>
+    </RelativeLayout>
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/mainToolbar"
+        android:background="@color/light_purple"
+        app:dividerColor="@color/light_purple" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider1"
+        android:layout_above="@id/divider2"/>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/userInteractLayout"
+        android:background="@color/light_purple"
+        app:dividerColor="@color/light_purple" />
+
+    <RelativeLayout
+        android:id="@+id/userInteractLayout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true">
+
+        <EditText
+            android:id="@+id/chatBoxEdtTxt"
+            android:padding="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/sendMsgBtn"
+            android:hint="@string/Write_Message_Here"
+            android:background="@drawable/input_rounded_corners"/>
+
+        <ImageButton
+            android:id="@+id/sendMsgBtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/send_msg_icon"
+            app:tint="@color/light_purple" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

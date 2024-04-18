@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_purple_2"
+    tools:context=".ProfileFragment">
+
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:layout_below="@id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/userCoverIV"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:src="@color/black"/>
+
+
+                    <LinearLayout
+                        android:id="@+id/postsContainer"
+                        android:layout_below="@id/userCoverIV"
+                        android:orientation="vertical"
+                        android:layout_toRightOf="@id/communitiesContainer"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/postsCountTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:text="120"
+                            android:textStyle="bold"
+                            android:textColor="@color/light_purple"/>
+                        <TextView
+                            android:id="@+id/postsTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textSize="12sp"
+                            android:text="Posts"
+                            android:textColor="@color/light_purple"/>
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
+                        android:id="@+id/communitiesContainer"
+                        android:layout_below="@id/userCoverIV"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/communitiesCountTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:text="120"
+                            android:textColor="@color/light_purple"/>
+                        <TextView
+                            android:id="@+id/communitiesTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textSize="12sp"
+                            android:text="Communities"
+                            android:textColor="@color/light_purple"/>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/friendsContainer"
+                        android:layout_below="@id/userCoverIV"
+                        android:layout_toLeftOf="@id/achievementsContainer"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/friendsCountTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:text="120"
+                            android:textColor="@color/light_purple"/>
+                        <TextView
+                            android:id="@+id/friendsTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textSize="12sp"
+                            android:text="Friends"
+                            android:textColor="@color/light_purple"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/achievementsContainer"
+                        android:layout_below="@id/userCoverIV"
+                        android:layout_alignParentEnd="true"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/achievementsCountTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:text="120"
+                            android:textColor="@color/light_purple"/>
+                        <TextView
+                            android:id="@+id/achievementsTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textSize="12sp"
+                            android:text="Achievements"
+                            android:textColor="@color/light_purple"/>
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/userProfileCIV"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
+                        android:layout_centerInParent="true"
+                        android:src="@color/light_purple"/>
+
+
+
+                    <TextView
+                        android:id="@+id/userDisplayNameTV"
+                        android:layout_below="@id/userProfileCIV"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Full Name"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_purple"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/userNameTV"
+                        android:layout_below="@id/userDisplayNameTV"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="username"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_purple"
+                        android:textSize="16sp"/>
+
+                </RelativeLayout>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/userDescriptionTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textSize="15sp"
+                android:drawableTint="#00FFFFFF"
+                android:text="@string/user_description"
+                android:textAlignment="center"
+                android:textColor="@color/light_purple"
+                android:backgroundTint="#00FFFFFF"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Friend"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/editProfileBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Profile"/>
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/mainToolbar"
+                android:background="@color/light_purple"
+                app:dividerColor="@color/light_purple" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Posts"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Files"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Likes"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

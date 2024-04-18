@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "360481503787",
+    "firebase_url": "https://synthronize-default-rtdb.firebaseio.com",
+    "project_id": "synthronize",
+    "storage_bucket": "synthronize.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360481503787:android:a6de6809812e73e814886e",
+        "android_client_info": {
+          "package_name": "com.example.synthronize"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSRqL2MpsiQh1Z9UjisN0wK3xVNgbIewM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360481503787:android:d80dc04c59ee9bfd14886e",
+        "android_client_info": {
+          "package_name": "com.labactivity.synthronize"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSRqL2MpsiQh1Z9UjisN0wK3xVNgbIewM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

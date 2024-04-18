@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Synthronize</string>
+    <!-- Login Activity -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account_sign_up_now">Don\'t have an account? Sign up now</string>
+    <string name="forgot_password">Forgot Password?</string>
+
+    <!-- SignUp Activity -->
+    <string name="signup">Sign Up</string>
+    <string name="full_name">Full Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="already_have_an_account">Already have an account? Log In here</string>
+
+    <!-- Main Activity -->
+    <string name="Groups">Groups</string>
+    <string name="Chats">Chats</string>
+    <string name="Profile">Profile</string>
+    <string name="Explore">Explore</string>
+    <string name="Notifications">Notifications</string>
+
+    <!-- Search Activity -->
+    <string name="Search">Search</string>
+    <string name="SEARCH">SEARCH</string>
+
+    <!-- Chatroom Activity -->
+    <string name="User">User</string>
+    <string name="Write_Message_Here">Write Message Here..</string>
+
+
+    <!-- Groups Activity -->
+    <string name="groups">GROUPS</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">username</string>
+    <string name="user_description">user description</string>
+    <string name="add_friend">Add Friend</string>
+    <string name="message_user">Message User</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="Username">Username</string>
+    <string name="description">Description</string>
+    <string name="birthday">Birthday</string>
+    <string name="save">Save</string>
+
+
+</resources>

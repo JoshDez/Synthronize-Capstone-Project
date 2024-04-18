@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="7dp"
+    android:paddingTop="7dp">
+
+    <RelativeLayout
+        android:id="@+id/recieverLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userProfileCIV"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/profile_not_selected"/>
+
+        <TextView
+            android:id="@+id/userNameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/userProfileCIV"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="2dp"
+            android:text="Josh Dez"
+            android:textColor="@color/light_purple"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/input_rounded_corners"
+            android:padding="10dp"
+            android:layout_toRightOf="@id/userProfileCIV"
+            android:layout_below="@id/userNameTV"
+            android:backgroundTint="@color/purple2"
+            android:layout_marginEnd="120dp">
+            <TextView
+                android:id="@+id/recieverMsgTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Chats"
+                android:textColor="@color/light_purple"
+                android:textSize="17sp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/senderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/input_rounded_corners"
+            android:padding="10dp"
+            android:backgroundTint="@color/light_purple"
+            android:layout_marginTop="21dp"
+            android:layout_marginStart="120dp">
+            <TextView
+                android:id="@+id/senderMsgTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Chats"
+                android:textColor="@color/dark_purple_2"
+                android:textSize="17sp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

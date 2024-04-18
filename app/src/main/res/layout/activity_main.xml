@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/dark_purple_2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/dark_purple_2"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/toolbarImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/synthronize_logo"/>
+
+        <TextView
+            android:id="@+id/toolbarTitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/toolbarImageView"
+            android:layout_marginStart="10dp"
+            android:textSize="25dp"
+            android:textColor="@color/light_purple"
+            android:text="@string/groups"/>
+
+        <ImageButton
+            android:id="@+id/searchBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/search_icon"
+            android:contentDescription="@string/Search"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            app:tint="@color/light_purple" />
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/mainToolbar"
+        android:background="@color/light_purple"
+        app:dividerColor="@color/light_purple" />
+
+    <FrameLayout
+        android:id="@+id/mainFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider1"
+        android:layout_above="@id/divider2"/>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/bottomNavigation"
+        android:background="@color/light_purple"
+        app:dividerColor="@color/light_purple" />
+
+    <RelativeLayout
+        android:id="@+id/bottomNavigation"
+        style="@style/BottomBar"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true">
+
+        <ImageButton
+            android:id="@+id/exploreBtn"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/Explore"
+            android:background="@drawable/explore_not_selected"/>
+
+        <ImageButton
+            android:id="@+id/notificationBtn"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toRightOf="@id/exploreBtn"
+            android:contentDescription="@string/Notifications"
+            android:background="@drawable/notifications_not_selected"/>
+        <ImageButton
+            android:id="@+id/groupsBtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toRightOf="@id/notificationBtn"
+            android:contentDescription="@string/Groups"
+            android:background="@drawable/groups_not_selected"/>
+        <ImageButton
+            android:id="@+id/chatBtn"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toRightOf="@id/groupsBtn"
+            android:contentDescription="@string/Chats"
+            android:background="@drawable/chat_not_selected"/>
+        <ImageButton
+            android:id="@+id/profileBtn"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toRightOf="@id/chatBtn"
+            android:contentDescription="@string/Profile"
+            android:background="@drawable/profile_not_selected"/>
+    </RelativeLayout>
+
+</RelativeLayout>

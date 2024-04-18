@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+    <item
+        android:title="Create New Group"
+        android:id="@+id/search"
+        android:icon="@drawable/baseline_search_24"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+    <item
+        android:title="Create New Group"
+        android:id="@+id/createNewGroup" />
+    <item
+        android:title="Delete Group"
+        android:id="@+id/deleteGroup" />
+    <item
+        android:title="Settings"
+        android:id="@+id/settings" />
+
+</menu>
