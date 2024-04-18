@@ -1,24 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="@color/teal_200"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/dark_purple_2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".GroupSelectionFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textAlignment="center"
-        android:text="Group Selection Fragment"
-        android:textSize="50sp" />
+    <!-- Toolbar -->
 
+    <!-- Divider below Toolbar -->
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/mainToolbar"
+        android:background="@color/light_purple"
+        app:dividerColor="@color/light_purple"
+        tools:ignore="NotSibling" />
+
+    <!-- RecyclerView for Group Selection -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/groupSelectionRV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavigation"
+        android:layout_below="@id/divider1"
+        android:background="#0D0319"
+        android:padding="8dp"
+        tools:listitem="@layout/item_group"
+        tools:ignore="NotSibling" />
 
-</LinearLayout>
+    <!-- FloatingActionButton for Add Group -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addGroupFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="96dp"
+        android:src="@drawable/baseline_add_24"
+        app:backgroundTint="@color/light_purple" />
+
+    <!-- Bottom Navigation -->
+
+</RelativeLayout>

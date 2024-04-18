@@ -1,10 +1,14 @@
 package com.example.synthronize.utils
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Handler
 import android.widget.ImageView
+import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.synthronize.MainActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -27,5 +31,15 @@ class AppUtil {
                     .into(cover)
             }
         }
+    }
+
+    //For Heading Back to Main Activity
+    fun headBackToMainActivity(context: Context, fragment:String, delay:Long) {
+        Handler().postDelayed({
+            val intent = Intent(context, MainActivity::class.java)
+            intent.putExtra("fragment", fragment)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intent)
+        }, delay)
     }
 }

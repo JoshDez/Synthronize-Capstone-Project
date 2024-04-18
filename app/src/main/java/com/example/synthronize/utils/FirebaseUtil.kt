@@ -42,6 +42,11 @@ class FirebaseUtil {
         return retrieveChatRoomReference(chatroomID).collection("chats")
     }
 
+    //For Group Function
+    fun retrieveAllGroupReferences():CollectionReference{
+        return FirebaseFirestore.getInstance().collection("groups")
+    }
+
     //For Firebase Storage
     fun retrieveUserProfilePicRef(uid:String): StorageReference {
         return FirebaseStorage.getInstance().reference

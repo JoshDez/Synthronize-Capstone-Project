@@ -20,25 +20,21 @@ class MainActivity : AppCompatActivity() {
         //BOTTOM NAVIGATION BUTTONS
         binding.groupsBtn.setOnClickListener {
             selectNavigation(binding.groupsBtn.id)
-            binding.toolbarTitleTV.text = "GROUPS"
             replaceFragment(GroupSelectionFragment(binding))
         }
 
         binding.exploreBtn.setOnClickListener {
             selectNavigation(binding.exploreBtn.id)
-            binding.toolbarTitleTV.text = "EXPLORE"
             replaceFragment(ExploreFragment(binding))
         }
 
         binding.notificationBtn.setOnClickListener {
             selectNavigation(binding.notificationBtn.id)
-            binding.toolbarTitleTV.text = "NOTIFICATIONS"
             replaceFragment(NotificationFragment(binding))
         }
 
         binding.profileBtn.setOnClickListener {
             selectNavigation(binding.profileBtn.id)
-            binding.toolbarTitleTV.text = "PROFILE"
             replaceFragment(ProfileFragment(binding))
         }
         binding.chatBtn.setOnClickListener {
@@ -55,8 +51,10 @@ class MainActivity : AppCompatActivity() {
 
         if (fragmentRequest == "profile"){
             selectNavigation(binding.profileBtn.id)
-            binding.toolbarTitleTV.text = "PROFILE"
             replaceFragment(ProfileFragment(binding))
+        } else if(fragmentRequest == "chat") {
+            selectNavigation(binding.chatBtn.id)
+            replaceFragment(ChatFragment(binding))
         } else {
             //default fragment
             selectNavigation(binding.groupsBtn.id)

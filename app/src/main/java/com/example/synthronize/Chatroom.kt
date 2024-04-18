@@ -11,6 +11,7 @@ import com.example.synthronize.adapters.MessageAdapter
 import com.example.synthronize.databinding.ActivityChatroomBinding
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.MessageModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 
 class Chatroom : AppCompatActivity() {
@@ -23,6 +24,8 @@ class Chatroom : AppCompatActivity() {
     private var chatroomName = ""
     private var receiverUid = ""
     private var chatroomType = ""
+    private var fromMainActivity = true
+    private var isMessageSent = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +40,13 @@ class Chatroom : AppCompatActivity() {
         binding.chatRoomNameTV.text = chatroomName
 
         binding.backBtn.setOnClickListener {
-            this.finish()
+            //if the last activity
+            if (fromMainActivity && isMessageSent){
+                //refreshes chat fragment
+                AppUtil().headBackToMainActivity(this, "chat", 0)
+            } else {
+                this.finish()
+            }
         }
 
         binding.sendMsgBtn.setOnClickListener {
@@ -103,6 +112,8 @@ class Chatroom : AppCompatActivity() {
 
         //add message to chatroom
         FirebaseUtil().retrieveChatsFromChatroom(chatroomID).add(messageModel)
+
+        isMessageSent = true
     }
 
     private fun createOrRetrieveChatroomModel(){

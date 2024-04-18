@@ -144,7 +144,8 @@ class EditProfile : AppCompatActivity() {
         FirebaseUtil().currentUserDetails().set(userModel).addOnCompleteListener {
             if (it.isSuccessful){
                 Toast.makeText(this, "User details successfully updated", Toast.LENGTH_SHORT).show()
-                backToProfile(delay)
+                //heads back to main activity with a profile fragment
+                AppUtil().headBackToMainActivity(this, "profile", delay)
             } else {
                 Toast.makeText(this, "Error in updating user details, please try again", Toast.LENGTH_SHORT).show()
             }
@@ -174,13 +175,5 @@ class EditProfile : AppCompatActivity() {
             binding.descriptionEdtTxt.text.toString() != userModel.description ||
             binding.birthdayEdtTxt.text.toString() != userModel.birthday ||
                 ::selectedProfilePicUri.isInitialized || ::selectedProfileCoverPicUri.isInitialized
-    }
-    private fun backToProfile(delay:Long) {
-        Handler().postDelayed({
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("fragment", "profile")
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
-        }, delay)
     }
 }

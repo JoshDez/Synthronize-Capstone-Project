@@ -14,35 +14,45 @@
         android:background="@color/dark_purple_2"
         android:padding="10dp">
 
-        <ImageView
-            android:id="@+id/toolbarImageView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="5dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/synthronize_logo"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerVertical="true">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/synthronize_logo"/>
 
-        <TextView
-            android:id="@+id/toolbarTitleTV"
+            <TextView
+                android:id="@+id/toolbarTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="25dp"
+                android:textColor="@color/light_purple"
+                android:text="@string/groups"/>
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/toolbarImageView"
-            android:layout_marginStart="10dp"
-            android:textSize="25dp"
-            android:textColor="@color/light_purple"
-            android:text="@string/groups"/>
+            android:layout_alignParentEnd="true">
 
-        <ImageButton
-            android:id="@+id/searchBtn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/search_icon"
-            android:contentDescription="@string/Search"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            app:tint="@color/light_purple" />
+            <ImageButton
+                android:id="@+id/searchBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/search_icon"
+                app:tint="@color/light_purple" />
+
+        </LinearLayout>
     </RelativeLayout>
 
     <com.google.android.material.divider.MaterialDivider
@@ -72,57 +82,47 @@
         android:id="@+id/bottomNavigation"
         style="@style/BottomBar"
         android:layout_width="match_parent"
-        android:gravity="center"
         android:layout_height="80dp"
         android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true">
-
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
         <ImageButton
             android:id="@+id/exploreBtn"
             android:layout_width="55dp"
             android:layout_height="55dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:contentDescription="@string/Explore"
+            android:layout_toLeftOf="@id/notificationBtn"
+            android:layout_marginEnd="20dp"
+            android:layout_centerInParent="true"
             android:background="@drawable/explore_not_selected"/>
-
         <ImageButton
             android:id="@+id/notificationBtn"
             android:layout_width="55dp"
             android:layout_height="55dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_toRightOf="@id/exploreBtn"
-            android:contentDescription="@string/Notifications"
+            android:layout_marginEnd="20dp"
+            android:layout_toLeftOf="@id/groupsBtn"
+            android:layout_centerInParent="true"
             android:background="@drawable/notifications_not_selected"/>
         <ImageButton
             android:id="@+id/groupsBtn"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_toRightOf="@id/notificationBtn"
-            android:contentDescription="@string/Groups"
+            android:layout_centerInParent="true"
             android:background="@drawable/groups_not_selected"/>
         <ImageButton
             android:id="@+id/chatBtn"
             android:layout_width="55dp"
             android:layout_height="55dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="20dp"
             android:layout_toRightOf="@id/groupsBtn"
-            android:contentDescription="@string/Chats"
+            android:layout_centerInParent="true"
             android:background="@drawable/chat_not_selected"/>
         <ImageButton
             android:id="@+id/profileBtn"
             android:layout_width="55dp"
             android:layout_height="55dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_toRightOf="@id/chatBtn"
-            android:contentDescription="@string/Profile"
+            android:layout_marginStart="20dp"
+            android:layout_centerInParent="true"
             android:background="@drawable/profile_not_selected"/>
     </RelativeLayout>
 

@@ -49,7 +49,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     //Set Recycle View
     private fun setupChatroomListRV(context: Context){
         val query:Query = FirebaseUtil().retrieveAllChatRoomReferences().whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
-        //query.orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
+                        .orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
 
         val options: FirestoreRecyclerOptions<ChatroomModel> =
             FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(query, ChatroomModel::class.java).build()
