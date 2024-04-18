@@ -5,7 +5,7 @@
     android:background="@color/dark_purple_2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GroupSelectionFragment">
+    tools:context=".CommunitySelectionFragment">
 
     <!-- Toolbar -->
 

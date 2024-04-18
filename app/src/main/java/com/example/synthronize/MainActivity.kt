@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         //BOTTOM NAVIGATION BUTTONS
         binding.groupsBtn.setOnClickListener {
             selectNavigation(binding.groupsBtn.id)
-            replaceFragment(GroupSelectionFragment(binding))
+            replaceFragment(CommunitySelectionFragment(binding))
         }
 
         binding.exploreBtn.setOnClickListener {
@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
     //Function that checks if the intent request for a specific fragment
     private fun onStartFragment(){
         val fragmentRequest = intent.getStringExtra("fragment").toString()
+        val communityId = intent.getStringExtra("communityId").toString()
 
         if (fragmentRequest == "profile"){
             selectNavigation(binding.profileBtn.id)
@@ -55,11 +56,13 @@ class MainActivity : AppCompatActivity() {
         } else if(fragmentRequest == "chat") {
             selectNavigation(binding.chatBtn.id)
             replaceFragment(ChatFragment(binding))
-        } else {
-            //default fragment
+        } else if (fragmentRequest == "community") {
             selectNavigation(binding.groupsBtn.id)
-            binding.toolbarTitleTV.text = "GROUPS"
-            replaceFragment(GroupSelectionFragment(binding))
+            replaceFragment(GroupFragment(binding, communityId))
+        } else {
+            //default group selection fragment
+            selectNavigation(binding.groupsBtn.id)
+            replaceFragment(CommunitySelectionFragment(binding))
         }
     }
 

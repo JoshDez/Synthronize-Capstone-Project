@@ -43,8 +43,11 @@ class FirebaseUtil {
     }
 
     //For Group Function
-    fun retrieveAllGroupReferences():CollectionReference{
-        return FirebaseFirestore.getInstance().collection("groups")
+    fun retrieveAllCommunityCollection():CollectionReference{
+        return FirebaseFirestore.getInstance().collection("communities")
+    }
+    fun retrieveCommunityDocument(communityId:String):DocumentReference{
+        return FirebaseFirestore.getInstance().collection("communities").document(communityId)
     }
 
     //For Firebase Storage

@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.GroupAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentGroupSelectionBinding
-import com.example.synthronize.model.GroupModel
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.FirebaseUtil
 
-class GroupSelectionFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
+class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     private lateinit var binding: FragmentGroupSelectionBinding
     private lateinit var groupAdapter: GroupAdapter
 
@@ -33,7 +33,7 @@ class GroupSelectionFragment(private val mainBinding: ActivityMainBinding) : Fra
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainBinding.toolbarTitleTV.text = "GROUPS"
+        mainBinding.toolbarTitleTV.text = "COMMUNITIES"
 
         //If the fragment is added
         if (isAdded){
@@ -52,24 +52,19 @@ class GroupSelectionFragment(private val mainBinding: ActivityMainBinding) : Fra
             }
 
             // Fetch groups from Firestore
-            fetchGroupsFromFirestore()
+            fetchCommunitiesFromFirestore()
         }
     }
 
-    private fun fetchGroupsFromFirestore() {
-        FirebaseUtil().retrieveAllGroupReferences().get()
+    private fun fetchCommunitiesFromFirestore() {
+        FirebaseUtil().retrieveAllCommunityCollection().get()
             .addOnSuccessListener { documents ->
-                val groupList = mutableListOf<GroupModel>()
+                val communityList = mutableListOf<CommunityModel>()
                 for (document in documents) {
-                    val groupId = document.id
-                    val groupName = document.getString("name") ?: ""
-                    val groupDescription = document.getString("description") ?: ""
-                    val groupType = document.getString("group type") ?: ""
-                    val groupCode = document.getString("groupCode") ?: ""
-                    val group = GroupModel(groupId, groupName, groupDescription,groupType,groupCode)
-                    groupList.add(group)
+                    val communityModel = document.toObject(CommunityModel::class.java)
+                    communityList.add(communityModel)
                 }
-                groupAdapter.setData(groupList)
+                groupAdapter.setData(communityList)
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(requireContext(), "Failed to fetch groups: ${exception.message}", Toast.LENGTH_SHORT).show()

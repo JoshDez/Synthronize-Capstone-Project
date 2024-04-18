@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,7 +15,6 @@ import com.example.synthronize.databinding.ActivityEditProfileBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
-import com.example.synthronize.utils.ModelHandler
 
 class EditProfile : AppCompatActivity() {
     private lateinit var binding:ActivityEditProfileBinding
@@ -126,47 +124,54 @@ class EditProfile : AppCompatActivity() {
     }
 
     private fun setCurrentUserDetailsToFirebase() {
-        var delay:Long = 0
-        //set new user profile pic
-        if (::selectedProfilePicUri.isInitialized){
-            FirebaseUtil().retrieveUserProfilePicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfilePicUri)
-            //adds a second to give time for the firebase to upload
-            delay += 1000
-        }
-        //set new user cover pic
-        if (::selectedProfileCoverPicUri.isInitialized){
-            FirebaseUtil().retrieveUserCoverPicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfileCoverPicUri)
-            //adds a second to give time for the firebase to upload
-            delay += 1000
-        }
+        if (::userModel.isInitialized){
+            var delay:Long = 0
+            //set new user profile pic
+            if (::selectedProfilePicUri.isInitialized){
+                FirebaseUtil().retrieveUserProfilePicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfilePicUri)
+                //adds a second to give time for the firebase to upload
+                delay += 1000
+            }
+            //set new user cover pic
+            if (::selectedProfileCoverPicUri.isInitialized){
+                FirebaseUtil().retrieveUserCoverPicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfileCoverPicUri)
+                //adds a second to give time for the firebase to upload
+                delay += 1000
+            }
 
-        //set new user model
-        FirebaseUtil().currentUserDetails().set(userModel).addOnCompleteListener {
-            if (it.isSuccessful){
-                Toast.makeText(this, "User details successfully updated", Toast.LENGTH_SHORT).show()
-                //heads back to main activity with a profile fragment
-                AppUtil().headBackToMainActivity(this, "profile", delay)
-            } else {
-                Toast.makeText(this, "Error in updating user details, please try again", Toast.LENGTH_SHORT).show()
+            //set new user model
+            FirebaseUtil().currentUserDetails().set(userModel).addOnCompleteListener {
+                if (it.isSuccessful){
+                    Toast.makeText(this, "User details successfully updated", Toast.LENGTH_SHORT).show()
+                    //heads back to main activity with a profile fragment
+                    AppUtil().headBackToMainActivity(this, "profile", delay)
+                } else {
+                    Toast.makeText(this, "Error in updating user details, please try again", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
     private fun retrieveAndBindCurrentUserDetails() {
-        ModelHandler().retrieveUserModel(FirebaseUtil().currentUserUid()) {result ->
-            //bind user details
-            userModel = result
-            binding.fullNameEdtTxt.setText(userModel.fullName)
-            binding.usernameEdtTxt.setText(userModel.username)
-            binding.birthdayEdtTxt.setText(userModel.birthday)
-            binding.descriptionEdtTxt.setText(userModel.description)
+        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
+            if (it.isSuccessful && it.result.exists()){
 
-            //bind user profile picture
-            AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.userProfileCIV)
-            //bind user cover picture
-            AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.userCoverIV)
+                userModel = it.result.toObject(UserModel::class.java)!!
 
+                //bind user details
+                binding.fullNameEdtTxt.setText(userModel.fullName)
+                binding.usernameEdtTxt.setText(userModel.username)
+                binding.birthdayEdtTxt.setText(userModel.birthday)
+                binding.descriptionEdtTxt.setText(userModel.description)
+
+                //bind user profile picture
+                AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.userProfileCIV)
+                //bind user cover picture
+                AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.userCoverIV)
+            }
         }
+
+
     }
 
     private fun isModified(): Boolean {

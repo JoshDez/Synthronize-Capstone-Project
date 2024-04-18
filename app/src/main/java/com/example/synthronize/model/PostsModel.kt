@@ -1,4 +1,4 @@
-package com.labactivity.synthronize
+package com.example.synthronize.model
 
 data class PostsModel(
     val postId: String,

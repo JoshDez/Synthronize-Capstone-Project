@@ -1,16 +1,20 @@
 package com.example.synthronize.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.synthronize.Chatroom
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.example.synthronize.databinding.ItemMessageBinding
 import com.example.synthronize.model.MessageModel
+import com.example.synthronize.model.UserModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
-import com.example.synthronize.utils.ModelHandler
+import java.text.SimpleDateFormat
 
 class MessageAdapter(private val context: Context, options: FirestoreRecyclerOptions<MessageModel>):
     FirestoreRecyclerAdapter<MessageModel, MessageAdapter.MessageViewHolder>(options) {
@@ -38,8 +42,12 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
                 binding.senderLayout.visibility = View.GONE
                 binding.recieverLayout.visibility = View.VISIBLE
                 binding.recieverMsgTV.text = model.message
-                ModelHandler().retrieveUserModel(model.senderID){userModel ->
-                    binding.userNameTV.text = userModel.fullName
+                //retrieve sender user data
+                FirebaseUtil().targetUserDetails(model.senderID).get().addOnCompleteListener {
+                    if (it.isSuccessful && it.result.exists()){
+                        val userModel = it.result.toObject(UserModel::class.java)!!
+                        binding.userNameTV.text = userModel.fullName
+                    }
                 }
             }
         }

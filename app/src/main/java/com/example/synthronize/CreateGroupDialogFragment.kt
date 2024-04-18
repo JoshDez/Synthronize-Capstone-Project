@@ -10,13 +10,12 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.example.synthronize.databinding.DialogCreateGroupBinding
+import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.firestore.FirebaseFirestore
 class CreateGroupDialogFragment : DialogFragment() {
 
     private lateinit var binding: DialogCreateGroupBinding
-    private val db = FirebaseFirestore.getInstance()
-    private val groupsCollection = db.collection("groups")
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,7 +40,7 @@ class CreateGroupDialogFragment : DialogFragment() {
                 if (selectedItem == "Private") {
                     // Show groupCodeEditText when "Private" is selected
                     binding.groupCodeEditText.visibility = View.VISIBLE
-                    showGroupCodePrompt()
+                    showCommunityCodePrompt()
                 } else if (selectedItem == "Public") {
                     // Hide groupCodeEditText for other selections
                     binding.groupCodeEditText.setText(generateRandomCode(6))
@@ -77,33 +76,30 @@ class CreateGroupDialogFragment : DialogFragment() {
             .joinToString("")
     }
 
-    private fun saveGroupToFirestore(groupName: String, groupDescription: String, groupType: String, groupCode: String) {
+    private fun saveGroupToFirestore(communityName: String, communityDescription: String, communityType: String, communityCode: String) {
         // Create a HashMap to store group data
-        val groupData = hashMapOf(
-            "name" to groupName,
-            "description" to groupDescription,
-            "group type" to groupType,
-            "groupCode" to groupCode
-            // Add other properties as needed
-        )
+        var communityModel = CommunityModel()
 
-        // Add the group data to Firestore
-        groupsCollection.add(groupData)
-            .addOnSuccessListener { documentReference ->
-                // Handle successful addition
-                // For example, you can log the document ID
-                println("Group added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                // Handle errors
-                println("Error adding group: $e")
-            }
+        FirebaseUtil().retrieveAllCommunityCollection().add(communityModel).addOnSuccessListener {
+            //retrieve new group ID
+            val communityId = it.id
+            communityModel = CommunityModel(
+                communityId,
+                communityName,
+                communityDescription,
+                communityType,
+                communityCode,
+            )
+            //set data to firestore
+            FirebaseUtil().retrieveCommunityDocument(communityId).set(communityModel)
+        }
+
     }
 
 
-    private fun showGroupCodePrompt() {
+    private fun showCommunityCodePrompt() {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Custom Group Code")
+        builder.setTitle("Custom Community Code")
 
         // Set up the input field for the group code
         val input = EditText(requireContext())

@@ -36,9 +36,6 @@ class Chatroom : AppCompatActivity() {
         chatroomType = intent.getStringExtra("chatroomType").toString()
         receiverUid = intent.getStringExtra("userID").toString()
 
-
-        binding.chatRoomNameTV.text = chatroomName
-
         binding.backBtn.setOnClickListener {
             //if the last activity
             if (fromMainActivity && isMessageSent){
@@ -58,6 +55,7 @@ class Chatroom : AppCompatActivity() {
         }
 
         getChatroomID()
+        bindChatroomDetails()
         createOrRetrieveChatroomModel()
         setupChatRV()
     }
@@ -79,26 +77,36 @@ class Chatroom : AppCompatActivity() {
         }
     }
 
+    private fun bindChatroomDetails() {
+        binding.chatRoomNameTV.text = chatroomName
+        when(chatroomType){
+            "direct_message" -> AppUtil().setUserProfilePic(this, receiverUid, binding.chatroomCircleIV)
+            //TODO: CIV for other types of chat
+        }
+    }
+
     private fun setupChatRV() {
-        val myQuery: Query = FirebaseUtil().retrieveChatsFromChatroom(chatroomID)
-            .orderBy("timestamp", Query.Direction.DESCENDING)
+        if (chatroomID.isNotEmpty()){
+            val myQuery: Query = FirebaseUtil().retrieveChatsFromChatroom(chatroomID)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
 
-        val options: FirestoreRecyclerOptions<MessageModel> =
-            FirestoreRecyclerOptions.Builder<MessageModel>().setQuery(myQuery, MessageModel::class.java).build()
+            val options: FirestoreRecyclerOptions<MessageModel> =
+                FirestoreRecyclerOptions.Builder<MessageModel>().setQuery(myQuery, MessageModel::class.java).build()
 
-        recyclerView = binding.chatRV
-        linearLayoutManager = LinearLayoutManager(this)
-        linearLayoutManager.reverseLayout = true
-        recyclerView.layoutManager = linearLayoutManager
-        messageAdapter = MessageAdapter(this, options)
-        recyclerView.adapter = messageAdapter
-        messageAdapter.startListening()
-        messageAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                recyclerView.smoothScrollToPosition(0)
-            }
-        })
+            recyclerView = binding.chatRV
+            linearLayoutManager = LinearLayoutManager(this)
+            linearLayoutManager.reverseLayout = true
+            recyclerView.layoutManager = linearLayoutManager
+            messageAdapter = MessageAdapter(this, options)
+            recyclerView.adapter = messageAdapter
+            messageAdapter.startListening()
+            messageAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    super.onItemRangeInserted(positionStart, itemCount)
+                    recyclerView.smoothScrollToPosition(0)
+                }
+            })
+        }
     }
 
     private fun sendMessage(message:String) {

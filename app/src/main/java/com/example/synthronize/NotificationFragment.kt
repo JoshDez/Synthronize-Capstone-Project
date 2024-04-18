@@ -5,10 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import com.example.synthronize.databinding.ActivityMainBinding
-import com.example.synthronize.databinding.FragmentChatBinding
-import com.example.synthronize.databinding.FragmentExploreBinding
 import com.example.synthronize.databinding.FragmentNotificationBinding
 class NotificationFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     // TODO: Rename and change types of parameters

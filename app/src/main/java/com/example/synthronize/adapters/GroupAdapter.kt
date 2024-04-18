@@ -2,19 +2,18 @@ package com.example.synthronize.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.databinding.ItemGroupBinding
-import com.example.synthronize.model.GroupModel
+import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.utils.AppUtil
 
 class GroupAdapter(private val context: Context) : RecyclerView.Adapter<GroupAdapter.GroupViewHolder>() {
 
-    private var groups: List<GroupModel> = emptyList()
+    private var groups: List<CommunityModel> = emptyList()
 
-    fun setData(groups: List<GroupModel>) {
+    fun setData(groups: List<CommunityModel>) {
         this.groups = groups
         notifyDataSetChanged()
     }
@@ -36,11 +35,11 @@ class GroupAdapter(private val context: Context) : RecyclerView.Adapter<GroupAda
 
     class GroupViewHolder(private val binding:ItemGroupBinding, private val context: Context) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(group: GroupModel) {
-            binding.groupNameTextView.text = group.groupName
+        fun bind(community: CommunityModel) {
+            binding.groupNameTextView.text = community.communityName
             binding.itemGroupLayout.setOnClickListener {
-                Toast.makeText(context, "Clicked on group: ${group.groupName}  \n Group Code: ${group.groupCode}", Toast.LENGTH_SHORT).show()
-
+                Toast.makeText(context, "Clicked on Community: ${community.communityName}  \n Community Code: ${community.communityCode}", Toast.LENGTH_SHORT).show()
+                AppUtil().headBackToMainActivity(context, "community", 0, community.communityId)
             }
         }
     }

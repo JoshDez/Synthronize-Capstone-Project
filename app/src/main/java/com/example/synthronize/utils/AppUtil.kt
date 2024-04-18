@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Handler
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -34,12 +35,21 @@ class AppUtil {
     }
 
     //For Heading Back to Main Activity
-    fun headBackToMainActivity(context: Context, fragment:String, delay:Long) {
+    fun headBackToMainActivity(context: Context, fragment:String, delay:Long, communityId: String = "") {
         Handler().postDelayed({
             val intent = Intent(context, MainActivity::class.java)
             intent.putExtra("fragment", fragment)
+            intent.putExtra("communityId", communityId)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intent)
         }, delay)
+    }
+    //For Strings
+    fun sliceMessage(string:String, intRange: IntRange):String{
+        if (string.length > 17){
+            return "${string.slice(intRange)}..."
+        } else {
+            return string
+        }
     }
 }

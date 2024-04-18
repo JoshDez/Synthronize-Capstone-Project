@@ -12,6 +12,7 @@ import com.example.synthronize.Chatroom
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.databinding.ItemProfileBinding
 import com.example.synthronize.model.UserModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 
 class SearchUserAdapter(private val context: Context, options: FirestoreRecyclerOptions<UserModel>):
@@ -36,6 +37,7 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
             if (model.userID == FirebaseUtil().currentUserUid()){
                 binding.userFullNameTV.text = "${model.fullName} (You)"
             }else {
+                AppUtil().setUserProfilePic(context,model.userID, binding.userCircleImageView)
                 binding.userFullNameTV.text = model.fullName
                 binding.userContainerRL.setOnClickListener{
                     val intent = Intent(context, OtherUserProfile::class.java)

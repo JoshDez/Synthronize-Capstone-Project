@@ -2,13 +2,11 @@ package com.example.synthronize
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.synthronize.databinding.ActivityOtherUserProfileBinding
+import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
-import com.example.synthronize.utils.ModelHandler
+import com.example.synthronize.utils.FirebaseUtil
 
 class OtherUserProfile : AppCompatActivity() {
     private lateinit var binding:ActivityOtherUserProfileBinding
@@ -28,23 +26,29 @@ class OtherUserProfile : AppCompatActivity() {
 
     private fun bindUserDetails(userID:String) {
         //TODO: Implement loading start
-        ModelHandler().retrieveUserModel(userID){userModel ->
-            binding.userDescriptionTV.text = userModel.description
-            binding.userNameTV.text = userModel.username
-            binding.userDisplayNameTV.text = userModel.fullName
-            //TODO: add to birthday binding and created timestamp
 
-            AppUtil().setUserProfilePic(this, userID, binding.userProfileCIV)
-            AppUtil().setUserCoverPic(this, userID, binding.userCoverIV)
+        FirebaseUtil().targetUserDetails(userID).get().addOnCompleteListener {
+            if (it.isSuccessful && it.result.exists()){
 
-            binding.messageUserBtn.setOnClickListener {
-                val intent = Intent(this, Chatroom::class.java)
-                intent.putExtra("chatroomName", userModel.fullName)
-                intent.putExtra("userID", userID)
-                intent.putExtra("chatroomType", "direct_message")
-                startActivity(intent)
+                val userModel = it.result.toObject(UserModel::class.java)!!
+
+                binding.userDescriptionTV.text = userModel.description
+                binding.userNameTV.text = userModel.username
+                binding.userDisplayNameTV.text = userModel.fullName
+                //TODO: add to birthday binding and created timestamp
+
+                AppUtil().setUserProfilePic(this, userID, binding.userProfileCIV)
+                AppUtil().setUserCoverPic(this, userID, binding.userCoverIV)
+
+                binding.messageUserBtn.setOnClickListener {
+                    val intent = Intent(this, Chatroom::class.java)
+                    intent.putExtra("chatroomName", userModel.fullName)
+                    intent.putExtra("userID", userID)
+                    intent.putExtra("chatroomType", "direct_message")
+                    startActivity(intent)
+                }
+                //TODO: Implement loading stop
             }
-            //TODO: Implement loading stop
         }
     }
 

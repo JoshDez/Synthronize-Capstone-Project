@@ -3,7 +3,6 @@ package com.example.synthronize.adapters
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -14,9 +13,7 @@ import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
-import com.example.synthronize.utils.ModelHandler
 import java.text.SimpleDateFormat
-import java.util.logging.Handler
 
 class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOptions<ChatroomModel>):
     FirestoreRecyclerAdapter<ChatroomModel, ChatroomAdapter.ChatroomViewHolder>(options) {
@@ -63,29 +60,32 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
         private fun bindGroupChat() {
             TODO("Not yet implemented")
         }
-
-
-        //Gawan ng firebase util
         private fun bindDirectMessage(uid:String){
-            ModelHandler().retrieveUserModel(uid){userModel ->
-                binding.chatroomNameTV.text = userModel.fullName
-                binding.lastTimestampTV.text = SimpleDateFormat("HH:MM")
-                    .format(chatroomModel.lastMsgTimestamp.toDate())
-                //other fields
-                AppUtil().setUserProfilePic(context, userModel.userID, binding.userCircleImageView)
-                if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
-                    //if the message is not from the current user
-                    binding.lastUserMessageTV.text = "${userModel.fullName}: ${chatroomModel.lastMessage}"
-                else
-                    //if the message is from the current user
-                    binding.lastUserMessageTV.text = chatroomModel.lastMessage
 
-                binding.chatroomLayout.setOnClickListener {
-                    val intent = Intent(context, Chatroom::class.java)
-                    intent.putExtra("chatroomName", userModel.fullName)
-                    intent.putExtra("userID", uid)
-                    intent.putExtra("chatroomType", chatroomModel.chatroomType)
-                    context.startActivity(intent)
+            FirebaseUtil().targetUserDetails(uid).get().addOnCompleteListener {
+                if (it.isSuccessful && it.result.exists()){
+
+                    val userModel = it.result.toObject(UserModel::class.java)!!
+                    binding.chatroomNameTV.text = userModel.fullName
+                    binding.lastTimestampTV.text = SimpleDateFormat("HH:MM")
+                        .format(chatroomModel.lastMsgTimestamp.toDate())
+                    //other fields
+                    AppUtil().setUserProfilePic(context, userModel.userID, binding.userCircleImageView)
+                    if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
+                    //if the message is not from the current user
+                        binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}",
+                            0..30)
+                    else
+                    //if the message is from the current user
+                        binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 0..30)
+
+                    binding.chatroomLayout.setOnClickListener {
+                        val intent = Intent(context, Chatroom::class.java)
+                        intent.putExtra("chatroomName", userModel.fullName)
+                        intent.putExtra("userID", uid)
+                        intent.putExtra("chatroomType", chatroomModel.chatroomType)
+                        context.startActivity(intent)
+                    }
                 }
             }
         }
