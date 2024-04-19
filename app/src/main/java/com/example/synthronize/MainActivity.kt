@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         //BOTTOM NAVIGATION BUTTONS
         binding.groupsBtn.setOnClickListener {
             selectNavigation(binding.groupsBtn.id)
-            replaceFragment(CommunitySelectionFragment(binding))
+            replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager))
         }
 
         binding.exploreBtn.setOnClickListener {
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             //default group selection fragment
             selectNavigation(binding.groupsBtn.id)
-            replaceFragment(CommunitySelectionFragment(binding))
+            replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager))
         }
     }
 

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.adapters.CommunityAdapter
@@ -15,7 +16,7 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
-class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
+class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager) : Fragment() {
     private lateinit var binding: FragmentCommunitySelectionBinding
     private lateinit var communityAdapter: CommunityAdapter
     private lateinit var recyclerView: RecyclerView
@@ -67,7 +68,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding) :
         val options: FirestoreRecyclerOptions<CommunityModel> =
              FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(communityQuery, CommunityModel::class.java).build()
 
-        communityAdapter = CommunityAdapter(context, options)
+        communityAdapter = CommunityAdapter(mainBinding, fragmentManager, context, options)
         recyclerView.adapter = communityAdapter
         communityAdapter.startListening()
     }
