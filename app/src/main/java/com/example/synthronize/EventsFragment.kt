@@ -6,11 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.synthronize.databinding.ActivityMainBinding
-import com.example.synthronize.databinding.FragmentHomeBinding
-import com.example.synthronize.databinding.FragmentNotificationBinding
-class HomeFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
+import com.example.synthronize.databinding.FragmentCommunityBinding
+import com.example.synthronize.databinding.FragmentEventsBinding
+
+class EventsFragment(private val mainBinding: FragmentCommunityBinding, communityId:String) : Fragment() {
     // TODO: Rename and change types of parameters
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var binding: FragmentEventsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,12 +23,11 @@ class HomeFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+        binding = FragmentEventsBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainBinding.toolbarTitleTV.text = "HOME"
     }
 }

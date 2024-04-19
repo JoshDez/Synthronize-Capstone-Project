@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             replaceFragment(ChatFragment(binding))
         } else if (fragmentRequest == "community") {
             selectNavigation(binding.groupsBtn.id)
-            replaceFragment(GroupFragment(binding, communityId))
+            replaceFragment(CommunityFragment(binding, communityId))
         } else {
             //default group selection fragment
             selectNavigation(binding.groupsBtn.id)

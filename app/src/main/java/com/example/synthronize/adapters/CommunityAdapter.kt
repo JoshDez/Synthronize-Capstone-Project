@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.synthronize.GroupFragment
+import com.example.synthronize.CommunityFragment
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -42,7 +42,7 @@ class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val
         private fun addCommunityFragmentToMain(communityId:String){
 
             val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(mainBinding.mainFrameLayout.id, GroupFragment(mainBinding, communityId))
+            fragmentTransaction.replace(mainBinding.mainFrameLayout.id, CommunityFragment(mainBinding, communityId))
             fragmentTransaction.commit()
         }
         

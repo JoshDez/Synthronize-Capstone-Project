@@ -41,6 +41,11 @@
     <string name="description">Description</string>
     <string name="birthday">Birthday</string>
     <string name="save">Save</string>
+    <string name="feeds">Feeds</string>
+    <string name="events">Events</string>
+    <string name="forums">Forums</string>
+    <string name="market">Market</string>
+    <string name="files">Files</string>
 
 
 </resources>

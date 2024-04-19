@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
@@ -42,14 +43,6 @@ class FirebaseUtil {
         return retrieveChatRoomReference(chatroomID).collection("chats")
     }
 
-    //For Group Function
-    fun retrieveAllCommunityCollection():CollectionReference{
-        return FirebaseFirestore.getInstance().collection("communities")
-    }
-    fun retrieveCommunityDocument(communityId:String):DocumentReference{
-        return retrieveAllCommunityCollection().document(communityId)
-    }
-
     //For Firebase Storage
     fun retrieveUserProfilePicRef(uid:String): StorageReference {
         return FirebaseStorage.getInstance().reference
@@ -63,5 +56,33 @@ class FirebaseUtil {
             //name of picture
             .child(uid)
     }
+
+
+
+    //For Community
+    fun retrieveAllCommunityCollection():CollectionReference{
+        return FirebaseFirestore.getInstance().collection("communities")
+    }
+    fun retrieveCommunityDocument(communityId:String):DocumentReference{
+        return retrieveAllCommunityCollection().document(communityId)
+    }
+
+    fun retrieveCommunityFeedsCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("feeds")
+    }
+    fun retrieveCommunityEventsCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("events")
+    }
+
+    fun retrieveCommunityForumsCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("forums")
+    }
+    fun retrieveCommunityMarketCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("market")
+    }
+    fun retrieveCommunityFilesCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("files")
+    }
+
 
 }

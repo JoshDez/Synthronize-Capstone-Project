@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <!-- User Profile Image -->
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
             android:layout_width="48dp"
             android:layout_height="48dp"
