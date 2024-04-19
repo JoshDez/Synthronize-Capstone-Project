@@ -2,11 +2,8 @@ package com.example.synthronize.utils
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Handler
 import android.widget.ImageView
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.synthronize.MainActivity
@@ -35,7 +32,7 @@ class AppUtil {
     }
 
     //For Heading Back to Main Activity
-    fun headBackToMainActivity(context: Context, fragment:String, delay:Long, communityId: String = "") {
+    fun headToMainActivity(context: Context, fragment:String, delay:Long = 0, communityId: String = "") {
         Handler().postDelayed({
             val intent = Intent(context, MainActivity::class.java)
             intent.putExtra("fragment", fragment)
@@ -45,9 +42,9 @@ class AppUtil {
         }, delay)
     }
     //For Strings
-    fun sliceMessage(string:String, intRange: IntRange):String{
-        if (string.length > 17){
-            return "${string.slice(intRange)}..."
+    fun sliceMessage(string:String, intCap:Int):String{
+        if (string.length > intCap){
+            return "${string.slice(0..intCap)}..."
         } else {
             return string
         }

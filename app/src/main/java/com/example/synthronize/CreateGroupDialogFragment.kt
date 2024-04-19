@@ -12,7 +12,6 @@ import androidx.fragment.app.DialogFragment
 import com.example.synthronize.databinding.DialogCreateGroupBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.FirebaseUtil
-import com.google.firebase.firestore.FirebaseFirestore
 class CreateGroupDialogFragment : DialogFragment() {
 
     private lateinit var binding: DialogCreateGroupBinding
@@ -81,14 +80,16 @@ class CreateGroupDialogFragment : DialogFragment() {
         var communityModel = CommunityModel()
 
         FirebaseUtil().retrieveAllCommunityCollection().add(communityModel).addOnSuccessListener {
-            //retrieve new group ID
+            //retrieve new communityId
             val communityId = it.id
             communityModel = CommunityModel(
-                communityId,
-                communityName,
-                communityDescription,
-                communityType,
-                communityCode,
+                communityId = communityId,
+                communityName = communityName,
+                communityDescription = communityDescription,
+                communityType = communityType,
+                communityCode = communityCode,
+                communityMembers = listOf(FirebaseUtil().currentUserUid()),
+                communityAdmin = listOf(FirebaseUtil().currentUserUid())
             )
             //set data to firestore
             FirebaseUtil().retrieveCommunityDocument(communityId).set(communityModel)

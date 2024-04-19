@@ -47,6 +47,7 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
                     if (it.isSuccessful && it.result.exists()){
                         val userModel = it.result.toObject(UserModel::class.java)!!
                         binding.userNameTV.text = userModel.fullName
+                        AppUtil().setUserProfilePic(context, userModel.userID, binding.userProfileCIV)
                     }
                 }
             }

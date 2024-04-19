@@ -73,11 +73,10 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                     AppUtil().setUserProfilePic(context, userModel.userID, binding.userCircleImageView)
                     if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
                     //if the message is not from the current user
-                        binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}",
-                            0..30)
+                        binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
                     else
                     //if the message is from the current user
-                        binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 0..30)
+                        binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
 
                     binding.chatroomLayout.setOnClickListener {
                         val intent = Intent(context, Chatroom::class.java)

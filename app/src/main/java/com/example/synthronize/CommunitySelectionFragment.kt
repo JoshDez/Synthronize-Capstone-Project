@@ -1,21 +1,25 @@
 package com.example.synthronize
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.synthronize.adapters.GroupAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.synthronize.adapters.CommunityAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
-import com.example.synthronize.databinding.FragmentGroupSelectionBinding
+import com.example.synthronize.databinding.FragmentCommunitySelectionBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.FirebaseUtil
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
 class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
-    private lateinit var binding: FragmentGroupSelectionBinding
-    private lateinit var groupAdapter: GroupAdapter
+    private lateinit var binding: FragmentCommunitySelectionBinding
+    private lateinit var communityAdapter: CommunityAdapter
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var context:Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +31,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding) :
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentGroupSelectionBinding.inflate(layoutInflater)
+        binding = FragmentCommunitySelectionBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -36,14 +40,12 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding) :
         mainBinding.toolbarTitleTV.text = "COMMUNITIES"
 
         //If the fragment is added
-        if (isAdded){
-            //TODO: ADDED
+        if (isAdded && requireContext() != null){
+            context = requireContext()
+
             // Initialize RecyclerView and adapter
-            groupAdapter = GroupAdapter(requireContext())
-            binding.groupSelectionRV.apply {
-                adapter = groupAdapter
-                layoutManager = LinearLayoutManager(requireContext())
-            }
+            recyclerView = binding.groupSelectionRV
+            recyclerView.layoutManager = LinearLayoutManager(context)
 
             // Set up Add Group FAB
             binding.addGroupFab.setOnClickListener {
@@ -52,22 +54,41 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding) :
             }
 
             // Fetch groups from Firestore
-            fetchCommunitiesFromFirestore()
+            setupRecyclerView()
         }
     }
 
-    private fun fetchCommunitiesFromFirestore() {
-        FirebaseUtil().retrieveAllCommunityCollection().get()
-            .addOnSuccessListener { documents ->
-                val communityList = mutableListOf<CommunityModel>()
-                for (document in documents) {
-                    val communityModel = document.toObject(CommunityModel::class.java)
-                    communityList.add(communityModel)
-                }
-                groupAdapter.setData(communityList)
-            }
-            .addOnFailureListener { exception ->
-                Toast.makeText(requireContext(), "Failed to fetch groups: ${exception.message}", Toast.LENGTH_SHORT).show()
-            }
+    private fun setupRecyclerView() {
+        //query firestore
+        val communityQuery = FirebaseUtil().retrieveAllCommunityCollection()
+                .whereArrayContains("communityMembers", FirebaseUtil().currentUserUid())
+
+        //set options for firebase ui
+        val options: FirestoreRecyclerOptions<CommunityModel> =
+             FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(communityQuery, CommunityModel::class.java).build()
+
+        communityAdapter = CommunityAdapter(context, options)
+        recyclerView.adapter = communityAdapter
+        communityAdapter.startListening()
     }
+
+    override fun onStart() {
+        super.onStart()
+        if (::communityAdapter.isInitialized)
+            communityAdapter.startListening()
+    }
+    override fun onResume() {
+        super.onResume()
+        if (::communityAdapter.isInitialized)
+            communityAdapter.notifyDataSetChanged()
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        if (::communityAdapter.isInitialized)
+            communityAdapter.stopListening()
+    }
+
+
 }

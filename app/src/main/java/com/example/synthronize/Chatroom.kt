@@ -24,8 +24,6 @@ class Chatroom : AppCompatActivity() {
     private var chatroomName = ""
     private var receiverUid = ""
     private var chatroomType = ""
-    private var fromMainActivity = true
-    private var isMessageSent = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +35,7 @@ class Chatroom : AppCompatActivity() {
         receiverUid = intent.getStringExtra("userID").toString()
 
         binding.backBtn.setOnClickListener {
-            //if the last activity
-            if (fromMainActivity && isMessageSent){
-                //refreshes chat fragment
-                AppUtil().headBackToMainActivity(this, "chat", 0)
-            } else {
-                this.finish()
-            }
+            onBackPressed()
         }
 
         binding.sendMsgBtn.setOnClickListener {
@@ -120,8 +112,6 @@ class Chatroom : AppCompatActivity() {
 
         //add message to chatroom
         FirebaseUtil().retrieveChatsFromChatroom(chatroomID).add(messageModel)
-
-        isMessageSent = true
     }
 
     private fun createOrRetrieveChatroomModel(){

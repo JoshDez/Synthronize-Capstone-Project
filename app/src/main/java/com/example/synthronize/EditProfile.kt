@@ -144,7 +144,7 @@ class EditProfile : AppCompatActivity() {
                 if (it.isSuccessful){
                     Toast.makeText(this, "User details successfully updated", Toast.LENGTH_SHORT).show()
                     //heads back to main activity with a profile fragment
-                    AppUtil().headBackToMainActivity(this, "profile", delay)
+                    AppUtil().headToMainActivity(this, "profile", delay)
                 } else {
                     Toast.makeText(this, "Error in updating user details, please try again", Toast.LENGTH_SHORT).show()
                 }

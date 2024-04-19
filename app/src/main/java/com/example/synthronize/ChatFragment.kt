@@ -48,6 +48,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
 
     //Set Recycle View
     private fun setupChatroomListRV(context: Context){
+        //already indexed in firebase
         val query:Query = FirebaseUtil().retrieveAllChatRoomReferences()
             .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
             .orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
@@ -57,5 +58,28 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         chatroomAdapter = ChatroomAdapter(context, options)
         recyclerView.adapter = chatroomAdapter
         chatroomAdapter.startListening()
+    }
+
+
+
+    override fun onStart() {
+        super.onStart()
+        if (::chatroomAdapter.isInitialized){
+            chatroomAdapter.startListening()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::chatroomAdapter.isInitialized){
+            chatroomAdapter.notifyDataSetChanged()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::chatroomAdapter.isInitialized){
+            chatroomAdapter.stopListening()
+        }
     }
 }

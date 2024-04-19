@@ -47,7 +47,7 @@ class FirebaseUtil {
         return FirebaseFirestore.getInstance().collection("communities")
     }
     fun retrieveCommunityDocument(communityId:String):DocumentReference{
-        return FirebaseFirestore.getInstance().collection("communities").document(communityId)
+        return retrieveAllCommunityCollection().document(communityId)
     }
 
     //For Firebase Storage
