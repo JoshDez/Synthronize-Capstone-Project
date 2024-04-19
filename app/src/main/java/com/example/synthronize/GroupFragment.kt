@@ -38,7 +38,6 @@ class GroupFragment(private val mainBinding: ActivityMainBinding, private val gr
                 if (it.isSuccessful && it.result.exists()) {
                     val communityModel = it.result.toObject(CommunityModel::class.java)!!
                     mainBinding.toolbarTitleTV.text = communityModel.communityName
-                    Toast.makeText(requireContext(), communityModel.communityName,Toast.LENGTH_SHORT).show()
                     // Load default news feed for the selected group
                     loadNewsFeed()
                 }
