@@ -17,7 +17,8 @@ import com.example.synthronize.utils.FirebaseUtil
 
 class SearchUserAdapter(private val context: Context, options: FirestoreRecyclerOptions<UserModel>):
     FirestoreRecyclerAdapter<UserModel, SearchUserAdapter.UserViewHolder>(options) {
-    var totalItems = 0
+
+    private var totalItems = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -28,6 +29,10 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
     override fun onBindViewHolder(holder: UserViewHolder, position: Int, model: UserModel) {
         totalItems += 1
         holder.bind(model)
+    }
+
+    fun getTotalItems():Int{
+        return totalItems
     }
 
     class UserViewHolder(private val binding: ItemProfileBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){

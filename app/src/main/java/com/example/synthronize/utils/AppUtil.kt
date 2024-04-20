@@ -39,7 +39,8 @@ class AppUtil {
             context.startActivity(intent)
         }, delay)
     }
-    //For Strings
+
+    //For Slicing Strings
     fun sliceMessage(string:String, intCap:Int):String{
         if (string.length > intCap){
             return "${string.slice(0..intCap)}..."

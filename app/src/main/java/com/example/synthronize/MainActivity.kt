@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     private fun selectNavigation(btnID:Int) {
         binding.exploreBtn.setBackgroundResource(R.drawable.explore_not_selected)
         binding.notificationBtn.setBackgroundResource(R.drawable.notifications_not_selected)
-        binding.groupsBtn.setBackgroundResource(R.drawable.groups_not_selected)
+        binding.groupsBtn.setBackgroundResource(R.drawable.community_not_selected)
         binding.profileBtn.setBackgroundResource(R.drawable.profile_not_selected)
         binding.chatBtn.setBackgroundResource(R.drawable.chat_not_selected)
         when (btnID) {
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                 binding.notificationBtn.setBackgroundResource(R.drawable.notifications_selected)
             }
             binding.groupsBtn.id -> {
-                binding.groupsBtn.setBackgroundResource(R.drawable.groups_selected)
+                binding.groupsBtn.setBackgroundResource(R.drawable.community_selected)
             }
             binding.profileBtn.id -> {
                 binding.profileBtn.setBackgroundResource(R.drawable.profile_selected)

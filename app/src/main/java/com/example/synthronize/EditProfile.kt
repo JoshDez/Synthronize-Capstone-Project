@@ -1,6 +1,7 @@
 package com.example.synthronize
 
 import android.app.Activity
+import android.app.DownloadManager.Query
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -93,7 +94,6 @@ class EditProfile : AppCompatActivity() {
                 .createIntent {
                     imagePickerLauncher.launch(it)
                 }
-
         }
     }
 
@@ -107,6 +107,9 @@ class EditProfile : AppCompatActivity() {
             //TODO: red tint in edtTxt to be implemented
 
             //TODO:Birthday should be isEmpty
+        } else if (isUsernameNotValid(binding.usernameEdtTxt.text.toString())){
+            binding.usernameEdtTxt.error = "Username should be more than 3 characters " +
+                    "and does not contain special characters"
         } else if (binding.birthdayEdtTxt.text.toString().isNotEmpty()) {
             Toast.makeText(this, "Please enter your birthday", Toast.LENGTH_SHORT).show()
             //TODO: red tint in edtTxt to be implemented
@@ -121,6 +124,12 @@ class EditProfile : AppCompatActivity() {
             userModel.birthday = binding.birthdayEdtTxt.text.toString()
             setCurrentUserDetailsToFirebase()
         }
+    }
+    private fun isUsernameNotValid(username: String): Boolean {
+        val regex = "^[a-zA-Z0-9_-]{3,16}$"
+        val pattern = Regex(regex)
+
+        return !pattern.matches(username)
     }
 
     private fun setCurrentUserDetailsToFirebase() {

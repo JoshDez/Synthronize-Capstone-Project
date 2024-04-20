@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.databinding.ItemCommunityBinding
@@ -27,11 +28,17 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
         totalItems += 1
         holder.bind(model)
     }
+    fun getTotalItems():Int{
+        return totalItems
+    }
 
     class CommunityViewHolder(private val binding: ItemCommunityBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
 
         fun bind(model: CommunityModel){
-
+            binding.groupNameTextView.text = model.communityName
+            binding.itemGroupLayout.setOnClickListener {
+                Toast.makeText(context, "You selected ${model.communityName}", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }

@@ -33,7 +33,8 @@
         android:text="Josh: asldkasdlfflakksd"
         android:textColor="@color/light_purple"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/userCircleImageView"/>
+        android:layout_toRightOf="@id/userCircleImageView"
+        android:layout_toLeftOf="@id/lastTimestampTV"/>
     <TextView
         android:id="@+id/lastTimestampTV"
         android:layout_width="wrap_content"

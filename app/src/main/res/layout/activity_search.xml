@@ -108,7 +108,7 @@
 
             <LinearLayout
                 android:visibility="gone"
-                android:id="@+id/groupsLinearLayout"
+                android:id="@+id/communitiesLinearLayout"
                 android:padding="20dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -119,12 +119,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Groups"
+                        android:text="@string/communities"
                         android:textSize="20sp"
                         android:textColor="@color/light_purple"/>
 
                     <TextView
-                        android:id="@+id/seeAllGroupsTV"
+                        android:id="@+id/seeAllCommunitiesTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -135,7 +135,7 @@
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/resultGroupsRV"
+                    android:id="@+id/resultCommunitiesRV"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"/>
             </LinearLayout>
