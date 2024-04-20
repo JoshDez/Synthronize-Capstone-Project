@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.synthronize.databinding.FragmentCommunityBinding
-import com.example.synthronize.databinding.FragmentFeedsBinding
 import com.example.synthronize.databinding.FragmentForumsBinding
 
 class ForumsFragment(private val mainBinding: FragmentCommunityBinding, communityId:String) : Fragment() {

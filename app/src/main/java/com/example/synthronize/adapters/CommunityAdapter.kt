@@ -9,7 +9,7 @@ import com.example.synthronize.CommunityFragment
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.example.synthronize.databinding.ItemGroupBinding
+import com.example.synthronize.databinding.ItemCommunityBinding
 import com.example.synthronize.model.CommunityModel
 
 class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager,
@@ -19,7 +19,7 @@ class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommunityViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val communityBinding = ItemGroupBinding.inflate(inflater, parent, false)
+        val communityBinding = ItemCommunityBinding.inflate(inflater, parent, false)
         return CommunityViewHolder(mainBinding, fragmentManager, communityBinding, context)
     }
 
@@ -28,7 +28,7 @@ class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val
     }
 
     class CommunityViewHolder(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager,
-                              private val communityBinding: ItemGroupBinding, private val context: Context): RecyclerView.ViewHolder(communityBinding.root){
+                              private val communityBinding: ItemCommunityBinding, private val context: Context): RecyclerView.ViewHolder(communityBinding.root){
         fun bind(model: CommunityModel){
             communityBinding.groupNameTextView.text = model.communityName
             //set on click listener

@@ -28,7 +28,7 @@
         android:layout_below="@id/divider1"
         android:background="#0D0319"
         android:padding="8dp"
-        tools:listitem="@layout/item_group"
+        tools:listitem="@layout/item_community"
         tools:ignore="NotSibling" />
 
     <!-- FloatingActionButton for Add Group -->

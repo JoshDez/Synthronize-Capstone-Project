@@ -50,7 +50,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
 
             // Set up Add Group FAB
             binding.addGroupFab.setOnClickListener {
-                val dialogFragment = CreateGroupDialogFragment()
+                val dialogFragment = CreateCommunityFragment()
                 dialogFragment.show(childFragmentManager, "CreateGroupDialogFragment")
             }
 

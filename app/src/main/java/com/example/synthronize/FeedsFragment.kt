@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.adapters.FeedsAdapter
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentFeedsBinding
-import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.FeedsModel
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions

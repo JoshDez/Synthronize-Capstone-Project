@@ -45,15 +45,7 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                     context.startActivity(intent)
                 }
             }
-
-
-
-
         }
-
-
-
-
     }
 
 }

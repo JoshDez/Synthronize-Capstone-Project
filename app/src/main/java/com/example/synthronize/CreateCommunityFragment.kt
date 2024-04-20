@@ -9,18 +9,18 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
-import com.example.synthronize.databinding.DialogCreateGroupBinding
+import com.example.synthronize.databinding.DialogCreateCommunityBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.FirebaseUtil
-class CreateGroupDialogFragment : DialogFragment() {
+class CreateCommunityFragment : DialogFragment() {
 
-    private lateinit var binding: DialogCreateGroupBinding
+    private lateinit var binding: DialogCreateCommunityBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DialogCreateGroupBinding.inflate(inflater, container, false)
+        binding = DialogCreateCommunityBinding.inflate(inflater, container, false)
         return binding.root
     }
 
