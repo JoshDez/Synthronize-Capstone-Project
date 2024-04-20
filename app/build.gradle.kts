@@ -1,8 +1,9 @@
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("com.google.gms.google-services")
-
+    id("kotlin-kapt")
 }
 
 android {
@@ -61,5 +62,9 @@ dependencies {
     implementation("com.orhanobut:dialogplus:1.11@aar")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.firebaseui:firebase-ui-firestore:8.0.2")
+    implementation("com.firebaseui:firebase-ui-storage:8.0.2")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
+
+
 
 }
