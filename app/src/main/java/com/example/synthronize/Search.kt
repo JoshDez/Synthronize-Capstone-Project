@@ -47,6 +47,7 @@ class Search : AppCompatActivity() {
             }
         })
     }
+
     private fun searchUsers(searchQuery: String){
         binding.usersLinearLayout.visibility = View.INVISIBLE
         val myQuery: Query = FirebaseUtil().allUsersCollectionReference()

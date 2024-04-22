@@ -1,10 +1,12 @@
 package com.example.synthronize
 
 import android.app.Activity
-import android.app.DownloadManager.Query
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,6 +18,8 @@ import com.example.synthronize.databinding.ActivityEditProfileBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.toObjects
 
 class EditProfile : AppCompatActivity() {
     private lateinit var binding:ActivityEditProfileBinding
@@ -24,6 +28,7 @@ class EditProfile : AppCompatActivity() {
     private lateinit var selectedProfilePicUri:Uri
     private lateinit var selectedProfileCoverPicUri:Uri
     private lateinit var selectedImageUri:Uri
+    private var isUsernameValid = true
     private var isProfilePic = true
 
 
@@ -58,78 +63,35 @@ class EditProfile : AppCompatActivity() {
         retrieveAndBindCurrentUserDetails()
         bindSetOnClickListeners()
     }
+    private fun isModified(): Boolean {
+        return binding.fullNameEdtTxt.text.toString() != userModel.fullName ||
+                binding.usernameEdtTxt.text.toString() != userModel.username ||
+                binding.descriptionEdtTxt.text.toString() != userModel.description ||
+                binding.birthdayEdtTxt.text.toString() != userModel.birthday ||
+                ::selectedProfilePicUri.isInitialized || ::selectedProfileCoverPicUri.isInitialized
+    }
+    private fun retrieveAndBindCurrentUserDetails() {
+        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
+            if (it.isSuccessful && it.result.exists()){
 
-    private fun bindSetOnClickListeners(){
-        binding.backBtn.setOnClickListener {
-            if (isModified()){
-                //TODO: Dialog to be implemented for saving
-                validateUserProfile()
-            } else {
-                this.finish()
+                userModel = it.result.toObject(UserModel::class.java)!!
+
+                //bind user details
+                binding.fullNameEdtTxt.setText(userModel.fullName)
+                binding.usernameEdtTxt.setText(userModel.username)
+                binding.birthdayEdtTxt.setText(userModel.birthday)
+                binding.descriptionEdtTxt.setText(userModel.description)
+
+                //adds text watcher to username edit text to validate username
+                bindUsernameEdtTxtTextWatcher(userModel.username)
+
+                //bind user profile picture
+                AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.userProfileCIV)
+                //bind user cover picture
+                AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.userCoverIV)
+
             }
         }
-
-        binding.saveBtn.setOnClickListener {
-            //TODO: Loading start to be implemented
-            if (isModified())
-                validateUserProfile()
-            else
-                this.finish()
-        }
-
-        binding.userProfileCIV.setOnClickListener {
-            isProfilePic = true
-            ImagePicker.with(this).cropSquare().compress(512)
-                .maxResultSize(512, 512)
-                .createIntent {
-                    imagePickerLauncher.launch(it)
-                }
-        }
-
-        binding.userCoverIV.setOnClickListener {
-            isProfilePic = false
-            ImagePicker.with(this)
-                .crop(25f, 10f)
-                .compress(1080)
-                .createIntent {
-                    imagePickerLauncher.launch(it)
-                }
-        }
-    }
-
-
-    private fun validateUserProfile() {
-        if (binding.fullNameEdtTxt.text.toString().isEmpty()) {
-            Toast.makeText(this, "Please enter your full name", Toast.LENGTH_SHORT).show()
-            //TODO: red tint in edtTxt to be implemented
-        } else if (binding.usernameEdtTxt.text.toString().isEmpty()) {
-            Toast.makeText(this, "Please enter your username", Toast.LENGTH_SHORT).show()
-            //TODO: red tint in edtTxt to be implemented
-
-            //TODO:Birthday should be isEmpty
-        } else if (isUsernameNotValid(binding.usernameEdtTxt.text.toString())){
-            binding.usernameEdtTxt.error = "Username should be more than 3 characters " +
-                    "and does not contain special characters"
-        } else if (binding.birthdayEdtTxt.text.toString().isNotEmpty()) {
-            Toast.makeText(this, "Please enter your birthday", Toast.LENGTH_SHORT).show()
-            //TODO: red tint in edtTxt to be implemented
-        } else {
-            //Loading to be implemented
-
-            //Set User Details to userModel
-            userModel.fullName = binding.fullNameEdtTxt.text.toString()
-            userModel.username = binding.usernameEdtTxt.text.toString()
-            userModel.description = binding.descriptionEdtTxt.text.toString()
-            //TODO:Birthday
-            userModel.birthday = binding.birthdayEdtTxt.text.toString()
-            setCurrentUserDetailsToFirebase()
-        }
-    }
-    private fun isUsernameNotValid(username: String): Boolean {
-        val regex = "^[a-zA-Z0-9_-]{3,16}$"
-        val pattern = Regex(regex)
-
-        return !pattern.matches(username)
     }
 
     private fun setCurrentUserDetailsToFirebase() {
@@ -161,33 +123,111 @@ class EditProfile : AppCompatActivity() {
         }
     }
 
-    private fun retrieveAndBindCurrentUserDetails() {
-        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
-            if (it.isSuccessful && it.result.exists()){
+    private fun validateUserProfileDetails() {
 
-                userModel = it.result.toObject(UserModel::class.java)!!
+        if (binding.fullNameEdtTxt.text.toString().isEmpty()) {
+            binding.fullNameEdtTxt.error = "full name should not be blank"
 
-                //bind user details
-                binding.fullNameEdtTxt.setText(userModel.fullName)
-                binding.usernameEdtTxt.setText(userModel.username)
-                binding.birthdayEdtTxt.setText(userModel.birthday)
-                binding.descriptionEdtTxt.setText(userModel.description)
+        } else if (isUsernameValid) {
 
-                //bind user profile picture
-                AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.userProfileCIV)
-                //bind user cover picture
-                AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.userCoverIV)
+            //TODO: Loading to be implemented
+            //Set User Details to userModel
+            userModel.fullName = binding.fullNameEdtTxt.text.toString()
+            userModel.username = binding.usernameEdtTxt.text.toString().lowercase()
+            userModel.description = binding.descriptionEdtTxt.text.toString()
+            //TODO:Birthday
+            userModel.birthday = binding.birthdayEdtTxt.text.toString()
+            setCurrentUserDetailsToFirebase()
+        }
+    }
+    private fun bindSetOnClickListeners(){
+        binding.backBtn.setOnClickListener {
+            if (isModified()){
+                //TODO: Dialog to be implemented for saving
+                validateUserProfileDetails()
+            } else {
+                this.finish()
             }
         }
 
+        binding.saveBtn.setOnClickListener {
+            //TODO: Loading start to be implemented
+            if (isModified())
+                validateUserProfileDetails()
+            else
+                this.finish()
+        }
 
+        binding.userProfileCIV.setOnClickListener {
+            isProfilePic = true
+            ImagePicker.with(this).cropSquare().compress(512)
+                .maxResultSize(512, 512)
+                .createIntent {
+                    imagePickerLauncher.launch(it)
+                }
+        }
+
+        binding.userCoverIV.setOnClickListener {
+            isProfilePic = false
+            ImagePicker.with(this)
+                .crop(25f, 10f)
+                .compress(1080)
+                .createIntent {
+                    imagePickerLauncher.launch(it)
+                }
+        }
+    }
+    private fun bindUsernameEdtTxtTextWatcher(currentUsername: String){
+
+        binding.usernameEdtTxt.addTextChangedListener( object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+
+                val username = binding.usernameEdtTxt.text.toString().lowercase()
+
+                if (username != currentUsername){
+                    if (username.length < 3){
+                        binding.usernameEdtTxt.error = "username should be more than 3 characters"
+                        isUsernameValid = false
+                    } else if (isUsernameContainsSpecialCharacters(username)){
+                        binding.usernameEdtTxt.error = "username should not contain special characters"
+                        isUsernameValid = false
+                    } else {
+                        isUsernameNotAvailable(username){usernameNotAvailable ->
+                            if (usernameNotAvailable){
+                                binding.usernameEdtTxt.error = "Username already exists"
+                                isUsernameValid = false
+                            } else {
+                                isUsernameValid = true
+                            }
+                        }
+                    }
+                } else {
+                    isUsernameValid = true
+                }
+            }
+
+        })
     }
 
-    private fun isModified(): Boolean {
-        return binding.fullNameEdtTxt.text.toString() != userModel.fullName ||
-            binding.usernameEdtTxt.text.toString() != userModel.username ||
-            binding.descriptionEdtTxt.text.toString() != userModel.description ||
-            binding.birthdayEdtTxt.text.toString() != userModel.birthday ||
-                ::selectedProfilePicUri.isInitialized || ::selectedProfileCoverPicUri.isInitialized
+    private fun isUsernameNotAvailable(username: String, callback: (Boolean) -> Unit) {
+        FirebaseUtil().allUsersCollectionReference().whereEqualTo("username", username).get().addOnCompleteListener{
+            if (it.isSuccessful){
+                if (!it.result.isEmpty){
+                    //username already exists
+                    callback(true)
+                } else {
+                    callback(false)
+                }
+            }else {
+                callback(false)
+            }
+        }
+    }
+
+    private fun isUsernameContainsSpecialCharacters(username: String): Boolean {
+        val pattern = Regex("[a-zA-Z0-9_-]+")
+        return !pattern.matches(username)
     }
 }
