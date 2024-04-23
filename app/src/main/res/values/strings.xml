@@ -56,6 +56,16 @@
     <string name="request_to_join">Request To Join</string>
     <string name="cancel_request">Cancel Request</string>
     <string name="enter">Enter</string>
+    <string name="create_community">CREATE COMMUNITY</string>
+    <string name="next">Next</string>
+    <string name="community_name">Community Name</string>
+    <string name="community_description">Community Description</string>
+    <string name="community_type">Community Type</string>
+    <string name="join_community_via_code">Join Community Via Code</string>
+    <string name="search_community">Search Community</string>
+    <string name="create_new_community">Create New Community</string>
+    <string name="cancel">Cancel</string>
+    <string name="previous">Previous</string>
 
 
 </resources>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_purple_2"
+    tools:context=".CreateCommunity">
+
+
+    <!-- MAIN TOOLBAR -->
+    <RelativeLayout
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/dark_purple_2"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_marginStart="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/back_icon"
+            app:tint="@color/light_purple" />
+        <TextView
+            android:id="@+id/toolbarTitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/backBtn"
+            android:textSize="25dp"
+            android:textColor="@color/light_purple"
+            android:text="@string/create_community"/>
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/mainToolbar"
+        android:background="@color/light_purple"
+        app:dividerColor="@color/light_purple" />
+
+
+    <!-- FIRST SECTION -->
+    <ScrollView
+        android:id="@+id/firstSectionLayout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mainToolbar"
+        android:layout_above="@id/bottomNavigation">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/light_purple"
+                android:textSize="15sp"
+                android:text="@string/community_name"/>
+            <EditText
+                android:id="@+id/communityNameEdtTxt"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:backgroundTint="@color/light_purple"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:paddingStart="10dp"
+                android:textColor="@color/light_purple"
+                android:contentDescription="@string/community_name"
+                android:textSize="16sp"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="40dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/light_purple"
+                android:textSize="15sp"
+                android:text="@string/community_description"/>
+
+            <EditText
+                android:id="@+id/communityDescEdtTxt"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/light_purple"
+                android:contentDescription="@string/community_description"
+                android:paddingStart="10dp"
+                android:singleLine="false"
+                android:textColor="@color/light_purple"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="35dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/light_purple"
+                android:textSize="20sp"
+                android:text="@string/community_type"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="35dp"/>
+
+            <RadioButton
+                android:id="@+id/publicRB"
+                android:layout_marginStart="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PUBLIC  (Anyone can join)"
+                android:textColor="@color/light_purple"
+                android:textSize="16sp"
+                app:buttonTint = "@color/light_purple"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="35dp"/>
+
+            <RadioButton
+                android:id="@+id/privateRB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="PRIVATE  (Requires permission to join)"
+                android:textColor="@color/light_purple"
+                android:textSize="16sp"
+                app:buttonTint = "@color/light_purple"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <!-- BOTTOM NAVIGATION -->
+    <LinearLayout
+        android:id="@+id/bottomNavigation"
+        style="@style/BottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancelBtn"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:backgroundTint="@color/red"
+            android:text="@string/cancel"
+            android:layout_centerVertical="true"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/previousBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:text="@string/previous"
+            android:layout_centerVertical="true"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/nextBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:text="@string/next"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

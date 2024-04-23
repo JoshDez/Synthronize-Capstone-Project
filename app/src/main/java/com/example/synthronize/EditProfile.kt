@@ -239,7 +239,7 @@ class EditProfile : AppCompatActivity() {
                     } else {
                         isUsernameNotAvailable(username){usernameNotAvailable ->
                             if (usernameNotAvailable){
-                                binding.usernameEdtTxt.error = "Username already exists"
+                                binding.usernameEdtTxt.error = "Username is not available"
                                 isUsernameValid = false
                             } else {
                                 isUsernameValid = true

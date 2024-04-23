@@ -1,7 +1,9 @@
 package com.example.synthronize
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +13,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.adapters.CommunityAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
+import com.example.synthronize.databinding.DialogAddCommunityBinding
 import com.example.synthronize.databinding.FragmentCommunitySelectionBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager) : Fragment() {
     private lateinit var binding: FragmentCommunitySelectionBinding
+    private lateinit var dialogBinding: DialogAddCommunityBinding
     private lateinit var communityAdapter: CommunityAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var context:Context
@@ -41,21 +47,51 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
         mainBinding.toolbarTitleTV.text = "COMMUNITIES"
 
         //If the fragment is added
-        if (isAdded && requireContext() != null){
+        if (isAdded){
             context = requireContext()
 
-            // Initialize RecyclerView and adapter
-            recyclerView = binding.groupSelectionRV
-            recyclerView.layoutManager = LinearLayoutManager(context)
+            //checks if context is initialized
+            if (::context.isInitialized){
 
-            // Set up Add Group FAB
-            binding.addGroupFab.setOnClickListener {
-                val dialogFragment = CreateCommunityFragment()
-                dialogFragment.show(childFragmentManager, "CreateGroupDialogFragment")
+                // Initialize RecyclerView and adapter
+                recyclerView = binding.groupSelectionRV
+                recyclerView.layoutManager = LinearLayoutManager(context)
+
+                // Set up Add Group FAB
+                binding.addGroupFab.setOnClickListener {
+                    dialogBinding = DialogAddCommunityBinding.inflate(layoutInflater)
+                    val dialogPlus = DialogPlus.newDialog(context)
+                        .setContentHolder(ViewHolder(dialogBinding.root))
+                        .setGravity(Gravity.CENTER)
+                        .setMargin(50, 700, 50, 700)
+                        .create()
+
+                    //set dialog on click listeners
+                    dialogBinding.createNewCommunityBtn.setOnClickListener {
+                        val intent = Intent(context, CreateCommunity::class.java)
+                        startActivity(intent)
+                        dialogPlus.dismiss()
+                    }
+
+                    dialogBinding.joinCommunityViaCodeBtn.setOnClickListener {
+                        //TODO: to be implemented
+                        dialogPlus.dismiss()
+                    }
+
+                    dialogBinding.searchCommunityBtn.setOnClickListener {
+                        val intent = Intent(context, Search::class.java)
+                        startActivity(intent)
+                        dialogPlus.dismiss()
+                    }
+
+                    dialogPlus.show()
+
+                }
+
+                // Fetch groups from Firestore
+                setupRecyclerView()
             }
 
-            // Fetch groups from Firestore
-            setupRecyclerView()
         }
     }
 
