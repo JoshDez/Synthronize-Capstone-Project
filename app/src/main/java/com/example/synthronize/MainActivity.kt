@@ -18,8 +18,8 @@ class MainActivity : AppCompatActivity() {
         onStartFragment()
 
         //BOTTOM NAVIGATION BUTTONS
-        binding.groupsBtn.setOnClickListener {
-            selectNavigation(binding.groupsBtn.id)
+        binding.communitiesBtn.setOnClickListener {
+            selectNavigation(binding.communitiesBtn.id)
             replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager))
         }
 
@@ -57,11 +57,11 @@ class MainActivity : AppCompatActivity() {
             selectNavigation(binding.chatBtn.id)
             replaceFragment(ChatFragment(binding))
         } else if (fragmentRequest == "community") {
-            selectNavigation(binding.groupsBtn.id)
+            selectNavigation(binding.communitiesBtn.id)
             replaceFragment(CommunityFragment(binding, communityId))
         } else {
             //default group selection fragment
-            selectNavigation(binding.groupsBtn.id)
+            selectNavigation(binding.communitiesBtn.id)
             replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager))
         }
     }
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     private fun selectNavigation(btnID:Int) {
         binding.exploreBtn.setBackgroundResource(R.drawable.explore_not_selected)
         binding.notificationBtn.setBackgroundResource(R.drawable.notifications_not_selected)
-        binding.groupsBtn.setBackgroundResource(R.drawable.community_not_selected)
+        binding.communitiesBtn.setBackgroundResource(R.drawable.community_not_selected)
         binding.profileBtn.setBackgroundResource(R.drawable.profile_not_selected)
         binding.chatBtn.setBackgroundResource(R.drawable.chat_not_selected)
         when (btnID) {
@@ -87,8 +87,8 @@ class MainActivity : AppCompatActivity() {
             binding.notificationBtn.id -> {
                 binding.notificationBtn.setBackgroundResource(R.drawable.notifications_selected)
             }
-            binding.groupsBtn.id -> {
-                binding.groupsBtn.setBackgroundResource(R.drawable.community_selected)
+            binding.communitiesBtn.id -> {
+                binding.communitiesBtn.setBackgroundResource(R.drawable.community_selected)
             }
             binding.profileBtn.id -> {
                 binding.profileBtn.setBackgroundResource(R.drawable.profile_selected)
@@ -102,21 +102,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.groups_toolbar_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.createNewGroup -> {
-                Toast.makeText(this, "Create New Group", Toast.LENGTH_SHORT).show()
-            }
-            R.id.deleteGroup -> {
-                Toast.makeText(this, "Delete Group", Toast.LENGTH_SHORT).show()
-            }
-            R.id.settings -> {
-                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
-            }
-        }
         return true
     }
 }

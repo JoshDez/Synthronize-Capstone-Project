@@ -49,6 +49,13 @@
     <string name="communities">Communities</string>
     <string name="tap_here_to_set_birthday">Tap here to set birthday</string>
     <string name="save_user_details">Save User Details</string>
+    <string name="posts">Posts</string>
+    <string name="friends">Friends</string>
+    <string name="achievements">Achievements</string>
+    <string name="join_community">Join Community</string>
+    <string name="request_to_join">Request To Join</string>
+    <string name="cancel_request">Cancel Request</string>
+    <string name="enter">Enter</string>
 
 
 </resources>

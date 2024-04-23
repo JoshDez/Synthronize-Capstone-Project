@@ -99,11 +99,11 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="20dp"
-            android:layout_toLeftOf="@id/groupsBtn"
+            android:layout_toLeftOf="@id/communitiesBtn"
             android:layout_centerInParent="true"
             android:background="@drawable/notifications_not_selected"/>
         <ImageButton
-            android:id="@+id/groupsBtn"
+            android:id="@+id/communitiesBtn"
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_centerInParent="true"
@@ -113,7 +113,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
-            android:layout_toRightOf="@id/groupsBtn"
+            android:layout_toRightOf="@id/communitiesBtn"
             android:layout_centerInParent="true"
             android:background="@drawable/chat_not_selected"/>
         <ImageButton

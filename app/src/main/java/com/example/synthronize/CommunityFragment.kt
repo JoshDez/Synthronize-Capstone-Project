@@ -11,10 +11,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
+import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.utils.FirebaseUtil
 
 class CommunityFragment(private val mainBinding: ActivityMainBinding, private val communityId:String) : Fragment() {
 
     private lateinit var binding: FragmentCommunityBinding
+    private lateinit var communityModel: CommunityModel
     private lateinit var context: Context
 
     override fun onCreateView(
@@ -32,14 +35,22 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         if (isAdded){
             //retrieve context
             context = requireContext()
-            if (::context.isInitialized){
+            //retrieve community model
+            FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                if (it.exists()){
+                    communityModel = it.toObject(CommunityModel::class.java)!!
+                    //content
+                    if (::context.isInitialized){
+                        //set name
+                        mainBinding.toolbarTitleTV.text = communityModel.communityName
+                        //Set Feeds fragment as default fragment
+                        selectNavigation("feeds")
+                        replaceFragment(FeedsFragment(binding, communityId))
 
-                //Set Feeds fragment as default fragment
-                selectNavigation("feeds")
-                replaceFragment(FeedsFragment(binding, communityId))
-
-                //bind setOnClickListeners
-                bindButtons()
+                        //bind setOnClickListeners
+                        bindButtons()
+                    }
+                }
             }
         }
 

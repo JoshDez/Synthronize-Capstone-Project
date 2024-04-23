@@ -11,6 +11,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.example.synthronize.databinding.ItemCommunityBinding
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.utils.AppUtil
 
 class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager,
                        private val context: Context, options: FirestoreRecyclerOptions<CommunityModel>):
@@ -40,7 +41,6 @@ class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val
             }
         }
         private fun addCommunityFragmentToMain(communityId:String){
-
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(mainBinding.mainFrameLayout.id, CommunityFragment(mainBinding, communityId))
             fragmentTransaction.commit()

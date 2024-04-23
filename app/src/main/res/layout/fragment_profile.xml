@@ -55,7 +55,7 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:textSize="12sp"
-                            android:text="Posts"
+                            android:text="@string/posts"
                             android:textColor="@color/light_purple"/>
                     </LinearLayout>
 
@@ -83,7 +83,7 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:textSize="12sp"
-                            android:text="Communities"
+                            android:text="@string/communities"
                             android:textColor="@color/light_purple"/>
                     </LinearLayout>
 
@@ -111,7 +111,7 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:textSize="12sp"
-                            android:text="Friends"
+                            android:text="@string/friends"
                             android:textColor="@color/light_purple"/>
                     </LinearLayout>
 
@@ -138,7 +138,7 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:textSize="12sp"
-                            android:text="Achievements"
+                            android:text="@string/achievements"
                             android:textColor="@color/light_purple"/>
                     </LinearLayout>
 
