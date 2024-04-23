@@ -125,10 +125,12 @@
         <LinearLayout
             android:id="@+id/createdLayout"
             android:orientation="horizontal"
-            android:layout_below="@id/organizationLayout"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/buttonContainerLayout">
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -147,60 +149,43 @@
 
         </LinearLayout>
 
-
         <LinearLayout
-            android:id="@+id/organizationLayout"
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:id="@+id/buttonContainerLayout"
+            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/organization_icon"
-                app:tint="@color/light_purple"/>
-            <TextView
-                android:id="@+id/organizationTV"
-                android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/joinCommunityBtn"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:backgroundTint="#00FFFFFF"
-                android:drawableTint="#00FFFFFF"
-                android:text="New Era University"
-                android:textColor="@color/light_purple"
-                android:textSize="15sp" />
+                android:text="@string/join_community"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/requestToJoinBtn"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/request_to_join"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancelRequestBtn"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel_request"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/enterBtn"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enter"/>
+
         </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/joinCommunityBtn"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@string/join_community"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/requestToJoinBtn"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@string/request_to_join"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/cancelRequestBtn"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@string/cancel_request"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/enterBtn"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@string/enter"/>
 
     </RelativeLayout>
 

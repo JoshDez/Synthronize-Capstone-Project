@@ -10,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.ItemCommunityBinding
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.toObject
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 import kotlinx.coroutines.NonDisposableHandle.parent
@@ -43,7 +45,6 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
         private lateinit var dialogBinding: DialogCommunityPreviewBinding
         private lateinit var communityModel: CommunityModel
         fun bind(model: CommunityModel){
-
             //Checks if user is not on community block list
             if (!isUserOnList(model.blockList, FirebaseUtil().currentUserUid())){
                 communityModel = model
@@ -57,7 +58,6 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
                         .create()
                     dialogPlus.show()
                     setCommunityPreviewBindings()
-
                 }
             } else {
                 //hide the community if the user is on the community block list
@@ -69,6 +69,8 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
             //Community details
             dialogBinding.communityNameTV.text = communityModel.communityName
             dialogBinding.communityDescriptionTV.text = communityModel.communityDescription
+            dialogBinding.totalMembersCountTV.text = "${communityModel.communityMembers.size}"
+            //dialogBinding.friendsJoinedCountTV.text = "${getFriendsJoinedCount()}"
             //dialogBinding.createdDateTV.text = communityModel.communityCreatedTimestamp
 
             //ON SET LISTENER BUTTONS
@@ -113,7 +115,7 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
             }
 
             //SET COMMUNITY TYPE
-            if (communityModel.communityType == "private"){
+            if (communityModel.communityType == "Private"){
                 //FOR PRIVATE COMMUNITY TYPE
                 if (isUserOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
                     //checks if user already requested to join
@@ -136,6 +138,16 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
                 }
             }
         }
+
+        private fun getFriendsJoinedCount(membersList: List<String>, callback: (Int) -> Unit) {
+            var count = 0
+            FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+                val userModel = it.toObject(UserModel::class.java)
+                //TODO: friends joined
+            }
+
+        }
+
         private fun appearButton(button:MaterialButton){
             dialogBinding.joinCommunityBtn.visibility = View.GONE
             dialogBinding.enterBtn.visibility = View.GONE
