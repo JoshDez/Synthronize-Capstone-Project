@@ -8,6 +8,7 @@
     android:background="@color/dark_purple_2"
     tools:context=".EditProfile">
 
+
     <RelativeLayout
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"

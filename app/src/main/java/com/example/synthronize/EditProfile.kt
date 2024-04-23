@@ -160,7 +160,6 @@ class EditProfile : AppCompatActivity() {
                 .setMargin(50, 800, 50, 800)
                 .setCancelable(true)
                 .create()
-
             dialogBinding.yesBtn.setOnClickListener {
                 validateUserProfileDetails()
             }

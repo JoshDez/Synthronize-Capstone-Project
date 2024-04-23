@@ -50,7 +50,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             if (it.isSuccessful && it.result.exists()){
 
                 val userModel = it.result.toObject(UserModel::class.java)!!
-
                 binding.userNameTV.text = "@${userModel.username}"
                 binding.userDisplayNameTV.text = userModel.fullName
                 binding.userDescriptionTV.text = userModel.description

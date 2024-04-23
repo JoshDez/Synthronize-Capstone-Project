@@ -32,7 +32,6 @@ class OtherUserProfile : AppCompatActivity() {
             if (it.isSuccessful && it.result.exists()){
 
                 val userModel = it.result.toObject(UserModel::class.java)!!
-
                 binding.userDescriptionTV.text = userModel.description
                 binding.userNameTV.text = userModel.username
                 binding.userDisplayNameTV.text = userModel.fullName
