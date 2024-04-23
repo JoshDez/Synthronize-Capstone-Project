@@ -47,6 +47,8 @@
     <string name="market">Market</string>
     <string name="files">Files</string>
     <string name="communities">Communities</string>
+    <string name="tap_here_to_set_birthday">Tap here to set birthday</string>
+    <string name="save_user_details">Save User Details</string>
 
 
 </resources>

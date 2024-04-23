@@ -51,9 +51,13 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
                 val userModel = it.result.toObject(UserModel::class.java)!!
 
-                binding.userNameTV.text = userModel.username
+                binding.userNameTV.text = "@${userModel.username}"
                 binding.userDisplayNameTV.text = userModel.fullName
                 binding.userDescriptionTV.text = userModel.description
+                if (userModel.birthday.isNotEmpty()){
+                    binding.birthdayLayout.visibility = View.VISIBLE
+                    binding.birthdayTV.text = "Birthday: ${userModel.birthday}"
+                }
 
                 //binds userProfilePic
                 AppUtil().setUserProfilePic(context, userModel.userID, binding.userProfileCIV)
@@ -67,4 +71,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             }
         }
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.example.synthronize
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.synthronize.databinding.ActivityOtherUserProfileBinding
 import com.example.synthronize.model.UserModel
@@ -35,7 +36,10 @@ class OtherUserProfile : AppCompatActivity() {
                 binding.userDescriptionTV.text = userModel.description
                 binding.userNameTV.text = userModel.username
                 binding.userDisplayNameTV.text = userModel.fullName
-                //TODO: add to birthday binding and created timestamp
+                if (userModel.birthday.isNotEmpty()){
+                    binding.birthdayLayout.visibility = View.VISIBLE
+                    binding.birthdayTV.text = "Birthday: ${userModel.birthday}"
+                }
 
                 AppUtil().setUserProfilePic(this, userID, binding.userProfileCIV)
                 AppUtil().setUserCoverPic(this, userID, binding.userCoverIV)

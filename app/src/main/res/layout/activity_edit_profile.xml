@@ -45,7 +45,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/mainToolbar"
-        android:background="@color/light_purple"
         app:dividerColor="@color/light_purple" />
 
 
@@ -97,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/light_purple"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="@string/full_name"/>
             <EditText
                 android:id="@+id/fullNameEdtTxt"
@@ -108,8 +107,8 @@
                 android:layout_marginEnd="10dp"
                 android:paddingStart="10dp"
                 android:textColor="@color/light_purple"
-                android:textSize="15sp"
-                android:contentDescription="@string/full_name"/>
+                android:contentDescription="@string/full_name"
+                android:textSize="16sp"/>
 
 
             <Space
@@ -120,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/light_purple"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="@string/Username"/>
             <EditText
                 android:id="@+id/usernameEdtTxt"
@@ -132,7 +131,7 @@
                 android:contentDescription="@string/username"
                 android:paddingStart="10dp"
                 android:textColor="@color/light_purple"
-                android:textSize="15sp"/>
+                android:textSize="16sp"/>
 
 
             <Space
@@ -143,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/light_purple"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="@string/description"/>
             <EditText
                 android:id="@+id/descriptionEdtTxt"
@@ -155,7 +154,7 @@
                 android:contentDescription="@string/description"
                 android:paddingStart="10dp"
                 android:textColor="@color/light_purple"
-                android:textSize="15sp"/>
+                android:textSize="16sp"/>
 
 
             <Space
@@ -166,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/light_purple"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="@string/birthday"/>
             <EditText
                 android:id="@+id/birthdayEdtTxt"
@@ -174,12 +173,16 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/light_purple"
                 android:focusable="false"
+                android:editable="false"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:textAlignment="center"
+                android:hint="@string/tap_here_to_set_birthday"
+                android:textColorHint="@color/light_purple"
                 android:contentDescription="@string/birthday"
                 android:paddingStart="10dp"
                 android:textColor="@color/light_purple"
-                android:textSize="15sp"/>
+                android:textSize="16sp"/>
 
             <Space
                 android:layout_width="match_parent"

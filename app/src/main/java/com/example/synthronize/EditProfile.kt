@@ -1,12 +1,16 @@
 package com.example.synthronize
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,14 +19,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.example.synthronize.databinding.ActivityEditProfileBinding
+import com.example.synthronize.databinding.DialogSaveUserBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObjects
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
+import java.util.Calendar
 
 class EditProfile : AppCompatActivity() {
     private lateinit var binding:ActivityEditProfileBinding
+    private lateinit var dialogBinding: DialogSaveUserBinding
     private lateinit var userModel: UserModel
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedProfilePicUri:Uri
@@ -79,8 +89,8 @@ class EditProfile : AppCompatActivity() {
                 //bind user details
                 binding.fullNameEdtTxt.setText(userModel.fullName)
                 binding.usernameEdtTxt.setText(userModel.username)
-                binding.birthdayEdtTxt.setText(userModel.birthday)
                 binding.descriptionEdtTxt.setText(userModel.description)
+                binding.birthdayEdtTxt.setText(userModel.birthday)
 
                 //adds text watcher to username edit text to validate username
                 bindUsernameEdtTxtTextWatcher(userModel.username)
@@ -91,6 +101,23 @@ class EditProfile : AppCompatActivity() {
                 AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.userCoverIV)
 
             }
+        }
+    }
+
+    private fun validateUserProfileDetails() {
+
+        if (binding.fullNameEdtTxt.text.toString().isEmpty()) {
+            binding.fullNameEdtTxt.error = "full name should not be blank"
+
+        } else if (isUsernameValid) {
+
+            //TODO: Loading to be implemented
+            //Set User Details to userModel
+            userModel.fullName = binding.fullNameEdtTxt.text.toString()
+            userModel.username = binding.usernameEdtTxt.text.toString().lowercase()
+            userModel.description = binding.descriptionEdtTxt.text.toString()
+            userModel.birthday = binding.birthdayEdtTxt.text.toString()
+            setCurrentUserDetailsToFirebase()
         }
     }
 
@@ -123,36 +150,39 @@ class EditProfile : AppCompatActivity() {
         }
     }
 
-    private fun validateUserProfileDetails() {
+    override fun onBackPressed() {
+        if (isModified()){
+            //Dialog for saving user profile
+            dialogBinding = DialogSaveUserBinding.inflate(layoutInflater)
+            val dialogPlus = DialogPlus.newDialog(this)
+                .setContentHolder(ViewHolder(dialogBinding.root))
+                .setGravity(Gravity.CENTER)
+                .setMargin(50, 800, 50, 800)
+                .setCancelable(true)
+                .create()
 
-        if (binding.fullNameEdtTxt.text.toString().isEmpty()) {
-            binding.fullNameEdtTxt.error = "full name should not be blank"
+            dialogBinding.yesBtn.setOnClickListener {
+                validateUserProfileDetails()
+            }
+            dialogBinding.NoBtn.setOnClickListener {
+                super.onBackPressed()
+            }
 
-        } else if (isUsernameValid) {
+            dialogPlus.show()
 
-            //TODO: Loading to be implemented
-            //Set User Details to userModel
-            userModel.fullName = binding.fullNameEdtTxt.text.toString()
-            userModel.username = binding.usernameEdtTxt.text.toString().lowercase()
-            userModel.description = binding.descriptionEdtTxt.text.toString()
-            //TODO:Birthday
-            userModel.birthday = binding.birthdayEdtTxt.text.toString()
-            setCurrentUserDetailsToFirebase()
+        } else {
+            super.onBackPressed()
         }
     }
     private fun bindSetOnClickListeners(){
         binding.backBtn.setOnClickListener {
-            if (isModified()){
-                //TODO: Dialog to be implemented for saving
-                validateUserProfileDetails()
-            } else {
-                this.finish()
-            }
+            onBackPressed()
         }
 
         binding.saveBtn.setOnClickListener {
             //TODO: Loading start to be implemented
             if (isModified())
+
                 validateUserProfileDetails()
             else
                 this.finish()
@@ -175,6 +205,20 @@ class EditProfile : AppCompatActivity() {
                 .createIntent {
                     imagePickerLauncher.launch(it)
                 }
+        }
+        binding.birthdayEdtTxt.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val calYear = calendar.get(Calendar.YEAR)
+            val calMonth = calendar.get(Calendar.MONTH)
+            val calDay = calendar.get(Calendar.DAY_OF_MONTH)
+
+            DatePickerDialog(this, DatePickerDialog.OnDateSetListener{_,
+                selectedYear, selectedMonth, selectedDay ->
+
+                binding.birthdayEdtTxt.setText("${selectedMonth + 1}/$selectedDay/$selectedYear")
+
+            }, calYear, calMonth, calDay).show()
+
         }
     }
     private fun bindUsernameEdtTxtTextWatcher(currentUsername: String){
