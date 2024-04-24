@@ -26,7 +26,9 @@ class NotificationFragment(private val mainBinding: ActivityMainBinding) : Fragm
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        mainBinding.toolbarTitleTV.text = "NOTIFICATIONS"
+        if (isAdded){
+            super.onViewCreated(view, savedInstanceState)
+            mainBinding.toolbarTitleTV.text = "NOTIFICATIONS"
+        }
     }
 }

@@ -39,6 +39,7 @@ class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val
                 addCommunityFragmentToMain(model.communityId)
 
             }
+            AppUtil().setCommunityProfilePic(context, model.communityId, communityBinding.profileImage)
         }
         private fun addCommunityFragmentToMain(communityId:String){
             val fragmentTransaction = fragmentManager.beginTransaction()

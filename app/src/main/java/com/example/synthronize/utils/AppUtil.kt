@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.synthronize.MainActivity
+import com.example.synthronize.R
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -17,6 +18,7 @@ class AppUtil {
         GlideApp.with(context)
             //storage reference
             .load(FirebaseUtil().retrieveUserProfilePicRef(uid))
+            .error(R.drawable.profile_not_selected)
             .apply(RequestOptions.circleCropTransform())
             //image view
             .into(civ)
@@ -27,6 +29,16 @@ class AppUtil {
             .load(FirebaseUtil().retrieveUserCoverPicRef(uid))
             //image view
             .into(cover)
+    }
+
+    fun setCommunityProfilePic(context:Context, uid: String, civ:CircleImageView){
+        GlideApp.with(context)
+            //storage reference
+            .load(FirebaseUtil().retrieveCommunityProfilePicRef(uid))
+            .error(R.drawable.community_not_selected)
+            .apply(RequestOptions.circleCropTransform())
+            //image view
+            .into(civ)
     }
 
     //For Heading Back to Main Activity

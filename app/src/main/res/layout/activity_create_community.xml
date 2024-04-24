@@ -150,6 +150,107 @@
         </LinearLayout>
     </ScrollView>
 
+    <!-- SECOND SECTION -->
+    <ScrollView
+        android:id="@+id/secondSectionLayout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mainToolbar"
+        android:layout_above="@id/bottomNavigation">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginStart="20dp"
+                android:textSize="20dp"
+                android:textColor="@color/light_purple"
+                android:text="@string/invite_users"/>
+
+            <EditText
+                android:id="@+id/searchEdtTxt"
+                android:layout_margin="20dp"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/Search"
+                android:background="@drawable/input_rounded_corners"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/searchedUsersRV"
+                android:layout_width="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <!-- THIRD SECTION -->
+    <ScrollView
+        android:id="@+id/thirdSectionLayout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mainToolbar"
+        android:layout_above="@id/bottomNavigation">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="20dp"
+                android:textColor="@color/light_purple"
+                android:text="@string/set_community_profile_and_cover_photo"/>
+
+
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/communityProfileCIV"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:src="@color/light_purple"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+
+            <TextView
+                android:id="@+id/nameTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:textAlignment="center"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/light_purple"
+                android:contentDescription="@string/community_name"/>
+
+
+        </LinearLayout>
+    </ScrollView>
 
     <!-- BOTTOM NAVIGATION -->
     <LinearLayout

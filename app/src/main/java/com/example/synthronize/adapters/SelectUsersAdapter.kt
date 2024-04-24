@@ -6,18 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.databinding.ItemProfileBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
-class SearchUserAdapter( private val context: Context, options: FirestoreRecyclerOptions<UserModel>):
-    FirestoreRecyclerAdapter<UserModel, SearchUserAdapter.UserViewHolder>(options) {
-
-    private var totalItems = 0
+class SelectUsersAdapter(private val context: Context, private val listener: OnItemClickListener, private val selectedUserList:ArrayList<String>, options: FirestoreRecyclerOptions<UserModel>):
+    FirestoreRecyclerAdapter<UserModel, SelectUsersAdapter.UserViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -26,28 +24,34 @@ class SearchUserAdapter( private val context: Context, options: FirestoreRecycle
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int, model: UserModel) {
-        totalItems += 1
         holder.bind(model)
     }
-
-    fun getTotalItems():Int{
-        return totalItems
-    }
-
     inner class UserViewHolder(private val binding: ItemProfileBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
 
         fun bind(model: UserModel){
 
             if (model.userID == FirebaseUtil().currentUserUid()){
-                binding.userFullNameTV.text = "${model.fullName} (You)"
+                binding.userMainLayout.visibility = View.GONE
             }else {
                 AppUtil().setUserProfilePic(context,model.userID, binding.userCircleImageView)
                 binding.userFullNameTV.text = model.fullName
-                binding.userContainerRL.setOnClickListener{
-                    val intent = Intent(context, OtherUserProfile::class.java)
-                    intent.putExtra("userID", model.userID)
-                    context.startActivity(intent)
+                binding.selectUserCB.visibility = View.VISIBLE
+
+                for (userId in selectedUserList){
+                    if (model.userID == userId){
+                        binding.selectUserCB.isChecked = true
+                    }
                 }
+
+                binding.selectUserCB.setOnClickListener {
+                    if (binding.selectUserCB.isChecked){
+                       listener.onItemClick(model.userID, true)
+                    } else {
+                        listener.onItemClick(model.userID, false)
+                    }
+                }
+
+
             }
         }
     }

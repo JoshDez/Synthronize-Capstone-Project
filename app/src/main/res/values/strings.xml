@@ -66,6 +66,8 @@
     <string name="create_new_community">Create New Community</string>
     <string name="cancel">Cancel</string>
     <string name="previous">Previous</string>
+    <string name="invite_users">Invite Users</string>
+    <string name="set_community_profile_and_cover_photo">Set Community Profile and Cover Photo</string>
 
 
 </resources>
