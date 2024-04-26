@@ -68,6 +68,9 @@
     <string name="invite_users">Invite Users</string>
     <string name="set_community_profile_and_cover_photo">Set Community Profile and Cover Photo</string>
     <string name="toolbar_title">toolbar title</string>
+    <string name="general">General</string>
+    <string name="admin">Admin</string>
+    <string name="community_code">Community Code</string>
 
 
 </resources>
