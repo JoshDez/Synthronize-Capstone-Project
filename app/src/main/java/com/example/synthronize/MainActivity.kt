@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
     private fun onStartFragment(){
         val fragmentRequest = intent.getStringExtra("fragment").toString()
         val communityId = intent.getStringExtra("communityId").toString()
-
         if (fragmentRequest == "profile"){
             resetMainToolbar()
             selectNavigation(binding.profileBtn.id)
@@ -113,6 +112,9 @@ class MainActivity : AppCompatActivity() {
         binding.communitySettingsBtn.visibility = View.GONE
         binding.backBtn.visibility = View.GONE
         binding.toolbarImageCIV.setImageResource(R.drawable.synthronize_logo)
+
+        //resetting main toolbar setOnClickListeners
+        binding.searchBtn.setOnClickListener(null)
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.groups_toolbar_menu, menu)

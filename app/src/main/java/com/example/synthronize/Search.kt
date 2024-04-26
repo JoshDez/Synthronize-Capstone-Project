@@ -15,6 +15,7 @@ import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivitySearchBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 
 class Search : AppCompatActivity() {

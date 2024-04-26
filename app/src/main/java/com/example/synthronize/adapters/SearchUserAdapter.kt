@@ -38,10 +38,13 @@ class SearchUserAdapter( private val context: Context, options: FirestoreRecycle
 
         fun bind(model: UserModel){
 
+            AppUtil().setUserProfilePic(context,model.userID, binding.userCircleImageView)
+            if (model.username.isNotEmpty())
+                binding.usernameTV.text = "@${model.username}"
+
             if (model.userID == FirebaseUtil().currentUserUid()){
                 binding.userFullNameTV.text = "${model.fullName} (You)"
             }else {
-                AppUtil().setUserProfilePic(context,model.userID, binding.userCircleImageView)
                 binding.userFullNameTV.text = model.fullName
                 binding.userContainerRL.setOnClickListener{
                     val intent = Intent(context, OtherUserProfile::class.java)

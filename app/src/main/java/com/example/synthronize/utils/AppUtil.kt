@@ -1,11 +1,10 @@
 package com.example.synthronize.utils
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Handler
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import androidx.core.content.ContextCompat.getSystemService
 import com.bumptech.glide.request.RequestOptions
 import com.example.synthronize.MainActivity
 import com.example.synthronize.R

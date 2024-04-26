@@ -6,17 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentNotificationBinding
 class NotificationFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     // TODO: Rename and change types of parameters
     private lateinit var binding: FragmentNotificationBinding
     private lateinit var context: Context
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        this.context = context
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -34,5 +30,19 @@ class NotificationFragment(private val mainBinding: ActivityMainBinding) : Fragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainBinding.toolbarTitleTV.text = "NOTIFICATIONS"
+
+        if (isAdded){
+            context = requireContext()
+            if (::context.isInitialized){
+                bindButtons()
+            }
+        }
+
+
+    }
+    private fun bindButtons(){
+        mainBinding.searchBtn.setOnClickListener {
+            Toast.makeText(activity, "To be implemented", Toast.LENGTH_SHORT).show()
+        }
     }
 }

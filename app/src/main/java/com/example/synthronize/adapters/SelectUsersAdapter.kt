@@ -30,28 +30,29 @@ class SelectUsersAdapter(private val context: Context, private val listener: OnI
 
         fun bind(model: UserModel){
 
-            if (model.userID == FirebaseUtil().currentUserUid()){
-                binding.userMainLayout.visibility = View.GONE
-            }else {
-                AppUtil().setUserProfilePic(context,model.userID, binding.userCircleImageView)
-                binding.userFullNameTV.text = model.fullName
-                binding.selectUserCB.visibility = View.VISIBLE
+            AppUtil().setUserProfilePic(context,model.userID, binding.userCircleImageView)
+            if (model.username.isNotEmpty())
+                binding.usernameTV.text = "@${model.username}"
 
+            if (model.userID == FirebaseUtil().currentUserUid()){
+                binding.userFullNameTV.text = "${model.fullName} (You)"
+            } else {
+                binding.userFullNameTV.text = model.fullName
+
+                //display check box if user is not the current user
+                binding.selectUserCB.visibility = View.VISIBLE
                 for (userId in selectedUserList){
                     if (model.userID == userId){
                         binding.selectUserCB.isChecked = true
                     }
                 }
-
                 binding.selectUserCB.setOnClickListener {
                     if (binding.selectUserCB.isChecked){
-                       listener.onItemClick(model.userID, true)
+                        listener.onItemClick(model.userID, true)
                     } else {
                         listener.onItemClick(model.userID, false)
                     }
                 }
-
-
             }
         }
     }

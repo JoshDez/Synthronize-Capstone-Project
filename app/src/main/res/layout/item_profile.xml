@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/userMainLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -20,10 +19,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentEnd="true"
             android:textSize="20dp"
-            android:text="FULLNAME"
+            android:contentDescription="@string/full_name"
             android:textColor="@color/light_purple"
-            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/userCircleImageView"/>
+
+        <TextView
+            android:id="@+id/usernameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/userFullNameTV"
+            android:layout_alignParentEnd="true"
+            android:textSize="16dp"
+            android:contentDescription="@string/username"
+            android:textColor="@color/light_purple"
             android:layout_toRightOf="@id/userCircleImageView"/>
     </RelativeLayout>
 
