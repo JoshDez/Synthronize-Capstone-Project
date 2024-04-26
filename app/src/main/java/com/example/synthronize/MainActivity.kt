@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.synthronize.databinding.ActivityMainBinding
@@ -21,23 +22,28 @@ class MainActivity : AppCompatActivity() {
         binding.communitiesBtn.setOnClickListener {
             selectNavigation(binding.communitiesBtn.id)
             replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager))
+            resetMainToolbar()
         }
 
         binding.exploreBtn.setOnClickListener {
+            resetMainToolbar()
             selectNavigation(binding.exploreBtn.id)
             replaceFragment(ExploreFragment(binding))
         }
 
         binding.notificationBtn.setOnClickListener {
+            resetMainToolbar()
             selectNavigation(binding.notificationBtn.id)
             replaceFragment(NotificationFragment(binding))
         }
 
         binding.profileBtn.setOnClickListener {
+            resetMainToolbar()
             selectNavigation(binding.profileBtn.id)
             replaceFragment(ProfileFragment(binding))
         }
         binding.chatBtn.setOnClickListener {
+            resetMainToolbar()
             selectNavigation(binding.chatBtn.id)
             replaceFragment(ChatFragment(binding))
         }
@@ -51,16 +57,20 @@ class MainActivity : AppCompatActivity() {
         val communityId = intent.getStringExtra("communityId").toString()
 
         if (fragmentRequest == "profile"){
+            resetMainToolbar()
             selectNavigation(binding.profileBtn.id)
             replaceFragment(ProfileFragment(binding))
         } else if(fragmentRequest == "chat") {
+            resetMainToolbar()
             selectNavigation(binding.chatBtn.id)
             replaceFragment(ChatFragment(binding))
         } else if (fragmentRequest == "community") {
+            resetMainToolbar()
             selectNavigation(binding.communitiesBtn.id)
             replaceFragment(CommunityFragment(binding, communityId))
         } else {
             //default group selection fragment
+            resetMainToolbar()
             selectNavigation(binding.communitiesBtn.id)
             replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager))
         }
@@ -99,7 +109,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
+    private fun resetMainToolbar(){
+        binding.communitySettingsBtn.visibility = View.GONE
+        binding.backBtn.visibility = View.GONE
+        binding.toolbarImageCIV.setImageResource(R.drawable.synthronize_logo)
+    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.groups_toolbar_menu, menu)
         return true

@@ -2,37 +2,35 @@ package com.example.synthronize
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
-import android.view.ViewGroup
-import android.widget.DatePicker
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.example.synthronize.databinding.ActivityEditProfileBinding
-import com.example.synthronize.databinding.DialogSaveUserBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.toObjects
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 import java.util.Calendar
 
 class EditProfile : AppCompatActivity() {
     private lateinit var binding:ActivityEditProfileBinding
-    private lateinit var dialogBinding: DialogSaveUserBinding
+    private lateinit var dialogBinding: DialogWarningMessageBinding
     private lateinit var userModel: UserModel
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedProfilePicUri:Uri
@@ -152,8 +150,10 @@ class EditProfile : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (isModified()){
+            //hides keyboard
+            hideKeyboard()
             //Dialog for saving user profile
-            dialogBinding = DialogSaveUserBinding.inflate(layoutInflater)
+            dialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
             val dialogPlus = DialogPlus.newDialog(this)
                 .setContentHolder(ViewHolder(dialogBinding.root))
                 .setGravity(Gravity.CENTER)
@@ -272,5 +272,10 @@ class EditProfile : AppCompatActivity() {
     private fun isUsernameContainsSpecialCharacters(username: String): Boolean {
         val pattern = Regex("[a-zA-Z0-9_-]+")
         return !pattern.matches(username)
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.backBtn.windowToken, 0)
     }
 }

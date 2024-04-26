@@ -3,15 +3,18 @@
 package com.example.synthronize
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 
 class CommunityFragment(private val mainBinding: ActivityMainBinding, private val communityId:String) : Fragment() {
@@ -19,6 +22,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     private lateinit var binding: FragmentCommunityBinding
     private lateinit var communityModel: CommunityModel
     private lateinit var context: Context
+    private var isUserAdmin = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,6 +31,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         binding = FragmentCommunityBinding.inflate(inflater, container, false)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,19 +46,34 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
                     communityModel = it.toObject(CommunityModel::class.java)!!
                     //content
                     if (::context.isInitialized){
-                        //set name
-                        mainBinding.toolbarTitleTV.text = communityModel.communityName
+                        //bind community
+                        assignUserRole()
+                        bindCommunityDetails()
+                        bindButtons()
                         //Set Feeds fragment as default fragment
                         selectNavigation("feeds")
                         replaceFragment(FeedsFragment(binding, communityId))
-
-                        //bind setOnClickListeners
-                        bindButtons()
                     }
                 }
             }
         }
 
+    }
+
+
+    private fun bindCommunityDetails(){
+        //set name
+        mainBinding.toolbarTitleTV.text = communityModel.communityName
+        //set community profile photo
+        AppUtil().setCommunityProfilePic(context, communityModel.communityId, mainBinding.toolbarImageCIV)
+    }
+
+    private fun assignUserRole() {
+        for (userId in communityModel.communityAdmin){
+            if (FirebaseUtil().currentUserUid() == userId){
+                isUserAdmin = true
+            }
+        }
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -64,6 +84,10 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     }
 
     private fun bindButtons(){
+        mainBinding.backBtn.visibility = View.VISIBLE
+        mainBinding.communitySettingsBtn.visibility = View.VISIBLE
+
+        //bind buttons
         binding.feedsTextView.setOnClickListener {
             //TODO: changes to buttons
             replaceFragment(FeedsFragment(binding, communityId))
@@ -88,6 +112,25 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             //TODO: changes to buttons
             replaceFragment(FilesFragment(binding, communityId))
             selectNavigation("files")
+        }
+
+        //bind buttons from main binding
+        mainBinding.backBtn.setOnClickListener {
+            AppUtil().headToMainActivity(context)
+        }
+        mainBinding.communitySettingsBtn.setOnClickListener {
+            val intent = Intent(context, CommunitySettings::class.java)
+            intent.putExtra("communityId", communityModel.communityId)
+            intent.putExtra("isUserAdmin", isUserAdmin)
+            startActivity(intent)
+        }
+
+        //changes settings button appearance if user is admin
+
+        if (isUserAdmin){
+            mainBinding.communitySettingsBtn.setBackgroundResource(R.drawable.admin_settings)
+        } else {
+            mainBinding.communitySettingsBtn.setBackgroundResource(R.drawable.gear_icon)
         }
     }
     private fun selectNavigation(fragment:String) {

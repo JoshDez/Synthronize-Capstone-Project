@@ -15,11 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.adapters.SelectUsersAdapter
 import com.example.synthronize.databinding.ActivityCreateCommunityBinding
-import com.example.synthronize.databinding.DialogAddCommunityBinding
-import com.example.synthronize.databinding.DialogSaveUserBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
@@ -194,6 +192,8 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     private fun createCommunity(){
         var communityModel = CommunityModel()
         selectedUsersList.add(FirebaseUtil().currentUserUid())
+        //delay before heading to the community tab
+        var delay:Long = 0
 
         //TODO: invite users in selectedUsersList to community
 
@@ -213,11 +213,12 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             //save community profile to firebase storage
             if (::selectedCommunityProfileUri.isInitialized){
                 FirebaseUtil().retrieveCommunityProfilePicRef(communityId).putFile(selectedCommunityProfileUri)
+                delay += 1000
             }
 
             //set data to firestore
             FirebaseUtil().retrieveCommunityDocument(communityId).set(communityModel).addOnSuccessListener {
-                AppUtil().headToMainActivity(this, "community", 0, communityId)
+                AppUtil().headToMainActivity(this, "community", delay, communityId)
             }
         }
     }
@@ -253,7 +254,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     override fun onBackPressed() {
         if (communityName.isNotEmpty() || communityType.isNotEmpty()){
             //create dialog
-            val dialogPlusBinding = DialogSaveUserBinding.inflate(layoutInflater)
+            val dialogPlusBinding = DialogWarningMessageBinding.inflate(layoutInflater)
             val dialogPlus = DialogPlus.newDialog(this)
                 .setContentHolder(ViewHolder(dialogPlusBinding.root))
                 .setGravity(Gravity.CENTER)

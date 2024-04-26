@@ -42,7 +42,7 @@ class AppUtil {
     }
 
     //For Heading Back to Main Activity
-    fun headToMainActivity(context: Context, fragment:String, delay:Long = 0, communityId: String = "") {
+    fun headToMainActivity(context: Context, fragment:String = "", delay:Long = 0, communityId: String = "") {
         Handler().postDelayed({
             val intent = Intent(context, MainActivity::class.java)
             intent.putExtra("fragment", fragment)

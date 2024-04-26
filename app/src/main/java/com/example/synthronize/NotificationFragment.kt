@@ -1,5 +1,6 @@
 package com.example.synthronize
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,7 +11,12 @@ import com.example.synthronize.databinding.FragmentNotificationBinding
 class NotificationFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     // TODO: Rename and change types of parameters
     private lateinit var binding: FragmentNotificationBinding
+    private lateinit var context: Context
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        this.context = context
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -26,9 +32,7 @@ class NotificationFragment(private val mainBinding: ActivityMainBinding) : Fragm
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (isAdded){
-            super.onViewCreated(view, savedInstanceState)
-            mainBinding.toolbarTitleTV.text = "NOTIFICATIONS"
-        }
+        super.onViewCreated(view, savedInstanceState)
+        mainBinding.toolbarTitleTV.text = "NOTIFICATIONS"
     }
 }

@@ -14,7 +14,7 @@
     <string name="already_have_an_account">Already have an account? Log In here</string>
 
     <!-- Main Activity -->
-    <string name="Groups">Groups</string>
+    <string name="communities">Communities</string>
     <string name="Chats">Chats</string>
     <string name="Profile">Profile</string>
     <string name="Explore">Explore</string>
@@ -29,8 +29,7 @@
     <string name="Write_Message_Here">Write Message Here..</string>
 
 
-    <!-- Groups Activity -->
-    <string name="groups">GROUPS</string>
+    <string name="COMMUNITIES">COMMUNITIES</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="username">username</string>
     <string name="user_description">user description</string>
@@ -46,7 +45,7 @@
     <string name="forums">Forums</string>
     <string name="market">Market</string>
     <string name="files">Files</string>
-    <string name="communities">Communities</string>
+    <string name="Groups">Groups</string>
     <string name="tap_here_to_set_birthday">Tap here to set birthday</string>
     <string name="save_user_details">Save User Details</string>
     <string name="posts">Posts</string>
@@ -68,6 +67,7 @@
     <string name="previous">Previous</string>
     <string name="invite_users">Invite Users</string>
     <string name="set_community_profile_and_cover_photo">Set Community Profile and Cover Photo</string>
+    <string name="toolbar_title">toolbar title</string>
 
 
 </resources>

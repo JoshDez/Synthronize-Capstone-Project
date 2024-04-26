@@ -37,7 +37,6 @@ class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val
                 //set the header of main activity
                 mainBinding.toolbarTitleTV.text = model.communityName
                 addCommunityFragmentToMain(model.communityId)
-
             }
             AppUtil().setCommunityProfilePic(context, model.communityId, communityBinding.profileImage)
         }
