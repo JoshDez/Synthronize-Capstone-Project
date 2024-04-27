@@ -9,4 +9,8 @@ data class UserModel(
     var description:String = "",
     var username:String = "",
     var birthday:String = "",
+    var friendsList:List<String> = listOf(),
+    var blockList:List<String> = listOf(),
+    var friendRequests:List<String> = listOf(),
+    var groupRequests:List<String> = listOf()
 )

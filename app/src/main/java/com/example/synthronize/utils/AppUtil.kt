@@ -59,4 +59,14 @@ class AppUtil {
             return string
         }
     }
+
+    //checks if user is on list
+    fun isUserOnList(list: List<String>, userId:String):Boolean{
+        for (id in list){
+            if (id == userId){
+                return true
+            }
+        }
+        return false
+    }
 }

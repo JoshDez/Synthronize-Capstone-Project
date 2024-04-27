@@ -11,6 +11,7 @@ import com.example.synthronize.utils.FirebaseUtil
 
 class OtherUserProfile : AppCompatActivity() {
     private lateinit var binding:ActivityOtherUserProfileBinding
+    private lateinit var userModel: UserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +31,7 @@ class OtherUserProfile : AppCompatActivity() {
 
         FirebaseUtil().targetUserDetails(userID).get().addOnCompleteListener {
             if (it.isSuccessful && it.result.exists()){
-
-                val userModel = it.result.toObject(UserModel::class.java)!!
+                userModel = it.result.toObject(UserModel::class.java)!!
                 binding.userDescriptionTV.text = userModel.description
                 binding.userNameTV.text = userModel.username
                 binding.userDisplayNameTV.text = userModel.fullName
@@ -50,7 +50,39 @@ class OtherUserProfile : AppCompatActivity() {
                     intent.putExtra("chatroomType", "direct_message")
                     startActivity(intent)
                 }
+
+                changeFriendsButtonState()
                 //TODO: Implement loading stop
+            }
+        }
+    }
+
+    private fun changeFriendsButtonState(){
+        //checks if already friends with user
+        if (AppUtil().isUserOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
+            binding.friendBtn.text = "Unfriend"
+            binding.friendBtn.setOnClickListener {
+                userModel.friendsList = userModel.friendsList.filterNot { it == FirebaseUtil().currentUserUid() }
+                FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
+                    changeFriendsButtonState()
+                }
+            }
+
+        } else if (AppUtil().isUserOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
+            binding.friendBtn.text = "Cancel Request"
+            binding.friendBtn.setOnClickListener {
+                userModel.friendRequests = userModel.friendRequests.filterNot { it == FirebaseUtil().currentUserUid() }
+                FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
+                    changeFriendsButtonState()
+                }
+            }
+        } else {
+            binding.friendBtn.text = "Add Friend"
+            binding.friendBtn.setOnClickListener {
+                userModel.friendRequests = userModel.friendRequests.plus(FirebaseUtil().currentUserUid())
+                FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
+                    changeFriendsButtonState()
+                }
             }
         }
     }

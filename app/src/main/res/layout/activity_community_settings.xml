@@ -92,7 +92,7 @@
             <FrameLayout
                 android:layout_below="@id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
+                android:layout_height="250dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -111,40 +111,40 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/userProfileCIV"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         android:layout_marginStart="20dp"
                         android:layout_centerInParent="true"
+                        android:layout_alignParentBottom="true"
                         android:src="@color/light_purple"/>
-
-
-
-                    <TextView
-                        android:id="@+id/communityNameTV"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:layout_below="@id/userProfileCIV"
-                        android:layout_centerInParent="true"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:contentDescription="@string/full_name"
-                        android:textAlignment="center"
-                        android:textColor="@color/light_purple"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
                 </RelativeLayout>
             </FrameLayout>
 
             <TextView
+                android:id="@+id/communityNameTV"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:id="@+id/communityDescriptionTV"
+                android:layout_below="@id/userProfileCIV"
+                android:layout_centerInParent="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:contentDescription="@string/full_name"
+                android:textAlignment="center"
+                android:textColor="@color/light_purple"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/communityDescriptionTV"
+                android:visibility="gone"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="#00FFFFFF"
                 android:drawableTint="#00FFFFFF"
@@ -154,14 +154,15 @@
                 android:textSize="17sp" />
 
             <TextView
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="#00FFFFFF"
                 android:drawableTint="#00FFFFFF"
                 android:contentDescription="@string/user_description"
-                android:textAlignment="center"
                 android:text="@string/community_code"
                 android:textColor="@color/light_purple"
                 android:textSize="15sp" />
@@ -193,11 +194,60 @@
                     android:layout_height="50dp"
                     android:src="@drawable/baseline_content_copy_24"
                     android:background="#00D0ADF1"
-                    android:layout_toLeftOf="@id/addFriendBtn"
                     app:tint="@color/light_purple"/>
 
-
             </LinearLayout>
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider2"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/mainToolbar"
+                android:background="@color/light_purple"
+                app:dividerColor="@color/light_purple" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/viewMembersBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="@string/view_all_members"
+                android:background = "@color/dark_purple_1"
+                android:textColor="@color/light_purple"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/viewCommunityRulesBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:text="@string/view_community_rules"
+                android:background = "@color/dark_purple_1"
+                android:textColor="@color/light_purple"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/reportCommunityBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:text="Report Community"
+                android:background = "@color/dark_purple_1"
+                android:textColor="@color/light_purple"/>
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/leaveGroupBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:text="@string/leave_community"
+                android:background = "@color/dark_purple_1"
+                android:textColor="@color/light_purple"/>
+
+
+
 
 
 

@@ -46,7 +46,7 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
         private lateinit var communityModel: CommunityModel
         fun bind(model: CommunityModel){
             //Checks if user is not on community block list
-            if (!isUserOnList(model.blockList, FirebaseUtil().currentUserUid())){
+            if (!AppUtil().isUserOnList(model.blockList, FirebaseUtil().currentUserUid())){
                 communityModel = model
                 binding.groupNameTextView.text = model.communityName
                 //TODO: Bind community image
@@ -117,10 +117,10 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
             //SET COMMUNITY TYPE
             if (communityModel.communityType == "Private"){
                 //FOR PRIVATE COMMUNITY TYPE
-                if (isUserOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
+                if (AppUtil().isUserOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
                     //checks if user already requested to join
                     appearButton(dialogBinding.cancelRequestBtn)
-                } else if (isUserOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
+                } else if (AppUtil().isUserOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
                     //checks if user is already a member
                     appearButton(dialogBinding.enterBtn)
                 } else {
@@ -129,7 +129,7 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
                 }
             } else {
                 //FOR PUBLIC COMMUNITY TYPE
-                if (isUserOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
+                if (AppUtil().isUserOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
                     //checks if user is already a member
                     appearButton(dialogBinding.enterBtn)
                 } else {
@@ -160,15 +160,7 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
                 dialogBinding.requestToJoinBtn -> dialogBinding.requestToJoinBtn.visibility = View.VISIBLE
             }
         }
-
-        private fun isUserOnList(list: List<String>, userId:String):Boolean{
-            for (id in list){
-                if (id == userId){
-                    return true
-                }
-            }
-            return false
-        }
+        
 
     }
 }

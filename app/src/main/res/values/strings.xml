@@ -71,6 +71,10 @@
     <string name="general">General</string>
     <string name="admin">Admin</string>
     <string name="community_code">Community Code</string>
+    <string name="friend_button">friend button</string>
+    <string name="view_community_rules">View Community Rules</string>
+    <string name="view_all_members">View All Members</string>
+    <string name="leave_community">Leave Community</string>
 
 
 </resources>

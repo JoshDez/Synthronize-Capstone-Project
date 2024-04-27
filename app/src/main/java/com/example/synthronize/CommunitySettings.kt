@@ -40,9 +40,13 @@ class CommunitySettings : AppCompatActivity() {
     private fun bindCommunitySettings(isUserAdmin:Boolean) {
         //Common Binds
         binding.communityNameTV.text = communityModel.communityName
-        binding.communityDescriptionTV.text = communityModel.communityDescription
         binding.communityCodeEdtTxt.setText(communityModel.communityCode)
         AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.userProfileCIV)
+
+        if (communityModel.communityDescription.isNotEmpty()){
+            binding.communityDescriptionTV.visibility = View.VISIBLE
+            binding.communityDescriptionTV.text = communityModel.communityDescription
+        }
 
         binding.backBtn.setOnClickListener {
             onBackPressed()
