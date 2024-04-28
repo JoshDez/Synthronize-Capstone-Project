@@ -75,6 +75,8 @@
     <string name="view_community_rules">View Community Rules</string>
     <string name="view_all_members">View All Members</string>
     <string name="leave_community">Leave Community</string>
+    <string name="share_community_with_community_code">Share Community with Community Code</string>
+    <string name="members">Members</string>
 
 
 </resources>

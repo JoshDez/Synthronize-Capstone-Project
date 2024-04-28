@@ -163,7 +163,7 @@
                 android:backgroundTint="#00FFFFFF"
                 android:drawableTint="#00FFFFFF"
                 android:contentDescription="@string/user_description"
-                android:text="@string/community_code"
+                android:text="@string/share_community_with_community_code"
                 android:textColor="@color/light_purple"
                 android:textSize="15sp" />
 

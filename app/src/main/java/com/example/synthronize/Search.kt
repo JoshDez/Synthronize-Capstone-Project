@@ -1,5 +1,6 @@
 package com.example.synthronize
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -13,27 +14,28 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivitySearchBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 
-class Search : AppCompatActivity() {
+class Search : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding:ActivitySearchBinding
     private lateinit var searchUserAdapter: SearchUserAdapter
     private lateinit var searchCommunityAdapter: SearchCommunityAdapter
+    private lateinit var searchInCategory: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        searchInCategory = intent.getStringExtra("searchInCategory").toString()
+
         binding.searchEdtTxt.requestFocus()
 
-
-
-
         binding.resultsPostsRV.layoutManager = LinearLayoutManager(this)
-
 
         binding.backBtn.setOnClickListener {
             this.finish()
@@ -43,8 +45,15 @@ class Search : AppCompatActivity() {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(searchQuery: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                searchUsers(searchQuery.toString())
-                searchCommunities(searchQuery.toString())
+                if (searchInCategory == "users"){
+                    searchUsers(searchQuery.toString())
+                } else if (searchInCategory == "communities"){
+                    searchCommunities(searchQuery.toString())
+                } else {
+                    //search in all categories
+                    searchUsers(searchQuery.toString())
+                    searchCommunities(searchQuery.toString())
+                }
             }
         })
     }
@@ -59,7 +68,7 @@ class Search : AppCompatActivity() {
 
         //set up user recycler view
         binding.resultUsersRV.layoutManager = LinearLayoutManager(this)
-        searchUserAdapter = SearchUserAdapter(this, options)
+        searchUserAdapter = SearchUserAdapter(this, options, this)
         binding.resultUsersRV.adapter = searchUserAdapter
         searchUserAdapter.startListening()
 
@@ -98,6 +107,12 @@ class Search : AppCompatActivity() {
 
     private fun searchPosts(searchQuery: String){
         //TODO: Search Posts
+    }
+
+    override fun onUserClick(userId: String, isChecked:Boolean) {
+        val intent = Intent(this, OtherUserProfile::class.java)
+        intent.putExtra("userID", userId)
+        startActivity(intent)
     }
 
     override fun onStart() {

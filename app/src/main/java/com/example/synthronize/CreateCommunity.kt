@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.synthronize.adapters.SelectUsersAdapter
+import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivityCreateCommunityBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnItemClickListener
@@ -33,7 +33,7 @@ import com.orhanobut.dialogplus.ViewHolder
 
 class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding:ActivityCreateCommunityBinding
-    private lateinit var selectUsersAdapter:SelectUsersAdapter
+    private lateinit var searchUserAdapter:SearchUserAdapter
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedCommunityProfileUri: Uri
     private var communityName: String = ""
@@ -131,8 +131,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             }
         }
         binding.cancelBtn.setOnClickListener {
-            //TODO: add dialog
-            this.finish()
+            onBackPressed()
         }
     }
 
@@ -236,9 +235,9 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
 
         //set up searched users recycler view
         binding.searchedUsersRV.layoutManager = LinearLayoutManager(this)
-        selectUsersAdapter = SelectUsersAdapter(this, this, selectedUsersList, options)
-        binding.searchedUsersRV.adapter = selectUsersAdapter
-        selectUsersAdapter.startListening()
+        searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, toCheckUser = true, selectedUsersList)
+        binding.searchedUsersRV.adapter = searchUserAdapter
+        searchUserAdapter.startListening()
     }
 
     private fun isCommunityNameAvailable(name: String, callback: (Boolean) -> Unit) {
@@ -289,7 +288,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             .joinToString("")
     }
 
-    override fun onItemClick(uid: String, isChecked: Boolean) {
+    override fun onUserClick(uid: String, isChecked: Boolean) {
         //Interface for select user adapter
         if (isChecked) {
             //add user to selected user list
@@ -301,22 +300,22 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     }
     override fun onStart() {
         super.onStart()
-        if (::selectUsersAdapter.isInitialized){
-            selectUsersAdapter.startListening()
+        if (::searchUserAdapter.isInitialized){
+            searchUserAdapter.startListening()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (::selectUsersAdapter.isInitialized){
-            selectUsersAdapter.notifyDataSetChanged()
+        if (::searchUserAdapter.isInitialized){
+            searchUserAdapter.notifyDataSetChanged()
         }
     }
 
     override fun onStop() {
         super.onStop()
-        if (::selectUsersAdapter.isInitialized){
-            selectUsersAdapter.stopListening()
+        if (::searchUserAdapter.isInitialized){
+            searchUserAdapter.stopListening()
         }
     }
 

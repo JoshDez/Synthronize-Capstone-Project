@@ -10,11 +10,15 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.databinding.ItemProfileBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 
-class SearchUserAdapter( private val context: Context, options: FirestoreRecyclerOptions<UserModel>):
+class SearchUserAdapter(private val context: Context, options: FirestoreRecyclerOptions<UserModel>,  private val listener: OnItemClickListener,
+                        //for user selecting
+                        private val toCheckUser:Boolean = false,
+                        private val selectedUserList:ArrayList<String> = ArrayList()):
     FirestoreRecyclerAdapter<UserModel, SearchUserAdapter.UserViewHolder>(options) {
 
     private var totalItems = 0
@@ -46,11 +50,31 @@ class SearchUserAdapter( private val context: Context, options: FirestoreRecycle
                 binding.userFullNameTV.text = "${model.fullName} (You)"
             }else {
                 binding.userFullNameTV.text = model.fullName
-                binding.userContainerRL.setOnClickListener{
-                    val intent = Intent(context, OtherUserProfile::class.java)
-                    intent.putExtra("userID", model.userID)
-                    context.startActivity(intent)
+                if (toCheckUser){
+                    //display check box if user is not the current user
+                    binding.selectUserCB.visibility = View.VISIBLE
+                    for (userId in selectedUserList){
+                        if (model.userID == userId){
+                            binding.selectUserCB.isChecked = true
+                        }
+                    }
+                    binding.selectUserCB.setOnClickListener {
+                        if (binding.selectUserCB.isChecked){
+                            listener.onUserClick(model.userID, true)
+                        } else {
+                            listener.onUserClick(model.userID, false)
+                        }
+                    }
+                }else {
+                    //display check box if user is not the current user
+                    binding.userContainerRL.setOnClickListener{
+                        val intent = Intent(context, OtherUserProfile::class.java)
+                        intent.putExtra("userID", model.userID)
+                        context.startActivity(intent)
+                    }
                 }
+
+
             }
         }
     }

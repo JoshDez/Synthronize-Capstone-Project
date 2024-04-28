@@ -3,6 +3,7 @@ package com.example.synthronize
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -58,6 +59,12 @@ class CommunitySettings : AppCompatActivity() {
             val clipData = ClipData.newPlainText("Copied Text", textToCopy)
             clipboardManager.setPrimaryClip(clipData)
             Toast.makeText(applicationContext, "Text copied to clipboard", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.viewMembersBtn.setOnClickListener {
+            val intent = Intent(applicationContext, Members::class.java)
+            intent.putExtra("communityId", communityModel.communityId)
+            startActivity(intent)
         }
 
         if (isUserAdmin){

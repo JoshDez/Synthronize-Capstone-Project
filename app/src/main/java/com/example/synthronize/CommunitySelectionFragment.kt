@@ -77,10 +77,12 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
                     dialogBinding.joinCommunityViaCodeBtn.setOnClickListener {
                         //TODO: to be implemented
                         dialogPlus.dismiss()
+                        //openDialogForCommunityCode()
                     }
 
                     dialogBinding.searchCommunityBtn.setOnClickListener {
                         val intent = Intent(context, Search::class.java)
+                        intent.putExtra("searchInCategory", "communities")
                         startActivity(intent)
                         dialogPlus.dismiss()
                     }
