@@ -8,18 +8,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.adapters.CommunityAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogAddCommunityBinding
+import com.example.synthronize.databinding.DialogCommunityCodeBinding
+import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.FragmentCommunitySelectionBinding
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
+import java.util.logging.Handler
 
 class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager) : Fragment() {
     private lateinit var binding: FragmentCommunitySelectionBinding
@@ -75,9 +81,33 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
                     }
 
                     dialogBinding.joinCommunityViaCodeBtn.setOnClickListener {
-                        //TODO: to be implemented
+                        //CREATES NEW DIALOG FOR COMMUNITY CODE
+                        val codeDialogBinding = DialogCommunityCodeBinding.inflate(layoutInflater)
+                        val codeDialogPlus = DialogPlus.newDialog(context)
+                            .setContentHolder(ViewHolder(codeDialogBinding.root))
+                            .setCancelable(true)
+                            .setMargin(50, 800, 50, 700)
+                            .create()
+
+                        //confirm button
+                        codeDialogBinding.confirmBtn.setOnClickListener {
+                            val code = codeDialogBinding.codeEdtTxt.text.toString()
+                            if (code.isNotEmpty()){
+                                FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityCode", code).get().addOnSuccessListener {documents ->
+                                    for (document in documents){
+                                        val communityModel = document.toObject(CommunityModel::class.java)
+                                        AppUtil().openCommunityPreviewDialog(context, layoutInflater, communityModel)
+                                        codeDialogPlus.dismiss()
+                                    }
+                                }
+                            } else {
+                                codeDialogPlus.dismiss()
+                            }
+                        }
                         dialogPlus.dismiss()
-                        //openDialogForCommunityCode()
+                        android.os.Handler().postDelayed({
+                            codeDialogPlus.show()
+                        }, 500)
                     }
 
                     dialogBinding.searchCommunityBtn.setOnClickListener {

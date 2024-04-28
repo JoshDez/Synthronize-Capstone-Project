@@ -16,13 +16,13 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/userCoverIV"
+                android:id="@+id/communityCoverIV"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:src="@color/black"/>
             <LinearLayout
                 android:id="@+id/friendsJoinedContainer"
-                android:layout_below="@id/userCoverIV"
+                android:layout_below="@id/communityCoverIV"
                 android:layout_marginStart="40dp"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
@@ -48,7 +48,7 @@
 
             <LinearLayout
                 android:id="@+id/totalMembersContainer"
-                android:layout_below="@id/userCoverIV"
+                android:layout_below="@id/communityCoverIV"
                 android:layout_alignParentEnd="true"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
@@ -80,7 +80,7 @@
             android:layout_height="match_parent">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/userProfileCIV"
+                android:id="@+id/communityProfileCIV"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_alignParentBottom="true"

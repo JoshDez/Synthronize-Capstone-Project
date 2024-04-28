@@ -5,13 +5,19 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.synthronize.databinding.ActivityCommunitySettingsBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.toObject
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class CommunitySettings : AppCompatActivity() {
     private lateinit var binding:ActivityCommunitySettingsBinding
@@ -33,11 +39,6 @@ class CommunitySettings : AppCompatActivity() {
 
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        //TODO: To be implemented
-    }
-
     private fun bindCommunitySettings(isUserAdmin:Boolean) {
         //Common Binds
         binding.communityNameTV.text = communityModel.communityName
@@ -51,6 +52,31 @@ class CommunitySettings : AppCompatActivity() {
 
         binding.backBtn.setOnClickListener {
             onBackPressed()
+        }
+
+        binding.leaveCommunityBtn.setOnClickListener {
+            val dialogPlusBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+            val dialogPlus = DialogPlus.newDialog(this)
+                .setContentHolder(ViewHolder(dialogPlusBinding.root))
+                .setGravity(Gravity.CENTER)
+                .setMargin(50, 800, 50, 800)
+                .setCancelable(true)
+                .create()
+
+            dialogPlusBinding.titleTV.text = "Warning!"
+            dialogPlusBinding.messageTV.text = "Do you want to leave this community?"
+            dialogPlusBinding.yesBtn.setOnClickListener {
+                FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
+                    .update("communityAdmin", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
+                FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
+                    .update("communityMembers", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                        AppUtil().headToMainActivity(this)
+                    }
+            }
+            dialogPlusBinding.NoBtn.setOnClickListener {
+                dialogPlus.dismiss()
+            }
+            dialogPlus.show()
         }
 
         binding.copyCodeBtn.setOnClickListener {
