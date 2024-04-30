@@ -1,5 +1,6 @@
 package com.example.synthronize.model
 
+import android.net.Uri
 import com.google.firebase.Timestamp
 
 data class FeedsModel(
@@ -13,5 +14,6 @@ data class FeedsModel(
     //id of user who loves the posts
     val usersLoves: List<String> = listOf(),
     //id of users who repost the feed
-    val usersReposts: List<String> = listOf()
+    val usersReposts: List<String> = listOf(),
+    val contentList: List<String> = listOf()
 )

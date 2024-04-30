@@ -1,22 +1,38 @@
 package com.example.synthronize
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.util.TypedValueCompat.dpToPx
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.synthronize.adapters.FeedsAdapter
+import com.example.synthronize.databinding.DialogCreatePostBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentFeedsBinding
 import com.example.synthronize.model.FeedsModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment() {
 
@@ -24,6 +40,12 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
     private lateinit var context: Context
     private lateinit var recyclerView: RecyclerView
     private lateinit var feedsAdapter: FeedsAdapter
+
+    //For Create Post Dialog
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
+    private lateinit var selectedImageUri:Uri
+    private lateinit var postDialogBinding:DialogCreatePostBinding
+    private lateinit var uriHashMap: HashMap<String, Uri>
 
 
     override fun onCreateView(
@@ -45,6 +67,19 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
             if (context != null){
                 bindButtons()
                 setRecyclerView()
+
+                //Launcher for user profile pic and user cover pic
+                imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+                    //Image is selected
+                    if (result.resultCode == Activity.RESULT_OK){
+                        val data = result.data
+                        if (data != null && data.data != null){
+                            selectedImageUri = data.data!!
+                            //adds the selected image to the dialog layout
+                            addImage(postDialogBinding, selectedImageUri)
+                        }
+                    }
+                }
             }
 
         }
@@ -68,26 +103,139 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
 
     private fun bindButtons(){
         binding.addPostFab.setOnClickListener{
-            addTest()
+            openCreatePostDialog()
         }
     }
 
-    private fun addTest(){
+    private fun openCreatePostDialog() {
+        postDialogBinding = DialogCreatePostBinding.inflate(layoutInflater)
+        val postDialog = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(postDialogBinding.root))
+            .create()
 
-        val feedsModel = FeedsModel(
-            feedOwnerId = FirebaseUtil().currentUserUid(),
-            feedImages = listOf(FirebaseUtil().currentUserUid()),
-            feedCaption = "This is my profile",
-            feedTimestamp = Timestamp.now(),
-            communityIdOfOrigin = communityId,
-        )
-
-        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).add(feedsModel).addOnSuccessListener {
-            //get new id from firestore and store it in feedId of the feedsModel
-            val feedModelWithId = feedsModel.copy(feedId = it.id)
-            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(feedModelWithId).addOnSuccessListener {
-                Toast.makeText(context, "Your post is uploaded successfully!", Toast.LENGTH_SHORT).show()
+        //BIND DIALOG
+        postDialogBinding.addImageBtn.setOnClickListener {
+            ImagePicker.with(this).cropSquare().compress(512)
+                .maxResultSize(512, 512)
+                .createIntent {
+                    imagePickerLauncher.launch(it)
+                }
+        }
+        postDialogBinding.backBtn.setOnClickListener {
+            //TODO dialog message
+            postDialog.dismiss()
+        }
+        postDialogBinding.postBtn.setOnClickListener {
+            //TODO add post to firebase
+            if (postDialogBinding.captionEdtTxt.text.toString().isNotEmpty() && ::uriHashMap.isInitialized){
+                addPost(){isUploaded ->
+                    if (isUploaded)
+                        postDialog.dismiss()
+                    else
+                        Toast.makeText(context, "Error occured while uploading", Toast.LENGTH_SHORT).show()
+                }
             }
+        }
+
+        postDialog.show()
+
+
+    }
+    //Adds Image to the Dialog
+    private fun addImage(postDialogBinding: DialogCreatePostBinding, selectedImage:Uri){
+        //creates image id
+        val userId = FirebaseUtil().currentUserUid()
+        val timestamp = Timestamp.now()
+        val imageId = "$userId-Image-$timestamp"
+
+        //Creates linear layout for image
+        val verticalLayout = LinearLayout(context)
+        verticalLayout.orientation = LinearLayout.VERTICAL
+        val linearParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        verticalLayout.layoutParams = linearParams
+
+        //creates image view
+        val postImage = ImageView(context)
+        val imageDpToPx = dpToPx(400F, resources.displayMetrics)
+        val imageParams = LinearLayout.LayoutParams(imageDpToPx.toInt(), imageDpToPx.toInt())
+        postImage.layoutParams = imageParams
+
+        //inserts selected image to Image View
+        Glide.with(this).load(selectedImage)
+            .into(postImage)
+        verticalLayout.addView(postImage)
+
+        //adds image to uri hashmap
+        addUriToHashMap(imageId, selectedImageUri)
+
+        //creates cancel button
+        val cancelBtn = ImageButton(context)
+        cancelBtn.setImageResource(R.drawable.remove_media_icon)
+        cancelBtn.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        cancelBtn.setOnClickListener {
+            postDialogBinding.mainPostLayout.removeView(verticalLayout)
+            //removes image
+            removeUriFromHashMap(imageId)
+        }
+        val cancelBtnParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        cancelBtn.layoutParams = cancelBtnParams
+        verticalLayout.addView(cancelBtn)
+
+        //adds the views to the main layout
+        postDialogBinding.mainPostLayout.addView(verticalLayout)
+    }
+
+    private fun removeUriFromHashMap(contentId:String){
+        uriHashMap.remove(contentId)
+    }
+
+    private fun addUriToHashMap(imageId:String, uri: Uri){
+        if (!::uriHashMap.isInitialized)
+            uriHashMap = HashMap()
+        uriHashMap[imageId] = uri
+    }
+
+
+    //TODO remove if dialog is ready to use
+    private fun addPost(callback: (Boolean) -> Unit){
+        val tempModel = FeedsModel()
+        val contentList:ArrayList<String> = ArrayList()
+        val caption = postDialogBinding.captionEdtTxt.text.toString()
+
+        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).add(tempModel).addOnSuccessListener {
+            //get new id from firestore and store it in feedId of the feedsModel
+            for (data in uriHashMap){
+                //data key is imageId and data value is uri
+                FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
+                contentList.add(data.key)
+
+            }
+
+            val feedsModel = FeedsModel(
+                feedId = it.id,
+                feedOwnerId = FirebaseUtil().currentUserUid(),
+                //TODO remove feedImages and feedVideos
+                feedImages = listOf(FirebaseUtil().currentUserUid()),
+                feedCaption = caption,
+                feedTimestamp = Timestamp.now(),
+                communityIdOfOrigin = communityId,
+                contentList = contentList
+            )
+
+            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(feedsModel).addOnSuccessListener {
+                Toast.makeText(context, "Your post is uploaded successfully!", Toast.LENGTH_SHORT).show()
+                callback(true)
+            }.addOnFailureListener {
+                callback(false)
+            }
+        }.addOnFailureListener {
+            callback(false)
         }
     }
 
