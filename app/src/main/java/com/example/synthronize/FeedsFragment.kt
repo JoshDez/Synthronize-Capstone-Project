@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -46,6 +47,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
     private lateinit var selectedImageUri:Uri
     private lateinit var postDialogBinding:DialogCreatePostBinding
     private lateinit var uriHashMap: HashMap<String, Uri>
+    private var isNewPost:Boolean = false
 
 
     override fun onCreateView(
@@ -60,6 +62,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
         super.onViewCreated(view, savedInstanceState)
 
         //IF THE FRAGMENT IS ADDED (avoids fragment related crash)
+
         if (isAdded){
             //Retrieve Group Model
             context = requireContext()
@@ -108,9 +111,15 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
     }
 
     private fun openCreatePostDialog() {
+        //disables notify data set change of the recycler view's adapter in onResume
+        isNewPost = true
         postDialogBinding = DialogCreatePostBinding.inflate(layoutInflater)
         val postDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(postDialogBinding.root))
+            .setOnDismissListener {
+                //enables notify data set change of the recycler view's adapter in onResume
+                isNewPost = false
+            }
             .create()
 
         //BIND DIALOG
@@ -126,20 +135,17 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
             postDialog.dismiss()
         }
         postDialogBinding.postBtn.setOnClickListener {
-            //TODO add post to firebase
             if (postDialogBinding.captionEdtTxt.text.toString().isNotEmpty() && ::uriHashMap.isInitialized){
                 addPost(){isUploaded ->
                     if (isUploaded)
                         postDialog.dismiss()
                     else
                         Toast.makeText(context, "Error occured while uploading", Toast.LENGTH_SHORT).show()
+
                 }
             }
         }
-
         postDialog.show()
-
-
     }
     //Adds Image to the Dialog
     private fun addImage(postDialogBinding: DialogCreatePostBinding, selectedImage:Uri){
@@ -201,12 +207,11 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
         uriHashMap[imageId] = uri
     }
 
-
-    //TODO remove if dialog is ready to use
     private fun addPost(callback: (Boolean) -> Unit){
         val tempModel = FeedsModel()
         val contentList:ArrayList<String> = ArrayList()
         val caption = postDialogBinding.captionEdtTxt.text.toString()
+        var delay:Long = 1000
 
         FirebaseUtil().retrieveCommunityFeedsCollection(communityId).add(tempModel).addOnSuccessListener {
             for (data in uriHashMap){
@@ -214,6 +219,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
                 //uploads image to the firebase storage
                 FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
                 contentList.add(data.key)
+                delay += 100
             }
 
             //get new id from firestore and store it in feedId of the feedsModel
@@ -226,11 +232,16 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
                 contentList = contentList
             )
 
-            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(feedsModel).addOnSuccessListener {
-                Toast.makeText(context, "Your post is uploaded successfully!", Toast.LENGTH_SHORT).show()
-                callback(true)
-            }.addOnFailureListener {
-                callback(false)
+            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(feedsModel).addOnCompleteListener {task ->
+                if (task.isSuccessful) {
+                    Handler().postDelayed({
+                        Toast.makeText(context, "Your post is uploaded successfully!", Toast.LENGTH_SHORT).show()
+                        callback(true)
+                    }, delay)
+                } else {
+                    Toast.makeText(context, "Error has occurred!", Toast.LENGTH_SHORT).show()
+                    callback(false)
+                }
             }
         }.addOnFailureListener {
             callback(false)
@@ -246,7 +257,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
 
     override fun onResume() {
         super.onResume()
-        if (::feedsAdapter.isInitialized){
+        if (::feedsAdapter.isInitialized && !isNewPost){
             feedsAdapter.notifyDataSetChanged()
         }
     }

@@ -81,6 +81,8 @@
     <string name="enter_community_code">Enter Community Code</string>
     <string name="add_image">Add Image</string>
     <string name="add_video">Add Video</string>
+    <string name="feed_description">Feed Description</string>
+    <string name="reposted">Reposted</string>
 
 
 </resources>

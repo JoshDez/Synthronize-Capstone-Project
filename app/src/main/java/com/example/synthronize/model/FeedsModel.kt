@@ -9,6 +9,8 @@ data class FeedsModel(
     val feedCaption: String = "",
     val feedTimestamp: Timestamp = Timestamp.now(),
     val communityIdOfOrigin: String = "",
+    val repostId:String = "",
+    val repostOwnerId:String = "",
     //id of user who loves the posts
     val usersLoves: List<String> = listOf(),
     //id of users who repost the feed
