@@ -83,6 +83,9 @@
     <string name="add_video">Add Video</string>
     <string name="feed_description">Feed Description</string>
     <string name="reposted">Reposted</string>
+    <string name="lovescount">lovesCount</string>
+    <string name="comment_count">comment count</string>
+    <string name="repost_count">repost count</string>
 
 
 </resources>

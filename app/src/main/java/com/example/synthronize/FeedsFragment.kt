@@ -145,6 +145,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
                 }
             }
         }
+        AppUtil().setUserProfilePic(context, FirebaseUtil().currentUserUid(), postDialogBinding.profileCIV)
         postDialog.show()
     }
     //Adds Image to the Dialog

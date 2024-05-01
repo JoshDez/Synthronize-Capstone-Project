@@ -15,5 +15,6 @@ data class FeedsModel(
     val usersLoves: List<String> = listOf(),
     //id of users who repost the feed
     val usersReposts: List<String> = listOf(),
-    val contentList: List<String> = listOf()
+    val contentList: List<String> = listOf(),
+    //TODO comments to be implemented
 )
