@@ -209,19 +209,17 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
         val caption = postDialogBinding.captionEdtTxt.text.toString()
 
         FirebaseUtil().retrieveCommunityFeedsCollection(communityId).add(tempModel).addOnSuccessListener {
-            //get new id from firestore and store it in feedId of the feedsModel
             for (data in uriHashMap){
                 //data key is imageId and data value is uri
+                //uploads image to the firebase storage
                 FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
                 contentList.add(data.key)
-
             }
 
+            //get new id from firestore and store it in feedId of the feedsModel
             val feedsModel = FeedsModel(
                 feedId = it.id,
-                feedOwnerId = FirebaseUtil().currentUserUid(),
-                //TODO remove feedImages and feedVideos
-                feedImages = listOf(FirebaseUtil().currentUserUid()),
+                ownerId = FirebaseUtil().currentUserUid(),
                 feedCaption = caption,
                 feedTimestamp = Timestamp.now(),
                 communityIdOfOrigin = communityId,

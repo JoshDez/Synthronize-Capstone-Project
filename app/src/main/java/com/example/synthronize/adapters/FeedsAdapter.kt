@@ -37,7 +37,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
         fun bind(model: FeedsModel){
             feedsBinding.descriptionTextView.text = model.feedCaption
             feedsBinding.timestampTextView.text = model.feedTimestamp.toString()
-            FirebaseUtil().targetUserDetails(model.feedOwnerId).get().addOnSuccessListener {
+            FirebaseUtil().targetUserDetails(model.ownerId).get().addOnSuccessListener {
                 val userModel = it.toObject(UserModel::class.java)!!
                 //bind profile photo
                 AppUtil().setUserProfilePic(context, userModel.userID, feedsBinding.profileImage)
