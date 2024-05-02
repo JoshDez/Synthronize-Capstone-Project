@@ -93,11 +93,18 @@ class CommunitySettings : AppCompatActivity() {
             startActivity(intent)
         }
 
+        if (communityModel.communityType == "Private"){
+            binding.viewJoinRequestsBtn.visibility = View.VISIBLE
+            binding.viewJoinRequestsBtn.setOnClickListener {
+                val intent = Intent(this, Requests::class.java)
+                intent.putExtra("communityId", communityModel.communityId)
+                startActivity(intent)
+            }
+        }
+
+
         if (isUserAdmin){
             binding.navigationLayout.visibility = View.VISIBLE
-            Toast.makeText(this, "Welcome to settings admin", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Welcome to settings user", Toast.LENGTH_SHORT).show()
         }
     }
 }

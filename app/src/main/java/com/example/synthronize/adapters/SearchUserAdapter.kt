@@ -17,7 +17,7 @@ import com.example.synthronize.utils.FirebaseUtil
 
 class SearchUserAdapter(private val context: Context, options: FirestoreRecyclerOptions<UserModel>,  private val listener: OnItemClickListener,
                         //for user selecting
-                        private val toCheckUser:Boolean = false,
+                        private val purpose:String = "",
                         private val selectedUserList:ArrayList<String> = ArrayList()):
     FirestoreRecyclerAdapter<UserModel, SearchUserAdapter.UserViewHolder>(options) {
 
@@ -50,7 +50,7 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                 binding.userFullNameTV.text = "${model.fullName} (You)"
             }else {
                 binding.userFullNameTV.text = model.fullName
-                if (toCheckUser){
+                if (purpose == "SelectUser"){
                     //display check box if user is not the current user
                     binding.selectUserCB.visibility = View.VISIBLE
                     for (userId in selectedUserList){
@@ -65,14 +65,30 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                             listener.onUserClick(model.userID, false)
                         }
                     }
+
+                }else if(purpose == "PermitUser"){
+                    //displays accept and reject button
+                    binding.acceptBtn.visibility = View.VISIBLE
+                    binding.rejectBtn.visibility = View.VISIBLE
+
+                    binding.usernameTV.setOnClickListener {
+                        val intent = Intent(context, OtherUserProfile::class.java)
+                        intent.putExtra("userID", model.userID)
+                        context.startActivity(intent)
+                    }
+                    binding.acceptBtn.setOnClickListener {
+                        listener.onUserClick(model.userID, true)
+                    }
+                    binding.rejectBtn.setOnClickListener {
+                        listener.onUserClick(model.userID, false)
+                    }
+
                 }else {
                     //display check box if user is not the current user
                     binding.userContainerRL.setOnClickListener{
                         listener.onUserClick(model.userID)
                     }
                 }
-
-
             }
         }
     }

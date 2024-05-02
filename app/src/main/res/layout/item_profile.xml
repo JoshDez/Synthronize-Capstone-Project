@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/userContainerRL"
         android:padding="10dp"
-        android:layout_toLeftOf="@id/selectUserCB"
+        android:layout_toLeftOf="@id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <de.hdodenhof.circleimageview.CircleImageView
@@ -41,13 +41,45 @@
             android:layout_toRightOf="@id/userCircleImageView"/>
     </RelativeLayout>
 
-    <CheckBox
-        android:id="@+id/selectUserCB"
-        android:visibility="gone"
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:orientation="horizontal"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:buttonTint="@color/light_purple"/>
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/selectUserCB"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:buttonTint="@color/light_purple"/>
+
+        <ImageButton
+            android:id="@+id/rejectBtn"
+            android:visibility="gone"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/cancel_icon"
+            app:tint="@color/red"/>
+
+
+        <ImageButton
+            android:id="@+id/acceptBtn"
+            android:visibility="gone"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/check_icon"
+            app:tint="@color/light_purple"/>
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>

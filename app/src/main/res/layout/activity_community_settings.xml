@@ -226,6 +226,17 @@
                 android:textColor="@color/light_purple"/>
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/viewJoinRequestsBtn"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:text="@string/view_join_requests"
+                android:background = "@color/dark_purple_1"
+                android:textColor="@color/light_purple"/>
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/reportCommunityBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -20,7 +20,6 @@ import androidx.core.util.TypedValueCompat.dpToPx
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.synthronize.adapters.FeedsAdapter
 import com.example.synthronize.databinding.DialogCreatePostBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
@@ -180,7 +179,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
 
         //creates cancel button
         val cancelBtn = ImageButton(context)
-        cancelBtn.setImageResource(R.drawable.remove_media_icon)
+        cancelBtn.setImageResource(R.drawable.cancel_icon)
         cancelBtn.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         cancelBtn.setOnClickListener {
             postDialogBinding.mainPostLayout.removeView(verticalLayout)

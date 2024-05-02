@@ -235,7 +235,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
 
         //set up searched users recycler view
         binding.searchedUsersRV.layoutManager = LinearLayoutManager(this)
-        searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, toCheckUser = true, selectedUsersList)
+        searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUsersList)
         binding.searchedUsersRV.adapter = searchUserAdapter
         searchUserAdapter.startListening()
     }
