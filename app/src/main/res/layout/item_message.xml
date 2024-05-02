@@ -25,7 +25,7 @@
             android:layout_toRightOf="@id/userProfileCIV"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="2dp"
-            android:text="Josh Dez"
+            android:contentDescription="@string/username"
             android:textColor="@color/light_purple"/>
 
         <LinearLayout
@@ -42,7 +42,7 @@
                 android:id="@+id/recieverMsgTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Chats"
+                android:contentDescription="@string/Chats"
                 android:textColor="@color/light_purple"
                 android:textSize="17sp"/>
         </LinearLayout>
@@ -67,7 +67,7 @@
                 android:id="@+id/senderMsgTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Chats"
+                android:contentDescription="@string/Chats"
                 android:textColor="@color/dark_purple_2"
                 android:textSize="17sp"/>
         </LinearLayout>
