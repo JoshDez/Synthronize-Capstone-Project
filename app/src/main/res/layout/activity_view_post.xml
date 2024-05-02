@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_purple_2"
+    tools:context=".ViewPost">
+
+    <RelativeLayout
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/dark_purple_2"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/back_icon"
+            app:tint="@color/light_purple" />
+
+
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/mainToolbar"
+        android:background="@color/light_purple"
+        app:dividerColor="@color/light_purple" />
+
+    <ScrollView
+        android:layout_below="@id/divider1"
+        android:layout_above="@id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/mainPostLayout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileCIV"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/profile_not_selected"/>
+
+                <TextView
+                    android:id="@+id/ownerUsernameTV"
+                    android:paddingStart="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/profileCIV"
+                    android:textColor="@color/light_purple"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:id="@+id/feedTimestampTV"
+                    android:paddingStart="10dp"
+                    android:layout_below="@id/ownerUsernameTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/profileCIV"
+                    android:textColor="@color/light_purple"/>
+
+
+                <EditText
+                    android:id="@+id/captionEdtTxt"
+                    android:layout_below="@id/feedTimestampTV"
+                    android:padding="15dp"
+                    android:layout_toRightOf="@id/profileCIV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:backgroundTint="@color/light_purple"
+                    android:textColorHint="@color/light_purple"
+                    android:textColor="@color/light_purple"/>
+            </RelativeLayout>
+
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_above="@id/bottomToolbar"
+                android:background="@color/light_purple"
+                app:dividerColor="@color/light_purple" />
+
+            <LinearLayout
+                android:id="@+id/contentLayout"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="@color/dark_purple_1"
+                android:text="Comments"
+                android:textColor="@color/light_purple"
+                android:textAlignment="center"
+                android:textSize="20sp"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/bottomToolbar"
+        android:background="@color/light_purple"
+        app:dividerColor="@color/light_purple" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/bottomToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/dark_purple_2"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/commentEdtTxt"
+            android:padding="7dp"
+            android:layout_weight="10"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_height="45dp"
+            android:background="@drawable/input_rounded_corners"
+            android:hint="Write your comment"/>
+
+        <ImageButton
+            android:id="@+id/sendBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:src="@drawable/send_msg_icon"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:tint="@color/light_purple"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,6 +1,9 @@
 package com.example.synthronize.adapters
 
 import android.content.Context
+import android.content.Intent
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -10,7 +13,9 @@ import android.widget.ViewFlipper
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
+import com.example.synthronize.ViewPost
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.ItemFeedBinding
 import com.example.synthronize.model.FeedsModel
@@ -68,11 +73,17 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 val owner = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, owner.userID, feedsBinding.profileCIV)
                 feedsBinding.usernameTV.text = owner.username
+                feedsBinding.descriptionTV.text = feedModel.feedCaption
+                feedsBinding.timestampTV.text = feedModel.feedTimestamp.toDate().toString()
                 feedsBinding.usernameTV.setOnClickListener {
                     headToUserProfile()
                 }
-                feedsBinding.descriptionTV.text = feedModel.feedCaption
-                feedsBinding.timestampTV.text = feedModel.feedTimestamp.toString()
+                feedsBinding.descriptionTV.setOnClickListener {
+                    viewPost()
+                }
+                feedsBinding.commentBtn.setOnClickListener {
+                    viewPost()
+                }
                 bindLove()
                 bindComment()
                 bindRepost()
@@ -102,7 +113,32 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
         }
 
         private fun bindComment() {
-            //
+
+            feedsBinding.commentEdtTxt.addTextChangedListener(object: TextWatcher {
+                override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    val comment = feedsBinding.commentEdtTxt.text.toString()
+                    if (comment.isNotEmpty()){
+                        feedsBinding.loveLayout.visibility = View.GONE
+                        feedsBinding.commentLayout.visibility = View.GONE
+                        feedsBinding.repostLayout.visibility = View.GONE
+                        feedsBinding.sendBtn.visibility = View.VISIBLE
+                    } else {
+                        feedsBinding.loveLayout.visibility = View.VISIBLE
+                        feedsBinding.commentLayout.visibility = View.VISIBLE
+                        feedsBinding.repostLayout.visibility = View.VISIBLE
+                        feedsBinding.sendBtn.visibility = View.GONE
+                    }
+                }
+            })
+
+            feedsBinding.sendBtn.setOnClickListener {
+                val comment = feedsBinding.commentEdtTxt.text.toString()
+                if (comment.isNotEmpty()){
+                    //TODO send comment to be implemented
+                }
+            }
 
             //TODO Not yet implemented
         }
@@ -155,8 +191,18 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     //feedsBinding.commentsCountTV.text
                 }
         }
+
+        private fun viewPost(){
+            val intent = Intent(context, ViewPost::class.java)
+            intent.putExtra("communityId", feedModel.communityIdOfOrigin)
+            intent.putExtra("feedId", feedModel.feedId)
+            context.startActivity(intent)
+        }
+
         private fun headToUserProfile() {
-            //TODO Not yet implemented
+            val intent = Intent(context, OtherUserProfile::class.java)
+            intent.putExtra("userId", feedModel.ownerId)
+            context.startActivity(intent)
         }
     }
 }
