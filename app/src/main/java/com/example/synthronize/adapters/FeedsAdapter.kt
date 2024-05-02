@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ViewFlipper
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.synthronize.R
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.ItemFeedBinding
@@ -40,22 +41,14 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
 
     //VIEW HOLDER
     class FeedsViewHolder(private val mainBinding: FragmentCommunityBinding, private val feedsBinding: ItemFeedBinding,
-                          private val context: Context)
-        : RecyclerView.ViewHolder(feedsBinding.root), GestureDetector.OnGestureListener{
+                          private val context: Context) : RecyclerView.ViewHolder(feedsBinding.root){
 
         private lateinit var feedModel:FeedsModel
-        private lateinit var gestureDetector: GestureDetectorCompat
+        private lateinit var viewPageAdapter: ViewPageAdapter
         private var isLoved:Boolean = false
-
-        init {
-            itemView.setOnTouchListener { _, event ->
-                gestureDetector.onTouchEvent(event)
-            }
-        }
         fun bind(model: FeedsModel){
 
             this.feedModel = model
-            gestureDetector = GestureDetectorCompat(feedsBinding.root.context, this)
 
             //SETUP WRAPPER FOR REPOST OR COMMUNITY
             if (feedModel.repostId.isNotEmpty()){
@@ -88,7 +81,20 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
         }
 
         private fun bindContent() {
-            ContentUtil().addContentToViewFlipper(context, feedsBinding, feedModel.contentList)
+            if (feedModel.contentList.isNotEmpty()){
+                //displays content with view pager 2
+                feedsBinding.viewPager2.visibility = View.VISIBLE
+                viewPageAdapter = ViewPageAdapter(feedsBinding.root.context, feedModel.contentList)
+                feedsBinding.viewPager2.adapter = viewPageAdapter
+                feedsBinding.viewPager2.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+
+                //shows the indicator if the content is more than one
+                if (feedModel.contentList.size > 1){
+                    feedsBinding.circleIndicator3.visibility = View.VISIBLE
+                    feedsBinding.circleIndicator3.setViewPager(feedsBinding.viewPager2)
+                    feedsBinding.circleIndicator3
+                }
+            }
         }
 
         private fun bindRepost() {
@@ -96,6 +102,8 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
         }
 
         private fun bindComment() {
+            //
+
             //TODO Not yet implemented
         }
 
@@ -149,34 +157,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
         }
         private fun headToUserProfile() {
             //TODO Not yet implemented
-        }
-
-        override fun onDown(e: MotionEvent): Boolean {
-            return true
-        }
-
-        override fun onShowPress(e: MotionEvent) {}
-
-        override fun onSingleTapUp(e: MotionEvent): Boolean {
-            return true
-        }
-
-        override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-            return true
-        }
-
-        override fun onLongPress(e: MotionEvent) {}
-
-        override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-            val sensitivity = 50
-            if (e1 != null) {
-                if (e1.x - e2.x > sensitivity) {
-                    feedsBinding.contentLayout.showNext()
-                } else if (e2.x - e1.x > sensitivity) {
-                    feedsBinding.contentLayout.showPrevious()
-                }
-            }
-            return true
         }
     }
 }

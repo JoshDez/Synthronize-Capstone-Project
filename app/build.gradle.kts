@@ -65,6 +65,10 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-storage:8.0.2")
     implementation("com.github.denzcoskun:ImageSlideshow:0.1.2")
     implementation("me.relex:circleindicator:2.1.6")
+
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("me.relex:circleindicator:2.1.6")
+
     kapt("com.github.bumptech.glide:compiler:4.16.0")
 
 
