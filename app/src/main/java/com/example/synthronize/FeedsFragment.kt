@@ -132,7 +132,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
             postDialog.dismiss()
         }
         postDialogBinding.postBtn.setOnClickListener {
-            if (postDialogBinding.captionEdtTxt.text.toString().isNotEmpty() && ::uriHashMap.isInitialized){
+            if (postDialogBinding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
                 addPost(){isUploaded ->
                     if (isUploaded)
                         postDialog.dismiss()
@@ -212,12 +212,16 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
         var delay:Long = 1000
 
         FirebaseUtil().retrieveCommunityFeedsCollection(communityId).add(tempModel).addOnSuccessListener {
-            for (data in uriHashMap){
-                //data key is imageId and data value is uri
-                //uploads image to the firebase storage
-                FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
-                contentList.add(data.key)
-                delay += 100
+
+            if (::uriHashMap.isInitialized){
+                for (data in uriHashMap){
+                    //data key is imageId and data value is uri
+                    //uploads image to the firebase storage
+                    Toast.makeText(context, "SHOOT DITOOOO", Toast.LENGTH_SHORT).show()
+                    FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
+                    contentList.add(data.key)
+                    delay += 100
+                }
             }
 
             //get new id from firestore and store it in feedId of the feedsModel
@@ -230,6 +234,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
                 contentList = contentList
             )
 
+            //replaces temp model with feeds model
             FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(feedsModel).addOnCompleteListener {task ->
                 if (task.isSuccessful) {
                     Handler().postDelayed({
@@ -250,13 +255,6 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
         super.onStart()
         if (::feedsAdapter.isInitialized){
             feedsAdapter.startListening()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (::feedsAdapter.isInitialized && !isNewPost){
-            feedsAdapter.notifyDataSetChanged()
         }
     }
 

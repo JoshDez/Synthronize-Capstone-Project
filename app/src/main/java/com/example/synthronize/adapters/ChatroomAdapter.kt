@@ -54,7 +54,7 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
         }
 
         private fun bindCommunityChat() {
-            TODO("Not yet implemented")
+
         }
 
         private fun bindGroupChat() {

@@ -106,6 +106,10 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     feedsBinding.circleIndicator3.setViewPager(feedsBinding.viewPager2)
                     feedsBinding.circleIndicator3
                 }
+            } else {
+                //default
+                feedsBinding.viewPager2.visibility = View.GONE
+                feedsBinding.circleIndicator3.visibility = View.GONE
             }
         }
 
@@ -146,7 +150,11 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
 
         //FOR LOVE
         private fun bindLove() {
+            //default
+            feedsBinding.loveBtn.setImageResource(R.drawable.baseline_favorite_border_24)
+
             updateFeedStatus()
+
             for (user in feedModel.usersLoves){
                 if (user == FirebaseUtil().currentUserUid()){
                     feedsBinding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)

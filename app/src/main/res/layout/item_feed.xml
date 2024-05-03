@@ -129,9 +129,9 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager2"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_margin="16dp"
         android:gravity="center"
         android:animateLayoutChanges="true"
@@ -141,11 +141,13 @@
 
     <me.relex.circleindicator.CircleIndicator3
         android:id="@+id/circleIndicator3"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginTop="10dp"
         app:ci_drawable="@color/light_purple"/>
+
+
 
     <!-- Post Description -->
     <TextView
