@@ -71,6 +71,10 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 AppUtil().setUserProfilePic(context, userId, binding.userProfileCIV)
                 AppUtil().setUserCoverPic(context, userId, binding.userCoverIV)
 
+                //bind counts
+                getCommunitiesCount()
+                getPostsCount()
+
                 binding.editProfileBtn.setOnClickListener {
                     headToEditProfile()
                 }
@@ -141,6 +145,38 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         intent.putExtra("userID", userId)
         startActivity(intent)
     }
+
+    private fun getCommunitiesCount(){
+        FirebaseUtil().retrieveAllCommunityCollection()
+            .whereArrayContains("communityMembers", FirebaseUtil().currentUserUid()).get().addOnSuccessListener {
+                binding.communitiesCountTV.text = it.size().toString()
+            }.addOnFailureListener {
+                binding.communitiesCountTV.text = "0"
+            }
+    }
+
+    private fun getPostsCount(){
+        FirebaseUtil().retrieveAllCommunityCollection().get()
+            .addOnSuccessListener { querySnapshot ->
+                var totalPosts = 0
+                for (document in querySnapshot.documents) {
+                    FirebaseUtil().retrieveAllCommunityCollection()
+                        .document(document.id) // Access each document within the collection
+                        .collection("feeds")
+                        .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
+                        .get()
+                        .addOnSuccessListener { feedsSnapshot ->
+                            totalPosts += feedsSnapshot.size()
+                            binding.postsCountTV.text = totalPosts.toString()
+                        }
+                }
+            }
+            .addOnFailureListener {
+                binding.postsCountTV.text = "0"
+            }
+    }
+
+
 
 
 
