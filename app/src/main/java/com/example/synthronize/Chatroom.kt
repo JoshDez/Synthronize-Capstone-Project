@@ -2,6 +2,7 @@ package com.example.synthronize
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -16,7 +17,6 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 class Chatroom : AppCompatActivity() {
     private lateinit var binding:ActivityChatroomBinding
-    private lateinit var chatroomID:String
     private lateinit var chatroomModel: ChatroomModel
     private lateinit var recyclerView:RecyclerView
     private lateinit var messageAdapter: MessageAdapter
@@ -25,6 +25,7 @@ class Chatroom : AppCompatActivity() {
     private var receiverUid = ""
     private var chatroomType = ""
     private var communityId = ""
+    private var chatroomID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,8 @@ class Chatroom : AppCompatActivity() {
 
         //for community chats
         communityId = intent.getStringExtra("communityId").toString()
+        chatroomID = intent.getStringExtra("chatroomId").toString()
+
 
 
         //binding buttons
@@ -73,7 +76,10 @@ class Chatroom : AppCompatActivity() {
         } else if (chatroomType == "group_chat"){
             //TODO: To be implemented
         } else if (chatroomType == "community_chat"){
-            chatroomID = "$communityId-$chatroomName"
+            //assign chatroom id if its not yet existed
+            if (chatroomID == "null"){
+                chatroomID = "$communityId-$chatroomName"
+            }
         }
     }
 
@@ -81,7 +87,6 @@ class Chatroom : AppCompatActivity() {
         binding.chatRoomNameTV.text = chatroomName
         when(chatroomType){
             "direct_message" -> AppUtil().setUserProfilePic(this, receiverUid, binding.chatroomCircleIV)
-
             "community_chat" -> AppUtil().setCommunityProfilePic(this, communityId, binding.chatroomCircleIV)
         }
     }
@@ -107,11 +112,13 @@ class Chatroom : AppCompatActivity() {
                         val communityModel = result.toObject(CommunityModel::class.java)!!
 
                         chatroomModel = ChatroomModel(
+                            chatroomName = chatroomName,
                             chatroomId = chatroomID,
                             chatroomType = "community_chat",
                             userIdList = communityModel.communityMembers,
                             lastMsgTimestamp = Timestamp.now(),
-                            ""
+                            lastMessage = "",
+                            lastMessageUserId = FirebaseUtil().currentUserUid()
                         )
                         FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
                     }
@@ -126,24 +133,22 @@ class Chatroom : AppCompatActivity() {
     private fun setupChatRV() {
         if (chatroomID.isNotEmpty()){
             val myQuery: Query = FirebaseUtil().retrieveChatsFromChatroom(chatroomID)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .orderBy("timestamp", Query.Direction.ASCENDING)
 
             val options: FirestoreRecyclerOptions<MessageModel> =
                 FirestoreRecyclerOptions.Builder<MessageModel>().setQuery(myQuery, MessageModel::class.java).build()
 
             recyclerView = binding.chatRV
             linearLayoutManager = LinearLayoutManager(this)
-            linearLayoutManager.reverseLayout = true
+            //linearLayoutManager.reverseLayout = true
             recyclerView.layoutManager = linearLayoutManager
             messageAdapter = MessageAdapter(this, options)
             recyclerView.adapter = messageAdapter
             messageAdapter.startListening()
-            messageAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    super.onItemRangeInserted(positionStart, itemCount)
-                    recyclerView.smoothScrollToPosition(0)
-                }
-            })
+
+            Handler().postDelayed({
+                recyclerView.smoothScrollToPosition(messageAdapter.getMessageCount())
+            }, 1000)
         }
     }
 
@@ -158,5 +163,28 @@ class Chatroom : AppCompatActivity() {
 
         //add message to chatroom
         FirebaseUtil().retrieveChatsFromChatroom(chatroomID).add(messageModel)
+
+        Handler().postDelayed({
+            recyclerView.smoothScrollToPosition(messageAdapter.getMessageCount())
+        }, 1000)
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (::messageAdapter.isInitialized)
+            messageAdapter.startListening()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::messageAdapter.isInitialized)
+            messageAdapter.notifyDataSetChanged()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::messageAdapter.isInitialized)
+            messageAdapter.stopListening()
     }
 }

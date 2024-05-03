@@ -10,6 +10,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.example.synthronize.Chatroom
 import com.example.synthronize.databinding.ItemChatroomBinding
 import com.example.synthronize.model.ChatroomModel
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -48,13 +49,40 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                 //TODO: TO BE IMPLEMENTED FOR GROUP CHATS
                 bindGroupChat()
             } else {
-                //TODO: TO BE IMPLEMENTED FOR COMMUNITY CHATS
                 bindCommunityChat()
             }
         }
 
         private fun bindCommunityChat() {
+            //splits the id to extract the communityId
+            val temp = chatroomModel.chatroomId.split('-')
+            val communityId = temp[0]
 
+            AppUtil().setCommunityProfilePic(context, communityId, binding.userCircleImageView)
+            binding.chatroomNameTV.text = chatroomModel.chatroomName
+            binding.lastUserMessageTV.text = chatroomModel.lastMessage
+            binding.lastTimestampTV.text =  SimpleDateFormat("HH:MM")
+                .format(chatroomModel.lastMsgTimestamp.toDate())
+
+            FirebaseUtil().targetUserDetails(chatroomModel.lastMessageUserId).get().addOnSuccessListener {
+                val userModel = it.toObject(UserModel::class.java)!!
+                if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
+                //if the message is not from the current user
+                    binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
+                else
+                //if the message is from the current user
+                    binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
+
+
+                binding.chatroomLayout.setOnClickListener {
+                    val intent = Intent(context, Chatroom::class.java)
+                    intent.putExtra("chatroomName", chatroomModel.chatroomName)
+                    intent.putExtra("chatroomId", chatroomModel.chatroomId)
+                    intent.putExtra("chatroomType", chatroomModel.chatroomType)
+                    intent.putExtra("communityId", communityId)
+                    context.startActivity(intent)
+                }
+            }
         }
 
         private fun bindGroupChat() {

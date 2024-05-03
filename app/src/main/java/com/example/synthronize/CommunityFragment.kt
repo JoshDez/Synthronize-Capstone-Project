@@ -113,6 +113,13 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             replaceFragment(FilesFragment(binding, communityId))
             selectNavigation("files")
         }
+        binding.generalChatsBtn.setOnClickListener {
+            val intent = Intent(context, Chatroom::class.java)
+            intent.putExtra("chatroomName", "General Chat")
+            intent.putExtra("communityId", communityId)
+            intent.putExtra("chatroomType", "community_chat")
+            startActivity(intent)
+        }
 
         //bind buttons from main binding
         mainBinding.backBtn.setOnClickListener {

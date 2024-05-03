@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat
 class MessageAdapter(private val context: Context, options: FirestoreRecyclerOptions<MessageModel>):
     FirestoreRecyclerAdapter<MessageModel, MessageAdapter.MessageViewHolder>(options) {
 
+    private var itemCount:Int = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemMessageBinding.inflate(inflater, parent, false)
@@ -27,6 +28,11 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int, model: MessageModel) {
         holder.bind(model)
+        itemCount += 1
+    }
+
+    fun getMessageCount(): Int{
+        return itemCount
     }
 
     class MessageViewHolder(private val binding: ItemMessageBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
