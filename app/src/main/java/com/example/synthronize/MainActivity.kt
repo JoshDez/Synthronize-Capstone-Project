@@ -111,10 +111,12 @@ class MainActivity : AppCompatActivity() {
     private fun resetMainToolbar(){
         binding.communitySettingsBtn.visibility = View.GONE
         binding.backBtn.visibility = View.GONE
+        binding.kebabMenuBtn.visibility = View.GONE
         binding.toolbarImageCIV.setImageResource(R.drawable.synthronize_logo)
 
         //resetting main toolbar setOnClickListeners
         binding.searchBtn.setOnClickListener(null)
+        binding.kebabMenuBtn.setOnClickListener(null)
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.groups_toolbar_menu, menu)

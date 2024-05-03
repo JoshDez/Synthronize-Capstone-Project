@@ -57,6 +57,7 @@
 
             <ImageButton
                 android:id="@+id/searchBtn"
+                android:visibility="gone"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -70,6 +71,16 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="10dp"
                 android:layout_gravity="center"/>
+
+            <ImageButton
+                android:id="@+id/kebabMenuBtn"
+                android:visibility="gone"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/kebab_menu_icon"
+                app:tint="@color/light_purple" />
 
         </LinearLayout>
     </RelativeLayout>

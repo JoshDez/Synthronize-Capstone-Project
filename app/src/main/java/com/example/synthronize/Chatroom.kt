@@ -10,10 +10,10 @@ import com.google.firebase.firestore.Query
 import com.example.synthronize.adapters.MessageAdapter
 import com.example.synthronize.databinding.ActivityChatroomBinding
 import com.example.synthronize.model.ChatroomModel
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.MessageModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
-
 class Chatroom : AppCompatActivity() {
     private lateinit var binding:ActivityChatroomBinding
     private lateinit var chatroomID:String
@@ -24,16 +24,25 @@ class Chatroom : AppCompatActivity() {
     private var chatroomName = ""
     private var receiverUid = ""
     private var chatroomType = ""
+    private var communityId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatroomBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //chatroom details
         chatroomName = intent.getStringExtra("chatroomName").toString()
         chatroomType = intent.getStringExtra("chatroomType").toString()
+
+        //for direct message
         receiverUid = intent.getStringExtra("userID").toString()
 
+        //for community chats
+        communityId = intent.getStringExtra("communityId").toString()
+
+
+        //binding buttons
         binding.backBtn.setOnClickListener {
             onBackPressed()
         }
@@ -63,9 +72,8 @@ class Chatroom : AppCompatActivity() {
 
         } else if (chatroomType == "group_chat"){
             //TODO: To be implemented
-
         } else if (chatroomType == "community_chat"){
-            //TODO: To be implemented
+            chatroomID = "$communityId-$chatroomName"
         }
     }
 
@@ -73,7 +81,45 @@ class Chatroom : AppCompatActivity() {
         binding.chatRoomNameTV.text = chatroomName
         when(chatroomType){
             "direct_message" -> AppUtil().setUserProfilePic(this, receiverUid, binding.chatroomCircleIV)
-            //TODO: CIV for other types of chat
+
+            "community_chat" -> AppUtil().setCommunityProfilePic(this, communityId, binding.chatroomCircleIV)
+        }
+    }
+
+    private fun createOrRetrieveChatroomModel(){
+        FirebaseUtil().retrieveChatRoomReference(chatroomID).get().addOnCompleteListener {
+            if (it.isSuccessful){
+                if (!it.result.exists() && chatroomType == "direct_message"){
+                    //First chat in DM
+                    chatroomModel = ChatroomModel(chatroomID,
+                        "direct_message",
+                        listOf(FirebaseUtil().currentUserUid(), receiverUid),
+                        Timestamp.now(),
+                        ""
+                    )
+                    FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
+                } else if (!it.result.exists() && chatroomType == "group_chat"){
+                    //First chat in Group
+                    //TODO to be implemented
+
+                } else if (!it.result.exists() && chatroomType == "community_chat"){
+                    FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener { result ->
+                        val communityModel = result.toObject(CommunityModel::class.java)!!
+
+                        chatroomModel = ChatroomModel(
+                            chatroomId = chatroomID,
+                            chatroomType = "community_chat",
+                            userIdList = communityModel.communityMembers,
+                            lastMsgTimestamp = Timestamp.now(),
+                            ""
+                        )
+                        FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
+                    }
+                } else {
+                    chatroomModel = it.result.toObject(ChatroomModel::class.java)!!
+                }
+
+            }
         }
     }
 
@@ -112,31 +158,5 @@ class Chatroom : AppCompatActivity() {
 
         //add message to chatroom
         FirebaseUtil().retrieveChatsFromChatroom(chatroomID).add(messageModel)
-    }
-
-    private fun createOrRetrieveChatroomModel(){
-        FirebaseUtil().retrieveChatRoomReference(chatroomID).get().addOnCompleteListener {
-            if (it.isSuccessful){
-                if (!it.result.exists() && chatroomType == "direct_message"){
-                    //First chat in DM
-                    chatroomModel = ChatroomModel(chatroomID,
-                        "direct_message",
-                        listOf(FirebaseUtil().currentUserUid(), receiverUid),
-                        Timestamp.now(),
-                        ""
-                    )
-                    FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
-                } else if (!it.result.exists() && chatroomType == "group_chat"){
-                    //First chat in Group
-                    //chatroomModel = ChatroomModel(chatroomID, "group_chat")
-                } else if (!it.result.exists() && chatroomType == "community_chat"){
-                    //First chat in Community Chat
-                    //chatroomModel = ChatroomModel(chatroomID, "group_chat")
-                } else {
-                    chatroomModel = it.result.toObject(ChatroomModel::class.java)!!
-                }
-
-            }
-        }
     }
 }

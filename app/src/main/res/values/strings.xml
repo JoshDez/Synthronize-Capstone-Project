@@ -89,6 +89,7 @@
     <string name="write_what_s_on_your_mind">Write what\'s on your mind</string>
     <string name="comments">Comments</string>
     <string name="view_join_requests">View Join Requests</string>
+    <string name="menuoption">menuOption</string>
 
 
 </resources>

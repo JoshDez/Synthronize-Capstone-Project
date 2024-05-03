@@ -1,5 +1,8 @@
 package com.example.synthronize.utils
 
+import android.content.Context
+import android.content.Intent
+import com.example.synthronize.Login
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
@@ -11,6 +14,11 @@ import com.google.firebase.storage.StorageReference
 class FirebaseUtil {
 
     //For Authentication
+    fun logoutUser(context: Context){
+        FirebaseAuth.getInstance().signOut()
+        val intent = Intent(context, Login::class.java)
+        context.startActivity(intent)
+    }
     fun currentUserUid(): String {
         return FirebaseAuth.getInstance().uid!!
     }

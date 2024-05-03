@@ -2,20 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="14dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/dark_purple_2"
     android:orientation="vertical">
 
 
     <!-- Wrapper Header -->
-
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="14dp"
-        app:dividerColor="@color/light_purple"/>
-
     <LinearLayout
         android:id="@+id/feedWrapperLayout"
         android:layout_marginStart="16dp"
@@ -293,4 +286,8 @@
             app:tint="@color/light_purple"/>
 
     </LinearLayout>
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:dividerColor="@color/light_purple"/>
 </LinearLayout>

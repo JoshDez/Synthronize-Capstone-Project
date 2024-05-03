@@ -59,9 +59,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         //IF THE FRAGMENT IS ADDED (avoids fragment related crash)
-
         if (isAdded){
             //Retrieve Group Model
             context = requireContext()

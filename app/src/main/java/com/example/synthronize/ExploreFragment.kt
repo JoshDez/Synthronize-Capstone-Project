@@ -42,6 +42,7 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment() 
     }
 
     private fun bindButtons(){
+        mainBinding.searchBtn.visibility = View.VISIBLE
         mainBinding.searchBtn.setOnClickListener {
             val intent = Intent(context, Search::class.java)
             startActivity(intent)
