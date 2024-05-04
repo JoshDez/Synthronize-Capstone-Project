@@ -11,6 +11,7 @@ data class CommunityModel(
     var communityCreatedTimestamp: Timestamp = Timestamp.now(),
     var communityMembers: List<String> = listOf(),
     var communityAdmin: List<String> = listOf(),
+    var communityChannels:List<String> = listOf(),
     var joinRequestList: List<String> = listOf(),
     var blockList: List<String> = listOf()
 )

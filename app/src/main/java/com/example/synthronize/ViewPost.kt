@@ -1,34 +1,26 @@
 package com.example.synthronize
 
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.marginBottom
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.CommentAdapter
 import com.example.synthronize.databinding.ActivityViewPostBinding
 import com.example.synthronize.model.CommentModel
-import com.example.synthronize.model.CommunityModel
-import com.example.synthronize.model.FeedsModel
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
-import java.lang.reflect.Field
 
 class ViewPost : AppCompatActivity() {
     private lateinit var binding:ActivityViewPostBinding
     private lateinit var commentAdapter: CommentAdapter
     private lateinit var communityId:String
-    private lateinit var feedId:String
+    private lateinit var postId:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,16 +28,16 @@ class ViewPost : AppCompatActivity() {
         setContentView(binding.root)
 
         communityId = intent.getStringExtra("communityId").toString()
-        feedId = intent.getStringExtra("feedId").toString()
+        postId = intent.getStringExtra("postId").toString()
 
         getFeedModel()
     }
 
     private fun getFeedModel(){
-        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(feedId).get().addOnSuccessListener {
-            val feedModel = it.toObject(FeedsModel::class.java)!!
-            binding.feedTimestampTV.text = DateUtil().formatTimestampToDate(feedModel.feedTimestamp)
-            binding.captionEdtTxt.setText(feedModel.feedCaption)
+        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).get().addOnSuccessListener {
+            val feedModel = it.toObject(PostModel::class.java)!!
+            binding.feedTimestampTV.text = DateUtil().formatTimestampToDate(feedModel.createdTimestamp)
+            binding.captionEdtTxt.setText(feedModel.caption)
             binding.backBtn.setOnClickListener {
                 this.finish()
             }
@@ -65,7 +57,7 @@ class ViewPost : AppCompatActivity() {
     }
 
     private fun bindComments(){
-        val query: Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(feedId).collection("comments")
+        val query: Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).collection("comments")
             .orderBy("commentTimestamp", Query.Direction.ASCENDING)
 
         val options: FirestoreRecyclerOptions<CommentModel> =
@@ -84,7 +76,7 @@ class ViewPost : AppCompatActivity() {
                     comment = comment,
                     commentTimestamp = Timestamp.now()
                 )
-                FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(feedId).collection("comments").add(commentModel).addOnCompleteListener {
+                FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).collection("comments").add(commentModel).addOnCompleteListener {
                     if (it.isSuccessful){
                         binding.commentEdtTxt.setText("")
                         bindComments()

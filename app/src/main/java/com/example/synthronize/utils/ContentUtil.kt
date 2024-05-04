@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
 import androidx.core.util.TypedValueCompat
-import com.example.synthronize.databinding.ItemFeedBinding
 
 class ContentUtil {
 

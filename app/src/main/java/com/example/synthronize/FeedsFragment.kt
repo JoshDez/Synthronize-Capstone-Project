@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.adapters.FeedsAdapter
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentFeedsBinding
-import com.example.synthronize.model.FeedsModel
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
@@ -47,12 +47,12 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
     }
 
     private fun setRecyclerView() {
-        val feedsQuery:Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId)
-            .orderBy("feedTimestamp", Query.Direction.DESCENDING)
+        val myQuery:Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId)
+            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
 
         //set options for firebase ui
-        val options: FirestoreRecyclerOptions<FeedsModel> =
-            FirestoreRecyclerOptions.Builder<FeedsModel>().setQuery(feedsQuery, FeedsModel::class.java).build()
+        val options: FirestoreRecyclerOptions<PostModel> =
+            FirestoreRecyclerOptions.Builder<PostModel>().setQuery(myQuery, PostModel::class.java).build()
 
         recyclerView = binding.feedsRV
         recyclerView.layoutManager = LinearLayoutManager(context)

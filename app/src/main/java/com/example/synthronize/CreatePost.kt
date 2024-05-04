@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.TypedValueCompat
 import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreatePostBinding
-import com.example.synthronize.model.FeedsModel
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -135,7 +135,7 @@ class CreatePost : AppCompatActivity() {
     }
 
     private fun addPost(callback: (Boolean) -> Unit){
-        val tempModel = FeedsModel()
+        val tempModel = PostModel()
         val contentList:ArrayList<String> = ArrayList()
         val caption = binding.captionEdtTxt.text.toString()
         var delay:Long = 1000
@@ -152,18 +152,18 @@ class CreatePost : AppCompatActivity() {
                 }
             }
 
-            //get new id from firestore and store it in feedId of the feedsModel
-            val feedsModel = FeedsModel(
-                feedId = it.id,
+            //get new id from firestore and store it in feedId of the PostModel
+            val postModel = PostModel(
+                postId = it.id,
                 ownerId = FirebaseUtil().currentUserUid(),
-                feedCaption = caption,
-                feedTimestamp = Timestamp.now(),
-                communityIdOfOrigin = communityId,
+                caption = caption,
+                createdTimestamp = Timestamp.now(),
+                communityId = communityId,
                 contentList = contentList
             )
 
             //replaces temp model with feeds model
-            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(feedsModel).addOnCompleteListener {task ->
+            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(postModel).addOnCompleteListener {task ->
                 if (task.isSuccessful) {
                     Handler().postDelayed({
                         Toast.makeText(this, "Your post is uploaded successfully!", Toast.LENGTH_SHORT).show()

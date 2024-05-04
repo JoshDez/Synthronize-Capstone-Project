@@ -57,7 +57,6 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
                 }
             }
         }
-
     }
 
 

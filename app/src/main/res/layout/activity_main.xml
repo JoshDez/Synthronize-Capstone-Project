@@ -18,7 +18,8 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/sideButtonsLayout"
             android:layout_centerVertical="true">
             <ImageButton
                 android:id="@+id/backBtn"
@@ -40,7 +41,8 @@
             <TextView
                 android:id="@+id/toolbarTitleTV"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:textSize="25dp"
                 android:textColor="@color/light_purple"
@@ -48,7 +50,7 @@
         </LinearLayout>
 
         <LinearLayout
-
+            android:id="@+id/sideButtonsLayout"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
