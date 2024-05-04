@@ -14,8 +14,9 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.firestore.toObject
 import java.text.SimpleDateFormat
-
+//CHATROOMS
 class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOptions<ChatroomModel>):
     FirestoreRecyclerAdapter<ChatroomModel, ChatroomAdapter.ChatroomViewHolder>(options) {
 
@@ -34,6 +35,7 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
     class ChatroomViewHolder(private val binding: ItemChatroomBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
 
         private lateinit var chatroomModel: ChatroomModel
+        private lateinit var communityModel: CommunityModel
 
         fun bind(model: ChatroomModel){
             chatroomModel = model
@@ -58,29 +60,33 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
             val temp = chatroomModel.chatroomId.split('-')
             val communityId = temp[0]
 
-            AppUtil().setCommunityProfilePic(context, communityId, binding.userCircleImageView)
-            binding.chatroomNameTV.text = chatroomModel.chatroomName
-            binding.lastUserMessageTV.text = chatroomModel.lastMessage
-            binding.lastTimestampTV.text =  SimpleDateFormat("HH:MM")
-                .format(chatroomModel.lastMsgTimestamp.toDate())
 
-            FirebaseUtil().targetUserDetails(chatroomModel.lastMessageUserId).get().addOnSuccessListener {
-                val userModel = it.toObject(UserModel::class.java)!!
-                if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
-                //if the message is not from the current user
-                    binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
-                else
-                //if the message is from the current user
-                    binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
+            FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                val community = it.toObject(CommunityModel::class.java)!!
+                AppUtil().setCommunityProfilePic(context, communityId, binding.userCircleImageView)
+                binding.chatroomNameTV.text = "${chatroomModel.chatroomName} | ${community.communityName}"
+                binding.lastUserMessageTV.text = chatroomModel.lastMessage
+                binding.lastTimestampTV.text =  SimpleDateFormat("HH:MM")
+                    .format(chatroomModel.lastMsgTimestamp.toDate())
+
+                FirebaseUtil().targetUserDetails(chatroomModel.lastMessageUserId).get().addOnSuccessListener {user ->
+                    val userModel = user.toObject(UserModel::class.java)!!
+                    if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
+                    //if the message is not from the current user
+                        binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
+                    else
+                    //if the message is from the current user
+                        binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
 
 
-                binding.chatroomLayout.setOnClickListener {
-                    val intent = Intent(context, Chatroom::class.java)
-                    intent.putExtra("chatroomName", chatroomModel.chatroomName)
-                    intent.putExtra("chatroomId", chatroomModel.chatroomId)
-                    intent.putExtra("chatroomType", chatroomModel.chatroomType)
-                    intent.putExtra("communityId", communityId)
-                    context.startActivity(intent)
+                    binding.chatroomLayout.setOnClickListener {
+                        val intent = Intent(context, Chatroom::class.java)
+                        intent.putExtra("chatroomName", chatroomModel.chatroomName)
+                        intent.putExtra("chatroomId", chatroomModel.chatroomId)
+                        intent.putExtra("chatroomType", chatroomModel.chatroomType)
+                        intent.putExtra("communityId", communityId)
+                        context.startActivity(intent)
+                    }
                 }
             }
         }

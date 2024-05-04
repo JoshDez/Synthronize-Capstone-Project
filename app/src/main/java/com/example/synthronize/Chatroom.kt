@@ -72,7 +72,6 @@ class Chatroom : AppCompatActivity() {
             } else {
                chatroomID = "$receiverUid-${FirebaseUtil().currentUserUid()}"
             }
-
         } else if (chatroomType == "group_chat"){
             //TODO: To be implemented
         } else if (chatroomType == "community_chat"){
@@ -84,10 +83,20 @@ class Chatroom : AppCompatActivity() {
     }
 
     private fun bindChatroomDetails() {
-        binding.chatRoomNameTV.text = chatroomName
         when(chatroomType){
-            "direct_message" -> AppUtil().setUserProfilePic(this, receiverUid, binding.chatroomCircleIV)
-            "community_chat" -> AppUtil().setCommunityProfilePic(this, communityId, binding.chatroomCircleIV)
+            "direct_message" -> {
+                binding.chatRoomNameTV.text = chatroomName
+                AppUtil().setUserProfilePic(this, receiverUid, binding.chatroomCircleIV)
+            }
+            "community_chat" -> {
+                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                    val community = it.toObject(CommunityModel::class.java)!!
+                    binding.chatRoomNameTV.text = "$chatroomName | ${community.communityName}"
+                }.addOnFailureListener {
+                    binding.chatRoomNameTV.text = chatroomName
+                }
+                AppUtil().setCommunityProfilePic(this, communityId, binding.chatroomCircleIV)
+            }
         }
     }
 
