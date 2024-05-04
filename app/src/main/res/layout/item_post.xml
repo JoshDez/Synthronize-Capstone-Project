@@ -14,7 +14,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:orientation="vertical"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -26,10 +25,10 @@
             <!-- User Profile Image -->
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/wrapperCIV"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/community_not_selected"
+                android:src="@drawable/community_not_selected"
                 android:scaleType="centerCrop" />
 
             <!-- Username and Timestamp -->
@@ -50,6 +49,7 @@
 
                 <TextView
                     android:id="@+id/repostTV"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/light_purple"
@@ -57,16 +57,13 @@
                     android:textSize="12sp" />
 
             </LinearLayout>
-
         </LinearLayout>
-
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_height="1dp"
-            app:dividerColor="@color/light_purple"/>
-
     </LinearLayout>
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_height="1dp"
+        app:dividerColor="@color/less_saturated_light_purple"/>
 
     <!-- Post Header: User Profile Image, Username, Timestamp -->
     <LinearLayout
@@ -291,5 +288,6 @@
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginBottom="10dp"
         app:dividerColor="@color/light_purple"/>
 </LinearLayout>
