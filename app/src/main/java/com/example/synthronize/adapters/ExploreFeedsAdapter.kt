@@ -52,6 +52,7 @@ class ExploreFeedsAdapter(private val context: Context, private val feedList: Ar
             FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {
                 val community = it.toObject(CommunityModel::class.java)!!
                 binding.feedWrapperLayout.visibility = View.VISIBLE
+                binding.divider1.visibility = View.VISIBLE
                 binding.wrapperName.text = community.communityName
                 AppUtil().setCommunityProfilePic(context, community.communityId, binding.wrapperCIV)
             }

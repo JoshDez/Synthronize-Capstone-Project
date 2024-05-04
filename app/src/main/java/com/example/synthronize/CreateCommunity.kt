@@ -21,12 +21,14 @@ import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivityCreateCommunityBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnItemClickListener
+import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
@@ -220,6 +222,18 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
 
             //set data to firestore
             FirebaseUtil().retrieveCommunityDocument(communityId).set(communityModel).addOnSuccessListener {
+                //Creates General channel for Community Chat
+                val chatroomID = "$communityId-General"
+                val chatroomModel = ChatroomModel(
+                    chatroomName = "General",
+                    chatroomId = chatroomID,
+                    chatroomType = "community_chat",
+                    userIdList = communityModel.communityMembers,
+                    lastMsgTimestamp = Timestamp.now(),
+                    lastMessage = "",
+                    lastMessageUserId = FirebaseUtil().currentUserUid()
+                )
+                FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
                 AppUtil().headToMainActivity(this, "community", delay, communityId)
             }
         }

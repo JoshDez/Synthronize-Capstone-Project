@@ -215,6 +215,10 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                             feedBinding.commentsCountTV.text = "0"
                         }
                 }
+            FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
+                .collection("comments").get().addOnSuccessListener {
+                    feedBinding.commentsCountTV.text = it.documents.size.toString()
+                }
         }
 
         private fun viewPost(){

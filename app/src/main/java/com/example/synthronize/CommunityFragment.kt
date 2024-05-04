@@ -114,9 +114,10 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         }
         binding.generalChatsBtn.setOnClickListener {
             val intent = Intent(context, Chatroom::class.java)
-            intent.putExtra("chatroomName", "General Chat")
+            intent.putExtra("chatroomName", communityModel.communityChannels[0])
             intent.putExtra("communityId", communityId)
             intent.putExtra("chatroomType", "community_chat")
+            intent.putExtra("chatroomId", "$communityId-${communityModel.communityChannels[0]}")
             startActivity(intent)
         }
 

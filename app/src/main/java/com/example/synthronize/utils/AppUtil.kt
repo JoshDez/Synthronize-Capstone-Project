@@ -114,6 +114,7 @@ class AppUtil {
             FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
                 .update("communityMembers", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
                 .addOnSuccessListener {
+                    joinAllCommunityChannels(communityModel.communityId)
                     AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
                 }
                 .addOnFailureListener {
@@ -178,6 +179,19 @@ class AppUtil {
             dialogPlus.show()
         }, 500)
     }
+    private fun joinAllCommunityChannels(communityId: String) {
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+            val communityModel = it.toObject(CommunityModel::class.java)!!
+            if (communityModel.communityChannels.isNotEmpty()){
+                for (channel in communityModel.communityChannels){
+                    //adds user to community channel chatroom
+                    FirebaseUtil().retrieveAllChatRoomReferences().document("$communityId-$channel")
+                        .update("userIdList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
+                }
+            }
+        }
+    }
+
     private fun getFriendsJoinedCount(membersList: List<String>, callback: (Int) -> Unit) {
         var count = 0
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {

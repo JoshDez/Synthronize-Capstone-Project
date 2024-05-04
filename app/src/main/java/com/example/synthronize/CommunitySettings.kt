@@ -70,6 +70,7 @@ class CommunitySettings : AppCompatActivity() {
                     .update("communityAdmin", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                 FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
                     .update("communityMembers", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                        leaveAllCommunityChannels()
                         AppUtil().headToMainActivity(this)
                     }
             }
@@ -101,10 +102,20 @@ class CommunitySettings : AppCompatActivity() {
                 startActivity(intent)
             }
         }
-
-
         if (isUserAdmin){
             binding.navigationLayout.visibility = View.VISIBLE
+        }
+    }
+    private fun leaveAllCommunityChannels() {
+        FirebaseUtil().retrieveCommunityDocument(communityModel.communityId).get().addOnSuccessListener {
+            val communityModel = it.toObject(CommunityModel::class.java)!!
+            if (communityModel.communityChannels.isNotEmpty()){
+                for (channel in communityModel.communityChannels){
+                    //removes user from community channel chatroom
+                    FirebaseUtil().retrieveAllChatRoomReferences().document("${communityModel.communityId}-$channel")
+                        .update("userIdList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
+                }
+            }
         }
     }
 }

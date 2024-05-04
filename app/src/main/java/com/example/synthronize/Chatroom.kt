@@ -74,11 +74,6 @@ class Chatroom : AppCompatActivity() {
             }
         } else if (chatroomType == "group_chat"){
             //TODO: To be implemented
-        } else if (chatroomType == "community_chat"){
-            //assign chatroom id if its not yet existed
-            if (chatroomID == "null"){
-                chatroomID = "$communityId-$chatroomName"
-            }
         }
     }
 
@@ -149,7 +144,6 @@ class Chatroom : AppCompatActivity() {
 
             recyclerView = binding.chatRV
             linearLayoutManager = LinearLayoutManager(this)
-            //linearLayoutManager.reverseLayout = true
             recyclerView.layoutManager = linearLayoutManager
             messageAdapter = MessageAdapter(this, options)
             recyclerView.adapter = messageAdapter

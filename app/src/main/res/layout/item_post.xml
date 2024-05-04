@@ -13,6 +13,7 @@
         android:id="@+id/feedWrapperLayout"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:visibility="gone"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -60,7 +61,9 @@
         </LinearLayout>
     </LinearLayout>
     <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_marginBottom="10dp"
         android:layout_height="1dp"
         app:dividerColor="@color/less_saturated_light_purple"/>
