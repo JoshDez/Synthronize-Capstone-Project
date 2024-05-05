@@ -2,9 +2,11 @@ package com.example.synthronize.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.GestureDetector
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -17,6 +19,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
 import com.example.synthronize.ViewPost
+import com.example.synthronize.databinding.DialogKebabMenuBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.ItemPostBinding
 import com.example.synthronize.model.CommentModel
@@ -30,6 +34,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private val context: Context, 
                    options: FirestoreRecyclerOptions<PostModel>): FirestoreRecyclerAdapter<PostModel, FeedsAdapter.FeedsViewHolder>(options){
@@ -38,7 +44,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val feedBinding = ItemPostBinding.inflate(inflater, parent, false)
-        return FeedsViewHolder(mainBinding, feedBinding, context)
+        return FeedsViewHolder(mainBinding, feedBinding, context, inflater)
     }
 
     override fun onBindViewHolder(holder: FeedsViewHolder, position: Int, model: PostModel) {
@@ -50,7 +56,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
 
     //VIEW HOLDER
     class FeedsViewHolder(private val mainBinding: FragmentCommunityBinding, private val feedBinding: ItemPostBinding,
-                          private val context: Context) : RecyclerView.ViewHolder(feedBinding.root){
+                          private val context: Context, private val inflater: LayoutInflater) : RecyclerView.ViewHolder(feedBinding.root){
 
         private lateinit var postModel:PostModel
         private lateinit var viewPageAdapter: ViewPageAdapter
@@ -87,6 +93,9 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 }
                 feedBinding.commentBtn.setOnClickListener {
                     viewPost()
+                }
+                feedBinding.menuBtn.setOnClickListener {
+                    openMenuDialog()
                 }
                 bindLove()
                 bindComment()
@@ -152,6 +161,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId).collection("comments").add(commentModel).addOnCompleteListener {
                         if (it.isSuccessful){
                             feedBinding.commentEdtTxt.setText("")
+                            updateFeedStatus()
                             Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -232,6 +242,56 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
             val intent = Intent(context, OtherUserProfile::class.java)
             intent.putExtra("userId", postModel.ownerId)
             context.startActivity(intent)
+        }
+
+        private fun openMenuDialog(){
+            //TODO ADD FUNCTIONALITY FOR REPOST
+
+            val menuDialogBinding = DialogKebabMenuBinding.inflate(inflater)
+            val menuDialog = DialogPlus.newDialog(context)
+                .setContentHolder(ViewHolder(menuDialogBinding.root))
+                .setMargin(100, 800, 100, 800)
+                .setCancelable(true)
+                .setGravity(Gravity.CENTER)
+                .create()
+
+            if (postModel.ownerId == FirebaseUtil().currentUserUid()){
+                menuDialogBinding.option1.visibility = View.VISIBLE
+                menuDialogBinding.optiontitle1.text = "Delete Post"
+                menuDialogBinding.optiontitle1.setOnClickListener {
+                    menuDialog.dismiss()
+                    Handler().postDelayed({
+                        val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
+                        val warningDialog = DialogPlus.newDialog(context)
+                            .setContentHolder(ViewHolder(warningDialogBinding.root))
+                            .setCancelable(true)
+                            .setMargin(50, 1000, 50, 1000)
+                            .setGravity(Gravity.CENTER)
+                            .create()
+
+                        warningDialogBinding.titleTV.text = "Delete Post"
+                        warningDialogBinding.messageTV.text = "Do you want to delete this post?"
+                        warningDialogBinding.yesBtn.setOnClickListener {
+                            FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId).delete()
+                            warningDialog.dismiss()
+                        }
+                        warningDialogBinding.NoBtn.setOnClickListener {
+                            warningDialog.dismiss()
+                        }
+
+                        warningDialog.show()
+
+                    }, 500)
+                }
+            } else {
+                menuDialogBinding.option1.visibility = View.VISIBLE
+                menuDialogBinding.optiontitle1.text = "Report Post"
+                menuDialogBinding.option1.setOnClickListener {
+                    Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            menuDialog.show()
         }
     }
 }

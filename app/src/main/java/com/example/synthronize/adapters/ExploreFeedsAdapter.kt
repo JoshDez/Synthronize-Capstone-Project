@@ -137,6 +137,7 @@ class ExploreFeedsAdapter(private val context: Context, private val feedList: Ar
                     FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId).collection("comments").add(commentModel).addOnCompleteListener {
                         if (it.isSuccessful){
                             binding.commentEdtTxt.setText("")
+                            updateFeedStatus()
                             Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -199,6 +200,10 @@ class ExploreFeedsAdapter(private val context: Context, private val feedList: Ar
                         }.addOnFailureListener {
                             binding.commentsCountTV.text = "0"
                         }
+                }
+            FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
+                .collection("comments").get().addOnSuccessListener {
+                    binding.commentsCountTV.text = it.documents.size.toString()
                 }
         }
 

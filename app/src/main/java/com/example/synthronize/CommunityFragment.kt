@@ -123,7 +123,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
 
         //bind buttons from main binding
         mainBinding.backBtn.setOnClickListener {
-            AppUtil().headToMainActivity(context)
+            AppUtil().headToMainActivity(context, hasAnimation = false)
         }
         mainBinding.communitySettingsBtn.setOnClickListener {
             val intent = Intent(context, CommunitySettings::class.java)

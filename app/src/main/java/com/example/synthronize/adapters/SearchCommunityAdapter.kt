@@ -12,6 +12,7 @@ import com.example.synthronize.databinding.ItemCommunityBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -52,7 +53,7 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
                 //TODO: Bind community image
                 AppUtil().setCommunityProfilePic(context, communityModel.communityId, binding.profileImage)
                 binding.itemGroupLayout.setOnClickListener {
-                    AppUtil().openCommunityPreviewDialog(context, inflater, communityModel)
+                    DialogUtil().openCommunityPreviewDialog(context, inflater, communityModel)
                 }
             } else {
                 //hide the community if the user is on the community block list

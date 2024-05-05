@@ -66,13 +66,20 @@ class CommunitySettings : AppCompatActivity() {
             dialogPlusBinding.titleTV.text = "Warning!"
             dialogPlusBinding.messageTV.text = "Do you want to leave this community?"
             dialogPlusBinding.yesBtn.setOnClickListener {
+                //Removes Admin from user if the user is admin
                 FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
                     .update("communityAdmin", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
-                FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
-                    .update("communityMembers", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
-                        leaveAllCommunityChannels()
-                        AppUtil().headToMainActivity(this)
+                //removes user from community channels before leaving the community
+                FirebaseUtil().removeUserFromAllCommunityChannels(communityModel.communityId, FirebaseUtil().currentUserUid()){isSuccessful ->
+                    if (isSuccessful){
+                        FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
+                            .update("communityMembers", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                                AppUtil().headToMainActivity(this, hasAnimation = false)
+                            }
+                    } else {
+                        Toast.makeText(this, "An error has occurred, please try again", Toast.LENGTH_SHORT).show()
                     }
+                }
             }
             dialogPlusBinding.NoBtn.setOnClickListener {
                 dialogPlus.dismiss()
@@ -104,18 +111,6 @@ class CommunitySettings : AppCompatActivity() {
         }
         if (isUserAdmin){
             binding.navigationLayout.visibility = View.VISIBLE
-        }
-    }
-    private fun leaveAllCommunityChannels() {
-        FirebaseUtil().retrieveCommunityDocument(communityModel.communityId).get().addOnSuccessListener {
-            val communityModel = it.toObject(CommunityModel::class.java)!!
-            if (communityModel.communityChannels.isNotEmpty()){
-                for (channel in communityModel.communityChannels){
-                    //removes user from community channel chatroom
-                    FirebaseUtil().retrieveAllChatRoomReferences().document("${communityModel.communityId}-$channel")
-                        .update("userIdList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
-                }
-            }
         }
     }
 }

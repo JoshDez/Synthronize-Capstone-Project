@@ -3,9 +3,11 @@ package com.example.synthronize.utils
 import android.content.Context
 import android.content.Intent
 import com.example.synthronize.Login
+import com.example.synthronize.model.CommunityModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.storage.FirebaseStorage
@@ -106,5 +108,40 @@ class FirebaseUtil {
         return retrieveCommunityDocument(communityId).collection("files")
     }
 
+    fun removeUserFromAllCommunityChannels(communityId:String, userId:String, callback: (Boolean) -> Unit) {
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+            val communityModel = it.toObject(CommunityModel::class.java)!!
+            if (communityModel.communityChannels.isNotEmpty()){
+                for (channel in communityModel.communityChannels){
+                    //removes user from community channel chatroom
+                    FirebaseUtil().retrieveAllChatRoomReferences().document("${communityModel.communityId}-$channel")
+                        .update("userIdList", FieldValue.arrayRemove(userId))
+                }
+                callback(true)
+            } else {
+                callback(true)
+            }
+        }.addOnFailureListener {
+            callback(false)
+        }
+    }
+
+    fun addUserToAllCommunityChannels(communityId:String, userId:String, callback: (Boolean) -> Unit) {
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+            val communityModel = it.toObject(CommunityModel::class.java)!!
+            if (communityModel.communityChannels.isNotEmpty()){
+                for (channel in communityModel.communityChannels){
+                    //removes user from community channel chatroom
+                    FirebaseUtil().retrieveAllChatRoomReferences().document("${communityModel.communityId}-$channel")
+                        .update("userIdList", FieldValue.arrayUnion(userId))
+                }
+                callback(true)
+            } else {
+                callback(true)
+            }
+        }.addOnFailureListener {
+            callback(false)
+        }
+    }
 
 }

@@ -20,6 +20,7 @@ import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.FragmentCommunitySelectionBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
@@ -96,7 +97,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
                                 FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityCode", code).get().addOnSuccessListener {documents ->
                                     for (document in documents){
                                         val communityModel = document.toObject(CommunityModel::class.java)
-                                        AppUtil().openCommunityPreviewDialog(context, layoutInflater, communityModel)
+                                        DialogUtil().openCommunityPreviewDialog(context, layoutInflater, communityModel)
                                         codeDialogPlus.dismiss()
                                     }
                                 }
