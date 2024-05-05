@@ -119,7 +119,6 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         binding.privateRB.setOnClickListener {
             binding.publicRB.isChecked = false
             communityType = "Private"
-
         }
 
         binding.nextBtn.setOnClickListener {

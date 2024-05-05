@@ -92,6 +92,10 @@
     <string name="menuoption">menuOption</string>
     <string name="inbox">Inbox</string>
     <string name="community_chats">Community Chats</string>
+    <string name="edit_community_details">Edit Community Details</string>
+    <string name="edit_community_rules">Edit Community Rules</string>
+    <string name="delete_community">Delete Community</string>
+    <string name="edit_community">Edit Community</string>
 
 
 </resources>

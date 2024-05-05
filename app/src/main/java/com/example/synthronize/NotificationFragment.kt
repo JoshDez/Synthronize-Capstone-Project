@@ -55,8 +55,6 @@ class NotificationFragment(private val mainBinding: ActivityMainBinding): Fragme
                 }
             }
         }
-
-
     }
 
     private fun navigate(tab:String){

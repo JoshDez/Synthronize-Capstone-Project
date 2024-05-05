@@ -111,6 +111,7 @@ class MainActivity : AppCompatActivity() {
         binding.communitySettingsBtn.visibility = View.GONE
         binding.backBtn.visibility = View.GONE
         binding.kebabMenuBtn.visibility = View.GONE
+        binding.searchBtn.visibility = View.GONE
         binding.toolbarImageCIV.setImageResource(R.drawable.synthronize_logo)
 
         //resetting main toolbar setOnClickListeners

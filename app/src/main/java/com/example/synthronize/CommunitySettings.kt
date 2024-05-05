@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.synthronize.databinding.ActivityCommunitySettingsBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CommunityModel
@@ -34,12 +35,94 @@ class CommunitySettings : AppCompatActivity() {
 
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
             communityModel = it.toObject(CommunityModel::class.java)!!
-            bindCommunitySettings(isUserAdmin)
+            navigate("general")
+        }
+
+        if (isUserAdmin){
+            binding.navigationLayout.visibility = View.VISIBLE
+        }
+
+        binding.backBtn.setOnClickListener {
+            onBackPressed()
+        }
+
+        binding.adminBtn.setOnClickListener {
+            navigate("admin")
+        }
+
+        binding.generalBtn.setOnClickListener {
+            navigate("general")
         }
 
     }
 
-    private fun bindCommunitySettings(isUserAdmin:Boolean) {
+    private fun navigate(tab:String){
+        val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_purple)
+        val selectedColor = ContextCompat.getColor(this, R.color.light_purple)
+        binding.generalBtn.setTextColor(unselectedColor)
+        binding.adminBtn.setTextColor(unselectedColor)
+        binding.generalLayout.visibility = View.GONE
+        binding.adminLayout.visibility = View.GONE
+
+
+        if (tab == "general"){
+            setupGeneralLayout()
+            binding.generalBtn.setTextColor(selectedColor)
+        }else if (tab == "admin") {
+            setupAdminLayout()
+            binding.adminBtn.setTextColor(selectedColor)
+        }
+    }
+
+    private fun setupAdminLayout() {
+        binding.adminLayout.visibility = View.VISIBLE
+
+        if (communityModel.communityType == "Private"){
+            binding.viewJoinRequestsBtn.setOnClickListener {
+                val intent = Intent(this, Requests::class.java)
+                intent.putExtra("communityId", communityModel.communityId)
+                startActivity(intent)
+            }
+        }
+
+        binding.editCommunityDetailsBtn.setOnClickListener {
+            val intent = Intent(this, EditCommunity::class.java)
+            intent.putExtra("communityId", communityModel.communityId)
+            startActivity(intent)
+        }
+        binding.editCommunityRulesBtn.setOnClickListener {
+            Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show()
+        }
+        binding.deleteCommunityBtn.setOnClickListener {
+            val warningBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+            val warningDialog = DialogPlus.newDialog(this)
+                .setContentHolder(ViewHolder(warningBinding.root))
+                .setMargin(50, 800, 50, 800)
+                .setGravity(Gravity.CENTER)
+                .create()
+
+            warningBinding.titleTV.text = "Warning"
+            warningBinding.messageTV.text = "Do you want to permanently delete this community?"
+            warningBinding.yesBtn.setOnClickListener {
+                warningDialog.dismiss()
+                FirebaseUtil().retrieveCommunityDocument(communityModel.communityId).delete().addOnSuccessListener {
+                    Toast.makeText(this, "The community is deleted", Toast.LENGTH_SHORT).show()
+                    deleteAllCommunityChannels()
+                    AppUtil().headToMainActivity(this)
+                }
+            }
+            warningBinding.NoBtn.setOnClickListener {
+                warningDialog.dismiss()
+            }
+            warningDialog.show()
+        }
+
+
+    }
+
+    private fun setupGeneralLayout() {
+        binding.generalLayout.visibility = View.VISIBLE
+
         //Common Binds
         binding.communityNameTV.text = communityModel.communityName
         binding.communityCodeEdtTxt.setText(communityModel.communityCode)
@@ -48,10 +131,6 @@ class CommunitySettings : AppCompatActivity() {
         if (communityModel.communityDescription.isNotEmpty()){
             binding.communityDescriptionTV.visibility = View.VISIBLE
             binding.communityDescriptionTV.text = communityModel.communityDescription
-        }
-
-        binding.backBtn.setOnClickListener {
-            onBackPressed()
         }
 
         binding.leaveCommunityBtn.setOnClickListener {
@@ -100,17 +179,12 @@ class CommunitySettings : AppCompatActivity() {
             intent.putExtra("communityId", communityModel.communityId)
             startActivity(intent)
         }
+    }
 
-        if (communityModel.communityType == "Private"){
-            binding.viewJoinRequestsBtn.visibility = View.VISIBLE
-            binding.viewJoinRequestsBtn.setOnClickListener {
-                val intent = Intent(this, Requests::class.java)
-                intent.putExtra("communityId", communityModel.communityId)
-                startActivity(intent)
-            }
-        }
-        if (isUserAdmin){
-            binding.navigationLayout.visibility = View.VISIBLE
+
+    private fun deleteAllCommunityChannels(){
+        for (channel in communityModel.communityChannels){
+            FirebaseUtil().retrieveChatRoomReference("${communityModel.communityId}-$channel").delete()
         }
     }
 }

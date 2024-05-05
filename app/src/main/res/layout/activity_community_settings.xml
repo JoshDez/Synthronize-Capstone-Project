@@ -60,6 +60,7 @@
         android:layout_height="50dp">
 
         <TextView
+            android:id="@+id/generalBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/light_purple"
@@ -70,6 +71,7 @@
             android:text="@string/general"/>
 
         <TextView
+            android:id="@+id/adminBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/light_purple"
@@ -81,7 +83,69 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/adminLayout"
+        android:visibility="gone"
         android:layout_below="@id/navigationLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/mainToolbar"
+                android:background="@color/light_purple"
+                app:dividerColor="@color/light_purple" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/viewJoinRequestsBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="@string/view_join_requests"
+                android:background = "@color/dark_purple_1"
+                android:textColor="@color/light_purple"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/editCommunityDetailsBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:text="@string/edit_community_details"
+                android:background = "@color/dark_purple_1"
+                android:textColor="@color/light_purple"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/editCommunityRulesBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:text="@string/edit_community_rules"
+                android:background = "@color/dark_purple_1"
+                android:textColor="@color/light_purple"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/deleteCommunityBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:text="@string/delete_community"
+                android:background = "@color/darkish_red"
+                android:textColor="@color/light_purple"/>
+        </LinearLayout>
+    </ScrollView>
+
+
+    <ScrollView
+        android:id="@+id/generalLayout"
+        android:layout_below="@id/navigationLayout"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -103,9 +167,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="180dp"
                         android:src="@color/black"/>
-
-
-
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -226,17 +287,6 @@
                 android:textColor="@color/light_purple"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/viewJoinRequestsBtn"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textSize="16sp"
-                android:text="@string/view_join_requests"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
-
-            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/reportCommunityBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -256,16 +306,6 @@
                 android:text="@string/leave_community"
                 android:background = "@color/dark_purple_1"
                 android:textColor="@color/light_purple"/>
-
-
-
-
-
-
-
-
-
-
         </LinearLayout>
     </ScrollView>
 

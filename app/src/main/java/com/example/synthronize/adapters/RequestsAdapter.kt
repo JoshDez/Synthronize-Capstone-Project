@@ -100,7 +100,7 @@ class RequestsAdapter(private var friendRequests:List<String> = listOf(),
                     itemRequestBinding.rejectBtn.visibility = View.VISIBLE
                     itemRequestBinding.rejectBtn.setOnClickListener {
                         removeCommunityInvitation(key)
-                        Toast.makeText(itemRequestBinding.root.context, "Invitation Decline", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(itemRequestBinding.root.context, "Invitation Declined", Toast.LENGTH_SHORT).show()
 
                     }
                     itemRequestBinding.requestTV.setOnClickListener {
