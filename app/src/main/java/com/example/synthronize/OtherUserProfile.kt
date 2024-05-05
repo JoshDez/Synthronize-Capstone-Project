@@ -8,6 +8,7 @@ import com.example.synthronize.databinding.ActivityOtherUserProfileBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.firestore.FieldValue
 
 class OtherUserProfile : AppCompatActivity() {
     private lateinit var binding:ActivityOtherUserProfileBinding
@@ -43,6 +44,11 @@ class OtherUserProfile : AppCompatActivity() {
                 AppUtil().setUserProfilePic(this, userID, binding.userProfileCIV)
                 AppUtil().setUserCoverPic(this, userID, binding.userCoverIV)
 
+                //bind counts
+                getCommunitiesCount()
+                getFriendsCount()
+                getPostsCount()
+
                 binding.messageUserBtn.setOnClickListener {
                     val intent = Intent(this, Chatroom::class.java)
                     intent.putExtra("chatroomName", userModel.fullName)
@@ -58,33 +64,81 @@ class OtherUserProfile : AppCompatActivity() {
     }
 
     private fun changeFriendsButtonState(){
-        //checks if already friends with user
-        if (AppUtil().isUserOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
-            binding.friendBtn.text = "Unfriend"
-            binding.friendBtn.setOnClickListener {
-                userModel.friendsList = userModel.friendsList.filterNot { it == FirebaseUtil().currentUserUid() }
-                FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                    changeFriendsButtonState()
-                }
-            }
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+            val myUserModel = it.toObject(UserModel::class.java)!!
 
-        } else if (AppUtil().isUserOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
-            binding.friendBtn.text = "Cancel Request"
-            binding.friendBtn.setOnClickListener {
-                userModel.friendRequests = userModel.friendRequests.filterNot { it == FirebaseUtil().currentUserUid() }
-                FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                    changeFriendsButtonState()
+            //checks if already friends with user
+            if (AppUtil().isUserOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
+                binding.friendBtn.text = "Unfriend"
+                binding.friendBtn.setOnClickListener {
+                    userModel.friendsList = userModel.friendsList.filterNot { it == FirebaseUtil().currentUserUid() }
+                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
+                        changeFriendsButtonState()
+                    }
                 }
-            }
-        } else {
-            binding.friendBtn.text = "Add Friend"
-            binding.friendBtn.setOnClickListener {
-                userModel.friendRequests = userModel.friendRequests.plus(FirebaseUtil().currentUserUid())
-                FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                    changeFriendsButtonState()
+
+            } else if (AppUtil().isUserOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
+                binding.friendBtn.text = "Cancel Request"
+                binding.friendBtn.setOnClickListener {
+                    userModel.friendRequests = userModel.friendRequests.filterNot { it == FirebaseUtil().currentUserUid() }
+                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
+                        changeFriendsButtonState()
+                    }
+                }
+            } else if (AppUtil().isUserOnList(myUserModel.friendRequests, userModel.userID)){
+                binding.friendBtn.text = "Accept Request"
+                binding.friendBtn.setOnClickListener {
+                    FirebaseUtil().currentUserDetails().update("friendsList", FieldValue.arrayUnion(userModel.userID))
+                    FirebaseUtil().targetUserDetails(userModel.userID).update("friendsList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
+                }
+            } else {
+                binding.friendBtn.text = "Add Friend"
+                binding.friendBtn.setOnClickListener {
+                    userModel.friendRequests = userModel.friendRequests.plus(FirebaseUtil().currentUserUid())
+                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
+                        changeFriendsButtonState()
+                    }
                 }
             }
         }
+    }
+
+
+    private fun getCommunitiesCount(){
+        FirebaseUtil().retrieveAllCommunityCollection()
+            .whereArrayContains("communityMembers", FirebaseUtil().currentUserUid()).get().addOnSuccessListener {
+                binding.communitiesCountTV.text = it.size().toString()
+            }.addOnFailureListener {
+                binding.communitiesCountTV.text = "0"
+            }
+    }
+
+    private fun getFriendsCount(){
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+            val user = it.toObject(UserModel::class.java)!!
+            binding.friendsCountTV.text = user.friendsList.size.toString()
+        }
+    }
+
+    private fun getPostsCount(){
+        FirebaseUtil().retrieveAllCommunityCollection().get()
+            .addOnSuccessListener { querySnapshot ->
+                var totalPosts = 0
+                for (document in querySnapshot.documents) {
+                    FirebaseUtil().retrieveAllCommunityCollection()
+                        .document(document.id) // Access each document within the collection
+                        .collection("feeds")
+                        .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
+                        .get()
+                        .addOnSuccessListener { feedsSnapshot ->
+                            totalPosts += feedsSnapshot.size()
+                            binding.postsCountTV.text = totalPosts.toString()
+                        }
+                }
+            }
+            .addOnFailureListener {
+                binding.postsCountTV.text = "0"
+            }
     }
 
 }

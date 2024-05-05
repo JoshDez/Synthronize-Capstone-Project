@@ -27,7 +27,9 @@ class DialogUtil {
         dialogPlusBinding.communityNameTV.text = communityModel.communityName
         dialogPlusBinding.communityDescriptionTV.text = communityModel.communityDescription
         dialogPlusBinding.totalMembersCountTV.text = "${communityModel.communityMembers.size}"
-        //TODO: dialogBinding.friendsJoinedCountTV.text = "${getFriendsJoinedCount()}"
+        getFriendsJoinedCount(communityModel.communityMembers){count->
+            dialogPlusBinding.friendsJoinedCountTV.text = count.toString()
+        }
         //TODO: dialogBinding.createdDateTV.text = communityModel.communityCreatedTimestamp
         AppUtil().setCommunityProfilePic(context, communityModel.communityId, dialogPlusBinding.communityProfileCIV)
 
@@ -82,15 +84,26 @@ class DialogUtil {
         //SET COMMUNITY TYPE
         if (communityModel.communityType == "Private"){
             //FOR PRIVATE COMMUNITY TYPE
-            if (AppUtil().isUserOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
-                //checks if user already requested to join
-                appearButton(dialogPlusBinding.cancelRequestBtn, dialogPlusBinding)
-            } else if (AppUtil().isUserOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
-                //checks if user is already a member
-                appearButton(dialogPlusBinding.enterBtn, dialogPlusBinding)
-            } else {
-                //user has not yet joined the group
-                appearButton(dialogPlusBinding.requestToJoinBtn, dialogPlusBinding)
+            FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+                val myUserModel = it.toObject(UserModel::class.java)!!
+                val communityRequests:ArrayList<String> = ArrayList()
+                for (value in myUserModel.communityInvitations.values){
+                    communityRequests.add(value)
+                }
+
+                if (AppUtil().isUserOnList(communityRequests, communityModel.communityId)){
+                    
+                } else if (AppUtil().isUserOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
+                    //checks if user already requested to join
+                    appearButton(dialogPlusBinding.cancelRequestBtn, dialogPlusBinding)
+                } else if (AppUtil().isUserOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
+                    //checks if user is already a member
+                    appearButton(dialogPlusBinding.enterBtn, dialogPlusBinding)
+                } else {
+                    //user has not yet joined the group
+                    appearButton(dialogPlusBinding.requestToJoinBtn, dialogPlusBinding)
+                }
+
             }
         } else {
             //FOR PUBLIC COMMUNITY TYPE
@@ -111,8 +124,15 @@ class DialogUtil {
     private fun getFriendsJoinedCount(membersList: List<String>, callback: (Int) -> Unit) {
         var count = 0
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
-            val userModel = it.toObject(UserModel::class.java)
-            //TODO: friends joined
+            val userModel = it.toObject(UserModel::class.java)!!
+            for (friend in userModel.friendsList){
+                if (AppUtil().isUserOnList(membersList, friend)){
+                    count += 1
+                }
+            }
+            callback(count)
+        }.addOnFailureListener {
+            callback(count)
         }
 
     }

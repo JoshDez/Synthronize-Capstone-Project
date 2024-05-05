@@ -74,6 +74,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 //bind counts
                 getCommunitiesCount()
                 getPostsCount()
+                getFriendsCount()
 
                 binding.editProfileBtn.setOnClickListener {
                     headToEditProfile()
@@ -154,6 +155,13 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             }.addOnFailureListener {
                 binding.communitiesCountTV.text = "0"
             }
+    }
+
+    private fun getFriendsCount(){
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+            val user = it.toObject(UserModel::class.java)!!
+            binding.friendsCountTV.text = user.friendsList.size.toString()
+        }
     }
 
     private fun getPostsCount(){

@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2BE9EF"
     tools:context=".NotificationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/upperNavLayout"
+        android:orientation="horizontal"
+        android:background="@color/dark_purple_1"
+        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textAlignment="center"
-        android:text="Notification Fragment"
-        android:textSize="50sp" />
+        android:layout_height="50dp">
+        <TextView
+            android:id="@+id/notificationBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="@string/Notifications"
+            android:gravity="center"
+            android:background="@color/dark_purple_1"
+            android:textColor="@color/light_purple"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/communityInvitationsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="Community Invitations"
+            android:textColor="@color/less_saturated_light_purple"
+            android:background="@color/dark_purple_1"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notificationRV"
+        android:layout_below="@id/upperNavLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>

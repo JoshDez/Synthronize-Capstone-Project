@@ -52,8 +52,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
     }
 
 
-
-
     //VIEW HOLDER
     class FeedsViewHolder(private val mainBinding: FragmentCommunityBinding, private val feedBinding: ItemPostBinding,
                           private val context: Context, private val inflater: LayoutInflater) : RecyclerView.ViewHolder(feedBinding.root){
@@ -272,7 +270,12 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                         warningDialogBinding.titleTV.text = "Delete Post"
                         warningDialogBinding.messageTV.text = "Do you want to delete this post?"
                         warningDialogBinding.yesBtn.setOnClickListener {
+                            //deletes post from firebase firestore database
                             FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId).delete()
+                            //deletes content from firebase storage
+                            for (content in postModel.contentList){
+                                FirebaseUtil().retrieveCommunityContentImageRef(content).delete()
+                            }
                             warningDialog.dismiss()
                         }
                         warningDialogBinding.NoBtn.setOnClickListener {

@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.nfc.Tag
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -195,7 +197,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
 
     private fun createCommunity(){
         var communityModel = CommunityModel()
-        selectedUsersList.add(FirebaseUtil().currentUserUid())
+        selectedUsersList
         //delay before heading to the community tab
         var delay:Long = 0
 
@@ -211,7 +213,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                 communityDescription = communityDesc,
                 communityType = communityType,
                 communityCode = generateRandomCode(),
-                communityMembers = selectedUsersList,
+                communityMembers = listOf(FirebaseUtil().currentUserUid()),
                 communityAdmin = listOf(FirebaseUtil().currentUserUid())
             )
             //save community profile to firebase storage
@@ -222,6 +224,10 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
 
             //set data to firestore
             FirebaseUtil().retrieveCommunityDocument(communityId).set(communityModel).addOnSuccessListener {
+
+                //invites the selected users to community
+                inviteUsersToCommunity(communityId)
+
                 //Creates General channel for Community Chat
                 val chatroomID = "$communityId-General"
                 val chatroomModel = ChatroomModel(
@@ -233,9 +239,20 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                     lastMessage = "",
                     lastMessageUserId = FirebaseUtil().currentUserUid()
                 )
-                FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
-                AppUtil().headToMainActivity(this, "community", delay, communityId)
+                FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel).addOnSuccessListener {
+                    AppUtil().headToMainActivity(this, "community", delay, communityId)
+                }
             }
+        }
+    }
+
+    private fun inviteUsersToCommunity(communityId: String) {
+        for (user in selectedUsersList){
+            // Create a map to represent the field you want to update
+            val updates = hashMapOf<String, Any>(
+                "communityInvitations.${FirebaseUtil().currentUserUid()}" to communityId
+            )
+            FirebaseUtil().targetUserDetails(user).update(updates)
         }
     }
 
