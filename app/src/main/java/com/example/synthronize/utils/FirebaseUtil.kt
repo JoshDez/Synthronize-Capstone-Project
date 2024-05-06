@@ -74,6 +74,13 @@ class FirebaseUtil {
             .child(uid)
     }
 
+    fun retrieveCommunityBannerPicRef(uid:String): StorageReference {
+        return FirebaseStorage.getInstance().reference
+            .child("communityBannerPicture")
+            //name of picture
+            .child(uid)
+    }
+
     fun retrieveCommunityContentImageRef(imageId:String): StorageReference {
         return FirebaseStorage.getInstance().reference
             .child("communityContentImage")

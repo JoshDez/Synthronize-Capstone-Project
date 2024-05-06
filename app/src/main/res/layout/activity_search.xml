@@ -72,106 +72,135 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/usersLinearLayout"
-                android:padding="20dp"
+                android:visibility="gone"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <RelativeLayout
+                    android:id="@+id/userHeaderLayout"
+                    android:background="@drawable/input_rounded_corners"
+                    android:backgroundTint="@color/dark_purple_1"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="70dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Users"
+                        android:text="@string/users"
+                        android:textColor="@color/light_purple"
                         android:textSize="20sp"
-                        android:textColor="@color/light_purple"/>
-
-                    <TextView
-                        android:id="@+id/seeAllUsersTV"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="50dp"/>
+                    <ImageView
+                        android:id="@+id/userArrowIV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="See All"
-                        android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:textColor="@color/light_purple"/>
+                        android:layout_centerVertical="true"
+                        app:tint="@color/light_purple"
+                        android:src="@drawable/baseline_keyboard_arrow_up_24"
+                        android:layout_marginEnd="20dp"/>
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/resultUsersRV"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"/>
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/communitiesLinearLayout"
-                android:padding="20dp"
+                android:visibility="gone"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
                 <RelativeLayout
+                    android:id="@+id/communityHeaderLayout"
+                    android:background="@drawable/input_rounded_corners"
+                    android:backgroundTint="@color/dark_purple_1"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="70dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/communities"
+                        android:textColor="@color/light_purple"
                         android:textSize="20sp"
-                        android:textColor="@color/light_purple"/>
-
-                    <TextView
-                        android:id="@+id/seeAllCommunitiesTV"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="50dp"/>
+                    <ImageView
+                        android:id="@+id/communityArrowIV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="See All"
-                        android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:textColor="@color/light_purple"/>
+                        android:layout_centerVertical="true"
+                        app:tint="@color/light_purple"
+                        android:src="@drawable/baseline_keyboard_arrow_up_24"
+                        android:layout_marginEnd="20dp"/>
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/resultCommunitiesRV"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"/>
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/postsLinearLayout"
-                android:padding="20dp"
+                android:visibility="gone"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
                 <RelativeLayout
+                    android:id="@+id/postsHeaderLayout"
+                    android:background="@drawable/input_rounded_corners"
+                    android:backgroundTint="@color/dark_purple_1"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="70dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Posts"
+                        android:text="@string/posts"
+                        android:textColor="@color/light_purple"
                         android:textSize="20sp"
-                        android:textColor="@color/light_purple"/>
-
-                    <TextView
-                        android:id="@+id/seeAllPostsTV"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="50dp"/>
+                    <ImageView
+                        android:id="@+id/postsArrowIV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="See All"
-                        android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:textColor="@color/light_purple"/>
+                        android:layout_centerVertical="true"
+                        app:tint="@color/light_purple"
+                        android:src="@drawable/baseline_keyboard_arrow_up_24"
+                        android:layout_marginEnd="20dp"/>
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/resultsPostsRV"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"/>
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
         </LinearLayout>

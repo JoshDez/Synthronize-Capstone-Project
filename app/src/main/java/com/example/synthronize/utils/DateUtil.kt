@@ -16,4 +16,11 @@ class DateUtil{
         return dateFormat.format(date)
     }
 
+    fun formatBirthDate(inputDate: String): String {
+        val inputFormat = SimpleDateFormat("M/d/yy", Locale.US)
+        val outputFormat = SimpleDateFormat("MMMM d, yyyy", Locale.US)
+        val date = inputFormat.parse(inputDate)
+        return outputFormat.format(date)
+    }
+
 }

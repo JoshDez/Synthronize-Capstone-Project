@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/userCoverIV"
+                        android:id="@+id/communityBannerIV"
                         android:layout_width="match_parent"
                         android:layout_height="180dp"
                         android:src="@color/black"/>

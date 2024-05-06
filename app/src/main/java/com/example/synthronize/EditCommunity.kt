@@ -103,8 +103,7 @@ class EditCommunity : AppCompatActivity() {
                 //bind profile picture
                 AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.communityProfileCIV)
                 //bind banner picture
-                //TODO to implement banner
-                //AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.communityBannerIV)
+                AppUtil().setCommunityBannerPic(this, communityModel.communityId, binding.communityBannerIV)
 
             }
         }
@@ -131,16 +130,28 @@ class EditCommunity : AppCompatActivity() {
             var delay:Long = 0
             //set new user profile pic
             if (::selectedCommunityProfileUri.isInitialized){
-                FirebaseUtil().retrieveCommunityProfilePicRef(communityModel.communityId).putFile(selectedCommunityProfileUri)
+                FirebaseUtil().retrieveCommunityProfilePicRef(communityModel.communityId).putFile(selectedCommunityProfileUri).addOnSuccessListener {
+                    // Clear Glide cache
+                    Glide.get(this).clearMemory()
+                    Thread {
+                        Glide.get(this).clearDiskCache()
+                    }.start()
+                }
                 //adds a second to give time for the firebase to upload
-                delay += 1000
+                delay += 3000
             }
             //set new user cover pic
             if (::selectedBannerPicUri.isInitialized){
                 //TODO to implement banner
-                //FirebaseUtil().retrieveUserCoverPicRef(FirebaseUtil().currentUserUid()).putFile(selectedBannerPicUri)
+                FirebaseUtil().retrieveCommunityBannerPicRef(communityModel.communityId).putFile(selectedBannerPicUri).addOnSuccessListener {
+                    // Clear Glide cache
+                    Glide.get(this).clearMemory()
+                    Thread {
+                        Glide.get(this).clearDiskCache()
+                    }.start()
+                }
                 //adds a second to give time for the firebase to upload
-                delay += 1000
+                delay += 3000
             }
 
             //set new user model
@@ -148,7 +159,7 @@ class EditCommunity : AppCompatActivity() {
                 if (it.isSuccessful){
                     Toast.makeText(this, "Community details successfully updated", Toast.LENGTH_SHORT).show()
                     //heads back to main activity with a profile fragment
-                    AppUtil().headToMainActivity(this, "community", 0, communityId)
+                    AppUtil().headToMainActivity(this, "community", delay, communityId)
                 } else {
                     Toast.makeText(this, "Error in updating community details, please try again", Toast.LENGTH_SHORT).show()
                 }

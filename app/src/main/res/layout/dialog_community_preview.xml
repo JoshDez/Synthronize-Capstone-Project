@@ -16,13 +16,13 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/communityCoverIV"
+                android:id="@+id/communityBannerIV"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:src="@color/black"/>
             <LinearLayout
                 android:id="@+id/friendsJoinedContainer"
-                android:layout_below="@id/communityCoverIV"
+                android:layout_below="@id/communityBannerIV"
                 android:layout_marginStart="40dp"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
@@ -48,7 +48,7 @@
 
             <LinearLayout
                 android:id="@+id/totalMembersContainer"
-                android:layout_below="@id/communityCoverIV"
+                android:layout_below="@id/communityBannerIV"
                 android:layout_alignParentEnd="true"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"

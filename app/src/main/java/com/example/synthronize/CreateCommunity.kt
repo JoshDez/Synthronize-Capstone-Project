@@ -40,10 +40,12 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     private lateinit var searchUserAdapter:SearchUserAdapter
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedCommunityProfileUri: Uri
+    private lateinit var selectedCommunityBannerUri: Uri
     private var communityName: String = ""
     private var communityType: String = ""
     private var communityDesc: String = ""
     private var selectedUsersList: ArrayList<String> = ArrayList()
+    private var isCommunityProfile = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,11 +58,22 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             if (result.resultCode == Activity.RESULT_OK){
                 val data = result.data
                 if (data != null && data.data != null){
-                    selectedCommunityProfileUri = data.data!!
-                    Glide.with(this)
-                        .load(selectedCommunityProfileUri)
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(binding.communityProfileCIV)
+                    if (isCommunityProfile){
+                        selectedCommunityProfileUri = data.data!!
+                        Glide.with(this)
+                            .load(selectedCommunityProfileUri)
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(binding.communityProfileCIV)
+                        Glide.with(this)
+                            .load(selectedCommunityProfileUri)
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(binding.communityProfileCIV2)
+                    } else {
+                        selectedCommunityBannerUri = data.data!!
+                        Glide.with(this)
+                            .load(selectedCommunityBannerUri)
+                            .into(binding.communityBannerIV)
+                    }
                 }
             }
         }
@@ -77,14 +90,17 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         binding.firstSectionLayout.visibility = View.GONE
         binding.secondSectionLayout.visibility = View.GONE
         binding.thirdSectionLayout.visibility = View.GONE
+        binding.fourthSectionLayout.visibility = View.GONE
 
 
         when(layoutNo){
             1 -> bindFirstSectionLayout()
             2 -> bindSecondSectionLayout()
             3 -> bindThirdSectionLayout()
+            4 -> bindFourthSectionLayout()
         }
     }
+
     //First Section Layout
     private fun bindFirstSectionLayout(){
         //makes the layout visible
@@ -170,11 +186,8 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         //makes the layout visible
         binding.thirdSectionLayout.visibility = View.VISIBLE
 
+        isCommunityProfile = true
         binding.nameTV.text = communityName
-        binding.nextBtn.text = "Save"
-
-
-
 
         binding.communityProfileCIV.setOnClickListener {
             ImagePicker.with(this).cropSquare().compress(512)
@@ -184,14 +197,39 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                 }
         }
 
+        binding.nextBtn.setOnClickListener {
+            changeLayout(4)
+        }
+        binding.previousBtn.setOnClickListener {
+            binding.nextBtn.text = "Next"
+            changeLayout(2)
+        }
+    }
+
+    private fun bindFourthSectionLayout() {
+        //makes the layout visible
+        binding.fourthSectionLayout.visibility = View.VISIBLE
+
+        isCommunityProfile = false
+        binding.nextBtn.text = "Save"
+
+        binding.communityBannerIV.setOnClickListener {
+            ImagePicker.with(this)
+                .crop(25f, 10f)
+                .compress(1080)
+                .createIntent {
+                    imagePickerLauncher.launch(it)
+                }
+        }
 
         binding.nextBtn.setOnClickListener {
             createCommunity()
         }
         binding.previousBtn.setOnClickListener {
             binding.nextBtn.text = "Next"
-            changeLayout(2)
+            changeLayout(3)
         }
+
     }
 
     private fun createCommunity(){
@@ -219,6 +257,11 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             if (::selectedCommunityProfileUri.isInitialized){
                 FirebaseUtil().retrieveCommunityProfilePicRef(communityId).putFile(selectedCommunityProfileUri)
                 delay += 1000
+            }
+
+            //save community banner to firebase storage
+            if (::selectedCommunityBannerUri.isInitialized){
+                FirebaseUtil().retrieveCommunityBannerPicRef(communityId).putFile(selectedCommunityBannerUri)
             }
 
             //set data to firestore

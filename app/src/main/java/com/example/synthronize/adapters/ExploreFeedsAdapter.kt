@@ -20,15 +20,17 @@ import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ktx.toObject
 
 class ExploreFeedsAdapter(private val context: Context, private val feedList: ArrayList<PostModel>):RecyclerView.Adapter<ExploreFeedsAdapter.ExploreViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExploreFeedsAdapter.ExploreViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemPostBinding.inflate(inflater, parent, false)
-        return ExploreViewHolder(binding)
+        return ExploreViewHolder(binding, inflater)
     }
 
     override fun onBindViewHolder(holder: ExploreFeedsAdapter.ExploreViewHolder, position: Int) {
@@ -39,7 +41,7 @@ class ExploreFeedsAdapter(private val context: Context, private val feedList: Ar
         return feedList.size
     }
 
-    inner class ExploreViewHolder(private val binding: ItemPostBinding): RecyclerView.ViewHolder(binding.root){
+    inner class ExploreViewHolder(private val binding: ItemPostBinding, private val inflater: LayoutInflater): RecyclerView.ViewHolder(binding.root){
         private lateinit var postModel:PostModel
         private lateinit var viewPageAdapter: ViewPageAdapter
         private var isLoved:Boolean = false
@@ -64,6 +66,18 @@ class ExploreFeedsAdapter(private val context: Context, private val feedList: Ar
                 binding.usernameTV.text = owner.username
                 binding.descriptionTV.text = postModel.caption
                 binding.timestampTV.text = DateUtil().formatTimestampToDate(postModel.createdTimestamp)
+                binding.feedWrapperLayout.setOnClickListener {
+                    FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {result ->
+                        val community = result.toObject(CommunityModel::class.java)!!
+                        DialogUtil().openCommunityPreviewDialog(context, inflater, community)
+                    }
+                }
+                binding.menuBtn.setOnClickListener {
+                    DialogUtil().openMenuDialog(context, inflater, postModel)
+                }
+                binding.profileCIV.setOnClickListener {
+                    headToUserProfile()
+                }
                 binding.usernameTV.setOnClickListener {
                     headToUserProfile()
                 }
@@ -215,9 +229,11 @@ class ExploreFeedsAdapter(private val context: Context, private val feedList: Ar
         }
 
         private fun headToUserProfile() {
-            val intent = Intent(context, OtherUserProfile::class.java)
-            intent.putExtra("userId", postModel.ownerId)
-            context.startActivity(intent)
+            if (postModel.ownerId != FirebaseUtil().currentUserUid()){
+                val intent = Intent(context, OtherUserProfile::class.java)
+                intent.putExtra("userID", postModel.ownerId)
+                context.startActivity(intent)
+            }
         }
 
     }

@@ -29,6 +29,7 @@ import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -93,7 +94,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     viewPost()
                 }
                 feedBinding.menuBtn.setOnClickListener {
-                    openMenuDialog()
+                    DialogUtil().openMenuDialog(context, inflater, postModel)
                 }
                 bindLove()
                 bindComment()
@@ -240,61 +241,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
             val intent = Intent(context, OtherUserProfile::class.java)
             intent.putExtra("userId", postModel.ownerId)
             context.startActivity(intent)
-        }
-
-        private fun openMenuDialog(){
-            //TODO ADD FUNCTIONALITY FOR REPOST
-
-            val menuDialogBinding = DialogKebabMenuBinding.inflate(inflater)
-            val menuDialog = DialogPlus.newDialog(context)
-                .setContentHolder(ViewHolder(menuDialogBinding.root))
-                .setMargin(100, 800, 100, 800)
-                .setCancelable(true)
-                .setGravity(Gravity.CENTER)
-                .create()
-
-            if (postModel.ownerId == FirebaseUtil().currentUserUid()){
-                menuDialogBinding.option1.visibility = View.VISIBLE
-                menuDialogBinding.optiontitle1.text = "Delete Post"
-                menuDialogBinding.optiontitle1.setOnClickListener {
-                    menuDialog.dismiss()
-                    Handler().postDelayed({
-                        val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
-                        val warningDialog = DialogPlus.newDialog(context)
-                            .setContentHolder(ViewHolder(warningDialogBinding.root))
-                            .setCancelable(true)
-                            .setMargin(50, 1000, 50, 1000)
-                            .setGravity(Gravity.CENTER)
-                            .create()
-
-                        warningDialogBinding.titleTV.text = "Delete Post"
-                        warningDialogBinding.messageTV.text = "Do you want to delete this post?"
-                        warningDialogBinding.yesBtn.setOnClickListener {
-                            //deletes post from firebase firestore database
-                            FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId).delete()
-                            //deletes content from firebase storage
-                            for (content in postModel.contentList){
-                                FirebaseUtil().retrieveCommunityContentImageRef(content).delete()
-                            }
-                            warningDialog.dismiss()
-                        }
-                        warningDialogBinding.NoBtn.setOnClickListener {
-                            warningDialog.dismiss()
-                        }
-
-                        warningDialog.show()
-
-                    }, 500)
-                }
-            } else {
-                menuDialogBinding.option1.visibility = View.VISIBLE
-                menuDialogBinding.optiontitle1.text = "Report Post"
-                menuDialogBinding.option1.setOnClickListener {
-                    Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            menuDialog.show()
         }
     }
 }

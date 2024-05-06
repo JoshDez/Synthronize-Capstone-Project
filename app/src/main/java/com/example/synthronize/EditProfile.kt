@@ -124,15 +124,27 @@ class EditProfile : AppCompatActivity() {
             var delay:Long = 0
             //set new user profile pic
             if (::selectedProfilePicUri.isInitialized){
-                FirebaseUtil().retrieveUserProfilePicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfilePicUri)
+                FirebaseUtil().retrieveUserProfilePicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfilePicUri).addOnSuccessListener {
+                    // Clear Glide cache
+                    Glide.get(this).clearMemory()
+                    Thread {
+                        Glide.get(this).clearDiskCache()
+                    }.start()
+                }
                 //adds a second to give time for the firebase to upload
-                delay += 1000
+                delay += 3000
             }
             //set new user cover pic
             if (::selectedProfileCoverPicUri.isInitialized){
-                FirebaseUtil().retrieveUserCoverPicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfileCoverPicUri)
+                FirebaseUtil().retrieveUserCoverPicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfileCoverPicUri).addOnSuccessListener {
+                    // Clear Glide cache
+                    Glide.get(this).clearMemory()
+                    Thread {
+                        Glide.get(this).clearDiskCache()
+                    }.start()
+                }
                 //adds a second to give time for the firebase to upload
-                delay += 1000
+                delay += 3000
             }
 
             //set new user model

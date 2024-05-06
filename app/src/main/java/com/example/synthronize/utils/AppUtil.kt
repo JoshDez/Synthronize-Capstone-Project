@@ -1,15 +1,39 @@
 package com.example.synthronize.utils
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Handler
 import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.example.synthronize.MainActivity
 import com.example.synthronize.R
 import de.hdodenhof.circleimageview.CircleImageView
 
 
 class AppUtil {
+
+    fun isInternetConnected(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val network = connectivityManager.activeNetwork ?: return false
+            val networkCapabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+            return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        } else {
+            @Suppress("DEPRECATION")
+            val networkInfo = connectivityManager.activeNetworkInfo ?: return false
+            @Suppress("DEPRECATION")
+            return networkInfo.isConnected
+        }
+    }
+
+
     //For Images
     fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView){
         GlideApp.with(context)
@@ -39,13 +63,44 @@ class AppUtil {
     }
 
     fun setCommunityProfilePic(context:Context, uid: String, civ:CircleImageView){
+        val imageRef = FirebaseUtil().retrieveCommunityProfilePicRef(uid)
+        // Generate unique signature based on current time
+        val signature = ObjectKey(System.currentTimeMillis().toString())
+
         GlideApp.with(context)
             //storage reference
-            .load(FirebaseUtil().retrieveCommunityProfilePicRef(uid))
+            .load(imageRef)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .signature(signature)
             .error(R.drawable.community_not_selected)
             .apply(RequestOptions.circleCropTransform())
             //image view
             .into(civ)
+
+
+        if (isInternetConnected(context)){
+            // Clear Glide memory cache
+            Glide.get(context).clearMemory()
+        }
+    }
+
+    fun setCommunityBannerPic(context:Context, uid: String, imageView:ImageView){
+        val imageRef = FirebaseUtil().retrieveCommunityBannerPicRef(uid)
+
+        // Generate unique signature based on current time
+        val signature = ObjectKey(System.currentTimeMillis().toString())
+
+        Glide.with(context)
+            .load(imageRef)
+            .diskCacheStrategy(DiskCacheStrategy.ALL) // Enable disk cache
+            .signature(signature) // Use unique signature for caching
+            .error(R.drawable.community_not_selected)
+            .into(imageView)
+
+        if (isInternetConnected(context)){
+            // Clear memory cache to ensure the updated image is fetched immediately
+            Glide.get(context).clearMemory()
+        }
     }
 
     //For Heading Back to Main Activity

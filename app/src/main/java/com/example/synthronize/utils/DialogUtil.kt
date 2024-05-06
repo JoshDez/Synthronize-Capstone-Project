@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
+import com.example.synthronize.databinding.DialogKebabMenuBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.Firebase
@@ -15,6 +18,65 @@ import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
 class DialogUtil {
+
+    //OPENS DIALOG FOR FEED MENU
+    fun openMenuDialog(context:Context, inflater: LayoutInflater, postModel:PostModel){
+        //TODO ADD FUNCTIONALITY FOR REPOST
+        val menuDialogBinding = DialogKebabMenuBinding.inflate(inflater)
+        val menuDialog = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(menuDialogBinding.root))
+            .setMargin(100, 800, 100, 800)
+            .setCancelable(true)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        if (postModel.ownerId == FirebaseUtil().currentUserUid()){
+            menuDialogBinding.option1.visibility = View.VISIBLE
+            menuDialogBinding.optiontitle1.text = "Delete Post"
+            menuDialogBinding.optiontitle1.setOnClickListener {
+                menuDialog.dismiss()
+                Handler().postDelayed({
+                    val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
+                    val warningDialog = DialogPlus.newDialog(context)
+                        .setContentHolder(ViewHolder(warningDialogBinding.root))
+                        .setCancelable(true)
+                        .setGravity(Gravity.CENTER)
+                        .create()
+
+                    warningDialogBinding.titleTV.text = "Delete Post"
+                    warningDialogBinding.messageTV.text = "Do you want to delete this post?"
+                    warningDialogBinding.yesBtn.setOnClickListener {
+                        //deletes post from firebase firestore database
+                        FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId).delete()
+                        //deletes content from firebase storage
+                        for (content in postModel.contentList){
+                            FirebaseUtil().retrieveCommunityContentImageRef(content).delete()
+                        }
+                        warningDialog.dismiss()
+                    }
+                    warningDialogBinding.NoBtn.setOnClickListener {
+                        warningDialog.dismiss()
+                    }
+
+                    warningDialog.show()
+
+                }, 500)
+            }
+        } else {
+            menuDialogBinding.option1.visibility = View.VISIBLE
+            menuDialogBinding.optiontitle1.text = "Report Post"
+            menuDialogBinding.option1.setOnClickListener {
+                Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        menuDialog.show()
+    }
+
+
+
+
+
     //OPENS COMMUNITY PREVIEW DIALOG
     fun openCommunityPreviewDialog(context:Context, layoutInflater: LayoutInflater, communityModel: CommunityModel){
         val dialogPlusBinding = DialogCommunityPreviewBinding.inflate(layoutInflater)
@@ -30,8 +92,9 @@ class DialogUtil {
         getFriendsJoinedCount(communityModel.communityMembers){count->
             dialogPlusBinding.friendsJoinedCountTV.text = count.toString()
         }
-        //TODO: dialogBinding.createdDateTV.text = communityModel.communityCreatedTimestamp
+        dialogPlusBinding.createdDateTV.text =  DateUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)
         AppUtil().setCommunityProfilePic(context, communityModel.communityId, dialogPlusBinding.communityProfileCIV)
+        AppUtil().setCommunityBannerPic(context, communityModel.communityId, dialogPlusBinding.communityBannerIV)
 
         //ON SET LISTENER BUTTONS
         //Join Community Button

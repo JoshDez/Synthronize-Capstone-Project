@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
             replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager))
             resetMainToolbar()
         }
-
         binding.exploreBtn.setOnClickListener {
             resetMainToolbar()
             selectNavigation(binding.exploreBtn.id)
@@ -46,9 +45,6 @@ class MainActivity : AppCompatActivity() {
             selectNavigation(binding.chatBtn.id)
             replaceFragment(ChatFragment(binding))
         }
-
-
-
     }
     //Function that checks if the intent request for a specific fragment
     private fun onStartFragment(){
@@ -112,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         binding.backBtn.visibility = View.GONE
         binding.kebabMenuBtn.visibility = View.GONE
         binding.searchBtn.visibility = View.GONE
-        binding.toolbarImageCIV.setImageResource(R.drawable.synthronize_logo)
+        binding.toolbarImageCIV.setImageResource(R.drawable.header_logo)
 
         //resetting main toolbar setOnClickListeners
         binding.searchBtn.setOnClickListener(null)

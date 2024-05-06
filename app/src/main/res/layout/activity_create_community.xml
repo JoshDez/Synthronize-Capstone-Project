@@ -210,7 +210,6 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="20dp"/>
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -218,9 +217,6 @@
                 android:textSize="20dp"
                 android:textColor="@color/light_purple"
                 android:text="@string/set_community_profile_and_cover_photo"/>
-
-
-
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="60dp"/>
@@ -251,6 +247,86 @@
 
         </LinearLayout>
     </ScrollView>
+
+
+    <!-- Fourth SECTION -->
+    <ScrollView
+        android:id="@+id/fourthSectionLayout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mainToolbar"
+        android:layout_above="@id/bottomNavigation">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="20dp"
+                android:textColor="@color/light_purple"
+                android:text="Set Community Banner"/>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+
+            <FrameLayout
+                android:layout_below="@id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="250dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/communityBannerIV"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:src="@color/black"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/communityProfileCIV2"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:src="@color/light_purple"/>
+                </RelativeLayout>
+            </FrameLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
+
+            <TextView
+                android:id="@+id/nameTV2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:textAlignment="center"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/light_purple"
+                android:contentDescription="@string/community_name"/>
+
+
+        </LinearLayout>
+    </ScrollView>
+
 
     <!-- BOTTOM NAVIGATION -->
     <LinearLayout

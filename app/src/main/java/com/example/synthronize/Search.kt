@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.synthronize.adapters.ExploreFeedsAdapter
 import com.example.synthronize.adapters.SearchCommunityAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
@@ -16,6 +17,7 @@ import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivitySearchBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -24,7 +26,11 @@ class Search : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding:ActivitySearchBinding
     private lateinit var searchUserAdapter: SearchUserAdapter
     private lateinit var searchCommunityAdapter: SearchCommunityAdapter
+    private lateinit var searchFeedAdapter: ExploreFeedsAdapter
     private lateinit var searchInCategory: String
+    private var userLayoutOpen = true
+    private var communityLayoutOpen = true
+    private var postLayoutOpen = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +55,13 @@ class Search : AppCompatActivity(), OnItemClickListener {
                     searchUsers(searchQuery.toString())
                 } else if (searchInCategory == "communities"){
                     searchCommunities(searchQuery.toString())
+                } else if(searchInCategory == "feeds"){
+                    searchPosts(searchQuery.toString())
                 } else {
                     //search in all categories
                     searchUsers(searchQuery.toString())
                     searchCommunities(searchQuery.toString())
+                    searchPosts(searchQuery.toString())
                 }
             }
         })
@@ -60,6 +69,7 @@ class Search : AppCompatActivity(), OnItemClickListener {
 
     private fun searchUsers(searchQuery: String){
         binding.usersLinearLayout.visibility = View.INVISIBLE
+
         val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
             .whereGreaterThanOrEqualTo("fullName", searchQuery)
 
@@ -72,9 +82,22 @@ class Search : AppCompatActivity(), OnItemClickListener {
         binding.resultUsersRV.adapter = searchUserAdapter
         searchUserAdapter.startListening()
 
+
+
         Handler().postDelayed({
             if (searchUserAdapter.getTotalItems() > 0 && searchQuery.isNotEmpty()){
                 binding.usersLinearLayout.visibility = View.VISIBLE
+                binding.userHeaderLayout.setOnClickListener {
+                    if (userLayoutOpen){
+                        userLayoutOpen = false
+                        binding.resultUsersRV.visibility = View.GONE
+                        binding.userArrowIV.setImageResource(R.drawable.baseline_keyboard_arrow_down_24)
+                    } else {
+                        userLayoutOpen = true
+                        binding.resultUsersRV.visibility = View.VISIBLE
+                        binding.userArrowIV.setImageResource(R.drawable.baseline_keyboard_arrow_up_24)
+                    }
+                }
             } else {
                 binding.usersLinearLayout.visibility = View.GONE
             }
@@ -84,6 +107,7 @@ class Search : AppCompatActivity(), OnItemClickListener {
 
     private fun searchCommunities(searchQuery: String){
         binding.communitiesLinearLayout.visibility = View.INVISIBLE
+
         val myQuery:Query = FirebaseUtil().retrieveAllCommunityCollection()
             .whereGreaterThanOrEqualTo("communityName", searchQuery)
 
@@ -99,6 +123,17 @@ class Search : AppCompatActivity(), OnItemClickListener {
         Handler().postDelayed({
             if (searchCommunityAdapter.getTotalItems() > 0 && searchQuery.isNotEmpty()){
                 binding.communitiesLinearLayout.visibility = View.VISIBLE
+                binding.communityHeaderLayout.setOnClickListener {
+                    if (communityLayoutOpen){
+                        communityLayoutOpen = false
+                        binding.resultCommunitiesRV.visibility = View.GONE
+                        binding.communityArrowIV.setImageResource(R.drawable.baseline_keyboard_arrow_down_24)
+                    } else {
+                        communityLayoutOpen = true
+                        binding.resultCommunitiesRV.visibility = View.VISIBLE
+                        binding.communityArrowIV.setImageResource(R.drawable.baseline_keyboard_arrow_up_24)
+                    }
+                }
             } else {
                 binding.communitiesLinearLayout.visibility = View.GONE
             }
@@ -106,7 +141,41 @@ class Search : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun searchPosts(searchQuery: String){
-        //TODO: Search Posts
+        binding.postsLinearLayout.visibility = View.INVISIBLE
+        val feedList:ArrayList<PostModel> = ArrayList()
+        FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityType", "Public").get().addOnSuccessListener {it ->
+            for (document in it.documents){
+                val id = document.get("communityId") as String
+                FirebaseUtil().retrieveCommunityFeedsCollection(id).whereGreaterThanOrEqualTo("caption", searchQuery).get().addOnSuccessListener {feeds ->
+                    for (post in feeds.documents){
+                        val postModel = post.toObject(PostModel::class.java)!!
+                        feedList.add(postModel)
+                    }
+                    binding.resultsPostsRV.layoutManager = LinearLayoutManager(this)
+                    searchFeedAdapter = ExploreFeedsAdapter(this, feedList)
+                    binding.resultsPostsRV.adapter = searchFeedAdapter
+
+                    Handler().postDelayed({
+                        if (searchFeedAdapter.itemCount > 0 && searchQuery.isNotEmpty()){
+                            binding.postsLinearLayout.visibility = View.VISIBLE
+                            binding.postsHeaderLayout.setOnClickListener {
+                                if (postLayoutOpen){
+                                    postLayoutOpen = false
+                                    binding.resultsPostsRV.visibility = View.GONE
+                                    binding.postsArrowIV.setImageResource(R.drawable.baseline_keyboard_arrow_down_24)
+                                } else {
+                                    postLayoutOpen = true
+                                    binding.resultsPostsRV.visibility = View.VISIBLE
+                                    binding.postsArrowIV.setImageResource(R.drawable.baseline_keyboard_arrow_up_24)
+                                }
+                            }
+                        } else {
+                            binding.postsLinearLayout.visibility = View.GONE
+                        }
+                    }, 2000)
+                }
+            }
+        }
     }
 
     override fun onUserClick(userId: String, isChecked:Boolean) {
@@ -129,6 +198,8 @@ class Search : AppCompatActivity(), OnItemClickListener {
             searchUserAdapter.notifyDataSetChanged()
         if (::searchCommunityAdapter.isInitialized)
             searchCommunityAdapter.notifyDataSetChanged()
+        if (::searchFeedAdapter.isInitialized)
+            searchFeedAdapter.notifyDataSetChanged()
     }
 
     override fun onStop() {

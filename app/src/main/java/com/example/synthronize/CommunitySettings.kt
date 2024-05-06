@@ -127,6 +127,7 @@ class CommunitySettings : AppCompatActivity() {
         binding.communityNameTV.text = communityModel.communityName
         binding.communityCodeEdtTxt.setText(communityModel.communityCode)
         AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.userProfileCIV)
+        AppUtil().setCommunityBannerPic(this, communityModel.communityId, binding.communityBannerIV)
 
         if (communityModel.communityDescription.isNotEmpty()){
             binding.communityDescriptionTV.visibility = View.VISIBLE

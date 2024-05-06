@@ -96,6 +96,7 @@
     <string name="edit_community_rules">Edit Community Rules</string>
     <string name="delete_community">Delete Community</string>
     <string name="edit_community">Edit Community</string>
+    <string name="users">Users</string>
 
 
 </resources>

@@ -16,6 +16,7 @@ import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.databinding.FragmentProfileBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.DateUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
@@ -64,7 +65,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 binding.userDescriptionTV.text = userModel.description
                 if (userModel.birthday.isNotEmpty()){
                     binding.birthdayLayout.visibility = View.VISIBLE
-                    binding.birthdayTV.text = "Birthday: ${userModel.birthday}"
+                    binding.birthdayTV.text = DateUtil().formatBirthDate(userModel.birthday)
                 }
 
                 //binds userProfilePic
