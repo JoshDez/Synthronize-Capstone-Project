@@ -94,9 +94,9 @@ class EditProfile : AppCompatActivity() {
                 bindUsernameEdtTxtTextWatcher(userModel.username)
 
                 //bind user profile picture
-                AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.userProfileCIV)
+                AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.userProfileCIV, true)
                 //bind user cover picture
-                AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.userCoverIV)
+                AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.userCoverIV, true)
 
             }
         }

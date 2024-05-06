@@ -17,7 +17,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class AppUtil {
 
-    fun isInternetConnected(context: Context): Boolean {
+    private fun isInternetConnected(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -35,22 +35,61 @@ class AppUtil {
 
 
     //For Images
-    fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView){
-        GlideApp.with(context)
-            //storage reference
-            .load(FirebaseUtil().retrieveUserProfilePicRef(uid))
-            .error(R.drawable.profile_not_selected)
-            .apply(RequestOptions.circleCropTransform())
-            //image view
-            .into(civ)
+    fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView, clearCache: Boolean = false){
+
+        val imageRef = FirebaseUtil().retrieveUserProfilePicRef(uid)
+
+        if (isInternetConnected(context)){
+            //if online
+            GlideApp.with(context)
+                //storage reference
+                .load(imageRef)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .signature(ObjectKey(System.currentTimeMillis().toString()))
+                .error(R.drawable.profile_not_selected)
+                .apply(RequestOptions.circleCropTransform())
+                //image view
+                .into(civ)
+
+            if (clearCache){
+                // Clear Glide memory cache
+                Glide.get(context).clearMemory()
+            }
+        } else {
+            GlideApp.with(context)
+                //storage reference
+                .load(R.drawable.profile_not_selected)
+                .apply(RequestOptions.circleCropTransform())
+                //image view
+                .into(civ)
+        }
+
     }
-    fun setUserCoverPic(context: Context, uid: String, cover:ImageView){
-        GlideApp.with(context)
-            //storage reference
-            .load(FirebaseUtil().retrieveUserCoverPicRef(uid))
-            .error(R.drawable.baseline_image_24)
-            //image view
-            .into(cover)
+    fun setUserCoverPic(context: Context, uid: String, cover:ImageView, clearCache: Boolean = false){
+        val imageRef = FirebaseUtil().retrieveUserCoverPicRef(uid)
+
+        if (isInternetConnected(context)){
+            //if online
+            GlideApp.with(context)
+                //storage reference
+                .load(imageRef)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .signature(ObjectKey(System.currentTimeMillis().toString()))
+                .error(R.drawable.community_not_selected)
+                //image view
+                .into(cover)
+
+            if (clearCache){
+                // Clear Glide memory cache
+                Glide.get(context).clearMemory()
+            }
+        } else {
+            GlideApp.with(context)
+                //storage reference
+                .load(R.drawable.baseline_image_24)
+                //image view
+                .into(cover)
+        }
     }
 
     fun setImageContent(context: Context, imageId: String, imageView:ImageView){
@@ -62,44 +101,59 @@ class AppUtil {
             .into(imageView)
     }
 
-    fun setCommunityProfilePic(context:Context, uid: String, civ:CircleImageView){
+    fun setCommunityProfilePic(context:Context, uid: String, civ:CircleImageView, clearCache:Boolean = false){
         val imageRef = FirebaseUtil().retrieveCommunityProfilePicRef(uid)
-        // Generate unique signature based on current time
-        val signature = ObjectKey(System.currentTimeMillis().toString())
-
-        GlideApp.with(context)
-            //storage reference
-            .load(imageRef)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .signature(signature)
-            .error(R.drawable.community_not_selected)
-            .apply(RequestOptions.circleCropTransform())
-            //image view
-            .into(civ)
-
 
         if (isInternetConnected(context)){
-            // Clear Glide memory cache
-            Glide.get(context).clearMemory()
+            //if online
+            GlideApp.with(context)
+                //storage reference
+                .load(imageRef)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .signature(ObjectKey(System.currentTimeMillis().toString()))
+                .error(R.drawable.community_not_selected)
+                .apply(RequestOptions.circleCropTransform())
+                //image view
+                .into(civ)
+
+            if (clearCache){
+                // Clear Glide memory cache
+                Glide.get(context).clearMemory()
+            }
+        } else {
+            GlideApp.with(context)
+                //storage reference
+                .load(R.drawable.community_not_selected)
+                .apply(RequestOptions.circleCropTransform())
+                //image view
+                .into(civ)
         }
     }
 
-    fun setCommunityBannerPic(context:Context, uid: String, imageView:ImageView){
+    fun setCommunityBannerPic(context:Context, uid: String, imageView:ImageView, clearCache:Boolean = false){
         val imageRef = FirebaseUtil().retrieveCommunityBannerPicRef(uid)
 
-        // Generate unique signature based on current time
-        val signature = ObjectKey(System.currentTimeMillis().toString())
-
-        Glide.with(context)
-            .load(imageRef)
-            .diskCacheStrategy(DiskCacheStrategy.ALL) // Enable disk cache
-            .signature(signature) // Use unique signature for caching
-            .error(R.drawable.community_not_selected)
-            .into(imageView)
-
         if (isInternetConnected(context)){
-            // Clear memory cache to ensure the updated image is fetched immediately
-            Glide.get(context).clearMemory()
+            //if online
+            GlideApp.with(context)
+                //storage reference
+                .load(imageRef)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .signature(ObjectKey(System.currentTimeMillis().toString()))
+                .error(R.drawable.community_not_selected)
+                //image view
+                .into(imageView)
+
+            if (clearCache){
+                // Clear Glide memory cache
+                Glide.get(context).clearMemory()
+            }
+        } else {
+            GlideApp.with(context)
+                //storage reference
+                .load(R.drawable.baseline_image_24)
+                //image view
+                .into(imageView)
         }
     }
 

@@ -101,9 +101,9 @@ class EditCommunity : AppCompatActivity() {
                 bindCommunityNameEdtTxtTextWatcher(communityModel.communityName)
 
                 //bind profile picture
-                AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.communityProfileCIV)
+                AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.communityProfileCIV, true)
                 //bind banner picture
-                AppUtil().setCommunityBannerPic(this, communityModel.communityId, binding.communityBannerIV)
+                AppUtil().setCommunityBannerPic(this, communityModel.communityId, binding.communityBannerIV, true)
 
             }
         }
@@ -131,11 +131,7 @@ class EditCommunity : AppCompatActivity() {
             //set new user profile pic
             if (::selectedCommunityProfileUri.isInitialized){
                 FirebaseUtil().retrieveCommunityProfilePicRef(communityModel.communityId).putFile(selectedCommunityProfileUri).addOnSuccessListener {
-                    // Clear Glide cache
-                    Glide.get(this).clearMemory()
-                    Thread {
-                        Glide.get(this).clearDiskCache()
-                    }.start()
+
                 }
                 //adds a second to give time for the firebase to upload
                 delay += 3000
@@ -143,13 +139,7 @@ class EditCommunity : AppCompatActivity() {
             //set new user cover pic
             if (::selectedBannerPicUri.isInitialized){
                 //TODO to implement banner
-                FirebaseUtil().retrieveCommunityBannerPicRef(communityModel.communityId).putFile(selectedBannerPicUri).addOnSuccessListener {
-                    // Clear Glide cache
-                    Glide.get(this).clearMemory()
-                    Thread {
-                        Glide.get(this).clearDiskCache()
-                    }.start()
-                }
+                FirebaseUtil().retrieveCommunityBannerPicRef(communityModel.communityId).putFile(selectedBannerPicUri)
                 //adds a second to give time for the firebase to upload
                 delay += 3000
             }

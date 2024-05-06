@@ -63,19 +63,6 @@ class ForumsAdapter(
         fun bind(model: ForumsModel) {
             this.forumsModel = model
 
-            // SETUP WRAPPER FOR REPOST OR COMMUNITY
-            if (forumsModel.repostId.isNotEmpty()) {
-                forumsBinding.feedWrapperLayout.visibility = View.VISIBLE
-                FirebaseUtil().targetUserDetails(forumsModel.repostOwnerId).get().addOnSuccessListener {
-                    val user = it.toObject(UserModel::class.java)!!
-                    forumsBinding.wrapperName.text = user.username
-                    AppUtil().setUserProfilePic(context, user.userID, forumsBinding.profileCIV)
-                    forumsBinding.wrapperName.setOnClickListener {
-                        headToUserProfile()
-                    }
-                }
-            }
-
             // SETUP FEED
             FirebaseUtil().targetUserDetails(forumsModel.ownerId).get().addOnSuccessListener {
                 val owner = it.toObject(UserModel::class.java)!!
@@ -88,10 +75,10 @@ class ForumsAdapter(
                     headToUserProfile()
                 }
                 forumsBinding.descriptionTV.setOnClickListener {
-                    viewPost()
+                    Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
                 }
                 forumsBinding.commentBtn.setOnClickListener {
-                    viewPost()
+                    Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
                 }
                 bindVote()
                 bindComment()
@@ -274,13 +261,6 @@ class ForumsAdapter(
             // Update UI with vote counts
             forumsBinding.upvoteCountTV.text = forumsModel.upvoteList.size.toString()
             forumsBinding.downvoteCountTV.text = forumsModel.downvoteList.size.toString()
-        }
-
-        private fun viewPost() {
-            val intent = Intent(context, ViewPost::class.java)
-            intent.putExtra("communityId", forumsModel.communityId)
-            intent.putExtra("postId", forumsModel.postId)
-            context.startActivity(intent)
         }
 
         private fun headToUserProfile() {
