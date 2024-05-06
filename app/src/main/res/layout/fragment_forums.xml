@@ -3,16 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0D0081"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ForumsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- RecyclerView to display forum threads -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/threadsRV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- FloatingActionButton to add a new thread -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addThreadFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:text="Forums Fragment" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/baseline_add_24"
+        app:backgroundTint="@color/light_purple" />
 
 </RelativeLayout>
