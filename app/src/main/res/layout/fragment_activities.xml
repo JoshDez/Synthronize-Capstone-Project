@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#651F04"
-    tools:context=".FilesFragment">
+    tools:context=".ActivitiesFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -13,6 +13,6 @@
         android:layout_centerInParent="true"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:text="Files Fragment" />
+        android:text="Activities Fragment" />
 
 </RelativeLayout>

@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
@@ -113,7 +112,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         }
         binding.activitiesBtn.setOnClickListener {
             //TODO: changes to buttons
-            replaceFragment(FilesFragment(binding, communityId))
+            replaceFragment(ActivitiesFragment(binding, communityId))
             selectNavigation("activities")
         }
 
@@ -182,26 +181,26 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
 
     }
     private fun selectNavigation(fragment:String) {
-        binding.feedsIconIV.setImageResource(R.drawable.community_not_selected)
-        binding.eventsIconIV.setImageResource(R.drawable.community_not_selected)
-        binding.forumsIconIV.setImageResource(R.drawable.community_not_selected)
-        binding.marketIconIV.setImageResource(R.drawable.community_not_selected)
-        binding.activitiesIconIV.setImageResource(R.drawable.community_not_selected)
+        binding.feedsIconIV.setImageResource(R.drawable.feeds_not_selected)
+        binding.eventsIconIV.setImageResource(R.drawable.events_not_selected)
+        binding.forumsIconIV.setImageResource(R.drawable.forums_not_selected)
+        binding.marketIconIV.setImageResource(R.drawable.market_not_selected)
+        binding.activitiesIconIV.setImageResource(R.drawable.activities_not_selected)
         when (fragment) {
             "feeds" -> {
-                binding.feedsIconIV.setImageResource(R.drawable.community_not_selected)
+                binding.feedsIconIV.setImageResource(R.drawable.feeds_selected)
             }
             "events" -> {
-                binding.eventsIconIV.setImageResource(R.drawable.community_not_selected)
+                binding.eventsIconIV.setImageResource(R.drawable.events_selected)
             }
             "forums" -> {
-                binding.forumsIconIV.setImageResource(R.drawable.community_not_selected)
+                binding.forumsIconIV.setImageResource(R.drawable.forums_selected)
             }
             "market" -> {
-                binding.marketIconIV.setImageResource(R.drawable.community_not_selected)
+                binding.marketIconIV.setImageResource(R.drawable.market_selected)
             }
             "activities" -> {
-                binding.activitiesIconIV.setImageResource(R.drawable.community_not_selected)
+                binding.activitiesIconIV.setImageResource(R.drawable.activities_selected)
 
             }
         }

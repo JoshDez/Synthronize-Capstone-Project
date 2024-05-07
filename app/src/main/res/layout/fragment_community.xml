@@ -18,7 +18,7 @@
         android:orientation="horizontal"
         android:background="@drawable/gradient"
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="80dp">
 
         <LinearLayout
             android:id="@+id/feedsBtn"
@@ -32,7 +32,7 @@
                 android:id="@+id/feedsIconIV"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/notifications_not_selected"/>
+                android:src="@drawable/feeds_not_selected"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
                 android:id="@+id/eventsIconIV"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/community_not_selected"/>
+                android:src="@drawable/events_not_selected"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
                 android:id="@+id/forumsIconIV"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/friends_not_selected"/>
+                android:src="@drawable/forums_not_selected"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -106,7 +106,7 @@
                 android:id="@+id/marketIconIV"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/notifications_not_selected"/>
+                android:src="@drawable/market_not_selected"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -130,7 +130,7 @@
                 android:id="@+id/activitiesIconIV"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/notifications_not_selected"/>
+                android:src="@drawable/activities_not_selected"/>
 
             <TextView
                 android:layout_width="wrap_content"
