@@ -8,90 +8,90 @@
     tools:context=".UpdatesFragment">
 
     <LinearLayout
-        android:id="@+id/upperNavLayout"
-        android:orientation="horizontal"
-        android:background="@color/dark_purple_1"
-        android:layout_width="match_parent"
+    android:id="@+id/upperNavLayout"
+    android:orientation="horizontal"
+    android:background="@drawable/gradient"
+    android:layout_width="match_parent"
+    android:layout_height="70dp">
+
+    <LinearLayout
+        android:id="@+id/notificationsBtn"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/notificationsBtn"
-            android:layout_margin="5dp"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical"
+        <ImageView
+            android:id="@+id/notificationsIconIV"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/notifications_not_selected"/>
+
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/notificationsIconIV"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/notifications_not_selected"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:text="@string/Notifications"
-                android:gravity="center"
-                android:background="@color/dark_purple_1"
-                android:textColor="@color/light_purple"
-                android:textSize="13sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/communityInvitationsBtn"
-            android:layout_margin="5dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="@string/Notifications"
             android:gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/communityInviteIconIV"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/community_not_selected"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:text="Community Invitations"
-                android:gravity="center"
-                android:background="@color/dark_purple_1"
-                android:textColor="@color/light_purple"
-                android:textSize="13sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/friendRequestsBtn"
-            android:layout_margin="5dp"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/friendRequestIconIV"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/friends_not_selected"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:text="Friend Requests"
-                android:gravity="center"
-                android:background="@color/dark_purple_1"
-                android:textColor="@color/light_purple"
-                android:textSize="13sp"/>
-        </LinearLayout>
+            android:background="@color/dark_purple_1"
+            android:textColor="@color/light_purple"
+            android:textSize="13sp"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/communityInvitationsBtn"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/communityInviteIconIV"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/community_not_selected"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="Community Invitations"
+            android:gravity="center"
+            android:background="@color/dark_purple_1"
+            android:textColor="@color/light_purple"
+            android:textSize="13sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/friendRequestsBtn"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/friendRequestIconIV"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/friends_not_selected"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:text="Friend Requests"
+            android:gravity="center"
+            android:background="@color/dark_purple_1"
+            android:textColor="@color/light_purple"
+            android:textSize="13sp"/>
+    </LinearLayout>
+</LinearLayout>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider1"

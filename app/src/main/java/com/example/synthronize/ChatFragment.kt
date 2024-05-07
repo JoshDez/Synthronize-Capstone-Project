@@ -36,7 +36,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainBinding.toolbarTitleTV.text = "INBOX"
+        mainBinding.toolbarTitleTV.text = "CHATS"
 
         //checks if fragment is added to the main activity
         if (isAdded){
@@ -61,22 +61,20 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     }
 
     private fun navigate(tab:String){
-        val unselectedColor = ContextCompat.getColor(requireContext(), R.color.less_saturated_light_purple)
-        val selectedColor = ContextCompat.getColor(requireContext(), R.color.light_purple)
-        binding.inboxBtn.setTextColor(unselectedColor)
-        binding.communityChatsBtn.setTextColor(unselectedColor)
         binding.inboxRV.visibility = View.GONE
         binding.communityChatsRV.visibility = View.GONE
+        //binding.communityChatsBtn.setTextColor(unselectedColor)
+        //binding.communityChatsRV.visibility = View.GONE
 
 
         if (tab == "community_chat"){
             binding.communityChatsRV.visibility = View.VISIBLE
             setupChatroomListForCommunity()
-            binding.communityChatsBtn.setTextColor(selectedColor)
+            //binding.communityChatsBtn.setTextColor(selectedColor)
         }else if (tab == "direct_message"){
             binding.inboxRV.visibility = View.VISIBLE
             setupChatroomListForInbox()
-            binding.inboxBtn.setTextColor(selectedColor)
+            //binding.inboxBtn.setTextColor(selectedColor)
         }
     }
 

@@ -91,30 +91,30 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         mainBinding.hamburgerMenuBtn.visibility = View.VISIBLE
 
         //bind buttons
-        binding.feedsTextView.setOnClickListener {
+        binding.feedsBtn.setOnClickListener {
             //TODO: changes to buttons
             replaceFragment(FeedsFragment(binding, communityId))
             selectNavigation("feeds")
         }
-        binding.eventsTextView.setOnClickListener {
+        binding.eventsBtn.setOnClickListener {
             //TODO: changes to buttons
             replaceFragment(EventsFragment(binding, communityId))
             selectNavigation("events")
         }
-        binding.forumsTextView.setOnClickListener {
+        binding.forumsBtn.setOnClickListener {
             //TODO: changes to buttons
             replaceFragment(ForumsFragment(binding, communityId))
             selectNavigation("forums")
         }
-        binding.marketTextView.setOnClickListener {
+        binding.marketBtn.setOnClickListener {
             //TODO: changes to buttons
             replaceFragment(MarketFragment(binding, communityId))
             selectNavigation("market")
         }
-        binding.filesTextView.setOnClickListener {
+        binding.activitiesBtn.setOnClickListener {
             //TODO: changes to buttons
             replaceFragment(FilesFragment(binding, communityId))
-            selectNavigation("files")
+            selectNavigation("activities")
         }
 
         //bind buttons from main binding
@@ -182,28 +182,26 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
 
     }
     private fun selectNavigation(fragment:String) {
-        val unselectedColor = ContextCompat.getColor(requireContext(), R.color.less_saturated_light_purple)
-        val selectedColor = ContextCompat.getColor(requireContext(), R.color.light_purple)
-        binding.feedsTextView.setTextColor(unselectedColor)
-        binding.eventsTextView.setTextColor(unselectedColor)
-        binding.forumsTextView.setTextColor(unselectedColor)
-        binding.marketTextView.setTextColor(unselectedColor)
-        binding.filesTextView.setTextColor(unselectedColor)
+        binding.feedsIconIV.setImageResource(R.drawable.community_not_selected)
+        binding.eventsIconIV.setImageResource(R.drawable.community_not_selected)
+        binding.forumsIconIV.setImageResource(R.drawable.community_not_selected)
+        binding.marketIconIV.setImageResource(R.drawable.community_not_selected)
+        binding.activitiesIconIV.setImageResource(R.drawable.community_not_selected)
         when (fragment) {
             "feeds" -> {
-                binding.feedsTextView.setTextColor(selectedColor)
+                binding.feedsIconIV.setImageResource(R.drawable.community_not_selected)
             }
             "events" -> {
-                binding.eventsTextView.setTextColor(selectedColor)
+                binding.eventsIconIV.setImageResource(R.drawable.community_not_selected)
             }
             "forums" -> {
-                binding.forumsTextView.setTextColor(selectedColor)
+                binding.forumsIconIV.setImageResource(R.drawable.community_not_selected)
             }
             "market" -> {
-                binding.marketTextView.setTextColor(selectedColor)
+                binding.marketIconIV.setImageResource(R.drawable.community_not_selected)
             }
-            "files" -> {
-                binding.filesTextView.setTextColor(selectedColor)
+            "activities" -> {
+                binding.activitiesIconIV.setImageResource(R.drawable.community_not_selected)
 
             }
         }
