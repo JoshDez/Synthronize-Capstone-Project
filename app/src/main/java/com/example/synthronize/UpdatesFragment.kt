@@ -11,16 +11,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.RequestsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
-import com.example.synthronize.databinding.FragmentNotificationBinding
+import com.example.synthronize.databinding.FragmentUpdatesBinding
 import com.example.synthronize.interfaces.NotificationOnDataChange
-import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.FirebaseUtil
-import com.google.firebase.firestore.Query
 
-class NotificationFragment(private val mainBinding: ActivityMainBinding): Fragment(), NotificationOnDataChange {
+class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(), NotificationOnDataChange {
     // TODO: Rename and change types of parameters
-    private lateinit var binding: FragmentNotificationBinding
+    private lateinit var binding: FragmentUpdatesBinding
     private lateinit var requestsAdapter: RequestsAdapter
     private lateinit var context: Context
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,43 +31,47 @@ class NotificationFragment(private val mainBinding: ActivityMainBinding): Fragme
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentNotificationBinding.inflate(layoutInflater)
+        binding = FragmentUpdatesBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainBinding.toolbarTitleTV.text = "NOTIFICATIONS"
+        mainBinding.toolbarTitleTV.text = "UPDATES"
 
         if (isAdded){
             context = requireContext()
             if (::context.isInitialized){
                 bindButtons()
-                setupRVForFriendRequests()
+                navigate("notifications")
 
-                binding.notificationBtn.setOnClickListener {
+                binding.notificationsBtn.setOnClickListener {
                     navigate("notifications")
                 }
                 binding.communityInvitationsBtn.setOnClickListener {
                     navigate("community_invitations")
+                }
+                binding.friendRequestsBtn.setOnClickListener {
+                    navigate("friend_requests")
                 }
             }
         }
     }
 
     private fun navigate(tab:String){
-        val unselectedColor = ContextCompat.getColor(requireContext(), R.color.less_saturated_light_purple)
-        val selectedColor = ContextCompat.getColor(requireContext(), R.color.light_purple)
-        binding.notificationBtn.setTextColor(unselectedColor)
-        binding.communityInvitationsBtn.setTextColor(unselectedColor)
+        binding.notificationsIconIV.setImageResource(R.drawable.notifications_not_selected)
+        binding.communityInviteIconIV.setImageResource(R.drawable.community_not_selected)
+        binding.friendRequestIconIV.setImageResource(R.drawable.friends_not_selected)
 
 
         if (tab == "notifications"){
-            setupRVForFriendRequests()
-            binding.notificationBtn.setTextColor(selectedColor)
+            binding.notificationsIconIV.setImageResource(R.drawable.notifications_selected)
         }else if (tab == "community_invitations") {
             setupRVForCommunityInvitations()
-            binding.communityInvitationsBtn.setTextColor(selectedColor)
+            binding.communityInviteIconIV.setImageResource(R.drawable.community_selected)
+        }else if (tab == "friend_requests") {
+            setupRVForFriendRequests()
+            binding.friendRequestIconIV.setImageResource(R.drawable.friends_selected)
         }
     }
     private fun setupRVForCommunityInvitations(){

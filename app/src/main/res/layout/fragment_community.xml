@@ -19,8 +19,7 @@
             <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@id/generalChatsBtn">
+                android:layout_alignParentStart="true">
 
                 <!-- Navigation -->
                 <LinearLayout
@@ -87,18 +86,6 @@
 
             </HorizontalScrollView>
 
-            <ImageButton
-                android:id="@+id/generalChatsBtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:background="@color/purple2"
-                android:src="@drawable/baseline_comment_24"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:tint="@color/light_purple"/>
         </RelativeLayout>
 
     <!-- RecyclerView for Posts -->

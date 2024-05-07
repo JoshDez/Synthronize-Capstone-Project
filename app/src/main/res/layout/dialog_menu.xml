@@ -28,14 +28,20 @@
 
         <TextView
             android:id="@+id/optiontitle1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:gravity="center"
             android:contentDescription="@string/menuoption"
             android:textColor="@color/light_purple"
             android:textSize="17sp"/>
     </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dividerColor="@color/less_saturated_light_purple"/>
 
     <LinearLayout
         android:id="@+id/option2"
@@ -53,14 +59,21 @@
 
         <TextView
             android:id="@+id/optiontitle2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:gravity="center"
             android:contentDescription="@string/menuoption"
             android:textColor="@color/light_purple"
             android:textSize="17sp"/>
     </LinearLayout>
+
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider2"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dividerColor="@color/less_saturated_light_purple"/>
 
     <LinearLayout
         android:id="@+id/option3"
@@ -80,15 +93,21 @@
 
         <TextView
             android:id="@+id/optiontitle3"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:gravity="center"
             android:contentDescription="@string/menuoption"
             android:textColor="@color/light_purple"
             android:textSize="17sp"/>
     </LinearLayout>
 
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider3"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dividerColor="@color/less_saturated_light_purple"/>
 
     <LinearLayout
         android:id="@+id/option4"
@@ -108,10 +127,9 @@
 
         <TextView
             android:id="@+id/optiontitle4"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:gravity="center"
             android:contentDescription="@string/menuoption"
             android:textColor="@color/light_purple"
             android:textSize="17sp"/>

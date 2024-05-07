@@ -56,6 +56,9 @@ class CreatePost : AppCompatActivity() {
                     imagePickerLauncher.launch(it)
                 }
         }
+        binding.addVideoBtn.setOnClickListener {
+            Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show()
+        }
         binding.backBtn.setOnClickListener {
             //TODO dialog message
             this.finish()

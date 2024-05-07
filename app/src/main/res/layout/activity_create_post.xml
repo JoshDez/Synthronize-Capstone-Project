@@ -145,6 +145,7 @@
 
 
         <LinearLayout
+            android:id="@+id/addVideoBtn"
             android:orientation="vertical"
             android:layout_weight="1"
             android:gravity="center"

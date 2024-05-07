@@ -36,7 +36,6 @@
                         android:id="@+id/postsContainer"
                         android:layout_below="@id/userCoverIV"
                         android:orientation="vertical"
-                        android:layout_toRightOf="@id/communitiesContainer"
                         android:layout_marginTop="20dp"
                         android:layout_marginStart="20dp"
                         android:layout_width="wrap_content"
@@ -65,9 +64,10 @@
                         android:id="@+id/communitiesContainer"
                         android:layout_below="@id/userCoverIV"
                         android:orientation="vertical"
+                        android:layout_toRightOf="@id/postsContainer"
                         android:layout_marginTop="20dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_width="wrap_content"
+                        android:layout_marginStart="30dp"
+                        android:layout_width="73dp"
                         android:layout_height="wrap_content">
                         <TextView
                             android:id="@+id/communitiesCountTV"
@@ -91,10 +91,10 @@
                     <LinearLayout
                         android:id="@+id/friendsContainer"
                         android:layout_below="@id/userCoverIV"
-                        android:layout_toLeftOf="@id/achievementsContainer"
+                        android:layout_toLeftOf="@id/filesContainer"
                         android:orientation="vertical"
                         android:layout_marginTop="20dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                         <TextView
@@ -116,16 +116,17 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/achievementsContainer"
+                        android:id="@+id/filesContainer"
                         android:layout_below="@id/userCoverIV"
                         android:layout_alignParentEnd="true"
                         android:orientation="vertical"
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="10dp"
-                        android:layout_width="wrap_content"
+                        android:gravity="center"
+                        android:layout_width="73dp"
                         android:layout_height="wrap_content">
                         <TextView
-                            android:id="@+id/achievementsCountTV"
+                            android:id="@+id/filesCountTV"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
@@ -133,12 +134,12 @@
                             android:text="0"
                             android:textColor="@color/light_purple"/>
                         <TextView
-                            android:id="@+id/achievementsTV"
+                            android:id="@+id/filesTV"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:textSize="12sp"
-                            android:text="@string/achievements"
+                            android:text="Files"
                             android:textColor="@color/light_purple"/>
                     </LinearLayout>
 

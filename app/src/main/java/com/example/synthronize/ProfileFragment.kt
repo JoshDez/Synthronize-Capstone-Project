@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.synthronize.databinding.ActivityMainBinding
-import com.example.synthronize.databinding.DialogKebabMenuBinding
+import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.databinding.FragmentProfileBinding
 import com.example.synthronize.model.UserModel
@@ -90,7 +90,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     }
 
     private fun openMenuDialog(){
-        val menuBinding = DialogKebabMenuBinding.inflate(layoutInflater)
+        val menuBinding = DialogMenuBinding.inflate(layoutInflater)
         val menuDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(menuBinding.root))
             .setMargin(400, 0, 0, 0)

@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="14dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/dark_purple_2"
     android:orientation="vertical">
@@ -11,9 +10,10 @@
     <!-- Wrapper Header -->
     <LinearLayout
         android:id="@+id/feedWrapperLayout"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:visibility="gone"
+        android:paddingTop="10dp"
+        android:paddingStart="10dp"
+        android:background="@color/dark_purple_1.5"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -41,6 +41,7 @@
 
                 <TextView
                     android:id="@+id/wrapperName"
+                    android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Username/Community Name"
@@ -60,16 +61,10 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/divider1"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_marginBottom="10dp"
-        android:layout_height="1dp"
-        app:dividerColor="@color/less_saturated_light_purple"/>
 
     <!-- Post Header: User Profile Image, Username, Timestamp -->
     <LinearLayout
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -291,6 +286,5 @@
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginBottom="10dp"
         app:dividerColor="@color/light_purple"/>
 </LinearLayout>

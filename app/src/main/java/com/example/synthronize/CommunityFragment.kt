@@ -5,6 +5,7 @@ package com.example.synthronize
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +13,13 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.synthronize.databinding.ActivityMainBinding
+import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class CommunityFragment(private val mainBinding: ActivityMainBinding, private val communityId:String) : Fragment() {
 
@@ -84,7 +88,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
 
     private fun bindButtons(){
         mainBinding.backBtn.visibility = View.VISIBLE
-        mainBinding.communitySettingsBtn.visibility = View.VISIBLE
+        mainBinding.hamburgerMenuBtn.visibility = View.VISIBLE
 
         //bind buttons
         binding.feedsTextView.setOnClickListener {
@@ -112,7 +116,41 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             replaceFragment(FilesFragment(binding, communityId))
             selectNavigation("files")
         }
-        binding.generalChatsBtn.setOnClickListener {
+
+        //bind buttons from main binding
+        mainBinding.backBtn.setOnClickListener {
+            AppUtil().headToMainActivity(context, hasAnimation = false)
+        }
+        mainBinding.hamburgerMenuBtn.setOnClickListener {
+            openCommunityMenuDialog()
+        }
+    }
+
+    private fun openCommunityMenuDialog(){
+        val menuBinding = DialogMenuBinding.inflate(layoutInflater)
+        val menuDialog = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(menuBinding.root))
+            .setMargin(50,0,50,0)
+            .setCancelable(true)
+            .setGravity(Gravity.BOTTOM)
+            .create()
+
+
+        //Option 1: Search in Community
+        menuBinding.option1.visibility = View.VISIBLE
+        menuBinding.optionIcon1.setImageResource(R.drawable.search_icon)
+        menuBinding.optiontitle1.text = "Search In Community"
+        menuBinding.optiontitle1.setOnClickListener {
+            menuDialog.dismiss()
+            Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
+        }
+
+        //Option 2: Community General Chat
+        menuBinding.option2.visibility = View.VISIBLE
+        menuBinding.optionIcon2.setImageResource(R.drawable.baseline_chat_bubble_24)
+        menuBinding.optiontitle2.text = "Community General Chat"
+        menuBinding.optiontitle2.setOnClickListener {
+            menuDialog.dismiss()
             val intent = Intent(context, Chatroom::class.java)
             intent.putExtra("chatroomName", communityModel.communityChannels[0])
             intent.putExtra("communityId", communityId)
@@ -121,24 +159,27 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             startActivity(intent)
         }
 
-        //bind buttons from main binding
-        mainBinding.backBtn.setOnClickListener {
-            AppUtil().headToMainActivity(context, hasAnimation = false)
+
+        //Option 3: Community Settings
+        menuBinding.option3.visibility = View.VISIBLE
+        if (isUserAdmin){
+            menuBinding.optionIcon3.setImageResource(R.drawable.admin_settings)
+        } else {
+            menuBinding.optionIcon3.setImageResource(R.drawable.gear_icon)
         }
-        mainBinding.communitySettingsBtn.setOnClickListener {
+        menuBinding.optiontitle3.text = "Community Settings"
+        menuBinding.optiontitle3.setOnClickListener {
+            menuDialog.dismiss()
             val intent = Intent(context, CommunitySettings::class.java)
             intent.putExtra("communityId", communityModel.communityId)
             intent.putExtra("isUserAdmin", isUserAdmin)
             startActivity(intent)
         }
 
-        //changes settings button appearance if user is admin
+        menuBinding.option4.visibility = View.VISIBLE
 
-        if (isUserAdmin){
-            mainBinding.communitySettingsBtn.setBackgroundResource(R.drawable.admin_settings)
-        } else {
-            mainBinding.communitySettingsBtn.setBackgroundResource(R.drawable.gear_icon)
-        }
+        menuDialog.show()
+
     }
     private fun selectNavigation(fragment:String) {
         val unselectedColor = ContextCompat.getColor(requireContext(), R.color.less_saturated_light_purple)

@@ -3,9 +3,7 @@ package com.example.synthronize
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.synthronize.databinding.ActivityMainBinding
 
@@ -29,10 +27,10 @@ class MainActivity : AppCompatActivity() {
             replaceFragment(ExploreFragment(binding))
         }
 
-        binding.notificationBtn.setOnClickListener {
+        binding.updatesBtn.setOnClickListener {
             resetMainToolbar()
-            selectNavigation(binding.notificationBtn.id)
-            replaceFragment(NotificationFragment(binding))
+            selectNavigation(binding.updatesBtn.id)
+            replaceFragment(UpdatesFragment(binding))
         }
 
         binding.profileBtn.setOnClickListener {
@@ -80,7 +78,7 @@ class MainActivity : AppCompatActivity() {
     //Changes navigation's buttons states
     private fun selectNavigation(btnID:Int) {
         binding.exploreBtn.setBackgroundResource(R.drawable.explore_not_selected)
-        binding.notificationBtn.setBackgroundResource(R.drawable.notifications_not_selected)
+        binding.updatesBtn.setBackgroundResource(R.drawable.notifications_not_selected)
         binding.communitiesBtn.setBackgroundResource(R.drawable.community_not_selected)
         binding.profileBtn.setBackgroundResource(R.drawable.profile_not_selected)
         binding.chatBtn.setBackgroundResource(R.drawable.chat_not_selected)
@@ -88,8 +86,8 @@ class MainActivity : AppCompatActivity() {
             binding.exploreBtn.id -> {
                 binding.exploreBtn.setBackgroundResource(R.drawable.explore_selected)
             }
-            binding.notificationBtn.id -> {
-                binding.notificationBtn.setBackgroundResource(R.drawable.notifications_selected)
+            binding.updatesBtn.id -> {
+                binding.updatesBtn.setBackgroundResource(R.drawable.notifications_selected)
             }
             binding.communitiesBtn.id -> {
                 binding.communitiesBtn.setBackgroundResource(R.drawable.community_selected)
@@ -104,15 +102,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun resetMainToolbar(){
-        binding.communitySettingsBtn.visibility = View.GONE
         binding.backBtn.visibility = View.GONE
         binding.kebabMenuBtn.visibility = View.GONE
+        binding.hamburgerMenuBtn.visibility = View.GONE
         binding.searchBtn.visibility = View.GONE
         binding.toolbarImageCIV.setImageResource(R.drawable.header_logo)
 
         //resetting main toolbar setOnClickListeners
         binding.searchBtn.setOnClickListener(null)
         binding.kebabMenuBtn.setOnClickListener(null)
+        binding.hamburgerMenuBtn.setOnClickListener(null)
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.groups_toolbar_menu, menu)
