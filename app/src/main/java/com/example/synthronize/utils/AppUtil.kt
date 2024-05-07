@@ -75,7 +75,7 @@ class AppUtil {
                 .load(imageRef)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .signature(ObjectKey(System.currentTimeMillis().toString()))
-                .error(R.drawable.community_not_selected)
+                .error(R.drawable.baseline_image_24)
                 //image view
                 .into(cover)
 
@@ -111,7 +111,7 @@ class AppUtil {
                 .load(imageRef)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .signature(ObjectKey(System.currentTimeMillis().toString()))
-                .error(R.drawable.community_not_selected)
+                .error(R.drawable.baseline_image_24)
                 .apply(RequestOptions.circleCropTransform())
                 //image view
                 .into(civ)
