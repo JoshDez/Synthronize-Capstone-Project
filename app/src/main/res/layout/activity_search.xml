@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_purple_2"
+    android:background="@color/darker_teal"
     tools:context=".Search">
 
     <RelativeLayout
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:padding="10dp">
 
         <LinearLayout
@@ -27,14 +27,14 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/back_icon"
-                app:tint="@color/light_purple" />
+                app:tint="@color/light_teal" />
             <TextView
                 android:id="@+id/toolbarTitleTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textSize="25dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="@string/SEARCH"/>
         </LinearLayout>
     </RelativeLayout>
@@ -44,8 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/mainToolbar"
-        android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
 
     <LinearLayout
         android:id="@+id/searchContainerLL"
@@ -83,7 +83,7 @@
                 <RelativeLayout
                     android:id="@+id/userHeaderLayout"
                     android:background="@drawable/input_rounded_corners"
-                    android:backgroundTint="@color/dark_purple_1"
+                    android:backgroundTint="@color/dark_teal"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_width="match_parent"
@@ -93,7 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/users"
-                        android:textColor="@color/light_purple"
+                        android:textColor="@color/light_teal"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_centerVertical="true"
@@ -104,7 +104,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        app:tint="@color/light_purple"
+                        app:tint="@color/light_teal"
                         android:src="@drawable/baseline_keyboard_arrow_up_24"
                         android:layout_marginEnd="20dp"/>
                 </RelativeLayout>
@@ -127,7 +127,7 @@
                 <RelativeLayout
                     android:id="@+id/communityHeaderLayout"
                     android:background="@drawable/input_rounded_corners"
-                    android:backgroundTint="@color/dark_purple_1"
+                    android:backgroundTint="@color/dark_teal"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_width="match_parent"
@@ -136,7 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/communities"
-                        android:textColor="@color/light_purple"
+                        android:textColor="@color/light_teal"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_centerVertical="true"
@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        app:tint="@color/light_purple"
+                        app:tint="@color/light_teal"
                         android:src="@drawable/baseline_keyboard_arrow_up_24"
                         android:layout_marginEnd="20dp"/>
                 </RelativeLayout>
@@ -170,7 +170,7 @@
                 <RelativeLayout
                     android:id="@+id/postsHeaderLayout"
                     android:background="@drawable/input_rounded_corners"
-                    android:backgroundTint="@color/dark_purple_1"
+                    android:backgroundTint="@color/dark_teal"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_width="match_parent"
@@ -179,7 +179,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/posts"
-                        android:textColor="@color/light_purple"
+                        android:textColor="@color/light_teal"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_centerVertical="true"
@@ -190,7 +190,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        app:tint="@color/light_purple"
+                        app:tint="@color/light_teal"
                         android:src="@drawable/baseline_keyboard_arrow_up_24"
                         android:layout_marginEnd="20dp"/>
                 </RelativeLayout>

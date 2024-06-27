@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="14dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/dark_purple_2"
+    android:background="@color/darker_teal"
     android:orientation="vertical">
 
 
@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Username/Community Name"
-                    android:textColor="@color/light_purple"
+                    android:textColor="@color/light_teal"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -52,7 +52,7 @@
                     android:id="@+id/repostTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/light_purple"
+                    android:textColor="@color/light_teal"
                     android:text="@string/reposted"
                     android:textSize="12sp" />
 
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_marginBottom="10dp"
             android:layout_height="1dp"
-            app:dividerColor="@color/light_purple"/>
+            app:dividerColor="@color/light_teal"/>
 
     </LinearLayout>
 
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Username"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -105,7 +105,7 @@
                 android:id="@+id/timestampTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="2 hours ago"
                 android:textSize="12sp" />
 
@@ -121,7 +121,7 @@
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
     </LinearLayout>
 
@@ -145,7 +145,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        app:ci_drawable="@color/light_purple"/>
+        app:ci_drawable="@color/light_teal"/>
 
     <!-- Post Description -->
     <TextView
@@ -154,7 +154,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/feed_description"
-        android:textColor="@color/light_purple" />
+        android:textColor="@color/light_teal" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -183,7 +183,7 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:tint="@color/light_purple"/>
+                app:tint="@color/light_teal"/>
 
             <TextView
                 android:id="@+id/upvoteCountTV"
@@ -191,7 +191,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="0"
-                android:textColor="@color/light_purple" />
+                android:textColor="@color/light_teal" />
 
         </LinearLayout>
 
@@ -213,7 +213,7 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:tint="@color/light_purple"/>
+                app:tint="@color/light_teal"/>
 
             <TextView
                 android:id="@+id/downvoteCountTV"
@@ -221,7 +221,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="0"
-                android:textColor="@color/light_purple" />
+                android:textColor="@color/light_teal" />
 
         </LinearLayout>
 
@@ -245,7 +245,7 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:tint="@color/light_purple" />
+                app:tint="@color/light_teal" />
 
             <TextView
                 android:id="@+id/commentsCountTV"
@@ -253,7 +253,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="0"
-                android:textColor="@color/light_purple" />
+                android:textColor="@color/light_teal" />
 
         </LinearLayout>
 
@@ -277,7 +277,7 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:tint="@color/light_purple"/>
+                app:tint="@color/light_teal"/>
 
             <TextView
                 android:id="@+id/repostCountTV"
@@ -285,7 +285,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="0"
-                android:textColor="@color/light_purple" />
+                android:textColor="@color/light_teal" />
 
         </LinearLayout>
 
@@ -310,11 +310,11 @@
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
     </LinearLayout>
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:dividerColor="@color/light_purple"/>
+        app:dividerColor="@color/light_teal"/>
 </LinearLayout>

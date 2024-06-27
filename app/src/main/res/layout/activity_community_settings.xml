@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_purple_2"
+    android:background="@color/darker_teal"
     tools:context=".CommunitySettings">
 
 
@@ -13,7 +13,7 @@
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:padding="10dp">
 
         <LinearLayout
@@ -29,14 +29,14 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/back_icon"
-                app:tint="@color/light_purple" />
+                app:tint="@color/light_teal" />
             <TextView
                 android:id="@+id/toolbarTitleTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textSize="25dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="Community Settings"/>
         </LinearLayout>
 
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/mainToolbar"
-        app:dividerColor="@color/light_purple" />
+        app:dividerColor="@color/light_teal" />
 
     <LinearLayout
         android:id="@+id/navigationLayout"
@@ -56,14 +56,14 @@
         android:layout_below="@id/divider"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:background="@color/dark_purple_1"
+        android:background="@color/dark_teal"
         android:layout_height="50dp">
 
         <TextView
             android:id="@+id/generalBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAlignment="center"
@@ -74,7 +74,7 @@
             android:id="@+id/adminBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAlignment="center"
@@ -98,16 +98,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@id/mainToolbar"
-                android:background="@color/light_purple"
-                app:dividerColor="@color/light_purple" />
+                android:background="@color/light_teal"
+                app:dividerColor="@color/light_teal" />
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/viewJoinRequestsBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:text="@string/view_join_requests"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/dark_teal"
+                android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/editCommunityDetailsBtn"
@@ -116,8 +116,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 android:text="@string/edit_community_details"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/dark_teal"
+                android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/editCommunityRulesBtn"
@@ -126,8 +126,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 android:text="@string/edit_community_rules"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/dark_teal"
+                android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/deleteCommunityBtn"
@@ -137,7 +137,7 @@
                 android:textSize="16sp"
                 android:text="@string/delete_community"
                 android:background = "@color/darkish_red"
-                android:textColor="@color/light_purple"/>
+                android:textColor="@color/light_teal"/>
         </LinearLayout>
     </ScrollView>
 
@@ -179,7 +179,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_centerInParent="true"
                         android:layout_alignParentBottom="true"
-                        android:src="@color/light_purple"/>
+                        android:src="@color/light_teal"/>
                 </RelativeLayout>
             </FrameLayout>
 
@@ -194,7 +194,7 @@
                 android:layout_marginTop="20dp"
                 android:contentDescription="@string/full_name"
                 android:textAlignment="center"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
 
@@ -211,7 +211,7 @@
                 android:drawableTint="#00FFFFFF"
                 android:contentDescription="@string/user_description"
                 android:textAlignment="center"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="17sp" />
 
             <TextView
@@ -225,7 +225,7 @@
                 android:drawableTint="#00FFFFFF"
                 android:contentDescription="@string/user_description"
                 android:text="@string/share_community_with_community_code"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="15sp" />
 
             <LinearLayout
@@ -243,10 +243,10 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:backgroundTint="@color/light_purple"
+                    android:backgroundTint="@color/light_teal"
                     android:contentDescription="@string/community_code"
                     android:textAlignment="center"
-                    android:textColor="@color/light_purple"
+                    android:textColor="@color/light_teal"
                     android:textSize="15sp" />
 
                 <ImageButton
@@ -255,7 +255,7 @@
                     android:layout_height="50dp"
                     android:src="@drawable/baseline_content_copy_24"
                     android:background="#00D0ADF1"
-                    app:tint="@color/light_purple"/>
+                    app:tint="@color/light_teal"/>
 
             </LinearLayout>
             <com.google.android.material.divider.MaterialDivider
@@ -264,8 +264,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@id/mainToolbar"
-                android:background="@color/light_purple"
-                app:dividerColor="@color/light_purple" />
+                android:background="@color/light_teal"
+                app:dividerColor="@color/light_teal" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/viewMembersBtn"
@@ -273,8 +273,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:text="@string/view_all_members"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/dark_teal"
+                android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/viewCommunityRulesBtn"
@@ -283,8 +283,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 android:text="@string/view_community_rules"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/dark_teal"
+                android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/reportCommunityBtn"
@@ -293,8 +293,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 android:text="Report Community"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/dark_teal"
+                android:textColor="@color/light_teal"/>
 
 
             <androidx.appcompat.widget.AppCompatButton
@@ -304,8 +304,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 android:text="@string/leave_community"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/dark_teal"
+                android:textColor="@color/light_teal"/>
         </LinearLayout>
     </ScrollView>
 

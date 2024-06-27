@@ -47,6 +47,7 @@ class DialogUtil {
                         val warningDialog = DialogPlus.newDialog(context)
                             .setContentHolder(ViewHolder(warningDialogBinding.root))
                             .setCancelable(true)
+                            .setMargin(100, 800, 100, 800)
                             .setGravity(Gravity.CENTER)
                             .create()
 

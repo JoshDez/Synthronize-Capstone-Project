@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_purple_2"
+    android:background="@color/darker_teal"
     tools:context=".CreatePost">
 
 
@@ -13,7 +13,7 @@
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:padding="10dp">
 
         <LinearLayout
@@ -29,14 +29,14 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/back_icon"
-                app:tint="@color/light_purple" />
+                app:tint="@color/light_teal" />
             <TextView
                 android:id="@+id/toolbarTitleTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textSize="25dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="Create Post"/>
         </LinearLayout>
 
@@ -54,7 +54,7 @@
             android:textColor="@color/white"
             android:textSize="17sp"
             android:textStyle="bold"
-            app:backgroundTint="@color/purple1"/>
+            app:backgroundTint="@color/teal"/>
     </RelativeLayout>
 
     <com.google.android.material.divider.MaterialDivider
@@ -62,8 +62,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/mainToolbar"
-        android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
 
     <ScrollView
         android:layout_below="@id/divider1"
@@ -95,10 +95,10 @@
                     android:layout_toRightOf="@id/profileCIV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/light_purple"
+                    android:backgroundTint="@color/light_teal"
                     android:hint="Write what's on your mind"
-                    android:textColorHint="@color/light_purple"
-                    android:textColor="@color/light_purple"/>
+                    android:textColorHint="@color/light_teal"
+                    android:textColor="@color/light_teal"/>
             </RelativeLayout>
 
         </LinearLayout>
@@ -110,15 +110,15 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@id/bottomToolbar"
-        android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/bottomToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:padding="10dp">
@@ -135,11 +135,11 @@
                 android:layout_height="40dp"
                 android:src="@drawable/baseline_image_24"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/light_purple"/>
+                app:tint="@color/light_teal"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="@string/add_image"/>
         </LinearLayout>
 
@@ -156,11 +156,11 @@
                 android:layout_height="40dp"
                 android:src="@drawable/baseline_ondemand_video_24"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/light_purple"/>
+                app:tint="@color/light_teal"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="@string/add_video"/>
         </LinearLayout>
 

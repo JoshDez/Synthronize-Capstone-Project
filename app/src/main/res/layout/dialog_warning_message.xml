@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="300dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/dark_purple_2">
+    android:background="@color/darker_teal">
 
     <TextView
         android:id="@+id/titleTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save_user_details"
-        android:textColor="@color/light_purple"
+        android:textColor="@color/light_teal"
         android:layout_centerHorizontal="true"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/titleTV"
         android:layout_marginTop="10dp"
-        app:dividerColor="@color/light_purple"/>
+        app:dividerColor="@color/light_teal"/>
     <TextView
         android:id="@+id/messageTV"
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
         android:layout_marginEnd="20dp"
         android:textAlignment="center"
         android:layout_centerInParent="true"
-        android:textColor="@color/light_purple"
+        android:textColor="@color/light_teal"
         android:textSize="17sp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
@@ -63,6 +63,7 @@
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            app:backgroundTint="@color/teal"
             android:textSize="16sp"
             android:text="YES"/>
 

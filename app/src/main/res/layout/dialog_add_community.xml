@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/dark_purple_2">
+    android:background="@color/darker_teal">
 
     <LinearLayout
         android:id="@+id/joinCommunityViaCodeBtn"
@@ -17,7 +17,7 @@
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:src="@drawable/baseline_key_24"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             android:layout_marginStart="20dp"
             android:gravity="center"
             android:text="@string/join_community_via_code"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="20sp"/>
     </LinearLayout>
 
@@ -40,7 +40,7 @@
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:src="@drawable/search_icon"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
             android:layout_marginStart="20dp"
             android:gravity="center"
             android:text="@string/search_community"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="20sp"/>
     </LinearLayout>
 
@@ -64,7 +64,7 @@
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:src="@drawable/baseline_add_24"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -72,7 +72,7 @@
             android:layout_marginStart="20dp"
             android:gravity="center"
             android:text="@string/create_new_community"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="20sp"/>
     </LinearLayout>
 

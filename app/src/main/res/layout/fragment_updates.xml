@@ -10,7 +10,7 @@
     <LinearLayout
     android:id="@+id/upperNavLayout"
     android:orientation="horizontal"
-    android:background="@drawable/gradient"
+    android:background="@drawable/gradient_teal"
     android:layout_width="match_parent"
     android:layout_height="70dp">
 
@@ -27,7 +27,8 @@
             android:id="@+id/notificationsIconIV"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/notifications_not_selected"/>
+            android:src="@drawable/notifications_not_selected"
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,8 +36,7 @@
             android:layout_weight="2"
             android:text="@string/Notifications"
             android:gravity="center"
-            android:background="@color/dark_purple_1"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="13sp"/>
     </LinearLayout>
 
@@ -53,7 +53,8 @@
             android:id="@+id/communityInviteIconIV"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/community_not_selected"/>
+            android:src="@drawable/community_not_selected"
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -61,8 +62,7 @@
             android:layout_weight="2"
             android:text="Community Invitations"
             android:gravity="center"
-            android:background="@color/dark_purple_1"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="13sp"/>
     </LinearLayout>
 
@@ -79,7 +79,8 @@
             android:id="@+id/friendRequestIconIV"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/friends_not_selected"/>
+            android:src="@drawable/friends_not_selected"
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -87,8 +88,7 @@
             android:layout_weight="2"
             android:text="Friend Requests"
             android:gravity="center"
-            android:background="@color/dark_purple_1"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="13sp"/>
     </LinearLayout>
 </LinearLayout>
@@ -100,7 +100,7 @@
         android:layout_marginBottom="10dp"
         android:layout_below="@id/upperNavLayout"
         android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        app:dividerColor="@color/light_teal" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notificationRV"

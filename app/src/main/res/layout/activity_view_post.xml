@@ -5,14 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_purple_2"
+    android:background="@color/gray2"
     tools:context=".ViewPost">
 
     <RelativeLayout
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:padding="10dp">
 
         <ImageButton
@@ -23,7 +23,7 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/back_icon"
-            app:tint="@color/light_purple" />
+            app:tint="@color/light_teal" />
 
 
     </RelativeLayout>
@@ -34,7 +34,7 @@
         android:layout_height="1dp"
         android:layout_below="@id/mainToolbar"
         android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        app:dividerColor="@color/light_teal" />
 
     <ScrollView
         android:layout_below="@id/divider1"
@@ -51,6 +51,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/darker_teal"
                 android:padding="20dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -65,7 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/profileCIV"
-                    android:textColor="@color/light_purple"
+                    android:textColor="@color/light_teal"
                     android:textSize="18sp"/>
 
                 <TextView
@@ -75,7 +76,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/profileCIV"
-                    android:textColor="@color/light_purple"/>
+                    android:textColor="@color/light_teal"/>
 
 
                 <EditText
@@ -87,9 +88,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:backgroundTint="@color/light_purple"
-                    android:textColorHint="@color/light_purple"
-                    android:textColor="@color/light_purple"/>
+                    android:backgroundTint="@color/light_teal"
+                    android:textColorHint="@color/light_teal"
+                    android:textColor="@color/light_teal"/>
             </RelativeLayout>
 
 
@@ -98,7 +99,7 @@
                 android:layout_height="1dp"
                 android:layout_above="@id/bottomToolbar"
                 android:background="@color/light_purple"
-                app:dividerColor="@color/light_purple" />
+                app:dividerColor="@color/light_teal" />
 
             <LinearLayout
                 android:id="@+id/contentLayout"
@@ -110,14 +111,22 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_height="45dp"
                 android:padding="8dp"
-                android:background="@color/dark_purple_1"
+                android:background="@color/teal2"
                 android:text="@string/comments"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textAlignment="center"
                 android:textSize="20sp"/>
+
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_above="@id/bottomToolbar"
+                android:layout_marginBottom="10dp"
+                android:background="@color/light_purple"
+                app:dividerColor="@color/light_teal" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentsRV"
@@ -132,14 +141,14 @@
         android:layout_height="1dp"
         android:layout_above="@id/bottomToolbar"
         android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        app:dividerColor="@color/light_teal" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/bottomToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:padding="10dp">
@@ -164,7 +173,7 @@
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
     </LinearLayout>
 

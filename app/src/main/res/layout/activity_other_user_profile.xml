@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/dark_purple_2"
+    android:background="@color/darker_teal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".OtherUserProfile">
@@ -12,7 +12,7 @@
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:padding="10dp">
         <ImageButton
             android:id="@+id/backBtn"
@@ -22,7 +22,7 @@
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/back_icon"
-            app:tint="@color/light_purple" />
+            app:tint="@color/light_teal" />
 
         <ImageButton
             android:id="@+id/searchBtn"
@@ -33,7 +33,7 @@
             android:contentDescription="@string/Search"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            app:tint="@color/light_purple" />
+            app:tint="@color/light_teal" />
     </RelativeLayout>
 
     <com.google.android.material.divider.MaterialDivider
@@ -41,8 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@id/mainToolbar"
-        android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
 
     <ScrollView
         android:layout_below="@id/divider"
@@ -83,7 +83,7 @@
                             android:textAlignment="center"
                             android:text="0"
                             android:textStyle="bold"
-                            android:textColor="@color/light_purple"/>
+                            android:textColor="@color/light_teal"/>
                         <TextView
                             android:id="@+id/postsTV"
                             android:layout_width="wrap_content"
@@ -91,7 +91,7 @@
                             android:textAlignment="center"
                             android:textSize="12sp"
                             android:text="@string/posts"
-                            android:textColor="@color/light_purple"/>
+                            android:textColor="@color/light_teal"/>
                     </LinearLayout>
 
 
@@ -112,7 +112,7 @@
                             android:textStyle="bold"
                             android:textAlignment="center"
                             android:text="0"
-                            android:textColor="@color/light_purple"/>
+                            android:textColor="@color/light_teal"/>
                         <TextView
                             android:id="@+id/communitiesTV"
                             android:layout_width="wrap_content"
@@ -120,7 +120,7 @@
                             android:textAlignment="center"
                             android:textSize="12sp"
                             android:text="@string/communities"
-                            android:textColor="@color/light_purple"/>
+                            android:textColor="@color/light_teal"/>
                     </LinearLayout>
 
 
@@ -140,7 +140,7 @@
                             android:textStyle="bold"
                             android:textAlignment="center"
                             android:text="0"
-                            android:textColor="@color/light_purple"/>
+                            android:textColor="@color/light_teal"/>
                         <TextView
                             android:id="@+id/friendsTV"
                             android:layout_width="match_parent"
@@ -148,7 +148,7 @@
                             android:textAlignment="center"
                             android:textSize="12sp"
                             android:text="@string/friends"
-                            android:textColor="@color/light_purple"/>
+                            android:textColor="@color/light_teal"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -168,7 +168,7 @@
                             android:textStyle="bold"
                             android:textAlignment="center"
                             android:text="0"
-                            android:textColor="@color/light_purple"/>
+                            android:textColor="@color/light_teal"/>
                         <TextView
                             android:id="@+id/filesTV"
                             android:layout_width="wrap_content"
@@ -176,7 +176,7 @@
                             android:textAlignment="center"
                             android:textSize="12sp"
                             android:text="Files"
-                            android:textColor="@color/light_purple"/>
+                            android:textColor="@color/light_teal"/>
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -190,7 +190,7 @@
                         android:layout_width="130dp"
                         android:layout_height="130dp"
                         android:layout_centerInParent="true"
-                        android:src="@color/light_purple"/>
+                        android:src="@color/light_teal"/>
 
 
 
@@ -207,7 +207,7 @@
                         android:layout_marginTop="20dp"
                         android:contentDescription="@string/full_name"
                         android:textAlignment="center"
-                        android:textColor="@color/light_purple"
+                        android:textColor="@color/light_teal"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
 
@@ -224,7 +224,7 @@
                         android:layout_marginTop="2dp"
                         android:contentDescription="@string/username"
                         android:textAlignment="center"
-                        android:textColor="@color/light_purple"
+                        android:textColor="@color/light_teal"
                         android:textSize="16sp"/>
 
                 </RelativeLayout>
@@ -241,7 +241,7 @@
                 android:drawableTint="#00FFFFFF"
                 android:contentDescription="@string/user_description"
                 android:textAlignment="center"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="15sp" />
 
 
@@ -265,7 +265,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/baseline_calendar_month_24"
-                        app:tint="@color/light_purple"/>
+                        app:tint="@color/light_teal"/>
                     <TextView
                         android:id="@+id/birthdayTV"
                         android:layout_width="match_parent"
@@ -276,7 +276,7 @@
                         android:drawableTint="#00FFFFFF"
                         android:text="Birthday: December 19, 2002"
                         android:contentDescription="@string/user_description"
-                        android:textColor="@color/light_purple"
+                        android:textColor="@color/light_teal"
                         android:textSize="14sp" />
 
                 </LinearLayout>
@@ -288,13 +288,14 @@
                     android:src="@drawable/baseline_chat_bubble_24"
                     android:background="#00D0ADF1"
                     android:layout_toLeftOf="@id/friendBtn"
-                    app:tint="@color/light_purple"/>
+                    app:tint="@color/light_teal"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/friendBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    app:backgroundTint="@color/teal"
                     android:contentDescription="@string/friend_button"/>
 
             </RelativeLayout>
@@ -304,20 +305,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@id/mainToolbar"
-                android:background="@color/light_purple"
-                app:dividerColor="@color/light_purple" />
+                android:background="@color/light_teal"
+                app:dividerColor="@color/light_teal" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:layout_width="match_parent"
-                android:background="@color/dark_purple_1"
+                android:background="@drawable/gradient_teal"
                 android:layout_height="46dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/light_purple"
+                    android:textColor="@color/light_teal"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textAlignment="center"
@@ -327,7 +328,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/light_purple"
+                    android:textColor="@color/light_teal"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textAlignment="center"
@@ -337,13 +338,24 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/light_purple"
+                    android:textColor="@color/light_teal"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textAlignment="center"
                     android:layout_weight="1"
                     android:text="Likes"/>
             </LinearLayout>
+
+
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/mainToolbar"
+                android:background="@color/light_teal"
+                app:dividerColor="@color/light_teal" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>

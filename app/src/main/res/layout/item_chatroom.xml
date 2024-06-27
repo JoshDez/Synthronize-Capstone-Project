@@ -20,7 +20,7 @@
         android:layout_marginBottom="8dp"
         android:textSize="17dp"
         android:text="FULLNAME"
-        android:textColor="@color/light_purple"
+        android:textColor="@color/light_teal"
         android:layout_above="@id/lastUserMessageTV"
         android:layout_toRightOf="@id/userCircleImageView"/>
     <TextView
@@ -31,7 +31,7 @@
         android:layout_marginBottom="8dp"
         android:textSize="15dp"
         android:text="Josh: asldkasdlfflakksd"
-        android:textColor="@color/light_purple"
+        android:textColor="@color/light_teal"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/userCircleImageView"
         android:layout_toLeftOf="@id/lastTimestampTV"/>
@@ -43,7 +43,7 @@
         android:layout_marginBottom="8dp"
         android:textSize="15dp"
         android:text="Tue:12PM"
-        android:textColor="@color/light_purple"
+        android:textColor="@color/light_teal"
         android:layout_marginEnd="15dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"/>

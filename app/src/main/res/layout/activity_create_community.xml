@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_purple_2"
+    android:background="@color/darker_teal"
     tools:context=".CreateCommunity">
 
 
@@ -14,7 +14,7 @@
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:padding="10dp">
 
         <ImageButton
@@ -25,7 +25,7 @@
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/back_icon"
-            app:tint="@color/light_purple" />
+            app:tint="@color/light_teal" />
         <TextView
             android:id="@+id/toolbarTitleTV"
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/backBtn"
             android:textSize="25dp"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:text="@string/create_community"/>
     </RelativeLayout>
 
@@ -43,8 +43,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/mainToolbar"
-        android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
 
 
     <!-- FIRST SECTION -->
@@ -67,18 +67,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="15sp"
                 android:text="@string/community_name"/>
             <EditText
                 android:id="@+id/communityNameEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:backgroundTint="@color/light_purple"
+                android:backgroundTint="@color/light_teal"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:paddingStart="10dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:contentDescription="@string/community_name"
                 android:textSize="16sp"/>
 
@@ -89,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="15sp"
                 android:text="@string/community_description"/>
 
@@ -99,11 +99,11 @@
                 android:layout_height="55dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:backgroundTint="@color/light_purple"
+                android:backgroundTint="@color/light_teal"
                 android:contentDescription="@string/community_description"
                 android:paddingStart="10dp"
                 android:singleLine="false"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="16sp" />
 
             <Space
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:layout_marginStart="20dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="20sp"
                 android:text="@string/community_type"/>
 
@@ -129,9 +129,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PUBLIC  (Anyone can join)"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="16sp"
-                app:buttonTint = "@color/light_purple"/>
+                app:buttonTint = "@color/light_teal"/>
 
             <Space
                 android:layout_width="match_parent"
@@ -143,9 +143,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="PRIVATE  (Requires permission to join)"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="16sp"
-                app:buttonTint = "@color/light_purple"/>
+                app:buttonTint = "@color/light_teal"/>
 
         </LinearLayout>
     </ScrollView>
@@ -172,7 +172,7 @@
                 android:textAlignment="center"
                 android:layout_marginStart="20dp"
                 android:textSize="20dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="@string/invite_users"/>
 
             <EditText
@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="@string/set_community_profile_and_cover_photo"/>
             <Space
                 android:layout_width="match_parent"
@@ -226,7 +226,7 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
-                android:src="@color/light_purple"/>
+                android:src="@color/light_teal"/>
 
             <Space
                 android:layout_width="match_parent"
@@ -241,7 +241,7 @@
                 android:textAlignment="center"
                 android:textSize="20dp"
                 android:textStyle="bold"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:contentDescription="@string/community_name"/>
 
 
@@ -269,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="20dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="Set Community Banner"/>
             <Space
                 android:layout_width="match_parent"
@@ -303,7 +303,7 @@
                         android:layout_centerInParent="true"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentStart="true"
-                        android:src="@color/light_purple"/>
+                        android:src="@color/light_teal"/>
                 </RelativeLayout>
             </FrameLayout>
 
@@ -320,13 +320,12 @@
                 android:textAlignment="center"
                 android:textSize="20dp"
                 android:textStyle="bold"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:contentDescription="@string/community_name"/>
 
 
         </LinearLayout>
     </ScrollView>
-
 
     <!-- BOTTOM NAVIGATION -->
     <LinearLayout
@@ -357,6 +356,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
+            app:backgroundTint="@color/teal"
             android:text="@string/previous"
             android:layout_centerVertical="true"/>
 
@@ -366,6 +366,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            app:backgroundTint="@color/teal"
             android:layout_weight="1"
             android:text="@string/next"/>
 

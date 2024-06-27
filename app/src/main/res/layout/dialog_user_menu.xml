@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/dark_purple_2">
+    android:background="@color/darker_teal">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                         android:layout_height="130dp"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:src="@color/light_purple"/>
+                        android:src="@color/light_teal"/>
                 </RelativeLayout>
             </FrameLayout>
 
@@ -46,7 +46,7 @@
                 android:layout_marginTop="10dp"
                 android:contentDescription="@string/full_name"
                 android:textAlignment="center"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
 
@@ -59,7 +59,7 @@
                 android:layout_marginTop="10dp"
                 android:contentDescription="@string/username"
                 android:textAlignment="center"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="16sp"/>
 
             <RelativeLayout
@@ -78,13 +78,14 @@
                     android:src="@drawable/baseline_chat_bubble_24"
                     android:background="#00D0ADF1"
                     android:layout_toLeftOf="@id/friendBtn"
-                    app:tint="@color/light_purple"/>
+                    app:tint="@color/light_teal"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/friendBtn"
                     android:layout_marginStart="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/teal"
                     android:layout_alignParentEnd="true"
                     android:contentDescription="@string/friend_button"/>
 
@@ -96,8 +97,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@id/mainToolbar"
-                android:background="@color/light_purple"
-                app:dividerColor="@color/light_purple" />
+                android:background="@color/light_teal"
+                app:dividerColor="@color/light_teal" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/viewProfileBtn"
@@ -105,8 +106,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:text="View Profile"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/teal2"
+                android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/makeUserAdminBtn"
@@ -116,8 +117,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 android:text="Make User Admin"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/dark_teal"
+                android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/reportProfileBtn"
@@ -126,8 +127,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 android:text="Report User"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/teal2"
+                android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/kickUserBtn"
@@ -137,8 +138,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
                 android:text="@string/kick_user"
-                android:background = "@color/dark_purple_1"
-                android:textColor="@color/light_purple"/>
+                android:background = "@color/teal2"
+                android:textColor="@color/light_teal"/>
         </LinearLayout>
     </ScrollView>
 

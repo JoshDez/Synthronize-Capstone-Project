@@ -31,7 +31,7 @@
                 android:layout_alignParentEnd="true"
                 android:textSize="20dp"
                 android:contentDescription="@string/full_name"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:layout_toRightOf="@id/profileCIV"/>
         </RelativeLayout>
 
@@ -63,7 +63,7 @@
                 android:layout_marginEnd="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/check_icon"
-                app:tint="@color/light_purple"/>
+                app:tint="@color/light_teal"/>
 
         </LinearLayout>
 

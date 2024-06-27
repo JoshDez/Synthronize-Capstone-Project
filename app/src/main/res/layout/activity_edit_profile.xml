@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_purple_2"
+    android:background="@color/darker_teal"
     tools:context=".EditProfile">
 
 
@@ -13,7 +13,7 @@
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:padding="10dp">
 
         <LinearLayout
@@ -29,14 +29,14 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/back_icon"
-                app:tint="@color/light_purple" />
+                app:tint="@color/light_teal" />
             <TextView
                 android:id="@+id/toolbarTitleTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textSize="25dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:text="@string/edit_profile"/>
         </LinearLayout>
 
@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/mainToolbar"
-        app:dividerColor="@color/light_purple" />
+        app:dividerColor="@color/light_teal" />
 
 
     <ScrollView
@@ -83,7 +83,7 @@
                         android:layout_height="130dp"
                         android:layout_centerInParent="true"
                         android:layout_alignParentBottom="true"
-                        android:src="@color/light_purple"/>
+                        android:src="@color/light_teal"/>
 
 
                 </RelativeLayout>
@@ -96,18 +96,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="14sp"
                 android:text="@string/full_name"/>
             <EditText
                 android:id="@+id/fullNameEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/light_purple"
+                android:backgroundTint="@color/light_teal"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:paddingStart="10dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:contentDescription="@string/full_name"
                 android:textSize="16sp"/>
 
@@ -119,19 +119,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="14sp"
                 android:text="@string/Username"/>
             <EditText
                 android:id="@+id/usernameEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/light_purple"
+                android:backgroundTint="@color/light_teal"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:contentDescription="@string/username"
                 android:paddingStart="10dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="16sp"/>
 
 
@@ -142,19 +142,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="14sp"
                 android:text="@string/description"/>
             <EditText
                 android:id="@+id/descriptionEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/light_purple"
+                android:backgroundTint="@color/light_teal"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:contentDescription="@string/description"
                 android:paddingStart="10dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="16sp"/>
 
 
@@ -165,24 +165,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="14sp"
                 android:text="@string/birthday"/>
             <EditText
                 android:id="@+id/birthdayEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/light_purple"
+                android:backgroundTint="@color/light_teal"
                 android:focusable="false"
                 android:editable="false"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:textAlignment="center"
                 android:hint="@string/tap_here_to_set_birthday"
-                android:textColorHint="@color/light_purple"
+                android:textColorHint="@color/light_teal"
                 android:contentDescription="@string/birthday"
                 android:paddingStart="10dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="16sp"/>
 
             <Space
@@ -195,7 +195,7 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:backgroundTint="@color/purple1"
+                android:backgroundTint="@color/teal"
                 android:text="@string/save"
                 android:textAlignment="center"
                 android:textColor="@color/white"

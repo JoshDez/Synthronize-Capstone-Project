@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="20dp"
     android:paddingBottom="20dp"
-    android:background="@color/dark_purple_2"
+    android:background="@color/darker_teal"
     android:orientation="vertical">
 
     <Space
@@ -24,7 +24,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:id="@+id/optiontitle1"
@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
             android:contentDescription="@string/menuoption"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="17sp"/>
     </LinearLayout>
 
@@ -41,7 +41,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:dividerColor="@color/less_saturated_light_purple"/>
+        app:dividerColor="@color/less_saturated_light_teal"/>
 
     <LinearLayout
         android:id="@+id/option2"
@@ -55,7 +55,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:id="@+id/optiontitle2"
@@ -63,7 +63,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
             android:contentDescription="@string/menuoption"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="17sp"/>
     </LinearLayout>
 
@@ -73,7 +73,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:dividerColor="@color/less_saturated_light_purple"/>
+        app:dividerColor="@color/less_saturated_light_teal"/>
 
     <LinearLayout
         android:id="@+id/option3"
@@ -89,7 +89,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:id="@+id/optiontitle3"
@@ -97,7 +97,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
             android:contentDescription="@string/menuoption"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="17sp"/>
     </LinearLayout>
 
@@ -107,7 +107,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:dividerColor="@color/less_saturated_light_purple"/>
+        app:dividerColor="@color/less_saturated_light_teal"/>
 
     <LinearLayout
         android:id="@+id/option4"
@@ -123,7 +123,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
         <TextView
             android:id="@+id/optiontitle4"
@@ -131,7 +131,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
             android:contentDescription="@string/menuoption"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:textSize="17sp"/>
     </LinearLayout>
 

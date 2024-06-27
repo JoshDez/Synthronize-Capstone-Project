@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/startingbg"
+    android:background="@drawable/gradient_gray_background"
     tools:context=".SignUp">
 
 
@@ -78,7 +78,7 @@
         android:layout_width="320dp"
         android:layout_height="56dp"
         android:layout_marginTop="24dp"
-        android:backgroundTint="@color/purple1"
+        android:backgroundTint="@color/teal"
         android:text="@string/signup"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -95,7 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="52dp"
-        android:backgroundTint="@color/light_purple"
+        android:backgroundTint="@color/light_teal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/already_have_an_account"
-        android:textColor="@color/light_purple"
+        android:textColor="@color/light_teal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

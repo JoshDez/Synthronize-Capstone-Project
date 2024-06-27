@@ -4,28 +4,36 @@
     android:id="@+id/itemGroupLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
-    android:orientation="horizontal"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:src="@drawable/community_not_selected"
-        app:civ_border_color="#FF000000"
-        app:civ_border_width="2dp" />
-
-    <TextView
-        android:id="@+id/groupNameTextView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-    android:layout_marginStart="16dp"
-    android:text="THIS IS GROUP EXAMPLE"
-    android:textColor="@color/light_purple"
-    android:textSize="18sp"
-    android:textStyle="bold" />
+        android:padding="16dp"
+        android:layout_margin="2dp"
+        android:orientation="horizontal">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@drawable/community_not_selected"
+            app:civ_border_color="@color/light_teal"
+            app:civ_border_width="2dp" />
 
+        <TextView
+            android:id="@+id/groupNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:text="THIS IS GROUP EXAMPLE"
+            android:textColor="@color/light_teal"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        app:dividerColor="@color/gray"/>
 
 </LinearLayout>

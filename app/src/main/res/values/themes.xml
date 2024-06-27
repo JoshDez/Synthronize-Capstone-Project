@@ -15,9 +15,9 @@
     </style>
 
     <style name="Toolbar">
-        <item name="android:background">@drawable/gradient</item>
+        <item name="android:background">@drawable/gradient_teal</item>
     </style>
     <style name="BottomBar">
-        <item name="android:background">@drawable/gradient</item>
+        <item name="android:background">@drawable/gradient_teal</item>
     </style>
 </resources>

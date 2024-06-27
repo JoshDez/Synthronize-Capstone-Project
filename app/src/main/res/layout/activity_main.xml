@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/dark_purple_2"
+    android:background="@color/gray2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -11,7 +11,7 @@
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/dark_purple_2"
+        android:background="@color/darker_teal"
         android:padding="10dp">
 
         <LinearLayout
@@ -30,7 +30,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/back_icon"
-                app:tint="@color/light_purple" />
+                app:tint="@color/light_teal" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/toolbarImageCIV"
@@ -46,7 +46,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:textSize="25dp"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:contentDescription="@string/toolbar_title"/>
         </LinearLayout>
 
@@ -65,7 +65,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/search_icon"
-                app:tint="@color/light_purple" />
+                app:tint="@color/light_teal" />
 
             <ImageButton
                 android:id="@+id/kebabMenuBtn"
@@ -75,7 +75,7 @@
                 android:layout_marginStart="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/kebab_menu_icon"
-                app:tint="@color/light_purple" />
+                app:tint="@color/light_teal" />
 
 
             <ImageButton
@@ -86,7 +86,7 @@
                 android:layout_marginEnd="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/hamburger_menu"
-                app:tint="@color/light_purple" />
+                app:tint="@color/light_teal" />
 
         </LinearLayout>
     </RelativeLayout>
@@ -96,8 +96,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/mainToolbar"
-        android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
 
     <FrameLayout
         android:id="@+id/mainFrameLayout"
@@ -111,8 +111,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@id/bottomNavigation"
-        android:background="@color/light_purple"
-        app:dividerColor="@color/light_purple" />
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
 
     <RelativeLayout
         android:id="@+id/bottomNavigation"
@@ -129,6 +129,7 @@
             android:layout_toLeftOf="@id/updatesBtn"
             android:layout_marginEnd="20dp"
             android:layout_centerInParent="true"
+            android:backgroundTint="@color/light_teal"
             android:background="@drawable/explore_not_selected"/>
         <ImageButton
             android:id="@+id/updatesBtn"
@@ -137,12 +138,14 @@
             android:layout_marginEnd="20dp"
             android:layout_toLeftOf="@id/communitiesBtn"
             android:layout_centerInParent="true"
+            android:backgroundTint="@color/light_teal"
             android:background="@drawable/notifications_not_selected"/>
         <ImageButton
             android:id="@+id/communitiesBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerInParent="true"
+            android:backgroundTint="@color/light_teal"
             android:background="@drawable/community_not_selected"/>
         <ImageButton
             android:id="@+id/chatBtn"
@@ -151,6 +154,7 @@
             android:layout_marginStart="20dp"
             android:layout_toRightOf="@id/communitiesBtn"
             android:layout_centerInParent="true"
+            android:backgroundTint="@color/light_teal"
             android:background="@drawable/chat_not_selected"/>
         <ImageButton
             android:id="@+id/profileBtn"
@@ -159,6 +163,7 @@
             android:layout_toRightOf="@id/chatBtn"
             android:layout_marginStart="20dp"
             android:layout_centerInParent="true"
+            android:backgroundTint="@color/light_teal"
             android:background="@drawable/profile_not_selected"/>
     </RelativeLayout>
 

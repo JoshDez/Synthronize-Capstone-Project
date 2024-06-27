@@ -26,7 +26,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="2dp"
             android:contentDescription="@string/username"
-            android:textColor="@color/light_purple"/>
+            android:textColor="@color/light_teal"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -36,14 +36,14 @@
             android:layout_toRightOf="@id/userProfileCIV"
             android:layout_marginStart="8dp"
             android:layout_below="@id/userNameTV"
-            android:backgroundTint="@color/purple2"
+            android:backgroundTint="@color/teal2"
             android:layout_marginEnd="120dp">
             <TextView
                 android:id="@+id/recieverMsgTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/Chats"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/light_teal"
                 android:textSize="17sp"/>
         </LinearLayout>
     </RelativeLayout>
@@ -60,7 +60,7 @@
             android:layout_alignParentEnd="true"
             android:background="@drawable/input_rounded_corners"
             android:padding="10dp"
-            android:backgroundTint="@color/light_purple"
+            android:backgroundTint="@color/light_teal"
             android:layout_marginTop="21dp"
             android:layout_marginStart="120dp">
             <TextView
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/Chats"
-                android:textColor="@color/dark_purple_2"
+                android:textColor="@color/darker_teal"
                 android:textSize="17sp"/>
         </LinearLayout>
     </RelativeLayout>

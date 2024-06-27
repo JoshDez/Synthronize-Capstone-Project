@@ -24,7 +24,7 @@
             android:layout_alignParentEnd="true"
             android:textSize="20dp"
             android:contentDescription="@string/full_name"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:layout_toRightOf="@id/userCircleImageView"/>
 
         <TextView
@@ -37,7 +37,7 @@
             android:layout_alignParentEnd="true"
             android:textSize="16dp"
             android:contentDescription="@string/username"
-            android:textColor="@color/light_purple"
+            android:textColor="@color/light_teal"
             android:layout_toRightOf="@id/userCircleImageView"/>
     </RelativeLayout>
 
@@ -55,7 +55,7 @@
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:buttonTint="@color/light_purple"/>
+            app:buttonTint="@color/light_teal"/>
 
         <ImageButton
             android:id="@+id/rejectBtn"
@@ -76,7 +76,7 @@
             android:layout_marginEnd="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/check_icon"
-            app:tint="@color/light_purple"/>
+            app:tint="@color/light_teal"/>
 
     </LinearLayout>
 
