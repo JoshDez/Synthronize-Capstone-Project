@@ -57,8 +57,8 @@ class CommunitySettings : AppCompatActivity() {
     }
 
     private fun navigate(tab:String){
-        val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_purple)
-        val selectedColor = ContextCompat.getColor(this, R.color.light_purple)
+        val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_teal)
+        val selectedColor = ContextCompat.getColor(this, R.color.light_teal)
         binding.generalBtn.setTextColor(unselectedColor)
         binding.adminBtn.setTextColor(unselectedColor)
         binding.generalLayout.visibility = View.GONE

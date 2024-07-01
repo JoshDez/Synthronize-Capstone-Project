@@ -99,7 +99,7 @@
         android:layout_height="1dp"
         android:layout_marginBottom="10dp"
         android:layout_below="@id/upperNavLayout"
-        android:background="@color/light_purple"
+        android:background="@color/light_teal"
         app:dividerColor="@color/light_teal" />
 
     <androidx.recyclerview.widget.RecyclerView

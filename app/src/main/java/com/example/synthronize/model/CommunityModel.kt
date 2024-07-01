@@ -12,6 +12,7 @@ data class CommunityModel(
     var communityMembers: List<String> = listOf(),
     var communityAdmin: List<String> = listOf(),
     var communityChannels:List<String> = listOf("General"),
+    var communityMedia:Map<String, String> = HashMap(),
     var joinRequestList: List<String> = listOf(),
     var blockList: List<String> = listOf()
 )

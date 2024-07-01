@@ -1,12 +1,14 @@
 package com.example.synthronize
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -19,8 +21,10 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.example.synthronize.databinding.ActivityEditCommunityBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.Timestamp
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -101,9 +105,9 @@ class EditCommunity : AppCompatActivity() {
                 bindCommunityNameEdtTxtTextWatcher(communityModel.communityName)
 
                 //bind profile picture
-                AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.communityProfileCIV, true)
+                AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.communityProfileCIV)
                 //bind banner picture
-                AppUtil().setCommunityBannerPic(this, communityModel.communityId, binding.communityBannerIV, true)
+                AppUtil().setCommunityBannerPic(this, communityModel.communityId, binding.communityBannerIV)
 
             }
         }
@@ -130,17 +134,51 @@ class EditCommunity : AppCompatActivity() {
             var delay:Long = 0
             //set new user profile pic
             if (::selectedCommunityProfileUri.isInitialized){
-                FirebaseUtil().retrieveCommunityProfilePicRef(communityModel.communityId).putFile(selectedCommunityProfileUri).addOnSuccessListener {
 
+                var imageUrl = "${communityId}-${Timestamp.now()}"
+
+                //delete the image from firebase storage
+                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                    var commmunity = it.toObject(CommunityModel::class.java)!!
+                    if (commmunity.communityMedia.containsKey("community_photo")){
+                        FirebaseUtil().retrieveCommunityProfilePicRef(commmunity.communityMedia["community_photo"]!!).delete()
+                    }
+                }
+
+                //upload the image to firestore
+                FirebaseUtil().retrieveCommunityProfilePicRef(imageUrl).putFile(selectedCommunityProfileUri).addOnSuccessListener {
+                    val updates = hashMapOf<String, Any>(
+                        "communityMedia.community_photo" to imageUrl
+                    )
+                    FirebaseUtil().retrieveCommunityDocument(communityId).update(updates).addOnSuccessListener {
+                        Log.d(ContentValues.TAG, "Image uploaded successfully")
+                    }
                 }
                 //adds a second to give time for the firebase to upload
                 delay += 3000
             }
             //set new user cover pic
             if (::selectedBannerPicUri.isInitialized){
-                //TODO to implement banner
-                FirebaseUtil().retrieveCommunityBannerPicRef(communityModel.communityId).putFile(selectedBannerPicUri)
-                //adds a second to give time for the firebase to upload
+
+                var imageUrl = "${communityId}-${Timestamp.now()}"
+
+                //delete the image from firebase storage
+                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                    var commmunity = it.toObject(CommunityModel::class.java)!!
+                    if (commmunity.communityMedia.containsKey("community_banner_photo")){
+                        FirebaseUtil().retrieveCommunityBannerPicRef(commmunity.communityMedia["community_banner_photo"]!!).delete()
+                    }
+                }
+
+                //upload the image to firestore
+                FirebaseUtil().retrieveCommunityBannerPicRef(imageUrl).putFile(selectedBannerPicUri).addOnSuccessListener {
+                    val updates = hashMapOf<String, Any>(
+                        "communityMedia.community_banner_photo" to imageUrl
+                    )
+                    FirebaseUtil().retrieveCommunityDocument(communityId).update(updates).addOnSuccessListener {
+                        Log.d(ContentValues.TAG, "Image uploaded successfully")
+                    }
+                }
                 delay += 3000
             }
 

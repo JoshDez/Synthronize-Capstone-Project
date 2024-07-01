@@ -1,6 +1,7 @@
 package com.example.synthronize
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -255,13 +256,52 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             )
             //save community profile to firebase storage
             if (::selectedCommunityProfileUri.isInitialized){
-                FirebaseUtil().retrieveCommunityProfilePicRef(communityId).putFile(selectedCommunityProfileUri)
+
+                var imageUrl = "${communityId}-${Timestamp.now()}"
+
+                //delete the image from firebase storage
+                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                    var commmunity = it.toObject(CommunityModel::class.java)!!
+                    if (commmunity.communityMedia.containsKey("community_photo")){
+                        FirebaseUtil().retrieveCommunityProfilePicRef(commmunity.communityMedia["community_photo"]!!).delete()
+                    }
+                }
+
+                //upload the image to firestore
+                FirebaseUtil().retrieveCommunityProfilePicRef(imageUrl).putFile(selectedCommunityProfileUri).addOnSuccessListener {
+                    val updates = hashMapOf<String, Any>(
+                        "communityMedia.community_photo" to imageUrl
+                    )
+                    FirebaseUtil().retrieveCommunityDocument(communityId).update(updates).addOnSuccessListener {
+                        Log.d(ContentValues.TAG, "Image uploaded successfully")
+                    }
+                }
                 delay += 1000
             }
 
             //save community banner to firebase storage
             if (::selectedCommunityBannerUri.isInitialized){
-                FirebaseUtil().retrieveCommunityBannerPicRef(communityId).putFile(selectedCommunityBannerUri)
+
+                var imageUrl = "${communityId}-${Timestamp.now()}"
+
+                //delete the image from firebase storage
+                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                    var commmunity = it.toObject(CommunityModel::class.java)!!
+                    if (commmunity.communityMedia.containsKey("community_banner_photo")){
+                        FirebaseUtil().retrieveCommunityBannerPicRef(commmunity.communityMedia["community_banner_photo"]!!).delete()
+                    }
+                }
+
+                //upload the image to firestore
+                FirebaseUtil().retrieveCommunityBannerPicRef(imageUrl).putFile(selectedCommunityBannerUri).addOnSuccessListener {
+                    val updates = hashMapOf<String, Any>(
+                        "communityMedia.community_banner_photo" to imageUrl
+                    )
+                    FirebaseUtil().retrieveCommunityDocument(communityId).update(updates).addOnSuccessListener {
+                        Log.d(ContentValues.TAG, "Image uploaded successfully")
+                    }
+                }
+                delay += 1000
             }
 
             //set data to firestore

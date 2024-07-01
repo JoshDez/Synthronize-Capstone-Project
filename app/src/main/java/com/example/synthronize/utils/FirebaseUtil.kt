@@ -54,31 +54,31 @@ class FirebaseUtil {
     }
 
     //For Firebase Storage
-    fun retrieveUserProfilePicRef(uid:String): StorageReference {
+    fun retrieveUserProfilePicRef(url:String): StorageReference {
         return FirebaseStorage.getInstance().reference
             .child("userProfilePicture")
             //name of picture
-            .child(uid)
+            .child(url)
     }
-    fun retrieveUserCoverPicRef(uid:String): StorageReference {
+    fun retrieveUserCoverPicRef(url:String): StorageReference {
         return FirebaseStorage.getInstance().reference
             .child("userCoverPicture")
             //name of picture
-            .child(uid)
+            .child(url)
     }
 
-    fun retrieveCommunityProfilePicRef(uid:String): StorageReference {
+    fun retrieveCommunityProfilePicRef(url:String): StorageReference {
         return FirebaseStorage.getInstance().reference
             .child("communityProfilePicture")
             //name of picture
-            .child(uid)
+            .child(url)
     }
 
-    fun retrieveCommunityBannerPicRef(uid:String): StorageReference {
+    fun retrieveCommunityBannerPicRef(url:String): StorageReference {
         return FirebaseStorage.getInstance().reference
             .child("communityBannerPicture")
             //name of picture
-            .child(uid)
+            .child(url)
     }
 
     fun retrieveCommunityContentImageRef(imageId:String): StorageReference {

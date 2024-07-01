@@ -9,16 +9,8 @@
     <color name="red">#8C2121</color>
 
     <color name="hint_color">#676767</color>
-    <color name="light_purple">#D0ADF1</color>
-    <color name="less_saturated_light_purple">#9884A8</color>
-    <color name="purple1">#7C2FC5</color>
-    <color name="purple2">#482070</color>
-    <color name="dark_purple_1">#1D0639</color>
-    <color name="dark_purple_1.5">#14032B</color>
-    <color name="dark_purple_2">#0D0319</color>
     <color name="transparent">#000D0319</color>
     <color name="darkish_red">#611212</color>
-
     <color name="white">#dcdcdd</color>
     <color name="teal_gray">#4c5c68</color>
     <color name="light_gray">#c5c3c6</color>

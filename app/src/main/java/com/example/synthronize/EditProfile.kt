@@ -2,6 +2,7 @@ package com.example.synthronize
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -24,6 +26,8 @@ import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 import java.util.Calendar
@@ -94,9 +98,9 @@ class EditProfile : AppCompatActivity() {
                 bindUsernameEdtTxtTextWatcher(userModel.username)
 
                 //bind user profile picture
-                AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.userProfileCIV, true)
+                AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.userProfileCIV)
                 //bind user cover picture
-                AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.userCoverIV, true)
+                AppUtil().setUserCoverPic(this, FirebaseUtil().currentUserUid(), binding.userCoverIV)
 
             }
         }
@@ -124,24 +128,49 @@ class EditProfile : AppCompatActivity() {
             var delay:Long = 0
             //set new user profile pic
             if (::selectedProfilePicUri.isInitialized){
-                FirebaseUtil().retrieveUserProfilePicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfilePicUri).addOnSuccessListener {
-                    // Clear Glide cache
-                    Glide.get(this).clearMemory()
-                    Thread {
-                        Glide.get(this).clearDiskCache()
-                    }.start()
+
+                var imageUrl = "${FirebaseUtil().currentUserUid()}-${Timestamp.now()}"
+
+                //delete the image from firebase storage
+                FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+                    var user = it.toObject(UserModel::class.java)!!
+                    if (user.userMedia.containsKey("profile_photo")){
+                        FirebaseUtil().retrieveUserProfilePicRef(user.userMedia["profile_photo"]!!).delete()
+                    }
+                }
+
+                //upload the image to firestore
+                FirebaseUtil().retrieveUserProfilePicRef(imageUrl).putFile(selectedProfilePicUri).addOnSuccessListener {
+                    val updates = hashMapOf<String, Any>(
+                        "userMedia.profile_photo" to imageUrl
+                    )
+                    FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
+                        Log.d(ContentValues.TAG, "Image uploaded successfully")
+                    }
                 }
                 //adds a second to give time for the firebase to upload
                 delay += 3000
             }
             //set new user cover pic
             if (::selectedProfileCoverPicUri.isInitialized){
-                FirebaseUtil().retrieveUserCoverPicRef(FirebaseUtil().currentUserUid()).putFile(selectedProfileCoverPicUri).addOnSuccessListener {
-                    // Clear Glide cache
-                    Glide.get(this).clearMemory()
-                    Thread {
-                        Glide.get(this).clearDiskCache()
-                    }.start()
+                var imageUrl = "${FirebaseUtil().currentUserUid()}-${Timestamp.now()}"
+
+                //delete the cover image from firebase storage
+                FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+                    var user = it.toObject(UserModel::class.java)!!
+                    if (user.userMedia.containsKey("profile_cover_photo")){
+                        FirebaseUtil().retrieveUserCoverPicRef(user.userMedia["profile_cover_photo"]!!).delete()
+                    }
+                }
+
+                //upload the image to firestore
+                FirebaseUtil().retrieveUserCoverPicRef(imageUrl).putFile(selectedProfileCoverPicUri).addOnSuccessListener {
+                    val updates = hashMapOf<String, Any>(
+                        "userMedia.profile_cover_photo" to imageUrl
+                    )
+                    FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
+                        Log.d(ContentValues.TAG, "Cover Image uploaded successfully")
+                    }
                 }
                 //adds a second to give time for the firebase to upload
                 delay += 3000

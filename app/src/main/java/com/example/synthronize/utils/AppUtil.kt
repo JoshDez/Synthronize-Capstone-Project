@@ -12,6 +12,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.example.synthronize.MainActivity
 import com.example.synthronize.R
+import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.UserModel
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -33,62 +35,43 @@ class AppUtil {
         }
     }
 
-
+    //TODO Make changes
     //For Images
-    fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView, clearCache: Boolean = false){
 
-        val imageRef = FirebaseUtil().retrieveUserProfilePicRef(uid)
+    fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView){
+        FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
+            var user = it.toObject(UserModel::class.java)!!
 
-        if (isInternetConnected(context)){
-            //if online
-            GlideApp.with(context)
-                //storage reference
-                .load(imageRef)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .signature(ObjectKey(System.currentTimeMillis().toString()))
-                .error(R.drawable.profile_not_selected)
-                .apply(RequestOptions.circleCropTransform())
-                //image view
-                .into(civ)
+            if (user.userMedia.containsKey("profile_photo")){
+                //get the image url from the key
+                var imageUrl = user.userMedia["profile_photo"]!!
 
-            if (clearCache){
-                // Clear Glide memory cache
-                Glide.get(context).clearMemory()
+                GlideApp.with(context)
+                    //storage reference
+                    .load(FirebaseUtil().retrieveUserProfilePicRef(imageUrl))
+                    .error(R.drawable.profile_not_selected)
+                    .apply(RequestOptions.circleCropTransform())
+                    //image view
+                    .into(civ)
             }
-        } else {
-            GlideApp.with(context)
-                //storage reference
-                .load(R.drawable.profile_not_selected)
-                .apply(RequestOptions.circleCropTransform())
-                //image view
-                .into(civ)
         }
-
     }
-    fun setUserCoverPic(context: Context, uid: String, cover:ImageView, clearCache: Boolean = false){
-        val imageRef = FirebaseUtil().retrieveUserCoverPicRef(uid)
 
-        if (isInternetConnected(context)){
-            //if online
-            GlideApp.with(context)
-                //storage reference
-                .load(imageRef)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .signature(ObjectKey(System.currentTimeMillis().toString()))
-                .error(R.drawable.baseline_image_24)
-                //image view
-                .into(cover)
+    fun setUserCoverPic(context: Context, uid: String, cover:ImageView){
+        FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
+            var user = it.toObject(UserModel::class.java)!!
 
-            if (clearCache){
-                // Clear Glide memory cache
-                Glide.get(context).clearMemory()
+            if (user.userMedia.containsKey("profile_cover_photo")){
+                //get the image url from the key
+                var imageUrl = user.userMedia["profile_cover_photo"]!!
+
+                GlideApp.with(context)
+                    //storage reference
+                    .load(FirebaseUtil().retrieveUserCoverPicRef(imageUrl))
+                    .error(R.drawable.profile_not_selected)
+                    //image view
+                    .into(cover)
             }
-        } else {
-            GlideApp.with(context)
-                //storage reference
-                .load(R.drawable.baseline_image_24)
-                //image view
-                .into(cover)
         }
     }
 
@@ -101,59 +84,41 @@ class AppUtil {
             .into(imageView)
     }
 
-    fun setCommunityProfilePic(context:Context, uid: String, civ:CircleImageView, clearCache:Boolean = false){
-        val imageRef = FirebaseUtil().retrieveCommunityProfilePicRef(uid)
+    fun setCommunityProfilePic(context:Context, communityId: String, civ:CircleImageView){
 
-        if (isInternetConnected(context)){
-            //if online
-            GlideApp.with(context)
-                //storage reference
-                .load(imageRef)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .signature(ObjectKey(System.currentTimeMillis().toString()))
-                .error(R.drawable.community_not_selected)
-                .apply(RequestOptions.circleCropTransform())
-                //image view
-                .into(civ)
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+            var community = it.toObject(CommunityModel::class.java)!!
 
-            if (clearCache){
-                // Clear Glide memory cache
-                Glide.get(context).clearMemory()
+            if (community.communityMedia.containsKey("community_photo")){
+                //get the image url from the key
+                var imageUrl = community.communityMedia["community_photo"]!!
+
+                GlideApp.with(context)
+                    //storage reference
+                    .load(FirebaseUtil().retrieveCommunityProfilePicRef(imageUrl))
+                    .error(R.drawable.profile_not_selected)
+                    .apply(RequestOptions.circleCropTransform())
+                    //image view
+                    .into(civ)
             }
-        } else {
-            GlideApp.with(context)
-                //storage reference
-                .load(R.drawable.community_not_selected)
-                .apply(RequestOptions.circleCropTransform())
-                //image view
-                .into(civ)
         }
     }
 
-    fun setCommunityBannerPic(context:Context, uid: String, imageView:ImageView, clearCache:Boolean = false){
-        val imageRef = FirebaseUtil().retrieveCommunityBannerPicRef(uid)
+    fun setCommunityBannerPic(context:Context, communityId: String, imageView:ImageView){
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+            var community = it.toObject(CommunityModel::class.java)!!
 
-        if (isInternetConnected(context)){
-            //if online
-            GlideApp.with(context)
-                //storage reference
-                .load(imageRef)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .signature(ObjectKey(System.currentTimeMillis().toString()))
-                .error(R.drawable.baseline_image_24)
-                //image view
-                .into(imageView)
+            if (community.communityMedia.containsKey("community_banner_photo")){
+                //get the image url from the key
+                var imageUrl = community.communityMedia["community_banner_photo"]!!
 
-            if (clearCache){
-                // Clear Glide memory cache
-                Glide.get(context).clearMemory()
+                GlideApp.with(context)
+                    //storage reference
+                    .load(FirebaseUtil().retrieveCommunityBannerPicRef(imageUrl))
+                    .error(R.drawable.baseline_image_24)
+                    //image view
+                    .into(imageView)
             }
-        } else {
-            GlideApp.with(context)
-                //storage reference
-                .load(R.drawable.baseline_image_24)
-                //image view
-                .into(imageView)
         }
     }
 

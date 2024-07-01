@@ -12,5 +12,6 @@ data class UserModel(
     var friendsList:List<String> = listOf(),
     var blockList:List<String> = listOf(),
     var friendRequests:List<String> = listOf(),
-    var communityInvitations:Map<String, String> = HashMap()
+    var communityInvitations:Map<String, String> = HashMap(),
+    var userMedia:Map<String, String> = HashMap()
 )

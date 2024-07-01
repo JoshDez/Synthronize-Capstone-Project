@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/mainToolbar"
-        android:background="@color/light_purple"
+        android:background="@color/light_teal"
         app:dividerColor="@color/light_teal" />
 
     <ScrollView
@@ -106,7 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_above="@id/bottomToolbar"
-                android:background="@color/light_purple"
+                android:background="@color/light_teal"
                 app:dividerColor="@color/light_teal" />
             <TextView
                 android:layout_width="match_parent"
@@ -124,7 +124,7 @@
                 android:layout_height="1dp"
                 android:layout_above="@id/bottomToolbar"
                 android:layout_marginBottom="10dp"
-                android:background="@color/light_purple"
+                android:background="@color/light_teal"
                 app:dividerColor="@color/light_teal" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -139,7 +139,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@id/bottomToolbar"
-        android:background="@color/light_purple"
+        android:background="@color/light_teal"
         app:dividerColor="@color/light_teal" />
 
     <LinearLayout
