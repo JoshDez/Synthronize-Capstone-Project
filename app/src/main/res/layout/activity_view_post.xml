@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray2"
+    android:background="@color/darker_teal"
     tools:context=".ViewPost">
 
     <RelativeLayout
@@ -51,7 +51,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/darker_teal"
                 android:padding="20dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -94,12 +93,6 @@
             </RelativeLayout>
 
 
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_above="@id/bottomToolbar"
-                android:background="@color/light_purple"
-                app:dividerColor="@color/light_teal" />
 
             <LinearLayout
                 android:id="@+id/contentLayout"
@@ -109,6 +102,12 @@
                 android:gravity="center_horizontal">
             </LinearLayout>
 
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_above="@id/bottomToolbar"
+                android:background="@color/light_purple"
+                app:dividerColor="@color/light_teal" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
