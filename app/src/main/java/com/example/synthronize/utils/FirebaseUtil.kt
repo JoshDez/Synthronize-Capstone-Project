@@ -2,6 +2,7 @@ package com.example.synthronize.utils
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import com.example.synthronize.Login
 import com.example.synthronize.model.CommunityModel
 import com.google.firebase.auth.FirebaseAuth
@@ -9,7 +10,6 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
@@ -81,10 +81,34 @@ class FirebaseUtil {
             .child(url)
     }
 
-    fun retrieveCommunityContentImageRef(imageId:String): StorageReference {
+    fun retrieveCommunityContentImageRef(imageFilename:String): StorageReference {
         return FirebaseStorage.getInstance().reference
             .child("communityContentImage")
-            .child(imageId)
+            .child(imageFilename)
+    }
+
+    fun retrieveCommunityContentVideoRef(videoFilename:String): StorageReference {
+        return FirebaseStorage.getInstance().reference
+            .child("communityContentVideo")
+            .child(videoFilename)
+    }
+
+    fun downloadUrlFromFirebase(type:String, filename: String, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
+        if (type == "Image"){
+            retrieveCommunityContentImageRef(filename).downloadUrl.addOnSuccessListener { uri ->
+                onSuccess(uri)
+            }.addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+        } else if (type == "Video"){
+            retrieveCommunityContentVideoRef(filename).downloadUrl.addOnSuccessListener { uri ->
+                onSuccess(uri)
+            }.addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+        }
+
+
     }
 
 

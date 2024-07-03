@@ -36,7 +36,8 @@ class ViewPageAdapter(private val context:Context, private val contentList: List
                 feedBinding.contentContainerLayout.addView(ContentUtil().getImageView(context, content))
 
             } else if (temp[1] == "Video"){
-                //TODO to be implemented
+                //gets image view and binds it in the linear layout
+                feedBinding.contentContainerLayout.addView(ContentUtil().getVideoThumbnail(context, content))
             }
         }
 

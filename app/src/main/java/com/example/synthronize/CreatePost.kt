@@ -5,9 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,13 +22,18 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
+import java.util.UUID
 
 class CreatePost : AppCompatActivity() {
     private lateinit var binding:ActivityCreatePostBinding
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
+    private lateinit var videoPickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedImageUri: Uri
+    private lateinit var selectedVideoUri: Uri
     private lateinit var uriHashMap: HashMap<String, Uri>
     private lateinit var communityId:String
+    private var contentList:ArrayList<String> = ArrayList()
+    private var canPost:Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +42,7 @@ class CreatePost : AppCompatActivity() {
 
         communityId = intent.getStringExtra("communityId").toString()
 
-        //Launcher for user profile pic and user cover pic
+        //Launcher for user content image
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             //Image is selected
             if (result.resultCode == Activity.RESULT_OK){
@@ -44,6 +51,19 @@ class CreatePost : AppCompatActivity() {
                     selectedImageUri = data.data!!
                     //adds the selected image to the dialog layout
                     addImage(selectedImageUri)
+                }
+            }
+        }
+
+        //Launcher for user content video
+        videoPickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+            //Video is selected
+            if (result.resultCode == Activity.RESULT_OK){
+                val data = result.data
+                if (data != null && data.data != null){
+                    selectedVideoUri = data.data!!
+                    //adds the selected video to the dialog layout
+                    addVideo(selectedVideoUri)
                 }
             }
         }
@@ -57,7 +77,9 @@ class CreatePost : AppCompatActivity() {
                 }
         }
         binding.addVideoBtn.setOnClickListener {
-            Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show()
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.setType("video/*")
+            videoPickerLauncher.launch(intent)
         }
         binding.backBtn.setOnClickListener {
             //TODO dialog message
@@ -78,11 +100,97 @@ class CreatePost : AppCompatActivity() {
         AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.profileCIV)
     }
 
-    private fun addImage(selectedImage:Uri){
-        //creates image id
+    private fun uploadVideo(filename: String, selectedVideoUri: Uri, progressBar: ProgressBar){
+        canPost = false
+        FirebaseUtil().retrieveCommunityContentVideoRef(filename).putFile(selectedVideoUri).addOnSuccessListener {
+            Toast.makeText(this, "Video Uploaded Successfully", Toast.LENGTH_SHORT).show()
+            contentList.add(filename)
+            canPost = true
+        }.addOnFailureListener {
+            Toast.makeText(this, "Failed To Upload Video", Toast.LENGTH_SHORT).show()
+        }.addOnProgressListener {
+            progressBar.max = Math.toIntExact(it.totalByteCount)
+            progressBar.progress = Math.toIntExact(it.bytesTransferred)
+        }
+    }
+
+    private fun addVideo(selectedVideo: Uri) {
+        //TODO
+        //creates video id
         val userId = FirebaseUtil().currentUserUid()
-        val timestamp = Timestamp.now()
-        val imageId = "$userId-Image-$timestamp"
+        val filename = "$userId-Video-${UUID.randomUUID()}"
+
+        //Creates linear layout for image
+        val verticalLayout = LinearLayout(this)
+        verticalLayout.orientation = LinearLayout.VERTICAL
+        val linearParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        verticalLayout.layoutParams = linearParams
+
+        //creates thumbnail
+        val postVideo = ImageView(this)
+        val imageDpToPx = TypedValueCompat.dpToPx(400F, resources.displayMetrics)
+        val imageParams = LinearLayout.LayoutParams(imageDpToPx.toInt(), imageDpToPx.toInt())
+        postVideo.layoutParams = imageParams
+
+        //make the thumbnail clickable
+        postVideo.setOnClickListener {
+            val intent = Intent(this, ViewVideoActivity::class.java).apply {
+                putExtra("type", "Image")
+                putExtra("VIDEO_URI", selectedVideo)
+            }
+            startActivity(intent)
+        }
+
+
+        //inserts selected image to Image View
+        Glide.with(this).load(selectedVideo)
+            .into(postVideo)
+        verticalLayout.addView(postVideo)
+
+        // Adds the ProgressBar
+        val progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
+            isIndeterminate = true
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            visibility = View.VISIBLE // Show the progress bar initially
+        }
+        verticalLayout.addView(progressBar)
+
+        //adds image to uri hashmap
+        addUriToHashMap(filename, selectedVideoUri)
+
+        //immediately uploads video to the firebase storage
+        uploadVideo(filename, selectedVideo, progressBar)
+
+        //creates cancel button
+        val cancelBtn = ImageButton(this)
+        cancelBtn.setImageResource(R.drawable.cancel_icon)
+        cancelBtn.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        cancelBtn.setOnClickListener {
+            binding.mainPostLayout.removeView(verticalLayout)
+            //removes image
+            removeUriFromHashMap(filename)
+        }
+        val cancelBtnParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        cancelBtn.layoutParams = cancelBtnParams
+        verticalLayout.addView(cancelBtn)
+
+        //adds the views to the main layout
+        binding.mainPostLayout.addView(verticalLayout)
+    }
+
+    private fun addImage(selectedImage:Uri){
+        //creates image filename
+        val userId = FirebaseUtil().currentUserUid()
+        val fileName = "$userId-Image-${UUID.randomUUID()}"
 
         //Creates linear layout for image
         val verticalLayout = LinearLayout(this)
@@ -99,13 +207,22 @@ class CreatePost : AppCompatActivity() {
         val imageParams = LinearLayout.LayoutParams(imageDpToPx.toInt(), imageDpToPx.toInt())
         postImage.layoutParams = imageParams
 
+        //make the thumbnail clickable
+        postImage.setOnClickListener {
+            val intent = Intent(this, ViewVideoActivity::class.java).apply {
+                putExtra("type", "Image")
+                putExtra("IMAGE_URI", selectedImage)
+            }
+            startActivity(intent)
+        }
+
         //inserts selected image to Image View
         Glide.with(this).load(selectedImage)
             .into(postImage)
         verticalLayout.addView(postImage)
 
         //adds image to uri hashmap
-        addUriToHashMap(imageId, selectedImageUri)
+        addUriToHashMap(fileName, selectedImageUri)
 
         //creates cancel button
         val cancelBtn = ImageButton(this)
@@ -114,7 +231,7 @@ class CreatePost : AppCompatActivity() {
         cancelBtn.setOnClickListener {
             binding.mainPostLayout.removeView(verticalLayout)
             //removes image
-            removeUriFromHashMap(imageId)
+            removeUriFromHashMap(fileName)
         }
         val cancelBtnParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -131,54 +248,64 @@ class CreatePost : AppCompatActivity() {
         uriHashMap.remove(contentId)
     }
 
-    private fun addUriToHashMap(imageId:String, uri: Uri){
+    private fun addUriToHashMap(contentId:String, uri: Uri){
         if (!::uriHashMap.isInitialized)
             uriHashMap = HashMap()
-        uriHashMap[imageId] = uri
+        uriHashMap[contentId] = uri
     }
 
     private fun addPost(callback: (Boolean) -> Unit){
         val tempModel = PostModel()
-        val contentList:ArrayList<String> = ArrayList()
         val caption = binding.captionEdtTxt.text.toString()
         var delay:Long = 1000
 
-        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).add(tempModel).addOnSuccessListener {
+        if (canPost){
+            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).add(tempModel).addOnSuccessListener {
 
-            if (::uriHashMap.isInitialized){
-                for (data in uriHashMap){
-                    //data key is imageId and data value is uri
-                    //uploads image to the firebase storage
-                    FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
-                    contentList.add(data.key)
-                    delay += 100
+                if (::uriHashMap.isInitialized){
+                    for (data in uriHashMap){
+                        //data key is imageFileName and value is uri or actual image
+                        //uploads image to the firebase storage
+                        val key = data.key.split('-')
+                        if (key[1] == "Image") {
+                            FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
+                            contentList.add(data.key)
+                            delay += 100
+                        }
+
+                    }
                 }
+
+                //get new id from firestore and store it in feedId of the PostModel
+                val postModel = PostModel(
+                    postId = it.id,
+                    ownerId = FirebaseUtil().currentUserUid(),
+                    caption = caption,
+                    createdTimestamp = Timestamp.now(),
+                    communityId = communityId,
+                    contentList = contentList
+                )
+
+                //replaces temp model with feeds model
+                FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(postModel).addOnCompleteListener {task ->
+                    if (task.isSuccessful) {
+                        Handler().postDelayed({
+                            Toast.makeText(this, "Your post is uploaded successfully!", Toast.LENGTH_SHORT).show()
+                            callback(true)
+                        }, delay)
+                    } else {
+                        Toast.makeText(this, "Error has occurred!", Toast.LENGTH_SHORT).show()
+                        callback(false)
+                    }
+                }
+            }.addOnFailureListener {
+                callback(false)
             }
 
-            //get new id from firestore and store it in feedId of the PostModel
-            val postModel = PostModel(
-                postId = it.id,
-                ownerId = FirebaseUtil().currentUserUid(),
-                caption = caption,
-                createdTimestamp = Timestamp.now(),
-                communityId = communityId,
-                contentList = contentList
-            )
 
-            //replaces temp model with feeds model
-            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(postModel).addOnCompleteListener {task ->
-                if (task.isSuccessful) {
-                    Handler().postDelayed({
-                        Toast.makeText(this, "Your post is uploaded successfully!", Toast.LENGTH_SHORT).show()
-                        callback(true)
-                    }, delay)
-                } else {
-                    Toast.makeText(this, "Error has occurred!", Toast.LENGTH_SHORT).show()
-                    callback(false)
-                }
-            }
-        }.addOnFailureListener {
-            callback(false)
+        } else {
+            //the post is not ready to be uploaded
+            Toast.makeText(this, "The video is still uploading", Toast.LENGTH_SHORT).show()
         }
     }
 }

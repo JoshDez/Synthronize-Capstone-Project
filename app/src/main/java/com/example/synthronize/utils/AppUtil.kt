@@ -75,15 +75,6 @@ class AppUtil {
         }
     }
 
-    fun setImageContent(context: Context, imageId: String, imageView:ImageView){
-        GlideApp.with(context)
-            //storage reference
-            .load(FirebaseUtil().retrieveCommunityContentImageRef(imageId))
-            .error(R.drawable.baseline_image_24)
-            //image view
-            .into(imageView)
-    }
-
     fun setCommunityProfilePic(context:Context, communityId: String, civ:CircleImageView){
 
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {

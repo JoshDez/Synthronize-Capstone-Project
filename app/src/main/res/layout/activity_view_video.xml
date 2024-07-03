@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darker_teal"
+    tools:context=".ViewVideoActivity">
+
+    <RelativeLayout
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/darker_teal"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/back_icon"
+            app:tint="@color/light_teal" />
+
+
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/mainToolbar"
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:visibility="gone"
+        android:layout_below="@id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/darker_teal"/>
+
+    <VideoView
+        android:id="@+id/videoView"
+        android:visibility="gone"
+        android:layout_below="@id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/darker_teal"/>
+
+
+</RelativeLayout>
