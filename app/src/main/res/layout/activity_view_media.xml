@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/darker_teal"
-    tools:context=".ViewVideoActivity">
+    android:background="@color/black"
+    tools:context=".ViewMedia">
 
     <RelativeLayout
         android:id="@+id/mainToolbar"
@@ -36,21 +36,30 @@
         android:background="@color/light_teal"
         app:dividerColor="@color/light_teal" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:visibility="gone"
-        android:layout_below="@id/divider1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:backgroundTint="@color/darker_teal"/>
 
-    <VideoView
-        android:id="@+id/videoView"
-        android:visibility="gone"
+    <RelativeLayout
+        android:id="@+id/mainLayout"
         android:layout_below="@id/divider1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:backgroundTint="@color/darker_teal"/>
+        android:gravity="center">
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:visibility="gone"
+            android:foregroundGravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/black"/>
+
+        <VideoView
+            android:id="@+id/videoView"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/black"/>
+    </RelativeLayout>
 
 
 </RelativeLayout>

@@ -4,21 +4,18 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.MediaController
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.synthronize.databinding.ActivityViewVideoBinding
+import com.example.synthronize.databinding.ActivityViewMediaBinding
 import com.example.synthronize.utils.GlideApp
 
-class ViewVideoActivity : AppCompatActivity() {
+class ViewMedia : AppCompatActivity() {
 
-    private lateinit var binding:ActivityViewVideoBinding
+    private lateinit var binding:ActivityViewMediaBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityViewVideoBinding.inflate(layoutInflater)
+        binding = ActivityViewMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val mediaType = intent.getStringExtra("type")

@@ -2,8 +2,7 @@ package com.example.synthronize.utils
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.media.Image
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import android.util.TypedValue
@@ -14,10 +13,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.util.TypedValueCompat
 import com.example.synthronize.R
-import com.example.synthronize.ViewVideoActivity
+import com.example.synthronize.ViewMedia
 
 class ContentUtil {
 
@@ -49,7 +47,7 @@ class ContentUtil {
         //set onclick listener
         imageView.setOnClickListener {
             if (isViewable){
-                val intent = Intent(context, ViewVideoActivity::class.java).apply {
+                val intent = Intent(context, ViewMedia::class.java).apply {
                     putExtra("type", "Image")
                     putExtra("IMAGE_URI", imageUri)
                 }
@@ -81,6 +79,9 @@ class ContentUtil {
         val frameParams = LinearLayout.LayoutParams(imageDpToPx, imageDpToPx)
         frameLayout.layoutParams = frameParams
 
+        // Set black background color to the FrameLayout
+        frameLayout.setBackgroundColor(Color.BLACK)
+
         // Create ImageView for the video thumbnail
         val imageView = ImageView(context)
         val imageParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
@@ -99,7 +100,7 @@ class ContentUtil {
         //set onclick listener
         imageView.setOnClickListener {
             if (isPlayable){
-                val intent = Intent(context, ViewVideoActivity::class.java).apply {
+                val intent = Intent(context, ViewMedia::class.java).apply {
                     putExtra("type", "Video")
                     putExtra("VIDEO_URI", videoUri)
                 }

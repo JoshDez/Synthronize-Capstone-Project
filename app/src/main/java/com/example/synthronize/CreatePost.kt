@@ -137,7 +137,7 @@ class CreatePost : AppCompatActivity() {
 
         //make the thumbnail clickable
         postVideo.setOnClickListener {
-            val intent = Intent(this, ViewVideoActivity::class.java).apply {
+            val intent = Intent(this, ViewMedia::class.java).apply {
                 putExtra("type", "Image")
                 putExtra("VIDEO_URI", selectedVideo)
             }
@@ -209,7 +209,7 @@ class CreatePost : AppCompatActivity() {
 
         //make the thumbnail clickable
         postImage.setOnClickListener {
-            val intent = Intent(this, ViewVideoActivity::class.java).apply {
+            val intent = Intent(this, ViewMedia::class.java).apply {
                 putExtra("type", "Image")
                 putExtra("IMAGE_URI", selectedImage)
             }
