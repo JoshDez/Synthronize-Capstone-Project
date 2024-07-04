@@ -21,8 +21,6 @@ class ContentUtil {
 
     //FOR FEED
     fun getImageView(context: Context, filename:String): ImageView{
-        lateinit var imageUri:Uri
-        var isViewable = false
 
         //creates image view
         val imageView = ImageView(context)
@@ -30,48 +28,22 @@ class ContentUtil {
         val imageParams = LinearLayout.LayoutParams(imageDpToPx.toInt(), imageDpToPx.toInt())
         imageView.layoutParams = imageParams
 
-        //adds image to the image view
-        setImageContent("Image",context, filename, imageView)
-
-        //downloads the image for viewing
-        FirebaseUtil().downloadUrlFromFirebase("Image" ,filename,
-            onSuccess = { uri ->
-                imageUri = uri
-                isViewable = true
-            },
-            onFailure = { exception ->
-                Log.e("Firebase", "Failed to get image URL", exception)
-            }
-        )
+        setImageContent("Image" ,context, filename, imageView)
 
         //set onclick listener
         imageView.setOnClickListener {
-            if (isViewable){
-                val intent = Intent(context, ViewMedia::class.java).apply {
-                    putExtra("type", "Image")
-                    putExtra("IMAGE_URI", imageUri)
-                }
-                context.startActivity(intent)
+            val intent = Intent(context, ViewMedia::class.java).apply {
+                putExtra("type", "Image")
+                putExtra("isUrl", true)
+                putExtra("filename", filename)
             }
+            context.startActivity(intent)
         }
 
         return imageView
     }
 
     fun getVideoThumbnail(context: Context, filename: String): FrameLayout {
-        var isPlayable = false
-        lateinit var videoUri: Uri
-
-        //downloads the video
-        FirebaseUtil().downloadUrlFromFirebase("Video" ,filename,
-            onSuccess = { uri ->
-                videoUri = uri
-                isPlayable = true
-            },
-            onFailure = { exception ->
-                Log.e("Firebase", "Failed to get video URL", exception)
-            }
-        )
 
         // Create a FrameLayout to hold the video thumbnail and play icon
         val frameLayout = FrameLayout(context)
@@ -99,13 +71,12 @@ class ContentUtil {
 
         //set onclick listener
         imageView.setOnClickListener {
-            if (isPlayable){
-                val intent = Intent(context, ViewMedia::class.java).apply {
-                    putExtra("type", "Video")
-                    putExtra("VIDEO_URI", videoUri)
-                }
-                context.startActivity(intent)
+            val intent = Intent(context, ViewMedia::class.java).apply {
+                putExtra("type", "Video")
+                putExtra("isUrl", true)
+                putExtra("filename", filename)
             }
+            context.startActivity(intent)
         }
 
         // Add the image views to the frame layout

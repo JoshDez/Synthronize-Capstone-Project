@@ -53,8 +53,8 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"/>
 
-        <VideoView
-            android:id="@+id/videoView"
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/playerView"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

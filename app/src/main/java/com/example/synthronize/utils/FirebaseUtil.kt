@@ -93,26 +93,6 @@ class FirebaseUtil {
             .child(videoFilename)
     }
 
-    fun downloadUrlFromFirebase(type:String, filename: String, onSuccess: (Uri) -> Unit, onFailure: (Exception) -> Unit) {
-        if (type == "Image"){
-            retrieveCommunityContentImageRef(filename).downloadUrl.addOnSuccessListener { uri ->
-                onSuccess(uri)
-            }.addOnFailureListener { exception ->
-                onFailure(exception)
-            }
-        } else if (type == "Video"){
-            retrieveCommunityContentVideoRef(filename).downloadUrl.addOnSuccessListener { uri ->
-                onSuccess(uri)
-            }.addOnFailureListener { exception ->
-                onFailure(exception)
-            }
-        }
-
-
-    }
-
-
-
 
     //For Community
     fun retrieveAllCommunityCollection():CollectionReference{
