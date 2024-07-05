@@ -1,5 +1,6 @@
 package com.example.synthronize
 
+import UserLastSeenUpdater
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,6 +17,9 @@ class Splash : AppCompatActivity() {
 
         Handler().postDelayed({
             intent = if(FirebaseUtil().isLoggedIn()){
+                //starts updating user last seen
+                UserLastSeenUpdater().startUpdating()
+                //head to main activity
                 Intent(this, MainActivity::class.java)
             } else {
                 Intent(this, Login::class.java)

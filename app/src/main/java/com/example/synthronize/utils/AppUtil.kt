@@ -35,7 +35,6 @@ class AppUtil {
         }
     }
 
-    //TODO Make changes
     //For Images
 
     fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView){

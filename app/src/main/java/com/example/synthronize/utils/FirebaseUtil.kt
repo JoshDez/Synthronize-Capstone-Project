@@ -2,7 +2,6 @@ package com.example.synthronize.utils
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import com.example.synthronize.Login
 import com.example.synthronize.model.CommunityModel
 import com.google.firebase.auth.FirebaseAuth

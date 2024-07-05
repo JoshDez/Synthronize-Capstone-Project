@@ -1,11 +1,16 @@
 package com.example.synthronize
 
+import UserLastSeenUpdater
+import android.app.Activity
+import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.synthronize.databinding.ActivityMainBinding
+import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.FirebaseUtil
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -43,6 +48,8 @@ class MainActivity : AppCompatActivity() {
             selectNavigation(binding.chatBtn.id)
             replaceFragment(ChatFragment(binding))
         }
+
+
     }
     //Function that checks if the intent request for a specific fragment
     private fun onStartFragment(){

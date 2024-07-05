@@ -44,7 +44,7 @@ class SignUp : AppCompatActivity() {
                 firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
                         //putting user info to UserModel
-                        userModel = UserModel(fullName, Timestamp.now(), FirebaseUtil().currentUserUid())
+                        userModel = UserModel(fullName =  fullName, createdTimestamp = Timestamp.now(), userID = FirebaseUtil().currentUserUid())
                         //putting user info to FireStore
                         FirebaseUtil().currentUserDetails().set(userModel).addOnCompleteListener { it1 ->
                             if (it1.isSuccessful) {
