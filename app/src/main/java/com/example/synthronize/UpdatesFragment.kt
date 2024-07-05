@@ -14,7 +14,9 @@ import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentUpdatesBinding
 import com.example.synthronize.interfaces.NotificationOnDataChange
 import com.example.synthronize.model.UserModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 
 class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(), NotificationOnDataChange {
     // TODO: Rename and change types of parameters
@@ -42,6 +44,13 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
         if (isAdded){
             context = requireContext()
             if (::context.isInitialized){
+
+                //check for internet
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
+
+                //reset main toolbar
+                AppUtil().resetMainToolbar(mainBinding)
+
                 bindButtons()
                 navigate("notifications")
 

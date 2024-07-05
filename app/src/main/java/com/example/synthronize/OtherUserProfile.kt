@@ -9,6 +9,7 @@ import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.google.firebase.firestore.FieldValue
 
 class OtherUserProfile : AppCompatActivity() {
@@ -19,6 +20,10 @@ class OtherUserProfile : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOtherUserProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        //check for internet
+        NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root)
 
         val userID = intent.getStringExtra("userID").toString()
         bindUserDetails(userID)

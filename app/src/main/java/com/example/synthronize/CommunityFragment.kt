@@ -11,12 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.media3.common.util.Log
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -39,23 +41,32 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //IF THE FRAGMENT IS ADDED (avoids fragment related crash)
-        if (isAdded){
+
+        if (isAdded && isVisible && !isDetached && !isRemoving){
             //retrieve context
             context = requireContext()
-            //retrieve community model
-            FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-                if (it.exists()){
-                    communityModel = it.toObject(CommunityModel::class.java)!!
-                    //content
-                    if (::context.isInitialized){
-                        //bind community
-                        assignUserRole()
-                        bindCommunityDetails()
-                        bindButtons()
-                        //Set Feeds fragment as default fragment
-                        selectNavigation("feeds")
-                        replaceFragment(FeedsFragment(binding, communityId))
+
+            if (::context.isInitialized){
+
+                //check for internet
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
+
+                //retrieve community model
+                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                    if (it.exists()){
+                        communityModel = it.toObject(CommunityModel::class.java)!!
+                        //content
+                        if (::context.isInitialized){
+                            //reset main toolbar
+                            AppUtil().resetMainToolbar(mainBinding)
+                            //bind community
+                            assignUserRole()
+                            bindCommunityDetails()
+                            bindButtons()
+                            //Set Feeds fragment as default fragment
+                            selectNavigation("feeds")
+                            replaceFragment(FeedsFragment(binding, communityId))
+                        }
                     }
                 }
             }
@@ -79,10 +90,12 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = childFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.communityFrameLayout.id, fragment)
-        fragmentTransaction.commit()
+        // Check if the fragment is added to its activity
+        if (isAdded && isVisible) {
+            val fragmentTransaction = childFragmentManager.beginTransaction()
+            fragmentTransaction.replace(binding.communityFrameLayout.id, fragment)
+            fragmentTransaction.commitAllowingStateLoss()
+        }
     }
 
     private fun bindButtons(){

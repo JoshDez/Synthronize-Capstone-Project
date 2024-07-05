@@ -17,6 +17,7 @@ import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -45,13 +46,23 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
         //checks if the fragment is already added to the activity
         if (isAdded){
+
             context = requireContext()
-            if (::context.isInitialized)
+
+
+            if (::context.isInitialized){
+                //check for internet
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
                 bindUserDetails()
+            }
+
         }
     }
 
     private fun bindUserDetails() {
+
+
+        AppUtil().resetMainToolbar(mainBinding)
 
         FirebaseUtil().targetUserDetails(FirebaseUtil().currentUserUid()).get().addOnCompleteListener {
             if (it.isSuccessful && it.result.exists()){

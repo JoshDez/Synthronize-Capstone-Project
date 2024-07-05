@@ -13,7 +13,9 @@ import com.example.synthronize.adapters.ExploreFeedsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentExploreBinding
 import com.example.synthronize.model.PostModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 
 class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment() {
     // TODO: Rename and change types of parameters
@@ -38,9 +40,16 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainBinding.toolbarTitleTV.text = "EXPLORE"
-        if (isAdded){
+        if (isAdded && isVisible && !isDetached && !isRemoving){
             context = requireContext()
             if (::context.isInitialized){
+
+                //check for internet
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
+
+                //reset main toolbar
+                AppUtil().resetMainToolbar(mainBinding)
+
                 bindButtons()
                 setupRV()
             }

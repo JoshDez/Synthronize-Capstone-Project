@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Handler
+import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -12,6 +13,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.example.synthronize.MainActivity
 import com.example.synthronize.R
+import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import de.hdodenhof.circleimageview.CircleImageView
@@ -54,6 +56,19 @@ class AppUtil {
                     .into(civ)
             }
         }
+    }
+
+    fun resetMainToolbar(binding:ActivityMainBinding){
+        binding.backBtn.visibility = View.GONE
+        binding.kebabMenuBtn.visibility = View.GONE
+        binding.hamburgerMenuBtn.visibility = View.GONE
+        binding.searchBtn.visibility = View.GONE
+        binding.toolbarImageCIV.setImageResource(R.drawable.header_logo)
+
+        //resetting main toolbar setOnClickListeners
+        binding.searchBtn.setOnClickListener(null)
+        binding.kebabMenuBtn.setOnClickListener(null)
+        binding.hamburgerMenuBtn.setOnClickListener(null)
     }
 
     fun setUserCoverPic(context: Context, uid: String, cover:ImageView){

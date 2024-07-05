@@ -64,6 +64,9 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
                 recyclerView = binding.groupSelectionRV
                 recyclerView.layoutManager = LinearLayoutManager(context)
 
+                //reset main toolbar
+                AppUtil().resetMainToolbar(mainBinding)
+
                 // Set up Add Group FAB
                 binding.addGroupFab.setOnClickListener {
                     dialogBinding = DialogAddCommunityBinding.inflate(layoutInflater)

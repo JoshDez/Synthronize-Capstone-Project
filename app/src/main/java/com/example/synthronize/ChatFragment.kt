@@ -13,7 +13,9 @@ import com.example.synthronize.adapters.ChatroomAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentChatBinding
 import com.example.synthronize.model.ChatroomModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 
 class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     private lateinit var binding: FragmentChatBinding
@@ -42,6 +44,12 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         if (isAdded){
             context = requireContext()
             if (::context.isInitialized){
+
+                //check for internet
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
+
+                //reset main toolbar
+                AppUtil().resetMainToolbar(mainBinding)
 
                 binding.inboxRV.layoutManager = LinearLayoutManager(activity)
                 binding.communityChatsRV.layoutManager = LinearLayoutManager(activity)
