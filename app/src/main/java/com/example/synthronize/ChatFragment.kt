@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import com.example.synthronize.adapters.ChatroomAdapter
+import com.example.synthronize.adapters.FriendsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentChatBinding
 import com.example.synthronize.model.ChatroomModel
+import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
@@ -20,6 +22,7 @@ import com.example.synthronize.utils.NetworkUtil
 class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     private lateinit var binding: FragmentChatBinding
     private lateinit var chatroomAdapter: ChatroomAdapter
+    private lateinit var friendsAdapter: FriendsAdapter
     private lateinit var context: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +56,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
 
                 binding.inboxRV.layoutManager = LinearLayoutManager(activity)
                 binding.communityChatsRV.layoutManager = LinearLayoutManager(activity)
+                binding.friendsListRV.layoutManager = LinearLayoutManager(activity)
 
                 setupChatroomListForInbox()
 
@@ -64,6 +68,10 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
                     navigate("community_chat")
                 }
 
+                binding.friendsBtn.setOnClickListener {
+                    navigate("friends_list")
+                }
+
             }
         }
     }
@@ -71,6 +79,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     private fun navigate(tab:String){
         binding.inboxRV.visibility = View.GONE
         binding.communityChatsRV.visibility = View.GONE
+        binding.friendsListRV.visibility = View.GONE
         //binding.communityChatsBtn.setTextColor(unselectedColor)
         //binding.communityChatsRV.visibility = View.GONE
 
@@ -83,6 +92,9 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
             binding.inboxRV.visibility = View.VISIBLE
             setupChatroomListForInbox()
             //binding.inboxBtn.setTextColor(selectedColor)
+        }else if (tab == "friends_list"){
+            binding.friendsListRV.visibility = View.VISIBLE
+            setupFriendsList()
         }
     }
 
@@ -117,13 +129,27 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         chatroomAdapter.startListening()
     }
 
+    private fun setupFriendsList(){
+        val query:Query = FirebaseUtil().allUsersCollectionReference()
+            .whereArrayContains("friendsList", FirebaseUtil().currentUserUid())
 
+        val options: FirestoreRecyclerOptions<UserModel> =
+            FirestoreRecyclerOptions.Builder<UserModel>().setQuery(query, UserModel::class.java).build()
+
+        friendsAdapter = FriendsAdapter(context, options)
+        binding.friendsListRV.adapter = friendsAdapter
+        friendsAdapter.startListening()
+    }
 
     override fun onStart() {
         super.onStart()
         if (::chatroomAdapter.isInitialized){
             chatroomAdapter.startListening()
         }
+        if (::friendsAdapter.isInitialized){
+            friendsAdapter.startListening()
+        }
+
     }
 
     override fun onResume() {
@@ -131,12 +157,18 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         if (::chatroomAdapter.isInitialized){
             chatroomAdapter.notifyDataSetChanged()
         }
+        if (::friendsAdapter.isInitialized){
+            friendsAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onStop() {
         super.onStop()
         if (::chatroomAdapter.isInitialized){
             chatroomAdapter.stopListening()
+        }
+        if (::friendsAdapter.isInitialized){
+            friendsAdapter.stopListening()
         }
     }
 }

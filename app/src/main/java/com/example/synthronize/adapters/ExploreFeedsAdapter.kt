@@ -19,12 +19,11 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
-import com.example.synthronize.utils.DateUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ktx.toObject
 
 class ExploreFeedsAdapter(private val context: Context, private val feedList: ArrayList<PostModel>):RecyclerView.Adapter<ExploreFeedsAdapter.ExploreViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExploreFeedsAdapter.ExploreViewHolder {
@@ -64,7 +63,7 @@ class ExploreFeedsAdapter(private val context: Context, private val feedList: Ar
                 AppUtil().setUserProfilePic(context, owner.userID, binding.profileCIV)
                 binding.usernameTV.text = owner.username
                 binding.descriptionTV.text = postModel.caption
-                binding.timestampTV.text = DateUtil().formatTimestampToDate(postModel.createdTimestamp)
+                binding.timestampTV.text = DateAndTimeUtil().formatTimestampToDate(postModel.createdTimestamp)
                 binding.feedWrapperLayout.setOnClickListener {
                     FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {result ->
                         val community = result.toObject(CommunityModel::class.java)!!

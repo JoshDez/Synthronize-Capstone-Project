@@ -3,13 +3,12 @@ package com.example.synthronize.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.databinding.ItemCommentBinding
 import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
-import com.example.synthronize.utils.DateUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -31,7 +30,7 @@ class CommentAdapter(private val context: Context, options: FirestoreRecyclerOpt
     class CommentViewHolder(private val binding: ItemCommentBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
         fun bind(model: CommentModel){
             binding.commentTV.text = model.comment
-            binding.timestampTV.text = DateUtil().formatTimestampToDate(model.commentTimestamp)
+            binding.timestampTV.text = DateAndTimeUtil().formatTimestampToDate(model.commentTimestamp)
             FirebaseUtil().targetUserDetails(model.commentOwnerId).get().addOnSuccessListener {
                 val user = it.toObject(UserModel::class.java)!!
                 binding.userNameTV.text = user.username

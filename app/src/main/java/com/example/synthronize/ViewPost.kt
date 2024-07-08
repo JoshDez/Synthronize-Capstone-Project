@@ -10,7 +10,7 @@ import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
-import com.example.synthronize.utils.DateUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
@@ -36,7 +36,7 @@ class ViewPost : AppCompatActivity() {
     private fun getFeedModel(){
         FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).get().addOnSuccessListener {
             val feedModel = it.toObject(PostModel::class.java)!!
-            binding.feedTimestampTV.text = DateUtil().formatTimestampToDate(feedModel.createdTimestamp)
+            binding.feedTimestampTV.text = DateAndTimeUtil().formatTimestampToDate(feedModel.createdTimestamp)
             binding.captionEdtTxt.setText(feedModel.caption)
             binding.backBtn.setOnClickListener {
                 this.finish()

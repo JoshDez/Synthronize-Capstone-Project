@@ -12,7 +12,6 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.google.android.material.button.MaterialButton
-import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
@@ -101,7 +100,7 @@ class DialogUtil {
         getFriendsJoinedCount(communityModel.communityMembers){count->
             dialogPlusBinding.friendsJoinedCountTV.text = count.toString()
         }
-        dialogPlusBinding.createdDateTV.text =  DateUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)
+        dialogPlusBinding.createdDateTV.text =  DateAndTimeUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)
         AppUtil().setCommunityProfilePic(context, communityModel.communityId, dialogPlusBinding.communityProfileCIV)
         AppUtil().setCommunityBannerPic(context, communityModel.communityId, dialogPlusBinding.communityBannerIV)
 

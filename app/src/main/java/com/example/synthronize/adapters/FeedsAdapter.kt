@@ -19,8 +19,7 @@ import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
-import com.example.synthronize.utils.ContentUtil
-import com.example.synthronize.utils.DateUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -73,7 +72,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 AppUtil().setUserProfilePic(context, owner.userID, feedBinding.profileCIV)
                 feedBinding.usernameTV.text = owner.username
                 feedBinding.descriptionTV.text = postModel.caption
-                feedBinding.timestampTV.text = DateUtil().formatTimestampToDate(postModel.createdTimestamp)
+                feedBinding.timestampTV.text = DateAndTimeUtil().formatTimestampToDate(postModel.createdTimestamp)
                 feedBinding.usernameTV.setOnClickListener {
                     headToUserProfile()
                 }

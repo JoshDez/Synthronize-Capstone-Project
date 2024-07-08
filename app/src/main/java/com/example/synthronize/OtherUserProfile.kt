@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.synthronize.databinding.ActivityOtherUserProfileBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
-import com.example.synthronize.utils.DateUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.google.firebase.firestore.FieldValue
@@ -44,7 +44,7 @@ class OtherUserProfile : AppCompatActivity() {
                 binding.userDisplayNameTV.text = userModel.fullName
                 if (userModel.birthday.isNotEmpty()){
                     binding.birthdayLayout.visibility = View.VISIBLE
-                    binding.birthdayTV.text =  DateUtil().formatBirthDate(userModel.birthday)
+                    binding.birthdayTV.text =  DateAndTimeUtil().formatBirthDate(userModel.birthday)
                 }
 
                 AppUtil().setUserProfilePic(this, userID, binding.userProfileCIV)

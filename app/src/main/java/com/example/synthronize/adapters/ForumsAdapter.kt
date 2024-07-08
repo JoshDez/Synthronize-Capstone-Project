@@ -11,14 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
-import com.example.synthronize.ViewPost
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.ItemForumPostBinding
 import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.ForumsModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
-import com.example.synthronize.utils.DateUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -70,7 +69,7 @@ class ForumsAdapter(
                 forumsBinding.usernameTV.text = owner.username
                 forumsBinding.descriptionTV.text = forumsModel.caption
                 forumsBinding.timestampTV.text =
-                    DateUtil().formatTimestampToDate(forumsModel.createdTimestamp)
+                    DateAndTimeUtil().formatTimestampToDate(forumsModel.createdTimestamp)
                 forumsBinding.usernameTV.setOnClickListener {
                     headToUserProfile()
                 }
