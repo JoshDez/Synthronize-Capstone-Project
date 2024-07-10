@@ -106,6 +106,7 @@
     <!-- TODO: Update blank fragment layout -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inboxRV"
+        android:layout_margin="10dp"
         android:layout_below="@id/upperNavLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -113,6 +114,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/communityChatsRV"
+        android:layout_margin="10dp"
         android:visibility="gone"
         android:layout_below="@id/upperNavLayout"
         android:layout_width="match_parent"
@@ -120,6 +122,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friendsListRV"
+        android:layout_margin="10dp"
         android:visibility="gone"
         android:layout_below="@id/upperNavLayout"
         android:layout_width="match_parent"

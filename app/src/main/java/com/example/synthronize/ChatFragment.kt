@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import com.example.synthronize.adapters.ChatroomAdapter
+import com.example.synthronize.adapters.CommunityChatroomsAdapter
 import com.example.synthronize.adapters.FriendsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentChatBinding
 import com.example.synthronize.model.ChatroomModel
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -23,6 +25,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     private lateinit var binding: FragmentChatBinding
     private lateinit var chatroomAdapter: ChatroomAdapter
     private lateinit var friendsAdapter: FriendsAdapter
+    private lateinit var communityChatroomsAdapter: CommunityChatroomsAdapter
     private lateinit var context: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +107,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         val query:Query = FirebaseUtil().retrieveAllChatRoomReferences()
             .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
             .whereEqualTo("chatroomType", "direct_message")
+            .whereNotEqualTo("lastMessage", "")
             .orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
 
         val options: FirestoreRecyclerOptions<ChatroomModel> =
@@ -116,17 +120,15 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
 
     private fun setupChatroomListForCommunity(){
         //already indexed in firebase
-        val query:Query = FirebaseUtil().retrieveAllChatRoomReferences()
-            .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
-            .whereEqualTo("chatroomType", "community_chat")
-            .orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
+        val query:Query = FirebaseUtil().retrieveAllCommunityCollection()
+            .whereArrayContains("communityMembers", FirebaseUtil().currentUserUid())
 
-        val options: FirestoreRecyclerOptions<ChatroomModel> =
-            FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(query, ChatroomModel::class.java).build()
+        val options: FirestoreRecyclerOptions<CommunityModel> =
+            FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(query, CommunityModel::class.java).build()
 
-        chatroomAdapter = ChatroomAdapter(context, options)
-        binding.communityChatsRV.adapter = chatroomAdapter
-        chatroomAdapter.startListening()
+        communityChatroomsAdapter = CommunityChatroomsAdapter(context, options)
+        binding.communityChatsRV.adapter = communityChatroomsAdapter
+        communityChatroomsAdapter.startListening()
     }
 
     private fun setupFriendsList(){
@@ -149,6 +151,9 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         if (::friendsAdapter.isInitialized){
             friendsAdapter.startListening()
         }
+        if (::communityChatroomsAdapter.isInitialized){
+            communityChatroomsAdapter.startListening()
+        }
 
     }
 
@@ -160,6 +165,9 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         if (::friendsAdapter.isInitialized){
             friendsAdapter.notifyDataSetChanged()
         }
+        if (::communityChatroomsAdapter.isInitialized){
+            communityChatroomsAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onStop() {
@@ -169,6 +177,9 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         }
         if (::friendsAdapter.isInitialized){
             friendsAdapter.stopListening()
+        }
+        if (::communityChatroomsAdapter.isInitialized){
+            communityChatroomsAdapter.stopListening()
         }
     }
 }

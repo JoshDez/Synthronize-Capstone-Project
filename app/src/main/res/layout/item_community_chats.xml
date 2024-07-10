@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/communityLayout"
+    android:layout_width="match_parent"
+    android:background="@drawable/input_rounded_corners"
+    android:backgroundTint="@color/teal2"
+    android:layout_margin="10dp"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:background="@drawable/input_rounded_corners"
+        android:backgroundTint="@color/dark_teal"
+        android:id="@+id/communityHeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="95dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/communityProfileCIV"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="15dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/community_not_selected"
+            app:civ_border_color="@color/light_teal"
+            app:civ_border_width="1dp"/>
+
+        <TextView
+            android:id="@+id/communityNameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_toRightOf="@id/communityProfileCIV"
+            android:text="COMMUITY NAME"
+            android:textColor="@color/light_teal"
+            android:textSize="17dp" />
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/communityChatsRV"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/communityHeaderLayout"/>
+
+
+
+</LinearLayout>
