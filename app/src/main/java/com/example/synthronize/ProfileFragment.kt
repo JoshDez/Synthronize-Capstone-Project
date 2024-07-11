@@ -9,10 +9,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.synthronize.adapters.ExploreFeedsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.databinding.FragmentProfileBinding
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
@@ -22,6 +25,8 @@ import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
 class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment() {
+
+    private lateinit var exploreFeedsAdapter: ExploreFeedsAdapter
     private lateinit var binding: FragmentProfileBinding
     private lateinit var context: Context
     private lateinit var userId: String
@@ -46,17 +51,103 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
         //checks if the fragment is already added to the activity
         if (isAdded){
-
             context = requireContext()
-
-
             if (::context.isInitialized){
                 //check for internet
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
                 bindUserDetails()
+
+
+                binding.postsRV.layoutManager = LinearLayoutManager(activity)
+                binding.filesRV.layoutManager = LinearLayoutManager(activity)
+                binding.likesRV.layoutManager = LinearLayoutManager(activity)
+
+                //displays the first tab
+                binding.postsRV.visibility = View.VISIBLE
+                setupPostsRV()
+
+                binding.postsBtn.setOnClickListener {
+                    navigate("posts")
+                }
+
+                binding.filesBtn.setOnClickListener {
+                    navigate("files")
+                }
+
+                binding.likesBtn.setOnClickListener {
+                    navigate("likes")
+                }
             }
 
         }
+    }
+
+    private fun navigate(tab: String) {
+        binding.postsRV.visibility = View.GONE
+        binding.filesRV.visibility = View.GONE
+        binding.likesRV.visibility = View.GONE
+        //binding.communityChatsBtn.setTextColor(unselectedColor)
+        //binding.communityChatsRV.visibility = View.GONE
+
+
+        if (tab == "posts"){
+            binding.postsRV.visibility = View.VISIBLE
+            setupPostsRV()
+            //binding.communityChatsBtn.setTextColor(selectedColor)
+        }else if (tab == "files"){
+            binding.filesRV.visibility = View.VISIBLE
+            setupFilesRV()
+        }else if (tab == "likes"){
+            binding.likesRV.visibility = View.VISIBLE
+            setupLikesRV()
+        }
+    }
+
+
+    private fun setupPostsRV(){
+        val postsList:ArrayList<PostModel> = ArrayList()
+
+        FirebaseUtil().retrieveAllCommunityCollection().get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    FirebaseUtil().retrieveAllCommunityCollection()
+                        .document(document.id) // Access each document within the collection
+                        .collection("feeds")
+                        .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
+                        .get()
+                        .addOnSuccessListener { feedsSnapshot ->
+                            var postsAdded = 0
+                            feedsSnapshot.size()
+
+                            for (post in feedsSnapshot.documents){
+                                var postModel = post.toObject(PostModel::class.java)!!
+                                postsList.add(postModel)
+                                postsAdded += 1
+
+                                //checks if all the user posts in the community are added
+                                if (postsAdded == feedsSnapshot.size()){
+                                    //sorts the list by timestamp
+                                    postsList.sortByDescending {
+                                        it.createdTimestamp
+                                    }
+
+                                    //deploys postsRV
+                                    exploreFeedsAdapter = ExploreFeedsAdapter(context, postsList)
+                                    binding.postsRV.adapter = exploreFeedsAdapter
+                                }
+                            }
+                        }
+                }
+            }
+    }
+
+
+    private fun setupLikesRV() {
+        //TODO Not Yet Implemented
+    }
+
+    private fun setupFilesRV() {
+        //TODO Not Yet Implemented
     }
 
     private fun bindUserDetails() {

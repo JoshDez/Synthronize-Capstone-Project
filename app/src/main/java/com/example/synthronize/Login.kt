@@ -1,5 +1,6 @@
 package com.example.synthronize
 
+import UserLastSeenUpdater
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -30,6 +31,10 @@ class Login : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful){
                         if (firebaseAuth.currentUser?.isEmailVerified == true) {
+                            //starts updating user last seen
+                            UserLastSeenUpdater().startUpdating()
+
+                            //head to main activity
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                             this.finish()
