@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.synthronize.adapters.ExploreFeedsAdapter
+import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
@@ -26,7 +26,7 @@ import com.orhanobut.dialogplus.ViewHolder
 
 class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment() {
 
-    private lateinit var exploreFeedsAdapter: ExploreFeedsAdapter
+    private lateinit var allFeedsAdapter: AllFeedsAdapter
     private lateinit var binding: FragmentProfileBinding
     private lateinit var context: Context
     private lateinit var userId: String
@@ -132,8 +132,8 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                                     }
 
                                     //deploys postsRV
-                                    exploreFeedsAdapter = ExploreFeedsAdapter(context, postsList)
-                                    binding.postsRV.adapter = exploreFeedsAdapter
+                                    allFeedsAdapter = AllFeedsAdapter(context, postsList, false)
+                                    binding.postsRV.adapter = allFeedsAdapter
                                 }
                             }
                         }

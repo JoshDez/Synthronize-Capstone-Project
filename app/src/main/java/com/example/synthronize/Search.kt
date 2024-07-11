@@ -8,8 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.synthronize.adapters.ExploreFeedsAdapter
+import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.adapters.SearchCommunityAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
@@ -19,14 +18,13 @@ import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
-import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 
 class Search : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding:ActivitySearchBinding
     private lateinit var searchUserAdapter: SearchUserAdapter
     private lateinit var searchCommunityAdapter: SearchCommunityAdapter
-    private lateinit var searchFeedAdapter: ExploreFeedsAdapter
+    private lateinit var searchFeedAdapter: AllFeedsAdapter
     private lateinit var searchInCategory: String
     private var userLayoutOpen = true
     private var communityLayoutOpen = true
@@ -152,7 +150,7 @@ class Search : AppCompatActivity(), OnItemClickListener {
                         feedList.add(postModel)
                     }
                     binding.resultsPostsRV.layoutManager = LinearLayoutManager(this)
-                    searchFeedAdapter = ExploreFeedsAdapter(this, feedList)
+                    searchFeedAdapter = AllFeedsAdapter(this, feedList)
                     binding.resultsPostsRV.adapter = searchFeedAdapter
 
                     Handler().postDelayed({

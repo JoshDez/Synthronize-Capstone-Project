@@ -24,15 +24,18 @@ import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import kotlin.random.Random
 
-class ExploreFeedsAdapter(private val context: Context, private val feedList: ArrayList<PostModel>):RecyclerView.Adapter<ExploreFeedsAdapter.ExploreViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExploreFeedsAdapter.ExploreViewHolder {
+class AllFeedsAdapter(private val context: Context, private val feedList: ArrayList<PostModel>, private var isExploreTab:Boolean = true):RecyclerView.Adapter<AllFeedsAdapter.ExploreViewHolder>() {
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllFeedsAdapter.ExploreViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemPostBinding.inflate(inflater, parent, false)
-        return ExploreViewHolder(binding, inflater)
+        val postBinding = ItemPostBinding.inflate(inflater, parent, false)
+        return ExploreViewHolder(postBinding, inflater)
     }
 
-    override fun onBindViewHolder(holder: ExploreFeedsAdapter.ExploreViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AllFeedsAdapter.ExploreViewHolder, position: Int) {
         holder.bind(feedList[position])
     }
 
@@ -46,6 +49,11 @@ class ExploreFeedsAdapter(private val context: Context, private val feedList: Ar
         private var isLoved:Boolean = false
         
         fun bind(model: PostModel){
+
+            if (toBindSpecialHolder(20) && isExploreTab){
+                //TODO to implement
+                binding.suggestionsRV.visibility = View.VISIBLE
+            }
 
             this.postModel = model
 
@@ -92,6 +100,13 @@ class ExploreFeedsAdapter(private val context: Context, private val feedList: Ar
             }
         }
 
+
+
+        private fun toBindSpecialHolder(chance: Int): Boolean {
+            // Generate a random number between 0 and 99
+            val randomValue = Random.nextInt(100)
+            return randomValue < chance
+        }
         private fun bindContent() {
             if (postModel.contentList.isNotEmpty()){
                 //displays content with view pager 2

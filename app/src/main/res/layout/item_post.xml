@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/gray2"
     android:orientation="vertical">
 
@@ -287,4 +288,14 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         app:dividerColor="@color/gray"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/suggestionsRV"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        tools:listitem="@layout/item_suggestion_bubble"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"/>
+
+
 </LinearLayout>
