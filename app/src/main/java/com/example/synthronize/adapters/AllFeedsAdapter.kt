@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.synthronize.OtherUserProfile
@@ -22,11 +23,16 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.FirebaseOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Query
+import java.lang.Exception
 import kotlin.random.Random
 
-class AllFeedsAdapter(private val context: Context, private val feedList: ArrayList<PostModel>, private var isExploreTab:Boolean = true):RecyclerView.Adapter<AllFeedsAdapter.ExploreViewHolder>() {
+class AllFeedsAdapter(private val context: Context, private val feedList: ArrayList<PostModel>, private var isExploreTab:Boolean = true)
+    :RecyclerView.Adapter<AllFeedsAdapter.ExploreViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllFeedsAdapter.ExploreViewHolder {
@@ -51,8 +57,45 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
         fun bind(model: PostModel){
 
             if (toBindSpecialHolder(20) && isExploreTab){
-                //TODO to implement
-                binding.suggestionsRV.visibility = View.VISIBLE
+
+                if (toBindSpecialHolder(50)){
+                    //bind users
+
+                    FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+                        val myUserModel = it.toObject(UserModel::class.java)!!
+
+
+                        FirebaseUtil().allUsersCollectionReference().get().addOnSuccessListener {users ->
+                            var uidList:ArrayList<String> = ArrayList()
+
+                            for (user in users.documents){
+                                val userModel = user.toObject(UserModel::class.java)!!
+                                val uid = userModel.userID
+                                if (!myUserModel.friendsList.contains(uid) && !myUserModel.blockList.contains(uid) && uid != FirebaseUtil().currentUserUid()){
+                                    uidList.add(userModel.userID)
+                                }
+                            }
+
+                            //shuffle and reduce the list to 5
+                            if (uidList.isNotEmpty() && uidList.size > 5){
+                                uidList.shuffle()
+                                uidList = ArrayList(uidList.take(5))
+                            }
+
+                            val friendSuggestionAdapter = FriendSuggestionAdapter(context, uidList)
+                            binding.suggestionsRV.visibility = View.VISIBLE
+                            binding.suggestionsRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                            binding.suggestionsRV.adapter = friendSuggestionAdapter
+
+                        }
+
+
+                    }
+                } else {
+                    //bind communities
+                }
+
+
             }
 
             this.postModel = model

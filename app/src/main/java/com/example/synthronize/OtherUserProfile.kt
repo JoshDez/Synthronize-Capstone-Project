@@ -63,48 +63,8 @@ class OtherUserProfile : AppCompatActivity() {
                     startActivity(intent)
                 }
 
-                changeFriendsButtonState()
+                AppUtil().changeFriendsButtonState(binding.friendBtn, userModel)
                 //TODO: Implement loading stop
-            }
-        }
-    }
-
-    private fun changeFriendsButtonState(){
-        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
-            val myUserModel = it.toObject(UserModel::class.java)!!
-
-            //checks if already friends with user
-            if (AppUtil().isUserOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
-                binding.friendBtn.text = "Unfriend"
-                binding.friendBtn.setOnClickListener {
-                    userModel.friendsList = userModel.friendsList.filterNot { it == FirebaseUtil().currentUserUid() }
-                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                        changeFriendsButtonState()
-                    }
-                }
-
-            } else if (AppUtil().isUserOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
-                binding.friendBtn.text = "Cancel Request"
-                binding.friendBtn.setOnClickListener {
-                    userModel.friendRequests = userModel.friendRequests.filterNot { it == FirebaseUtil().currentUserUid() }
-                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                        changeFriendsButtonState()
-                    }
-                }
-            } else if (AppUtil().isUserOnList(myUserModel.friendRequests, userModel.userID)){
-                binding.friendBtn.text = "Accept Request"
-                binding.friendBtn.setOnClickListener {
-                    FirebaseUtil().currentUserDetails().update("friendsList", FieldValue.arrayUnion(userModel.userID))
-                    FirebaseUtil().targetUserDetails(userModel.userID).update("friendsList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
-                }
-            } else {
-                binding.friendBtn.text = "Add Friend"
-                binding.friendBtn.setOnClickListener {
-                    userModel.friendRequests = userModel.friendRequests.plus(FirebaseUtil().currentUserUid())
-                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                        changeFriendsButtonState()
-                    }
-                }
             }
         }
     }

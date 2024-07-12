@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/suggestionMainLayout"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="180dp"
@@ -23,7 +24,7 @@
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="20sp"
-            android:text="Group Name"
+            android:text="Name"
             android:textColor="@color/light_teal"
             android:textAlignment="center"/>
 
@@ -31,6 +32,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/actionBtn"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

@@ -61,7 +61,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     feedBinding.wrapperName.text = user.username
                     AppUtil().setUserProfilePic(context, user.userID, feedBinding.profileCIV)
                     feedBinding.wrapperName.setOnClickListener {
-                        headToUserProfile()
+                        AppUtil().headToUserProfile(context, postModel.ownerId)
                     }
                 }
             }
@@ -74,7 +74,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 feedBinding.descriptionTV.text = postModel.caption
                 feedBinding.timestampTV.text = DateAndTimeUtil().formatTimestampToDate(postModel.createdTimestamp)
                 feedBinding.usernameTV.setOnClickListener {
-                    headToUserProfile()
+                    AppUtil().headToUserProfile(context, postModel.ownerId)
                 }
                 feedBinding.descriptionTV.setOnClickListener {
                     viewPost()
@@ -223,12 +223,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
             val intent = Intent(context, ViewPost::class.java)
             intent.putExtra("communityId", postModel.communityId)
             intent.putExtra("postId", postModel.postId)
-            context.startActivity(intent)
-        }
-
-        private fun headToUserProfile() {
-            val intent = Intent(context, OtherUserProfile::class.java)
-            intent.putExtra("userId", postModel.ownerId)
             context.startActivity(intent)
         }
     }

@@ -12,33 +12,19 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.example.synthronize.MainActivity
+import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
+import com.google.android.material.button.MaterialButton
+import com.google.firebase.firestore.FieldValue
 import de.hdodenhof.circleimageview.CircleImageView
 
 
 class AppUtil {
 
-    private fun isInternetConnected(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val network = connectivityManager.activeNetwork ?: return false
-            val networkCapabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-            return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        } else {
-            @Suppress("DEPRECATION")
-            val networkInfo = connectivityManager.activeNetworkInfo ?: return false
-            @Suppress("DEPRECATION")
-            return networkInfo.isConnected
-        }
-    }
-
     //For Images
-
     fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView){
         FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
             var user = it.toObject(UserModel::class.java)!!
@@ -141,6 +127,13 @@ class AppUtil {
         }, delay)
     }
 
+    //Head to OtherUserProfile activity
+    fun headToUserProfile(context:Context, userId: String) {
+        val intent = Intent(context, OtherUserProfile::class.java)
+        intent.putExtra("userID", userId)
+        context.startActivity(intent)
+    }
+
     //For Slicing Strings
     fun sliceMessage(string:String, intCap:Int):String{
         if (string.length > intCap){
@@ -158,5 +151,49 @@ class AppUtil {
             }
         }
         return false
+    }
+
+
+
+
+    //BUTTON STATES
+    fun changeFriendsButtonState(friendButton: MaterialButton, userModel:UserModel){
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+            val myUserModel = it.toObject(UserModel::class.java)!!
+
+            //checks if already friends with user
+            if (AppUtil().isUserOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
+                friendButton.text = "Unfriend"
+                friendButton.setOnClickListener {
+                    userModel.friendsList = userModel.friendsList.filterNot { it == FirebaseUtil().currentUserUid() }
+                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
+                        changeFriendsButtonState(friendButton, userModel)
+                    }
+                }
+
+            } else if (AppUtil().isUserOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
+                friendButton.text = "Cancel Request"
+                friendButton.setOnClickListener {
+                    userModel.friendRequests = userModel.friendRequests.filterNot { it == FirebaseUtil().currentUserUid() }
+                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
+                        changeFriendsButtonState(friendButton, userModel)
+                    }
+                }
+            } else if (AppUtil().isUserOnList(myUserModel.friendRequests, userModel.userID)){
+                friendButton.text = "Accept Request"
+                friendButton.setOnClickListener {
+                    FirebaseUtil().currentUserDetails().update("friendsList", FieldValue.arrayUnion(userModel.userID))
+                    FirebaseUtil().targetUserDetails(userModel.userID).update("friendsList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
+                }
+            } else {
+                friendButton.text = "Add Friend"
+                friendButton.setOnClickListener {
+                    userModel.friendRequests = userModel.friendRequests.plus(FirebaseUtil().currentUserUid())
+                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
+                        changeFriendsButtonState(friendButton, userModel)
+                    }
+                }
+            }
+        }
     }
 }
