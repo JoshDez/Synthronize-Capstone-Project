@@ -59,11 +59,10 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
             if (toBindSpecialHolder(20) && isExploreTab){
 
                 if (toBindSpecialHolder(50)){
-                    //bind users
+                    //bind friend suggestions
 
                     FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
                         val myUserModel = it.toObject(UserModel::class.java)!!
-
 
                         FirebaseUtil().allUsersCollectionReference().get().addOnSuccessListener {users ->
                             var uidList:ArrayList<String> = ArrayList()
@@ -93,6 +92,30 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                     }
                 } else {
                     //bind communities
+
+                    FirebaseUtil().retrieveAllCommunityCollection().get().addOnSuccessListener {communities ->
+                        var communityIdList:ArrayList<String> = ArrayList()
+
+                        for (community in communities.documents){
+                            val communityModel = community.toObject(CommunityModel::class.java)!!
+                            val myUid = FirebaseUtil().currentUserUid()
+                            if (!communityModel.communityMembers.contains(myUid) && !communityModel.blockList.contains(myUid)){
+                                communityIdList.add(communityModel.communityId)
+                            }
+                        }
+
+                        //shuffle and reduce the list to 5
+                        if (communityIdList.isNotEmpty() && communityIdList.size > 5){
+                            communityIdList.shuffle()
+                            communityIdList = ArrayList(communityIdList.take(5))
+                        }
+
+                        val communitySuggestionAdapter = CommunitySuggestionAdapter(context, communityIdList)
+                        binding.suggestionsRV.visibility = View.VISIBLE
+                        binding.suggestionsRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                        binding.suggestionsRV.adapter = communitySuggestionAdapter
+
+                    }
                 }
 
 
