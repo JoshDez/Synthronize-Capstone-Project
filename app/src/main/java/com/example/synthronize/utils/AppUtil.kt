@@ -1,16 +1,11 @@
 package com.example.synthronize.utils
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.os.Handler
 import android.view.View
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import android.widget.Toast
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.signature.ObjectKey
 import com.example.synthronize.MainActivity
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
@@ -144,9 +139,23 @@ class AppUtil {
     }
 
     //checks if user is on list
-    fun isUserOnList(list: List<String>, userId:String):Boolean{
+    fun isIdOnList(list: List<String>, targetId:String):Boolean{
         for (id in list){
-            if (id == userId){
+            if (id == targetId){
+                return true
+            }
+        }
+        return false
+    }
+    //checks if user is on a list through Collection
+    fun isIdOnList(collection: Collection<String>, targetId:String):Boolean{
+        val list:ArrayList<String> = ArrayList()
+        for (value in collection){
+            list.add(value)
+        }
+
+        for (id in list){
+            if (id == targetId){
                 return true
             }
         }
@@ -157,12 +166,15 @@ class AppUtil {
 
 
     //BUTTON STATES
+
+    //Friend request button
+    //TODO change  material button to image button
     fun changeFriendsButtonState(friendButton: MaterialButton, userModel:UserModel){
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
             val myUserModel = it.toObject(UserModel::class.java)!!
 
             //checks if already friends with user
-            if (AppUtil().isUserOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
+            if (AppUtil().isIdOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
                 friendButton.text = "Unfriend"
                 friendButton.setOnClickListener {
                     userModel.friendsList = userModel.friendsList.filterNot { it == FirebaseUtil().currentUserUid() }
@@ -171,7 +183,7 @@ class AppUtil {
                     }
                 }
 
-            } else if (AppUtil().isUserOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
+            } else if (AppUtil().isIdOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
                 friendButton.text = "Cancel Request"
                 friendButton.setOnClickListener {
                     userModel.friendRequests = userModel.friendRequests.filterNot { it == FirebaseUtil().currentUserUid() }
@@ -179,7 +191,7 @@ class AppUtil {
                         changeFriendsButtonState(friendButton, userModel)
                     }
                 }
-            } else if (AppUtil().isUserOnList(myUserModel.friendRequests, userModel.userID)){
+            } else if (AppUtil().isIdOnList(myUserModel.friendRequests, userModel.userID)){
                 friendButton.text = "Accept Request"
                 friendButton.setOnClickListener {
                     FirebaseUtil().currentUserDetails().update("friendsList", FieldValue.arrayUnion(userModel.userID))
@@ -196,4 +208,97 @@ class AppUtil {
             }
         }
     }
+
+
+    //TODO change  material button to image button
+    fun changeCommunityButtonStates(context:Context, communityButton: MaterialButton, communityId: String){
+        communityButton.visibility = View.GONE
+
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community ->
+            val communityModel = community.toObject(CommunityModel::class.java)!!
+
+            FirebaseUtil().currentUserDetails().get().addOnSuccessListener {me ->
+                val myUserModel = me.toObject(UserModel::class.java)!!
+
+                if (AppUtil().isIdOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
+                    //If user is already requested to join (Private Community)
+                    communityButton.visibility = View.VISIBLE
+                    communityButton.text = "Cancel Request"
+                    communityButton.setOnClickListener {
+                        FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
+                            .update("joinRequestList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
+                            .addOnSuccessListener {
+                                changeCommunityButtonStates(context, communityButton, communityId)
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(context, "Error occur please try again", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+
+                } else if (AppUtil().isIdOnList(myUserModel.communityInvitations.values, myUserModel.userID)){
+                    //If user is invited to join community
+                    communityButton.visibility = View.VISIBLE
+                    communityButton.text = "Accept Request"
+                    communityButton.setOnClickListener {
+                        FirebaseUtil().retrieveCommunityDocument(communityId)
+                            .update("communityMembers", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                                FirebaseUtil().addUserToAllCommunityChannels(communityId, FirebaseUtil().currentUserUid()){
+                                    changeCommunityButtonStates(context, communityButton, communityId)
+                                }
+                            }
+                    }
+
+                } else if (!AppUtil().isIdOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
+                    //If user have not yet joined the community
+                    communityButton.visibility = View.VISIBLE
+
+                    if (communityModel.communityType == "Private"){
+                        //Request to join the private community
+                        communityButton.text = "Request to join"
+                        communityButton.setOnClickListener {
+                            FirebaseUtil().retrieveCommunityDocument(communityId)
+                                .update("joinRequestList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
+                                .addOnSuccessListener {
+                                    changeCommunityButtonStates(context, communityButton, communityId)
+                                    Toast.makeText(context, "Please wait for the admin to take you in", Toast.LENGTH_SHORT).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(context, "Error occur please try again", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+
+                    } else {
+                        //Join the public community
+                        communityButton.visibility = View.VISIBLE
+                        communityButton.text = "Join Community"
+                        communityButton.setOnClickListener {
+                            FirebaseUtil().retrieveCommunityDocument(communityId)
+                                .update("communityMembers", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
+                                .addOnSuccessListener {
+                                    FirebaseUtil().addUserToAllCommunityChannels(communityId, FirebaseUtil().currentUserUid()){isSuccessful->
+                                        if (isSuccessful){
+                                            AppUtil().headToMainActivity(context, "community", 0, communityId)
+                                        } else {
+                                            Toast.makeText(context, "Error occur please try again", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(context, "Error occur please try again", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+                } else if (AppUtil().isIdOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())) {
+                    //If the user already joined
+                    communityButton.visibility = View.VISIBLE
+                    communityButton.text = "Enter"
+                    communityButton.setOnClickListener {
+                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                    }
+                }
+            }
+        }
+
+    }
+
 }

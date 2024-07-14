@@ -1,27 +1,18 @@
 package com.example.synthronize.adapters
 
 import android.content.Context
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.ItemCommunityBinding
 import com.example.synthronize.model.CommunityModel
-import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.android.material.button.MaterialButton
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.toObject
-import com.orhanobut.dialogplus.DialogPlus
-import com.orhanobut.dialogplus.ViewHolder
-import kotlinx.coroutines.NonDisposableHandle.parent
 
 class SearchCommunityAdapter(private val context: Context, options: FirestoreRecyclerOptions<CommunityModel>):
     FirestoreRecyclerAdapter<CommunityModel, SearchCommunityAdapter.CommunityViewHolder>(options) {
@@ -47,7 +38,7 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
         private lateinit var communityModel: CommunityModel
         fun bind(model: CommunityModel){
             //Checks if user is not on community block list
-            if (!AppUtil().isUserOnList(model.blockList, FirebaseUtil().currentUserUid())){
+            if (!AppUtil().isIdOnList(model.blockList, FirebaseUtil().currentUserUid())){
                 communityModel = model
                 binding.groupNameTextView.text = model.communityName
                 //TODO: Bind community image

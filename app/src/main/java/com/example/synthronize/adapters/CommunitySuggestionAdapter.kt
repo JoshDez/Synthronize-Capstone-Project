@@ -36,15 +36,16 @@ class CommunitySuggestionAdapter(private val context: Context, private val commu
     }
 
     class CommunitySuggestionViewHolder(private val binding: ItemSuggestionBinding, private val context: Context, private val inflater: LayoutInflater): RecyclerView.ViewHolder(binding.root){
-        private lateinit var userModel: CommunityModel
+        private lateinit var communityModel: CommunityModel
 
         fun bind(model: CommunityModel){
-            userModel = model
+            communityModel = model
             AppUtil().setCommunityProfilePic(context, model.communityId, binding.suggestionCIV)
             binding.suggestionNameTV.text = AppUtil().sliceMessage(model.communityName, 30)
 
-            if (!model.blockList.contains(FirebaseUtil().currentUserUid())){
-                //TODO to be implemented action button
+            if (!communityModel.blockList.contains(FirebaseUtil().currentUserUid())){
+
+                AppUtil().changeCommunityButtonStates(context, binding.actionBtn, communityModel.communityId)
 
                 binding.suggestionCIV.setOnClickListener {
                     DialogUtil().openCommunityPreviewDialog(context, inflater, model)

@@ -34,7 +34,7 @@ class DialogUtil {
 
 
             if (postModel.ownerId == FirebaseUtil().currentUserUid() ||
-                AppUtil().isUserOnList(communityModel.communityAdmin, FirebaseUtil().currentUserUid())){
+                AppUtil().isIdOnList(communityModel.communityAdmin, FirebaseUtil().currentUserUid())){
                 //displays delete post option if the user is the owner or admin of the community
 
                 menuDialogBinding.option1.visibility = View.VISIBLE
@@ -162,12 +162,12 @@ class DialogUtil {
                     communityRequests.add(value)
                 }
 
-                if (AppUtil().isUserOnList(communityRequests, communityModel.communityId)){
+                if (AppUtil().isIdOnList(communityRequests, communityModel.communityId)){
                     
-                } else if (AppUtil().isUserOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
+                } else if (AppUtil().isIdOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
                     //checks if user already requested to join
                     appearButton(dialogPlusBinding.cancelRequestBtn, dialogPlusBinding)
-                } else if (AppUtil().isUserOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
+                } else if (AppUtil().isIdOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
                     //checks if user is already a member
                     appearButton(dialogPlusBinding.enterBtn, dialogPlusBinding)
                 } else {
@@ -178,7 +178,7 @@ class DialogUtil {
             }
         } else {
             //FOR PUBLIC COMMUNITY TYPE
-            if (AppUtil().isUserOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
+            if (AppUtil().isIdOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
                 //checks if user is already a member
                 appearButton(dialogPlusBinding.enterBtn, dialogPlusBinding)
             } else {
@@ -197,7 +197,7 @@ class DialogUtil {
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
             val userModel = it.toObject(UserModel::class.java)!!
             for (friend in userModel.friendsList){
-                if (AppUtil().isUserOnList(membersList, friend)){
+                if (AppUtil().isIdOnList(membersList, friend)){
                     count += 1
                 }
             }

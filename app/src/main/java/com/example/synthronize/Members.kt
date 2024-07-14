@@ -25,7 +25,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
-import java.lang.Exception
 
 class Members : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding:ActivityMembersBinding
@@ -190,7 +189,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
     //For User Dialog Menu
     private fun changeFriendsButtonState(userModel:UserModel, dialogUserMenuBinding: DialogUserMenuBinding){
         //checks if already friends with user
-        if (AppUtil().isUserOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
+        if (AppUtil().isIdOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
             dialogUserMenuBinding.friendBtn.text = "Unfriend"
             dialogUserMenuBinding.friendBtn.setOnClickListener {
                 userModel.friendsList = userModel.friendsList.filterNot { it == FirebaseUtil().currentUserUid() }
@@ -199,7 +198,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 }
             }
 
-        } else if (AppUtil().isUserOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
+        } else if (AppUtil().isIdOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
             dialogUserMenuBinding.friendBtn.text = "Cancel Request"
             dialogUserMenuBinding.friendBtn.setOnClickListener {
                 userModel.friendRequests = userModel.friendRequests.filterNot { it == FirebaseUtil().currentUserUid() }
