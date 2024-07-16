@@ -162,6 +162,17 @@ class AppUtil {
         return false
     }
 
+    //extracts similar values and return as list of keys
+    fun extractKeysFromMapByValue(map:Map<String, String>, value:String):ArrayList<String>{
+        val list: ArrayList<String> = ArrayList()
+        for (item in map){
+            if (item.value == value){
+                list += item.key
+            }
+        }
+        return list
+    }
+
 
 
 
@@ -220,7 +231,27 @@ class AppUtil {
             FirebaseUtil().currentUserDetails().get().addOnSuccessListener {me ->
                 val myUserModel = me.toObject(UserModel::class.java)!!
 
-                if (AppUtil().isIdOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
+                if (myUserModel.userType == "AppAdmin" && !AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())) {
+                    //if user is an AppAdmin and not yet joined the community
+                    communityButton.visibility = View.VISIBLE
+                    communityButton.text = "Join Community"
+                    communityButton.setOnClickListener {
+                        FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
+                            if (isSuccessful){
+                                FirebaseUtil().addUserToAllCommunityChannels(communityId, FirebaseUtil().currentUserUid()){isSuccessful->
+                                    if (isSuccessful){
+                                        AppUtil().headToMainActivity(context, "community", 0, communityId)
+                                    } else {
+                                        Toast.makeText(context, "Error occur please try again", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(context, "Error occur please try again", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
+                } else if (AppUtil().isIdOnList(communityModel.joinRequestList, FirebaseUtil().currentUserUid())){
                     //If user is already requested to join (Private Community)
                     communityButton.visibility = View.VISIBLE
                     communityButton.text = "Cancel Request"
@@ -240,15 +271,18 @@ class AppUtil {
                     communityButton.visibility = View.VISIBLE
                     communityButton.text = "Accept Request"
                     communityButton.setOnClickListener {
-                        FirebaseUtil().retrieveCommunityDocument(communityId)
-                            .update("communityMembers", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                        FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
+                            if (isSuccessful){
                                 FirebaseUtil().addUserToAllCommunityChannels(communityId, FirebaseUtil().currentUserUid()){
                                     changeCommunityButtonStates(context, communityButton, communityId)
                                 }
+                            } else {
+                                Toast.makeText(context, "Error occur please try again", Toast.LENGTH_SHORT).show()
                             }
+                        }
                     }
 
-                } else if (!AppUtil().isIdOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())){
+                } else if (!AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
                     //If user have not yet joined the community
                     communityButton.visibility = View.VISIBLE
 
@@ -272,9 +306,9 @@ class AppUtil {
                         communityButton.visibility = View.VISIBLE
                         communityButton.text = "Join Community"
                         communityButton.setOnClickListener {
-                            FirebaseUtil().retrieveCommunityDocument(communityId)
-                                .update("communityMembers", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
-                                .addOnSuccessListener {
+
+                            FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
+                                if (isSuccessful){
                                     FirebaseUtil().addUserToAllCommunityChannels(communityId, FirebaseUtil().currentUserUid()){isSuccessful->
                                         if (isSuccessful){
                                             AppUtil().headToMainActivity(context, "community", 0, communityId)
@@ -282,23 +316,22 @@ class AppUtil {
                                             Toast.makeText(context, "Error occur please try again", Toast.LENGTH_SHORT).show()
                                         }
                                     }
-                                }
-                                .addOnFailureListener {
+                                } else {
                                     Toast.makeText(context, "Error occur please try again", Toast.LENGTH_SHORT).show()
                                 }
+                            }
                         }
                     }
-                } else if (AppUtil().isIdOnList(communityModel.communityMembers, FirebaseUtil().currentUserUid())) {
+                } else if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())) {
                     //If the user already joined
                     communityButton.visibility = View.VISIBLE
                     communityButton.text = "Enter"
                     communityButton.setOnClickListener {
-                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                        AppUtil().headToMainActivity(context, "community", 0, communityId)
                     }
                 }
             }
         }
-
     }
 
 }

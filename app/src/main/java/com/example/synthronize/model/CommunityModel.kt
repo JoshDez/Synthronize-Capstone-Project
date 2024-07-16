@@ -9,11 +9,9 @@ data class CommunityModel(
     var communityType: String = "",
     var communityCode: String = "",
     var communityCreatedTimestamp: Timestamp = Timestamp.now(),
-    var communityMembers: List<String> = listOf(),
-    var communityAdmin: List<String> = listOf(),
-    var communityModerators: List<String> = listOf(),
+    var communityMembers:Map<String, String> = HashMap(),
     var communityChannels:List<String> = listOf("General"),
     var communityMedia:Map<String, String> = HashMap(),
     var joinRequestList: List<String> = listOf(),
-    var blockList: List<String> = listOf()
+    var blockList: List<String> = listOf(),
 )

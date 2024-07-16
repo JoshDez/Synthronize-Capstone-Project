@@ -56,7 +56,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
         
         fun bind(model: PostModel){
 
-            if (toBindSpecialHolder(20) && isExploreTab){
+            if (toBindSpecialHolder(10) && isExploreTab){
 
                 if (toBindSpecialHolder(50)){
                     //bind friend suggestions

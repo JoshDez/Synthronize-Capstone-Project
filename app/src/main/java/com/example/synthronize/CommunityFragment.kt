@@ -16,6 +16,7 @@ import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
@@ -27,7 +28,10 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     private lateinit var binding: FragmentCommunityBinding
     private lateinit var communityModel: CommunityModel
     private lateinit var context: Context
+
+    //for Community Admin and App Admin
     private var isUserAdmin = false
+    private var isUserModerator = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +46,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         super.onViewCreated(view, savedInstanceState)
 
 
-        if (isAdded && isVisible && !isDetached && !isRemoving){
+        if (isAdded){
             //retrieve context
             context = requireContext()
 
@@ -57,19 +61,27 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
                         communityModel = it.toObject(CommunityModel::class.java)!!
                         //content
                         if (::context.isInitialized){
-                            //reset main toolbar
-                            AppUtil().resetMainToolbar(mainBinding)
-                            //bind community
-                            assignUserRole()
-                            bindCommunityDetails()
-                            bindButtons()
-                            //Set Feeds fragment as default fragment
-                            selectNavigation("feeds")
-                            replaceFragment(FeedsFragment(binding, communityId))
+                            setupCommunityFragment()
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun setupCommunityFragment(){
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+            val myModel = it.toObject(UserModel::class.java)!!
+
+            //reset main toolbar
+            AppUtil().resetMainToolbar(mainBinding)
+            //bind community
+            assignUserRole(myModel)
+            bindCommunityDetails()
+            bindButtons()
+            //Set Feeds fragment as default fragment
+            selectNavigation("feeds")
+            replaceFragment(FeedsFragment(binding, communityId))
         }
     }
 
@@ -81,12 +93,20 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         AppUtil().setCommunityProfilePic(context, communityModel.communityId, mainBinding.toolbarImageCIV)
     }
 
-    private fun assignUserRole() {
-        for (userId in communityModel.communityAdmin){
-            if (FirebaseUtil().currentUserUid() == userId){
+    private fun assignUserRole(myModel: UserModel) {
+        for (user in communityModel.communityMembers){
+            if (myModel.userType == "AppAdmin"){
+                //User is AppAdmin
                 isUserAdmin = true
+            } else if (user.value == "Admin"){
+                //User is Admin
+                isUserAdmin = true
+            } else if (user.value == "Moderator"){
+                //User is Moderator
+                isUserModerator = true
             }
         }
+
     }
 
     private fun replaceFragment(fragment: Fragment) {

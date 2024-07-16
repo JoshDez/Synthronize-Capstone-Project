@@ -78,6 +78,7 @@ class CommunitySettings : AppCompatActivity() {
         binding.adminLayout.visibility = View.VISIBLE
 
         if (communityModel.communityType == "Private"){
+            binding.viewJoinRequestsBtn.visibility = View.VISIBLE
             binding.viewJoinRequestsBtn.setOnClickListener {
                 val intent = Intent(this, Requests::class.java)
                 intent.putExtra("communityId", communityModel.communityId)
@@ -110,6 +111,7 @@ class CommunitySettings : AppCompatActivity() {
                     deleteAllCommunityChannels()
                     AppUtil().headToMainActivity(this)
                 }
+                //TODO delete all channels
             }
             warningBinding.NoBtn.setOnClickListener {
                 warningDialog.dismiss()
@@ -146,15 +148,16 @@ class CommunitySettings : AppCompatActivity() {
             dialogPlusBinding.titleTV.text = "Warning!"
             dialogPlusBinding.messageTV.text = "Do you want to leave this community?"
             dialogPlusBinding.yesBtn.setOnClickListener {
-                //Removes Admin from user if the user is admin
-                FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
-                    .update("communityAdmin", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                 //removes user from community channels before leaving the community
                 FirebaseUtil().removeUserFromAllCommunityChannels(communityModel.communityId, FirebaseUtil().currentUserUid()){isSuccessful ->
                     if (isSuccessful){
+                        //Removes user from community members
+                        val updatedMap = mapOf(
+                            "communityMembers.${FirebaseUtil().currentUserUid()}" to FieldValue.delete()
+                        )
                         FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
-                            .update("communityMembers", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
-                                AppUtil().headToMainActivity(this, hasAnimation = false)
+                            .update(updatedMap).addOnSuccessListener {
+                                AppUtil().headToMainActivity(this)
                             }
                     } else {
                         Toast.makeText(this, "An error has occurred, please try again", Toast.LENGTH_SHORT).show()

@@ -119,9 +119,10 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
     }
 
     private fun setupChatroomListForCommunity(){
-        //already indexed in firebase
+        val roles = listOf("Admin", "Member", "Moderator")
+
         val query:Query = FirebaseUtil().retrieveAllCommunityCollection()
-            .whereArrayContains("communityMembers", FirebaseUtil().currentUserUid())
+            .whereIn("communityMembers.${FirebaseUtil().currentUserUid()}", roles)
 
         val options: FirestoreRecyclerOptions<CommunityModel> =
             FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(query, CommunityModel::class.java).build()

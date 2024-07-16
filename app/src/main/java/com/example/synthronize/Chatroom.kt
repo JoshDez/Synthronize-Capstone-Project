@@ -119,7 +119,7 @@ class Chatroom : AppCompatActivity() {
                             chatroomName = chatroomName,
                             chatroomId = chatroomID,
                             chatroomType = "community_chat",
-                            userIdList = communityModel.communityMembers,
+                            userIdList = communityModel.communityMembers.keys.toList(),
                             lastMsgTimestamp = Timestamp.now(),
                             lastMessage = "",
                             lastMessageUserId = FirebaseUtil().currentUserUid()

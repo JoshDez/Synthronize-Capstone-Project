@@ -112,14 +112,23 @@ class Members : AppCompatActivity(), OnItemClickListener {
                         warningBinding.titleTV.text = "Kick User"
 
                         warningBinding.yesBtn.setOnClickListener {
-                            FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
-                                .update("communityAdmin", FieldValue.arrayRemove(userId))
-                            FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
-                                .update("communityMembers", FieldValue.arrayRemove(userId)).addOnSuccessListener {
-                                    Toast.makeText(this, "The user has been kicked", Toast.LENGTH_SHORT).show()
-                                    queryUsers()
-                                    warningDialog.dismiss()
+                            FirebaseUtil().removeUserFromAllCommunityChannels(communityModel.communityId, FirebaseUtil().currentUserUid()){isSuccessful ->
+                                if (isSuccessful){
+                                    val updatedMap = mapOf(
+                                        "communityMembers.${userId}" to FieldValue.delete()
+                                    )
+                                    FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
+                                        .update(updatedMap).addOnSuccessListener {
+                                            Toast.makeText(this, "The user has been kicked", Toast.LENGTH_SHORT).show()
+                                            queryUsers()
+                                            warningDialog.dismiss()
+                                        }
+                                } else {
+                                    Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
                                 }
+                            }
+
+
                         }
                         warningBinding.NoBtn.setOnClickListener {
                             warningDialog.dismiss()
@@ -148,8 +157,10 @@ class Members : AppCompatActivity(), OnItemClickListener {
                             warningBinding.titleTV.text = "Grant Admin Privilege"
 
                             warningBinding.yesBtn.setOnClickListener {
-                                communityModel.communityAdmin = communityModel.communityAdmin.plus(userId)
-                                FirebaseUtil().retrieveCommunityDocument(communityId).set(communityModel).addOnSuccessListener {
+                                val newMapUpdate = mapOf(
+                                    "communityMembers.${FirebaseUtil().currentUserUid()}" to "Admin"
+                                )
+                                FirebaseUtil().retrieveCommunityDocument(communityId).update(newMapUpdate).addOnSuccessListener {
                                     Toast.makeText(this, "The user is now Admin", Toast.LENGTH_SHORT).show()
                                     queryUsers()
                                     warningDialog.dismiss()
@@ -178,7 +189,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
     }
     //For User Dialog Menu
     private fun isUserAdmin(userId: String): Boolean{
-        for (user in communityModel.communityAdmin){
+        for (user in AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin")){
             if (userId == user){
                 return true
             }
@@ -231,7 +242,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
 
                 //FOR MEMBERS
                 val membersQuery:Query = FirebaseUtil().allUsersCollectionReference()
-                    .whereIn("userID", communityModel.communityMembers)
+                    .whereIn("userID", communityModel.communityMembers.keys.toList())
                     .whereGreaterThanOrEqualTo("fullName", searchQuery)
 
                 val membersOptions:FirestoreRecyclerOptions<UserModel> =
@@ -240,7 +251,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
 
                 //FOR ADMINS
                 val adminsQuery:Query = FirebaseUtil().allUsersCollectionReference()
-                    .whereIn("userID", communityModel.communityAdmin)
+                    .whereIn("userID", AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"))
                     .whereGreaterThanOrEqualTo("fullName", searchQuery)
 
                 val adminsOptions:FirestoreRecyclerOptions<UserModel> =

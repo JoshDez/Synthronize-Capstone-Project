@@ -133,9 +133,12 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
     }
 
     private fun setupRecyclerView() {
+        //roles
+        val roles = listOf("Admin", "Moderator", "Member")
+
         //query firestore
         val communityQuery = FirebaseUtil().retrieveAllCommunityCollection()
-                .whereArrayContains("communityMembers", FirebaseUtil().currentUserUid())
+                .whereIn("communityMembers.${FirebaseUtil().currentUserUid()}", roles)
 
         //set options for firebase ui
         val options: FirestoreRecyclerOptions<CommunityModel> =

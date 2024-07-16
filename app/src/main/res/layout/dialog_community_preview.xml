@@ -158,32 +158,11 @@
             android:layout_alignParentEnd="true">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/joinCommunityBtn"
+                android:id="@+id/communityActionBtn"
                 android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/join_community"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/requestToJoinBtn"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/request_to_join"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cancelRequestBtn"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel_request"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/enterBtn"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/enter"/>
+                android:contentDescription="communityActionButton"/>
 
         </LinearLayout>
 

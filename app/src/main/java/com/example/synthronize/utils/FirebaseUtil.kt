@@ -2,6 +2,7 @@ package com.example.synthronize.utils
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import com.example.synthronize.Login
 import com.example.synthronize.model.CommunityModel
 import com.google.firebase.auth.FirebaseAuth
@@ -94,6 +95,17 @@ class FirebaseUtil {
 
 
     //For Community
+    fun addUserToCommunity(communityId: String, callback: (Boolean) -> Unit){
+        val newMapValue = mapOf(
+            "communityMembers.${FirebaseUtil().currentUserUid()}" to "Member"
+        )
+        FirebaseUtil().retrieveCommunityDocument(communityId)
+            .update(newMapValue).addOnSuccessListener {
+                callback(true)
+            }.addOnFailureListener {
+                callback(false)
+            }
+    }
     fun retrieveAllCommunityCollection():CollectionReference{
         return FirebaseFirestore.getInstance().collection("communities")
     }

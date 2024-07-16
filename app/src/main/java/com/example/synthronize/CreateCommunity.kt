@@ -251,8 +251,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                 communityDescription = communityDesc,
                 communityType = communityType,
                 communityCode = generateRandomCode(),
-                communityMembers = listOf(FirebaseUtil().currentUserUid()),
-                communityAdmin = listOf(FirebaseUtil().currentUserUid())
+                communityMembers = mapOf(FirebaseUtil().currentUserUid() to "Admin")
             )
             //save community profile to firebase storage
             if (::selectedCommunityProfileUri.isInitialized){
@@ -285,10 +284,10 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                 var imageUrl = "${communityId}-${Timestamp.now()}"
 
                 //delete the image from firebase storage
-                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-                    var commmunity = it.toObject(CommunityModel::class.java)!!
-                    if (commmunity.communityMedia.containsKey("community_banner_photo")){
-                        FirebaseUtil().retrieveCommunityBannerPicRef(commmunity.communityMedia["community_banner_photo"]!!).delete()
+                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community ->
+                    var communityModel = community.toObject(CommunityModel::class.java)!!
+                    if (communityModel.communityMedia.containsKey("community_banner_photo")){
+                        FirebaseUtil().retrieveCommunityBannerPicRef(communityModel.communityMedia["community_banner_photo"]!!).delete()
                     }
                 }
 
@@ -316,9 +315,9 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                     chatroomName = "General",
                     chatroomId = chatroomID,
                     chatroomType = "community_chat",
-                    userIdList = communityModel.communityMembers,
+                    userIdList = listOf(FirebaseUtil().currentUserUid()),
                     lastMsgTimestamp = Timestamp.now(),
-                    lastMessage = "",
+                    lastMessage = "created general channel",
                     lastMessageUserId = FirebaseUtil().currentUserUid()
                 )
                 FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel).addOnSuccessListener {

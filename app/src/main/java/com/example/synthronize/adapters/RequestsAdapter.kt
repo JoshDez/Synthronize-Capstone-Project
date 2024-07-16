@@ -89,13 +89,17 @@ class RequestsAdapter(private var friendRequests:List<String> = listOf(),
                     AppUtil().setCommunityProfilePic(itemRequestBinding.root.context, community.communityId , itemRequestBinding.profileCIV)
                     itemRequestBinding.acceptBtn.visibility = View.VISIBLE
                     itemRequestBinding.acceptBtn.setOnClickListener {
-                        FirebaseUtil().retrieveCommunityDocument(communityId)
-                            .update("communityMembers", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                        FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
+                            if (isSuccessful){
                                 FirebaseUtil().addUserToAllCommunityChannels(communityId, FirebaseUtil().currentUserUid()){
                                     removeCommunityInvitation(key)
                                     Toast.makeText(itemRequestBinding.root.context, "Invitation Accepted", Toast.LENGTH_SHORT).show()
                                 }
+                            } else {
+                                Toast.makeText(itemRequestBinding.root.context, "An error has occurred", Toast.LENGTH_SHORT).show()
                             }
+
+                        }
                     }
                     itemRequestBinding.rejectBtn.visibility = View.VISIBLE
                     itemRequestBinding.rejectBtn.setOnClickListener {
