@@ -110,14 +110,36 @@
                 android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/makeUserAdminBtn"
+                android:id="@+id/changeUserRoleBtn"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textSize="16sp"
-                android:text="Make User Admin"
-                android:background = "@color/dark_teal"
+                android:contentDescription="change user role"
+                android:background = "@color/teal2"
+                android:textColor="@color/light_teal"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/changeUserRoleBtn2"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:contentDescription="change user role"
+                android:background = "@color/teal2"
+                android:textColor="@color/light_teal"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/changeUserRoleBtn3"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:contentDescription="change user role"
+                android:background = "@color/teal2"
                 android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton

@@ -137,37 +137,47 @@ class CommunitySettings : AppCompatActivity() {
         }
 
         binding.leaveCommunityBtn.setOnClickListener {
-            val dialogPlusBinding = DialogWarningMessageBinding.inflate(layoutInflater)
-            val dialogPlus = DialogPlus.newDialog(this)
-                .setContentHolder(ViewHolder(dialogPlusBinding.root))
-                .setGravity(Gravity.CENTER)
-                .setMargin(50, 800, 50, 800)
-                .setCancelable(true)
-                .create()
+            val admin = AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin")
 
-            dialogPlusBinding.titleTV.text = "Warning!"
-            dialogPlusBinding.messageTV.text = "Do you want to leave this community?"
-            dialogPlusBinding.yesBtn.setOnClickListener {
-                //removes user from community channels before leaving the community
-                FirebaseUtil().removeUserFromAllCommunityChannels(communityModel.communityId, FirebaseUtil().currentUserUid()){isSuccessful ->
-                    if (isSuccessful){
-                        //Removes user from community members
-                        val updatedMap = mapOf(
-                            "communityMembers.${FirebaseUtil().currentUserUid()}" to FieldValue.delete()
-                        )
-                        FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
-                            .update(updatedMap).addOnSuccessListener {
-                                AppUtil().headToMainActivity(this)
-                            }
-                    } else {
-                        Toast.makeText(this, "An error has occurred, please try again", Toast.LENGTH_SHORT).show()
+            if (admin.size != 1 && admin[0] != FirebaseUtil().currentUserUid()){
+                //show error message
+                val dialogPlusBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+                val dialogPlus = DialogPlus.newDialog(this)
+                    .setContentHolder(ViewHolder(dialogPlusBinding.root))
+                    .setGravity(Gravity.CENTER)
+                    .setMargin(50, 800, 50, 800)
+                    .setCancelable(true)
+                    .create()
+
+                dialogPlusBinding.titleTV.text = "Warning!"
+                dialogPlusBinding.messageTV.text = "Do you want to leave this community?"
+                dialogPlusBinding.yesBtn.setOnClickListener {
+                    //removes user from community channels before leaving the community
+                    FirebaseUtil().removeUserFromAllCommunityChannels(communityModel.communityId, FirebaseUtil().currentUserUid()){isSuccessful ->
+                        if (isSuccessful){
+                            //Removes user from community members
+                            val updatedMap = mapOf(
+                                "communityMembers.${FirebaseUtil().currentUserUid()}" to FieldValue.delete()
+                            )
+                            FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
+                                .update(updatedMap).addOnSuccessListener {
+                                    AppUtil().headToMainActivity(this)
+                                }
+                        } else {
+                            Toast.makeText(this, "An error has occurred, please try again", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
+                dialogPlusBinding.NoBtn.setOnClickListener {
+                    dialogPlus.dismiss()
+                }
+                dialogPlus.show()
+            } else {
+                //shows a toast message
+                Toast.makeText(this, "The community should at least have 1 admin available", Toast.LENGTH_SHORT).show()
             }
-            dialogPlusBinding.NoBtn.setOnClickListener {
-                dialogPlus.dismiss()
-            }
-            dialogPlus.show()
+
+
         }
 
         binding.copyCodeBtn.setOnClickListener {

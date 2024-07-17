@@ -5,6 +5,7 @@ import android.content.Intent
 import android.widget.Toast
 import com.example.synthronize.Login
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.UserModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
@@ -95,6 +96,18 @@ class FirebaseUtil {
 
 
     //For Community
+    fun isUserAppAdmin(userId: String, callback: (Boolean) -> Unit){
+        FirebaseUtil().targetUserDetails(userId).get().addOnSuccessListener {
+            val userModel = it.toObject(UserModel::class.java)!!
+            if (userModel.userType == "AppAdmin"){
+                callback(true)
+            } else {
+                callback(false)
+            }
+        }.addOnFailureListener {
+            callback(false)
+        }
+    }
     fun addUserToCommunity(communityId: String, callback: (Boolean) -> Unit){
         val newMapValue = mapOf(
             "communityMembers.${FirebaseUtil().currentUserUid()}" to "Member"
