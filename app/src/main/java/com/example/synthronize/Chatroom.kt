@@ -156,7 +156,7 @@ class Chatroom : AppCompatActivity() {
     }
 
     private fun sendMessage(message:String) {
-        val messageModel = MessageModel(message, FirebaseUtil().currentUserUid(), Timestamp.now())
+        val messageModel = MessageModel(message = message, senderID =  FirebaseUtil().currentUserUid(), timestamp =  Timestamp.now())
         chatroomModel.lastMessageUserId = FirebaseUtil().currentUserUid()
         chatroomModel.lastMessage = message
         chatroomModel.lastMsgTimestamp = Timestamp.now()

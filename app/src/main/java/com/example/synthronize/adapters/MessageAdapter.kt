@@ -38,22 +38,29 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
     class MessageViewHolder(private val binding: ItemMessageBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
         fun bind(model: MessageModel){
             //bind user's message
-            if (model.senderID == FirebaseUtil().currentUserUid()){
-                //If user is the sender
-                binding.recieverLayout.visibility = View.GONE
-                binding.senderLayout.visibility = View.VISIBLE
-                binding.senderMsgTV.text = model.message
+            if (model.postID.isNotEmpty()){
+
             } else {
-               //If user is the receiver
-                binding.senderLayout.visibility = View.GONE
-                binding.recieverLayout.visibility = View.VISIBLE
-                binding.recieverMsgTV.text = model.message
-                //retrieve sender user data
-                FirebaseUtil().targetUserDetails(model.senderID).get().addOnCompleteListener {
-                    if (it.isSuccessful && it.result.exists()){
-                        val userModel = it.result.toObject(UserModel::class.java)!!
-                        binding.userNameTV.text = userModel.fullName
-                        AppUtil().setUserProfilePic(context, userModel.userID, binding.userProfileCIV)
+                //Send message only
+                if (model.senderID == FirebaseUtil().currentUserUid()){
+                    //If user is the sender
+                    binding.recieverLayout.visibility = View.GONE
+                    binding.senderLayout.visibility = View.VISIBLE
+                    binding.senderMsgTV.visibility = View.VISIBLE
+                    binding.senderMsgTV.text = model.message
+                } else {
+                    //If user is the receiver
+                    binding.senderLayout.visibility = View.GONE
+                    binding.recieverLayout.visibility = View.VISIBLE
+                    binding.recieverMsgTV.visibility = View.VISIBLE
+                    binding.recieverMsgTV.text = model.message
+                    //retrieve sender user data
+                    FirebaseUtil().targetUserDetails(model.senderID).get().addOnCompleteListener {
+                        if (it.isSuccessful && it.result.exists()){
+                            val userModel = it.result.toObject(UserModel::class.java)!!
+                            binding.userNameTV.text = userModel.fullName
+                            AppUtil().setUserProfilePic(context, userModel.userID, binding.userProfileCIV)
+                        }
                     }
                 }
             }
