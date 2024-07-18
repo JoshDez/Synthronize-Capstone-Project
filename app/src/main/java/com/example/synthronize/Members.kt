@@ -353,6 +353,9 @@ class Members : AppCompatActivity(), OnItemClickListener {
         if (::membersAdapter.isInitialized){
             membersAdapter.startListening()
         }
+        if (::moderatorAdapter.isInitialized){
+            moderatorAdapter.startListening()
+        }
     }
 
     override fun onResume() {
@@ -363,6 +366,9 @@ class Members : AppCompatActivity(), OnItemClickListener {
         if (::membersAdapter.isInitialized){
             membersAdapter.notifyDataSetChanged()
         }
+        if (::moderatorAdapter.isInitialized){
+            moderatorAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onStop() {
@@ -372,6 +378,9 @@ class Members : AppCompatActivity(), OnItemClickListener {
         }
         if (::membersAdapter.isInitialized){
             membersAdapter.stopListening()
+        }
+        if (::moderatorAdapter.isInitialized){
+            moderatorAdapter.stopListening()
         }
     }
 }

@@ -98,10 +98,10 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             if (myModel.userType == "AppAdmin"){
                 //User is AppAdmin
                 isUserAdmin = true
-            } else if (user.value == "Admin"){
+            } else if (user.value == "Admin" && myModel.userID == user.key){
                 //User is Admin
                 isUserAdmin = true
-            } else if (user.value == "Moderator"){
+            } else if (user.value == "Moderator" && myModel.userID == user.key){
                 //User is Moderator
                 isUserModerator = true
             }
