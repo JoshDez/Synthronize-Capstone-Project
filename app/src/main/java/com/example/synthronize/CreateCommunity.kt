@@ -400,7 +400,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             .joinToString("")
     }
 
-    override fun onUserClick(uid: String, isChecked: Boolean) {
+    override fun onItemClick(uid: String, isChecked: Boolean) {
         //Interface for select user adapter
         if (isChecked) {
             //add user to selected user list

@@ -15,7 +15,10 @@ import com.example.synthronize.R
 import com.example.synthronize.ViewPost
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.ItemPostBinding
+import com.example.synthronize.interfaces.OnItemClickListener
+import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommentModel
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -26,10 +29,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.toObject
 
 class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private val context: Context, 
                    options: FirestoreRecyclerOptions<PostModel>): FirestoreRecyclerAdapter<PostModel, FeedsAdapter.FeedsViewHolder>(options){
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -42,6 +46,8 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
     }
 
 
+
+
     //VIEW HOLDER
     class FeedsViewHolder(private val mainBinding: FragmentCommunityBinding, private val feedBinding: ItemPostBinding,
                           private val context: Context, private val inflater: LayoutInflater) : RecyclerView.ViewHolder(feedBinding.root){
@@ -52,19 +58,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
         fun bind(model: PostModel){
 
             this.postModel = model
-
-            //SETUP WRAPPER FOR REPOST OR COMMUNITY
-            if (postModel.repostId.isNotEmpty()){
-                feedBinding.feedWrapperLayout.visibility = View.VISIBLE
-                FirebaseUtil().targetUserDetails(postModel.repostOwnerId).get().addOnSuccessListener {
-                    val user = it.toObject(UserModel::class.java)!!
-                    feedBinding.wrapperName.text = user.username
-                    AppUtil().setUserProfilePic(context, user.userID, feedBinding.profileCIV)
-                    feedBinding.wrapperName.setOnClickListener {
-                        AppUtil().headToUserProfile(context, postModel.ownerId)
-                    }
-                }
-            }
 
             //SETUP FEED
             FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {
@@ -87,7 +80,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 }
                 bindLove()
                 bindComment()
-                bindRepost()
+                bindSendPost()
                 bindContent()
             }
         }
@@ -113,8 +106,10 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
             }
         }
 
-        private fun bindRepost() {
-            //TODO Not yet implemented
+        private fun bindSendPost() {
+            feedBinding.sendPostBtn.setOnClickListener {
+                DialogUtil().openForwardContentDialog(context, inflater, postModel.postId)
+            }
         }
 
         private fun bindComment() {
@@ -127,13 +122,13 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     if (comment.isNotEmpty()){
                         feedBinding.loveLayout.visibility = View.GONE
                         feedBinding.commentLayout.visibility = View.GONE
-                        feedBinding.repostLayout.visibility = View.GONE
                         feedBinding.sendBtn.visibility = View.VISIBLE
+                        feedBinding.sendPostLayout.visibility = View.GONE
                     } else {
                         feedBinding.loveLayout.visibility = View.VISIBLE
                         feedBinding.commentLayout.visibility = View.VISIBLE
-                        feedBinding.repostLayout.visibility = View.VISIBLE
                         feedBinding.sendBtn.visibility = View.GONE
+                        feedBinding.sendPostLayout.visibility = View.VISIBLE
                     }
                 }
             })
@@ -172,6 +167,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     isLoved = true
                 }
             }
+
             feedBinding.loveBtn.setOnClickListener {
                 if (isLoved){
                     //removes love
@@ -199,12 +195,12 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 .document(postModel.postId).get().addOnSuccessListener {
                     val tempPostModel = it.toObject(PostModel::class.java)!!
                     feedBinding.lovesCountTV.text = tempPostModel.loveList.size.toString()
-                    feedBinding.repostCountTV.text = tempPostModel.repostList.size.toString()
+                    feedBinding.sentPostCountTV.text = tempPostModel.sendPostList.size.toString()
                 }
                 .addOnFailureListener {
                     //if Offline
                     feedBinding.lovesCountTV.text = postModel.loveList.size.toString()
-                    feedBinding.repostCountTV.text = postModel.repostList.size.toString()
+                    feedBinding.sentPostCountTV.text = postModel.sendPostList.size.toString()
                     FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
                         .collection("comments").get().addOnSuccessListener {
                             Toast.makeText(context, "${it.size()}", Toast.LENGTH_SHORT).show()

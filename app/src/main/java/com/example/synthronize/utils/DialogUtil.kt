@@ -5,28 +5,60 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.synthronize.adapters.ChatroomAdapter
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
+import com.example.synthronize.databinding.DialogForwardContentBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
+import com.example.synthronize.interfaces.OnItemClickListener
+import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
-class DialogUtil {
+class DialogUtil: OnItemClickListener {
+
+    //OPENS DIALOG FOR SEND POST
+    fun openForwardContentDialog(context:Context, inflater: LayoutInflater, postId:String){
+        //prepares dialog
+        val dialogForwardContentBinding = DialogForwardContentBinding.inflate(inflater)
+        val forwardContentDialog = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(dialogForwardContentBinding.root))
+            .setMargin(20, 300, 20, 0)
+            .setCancelable(true)
+            .setExpanded(true)
+            .setGravity(Gravity.BOTTOM)
+            .create()
+
+        //query
+        val myQuery: Query = FirebaseUtil().retrieveAllChatRoomReferences()
+            .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
+        val options:FirestoreRecyclerOptions<ChatroomModel> =
+            FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(myQuery, ChatroomModel::class.java).build()
+        //TODO
+        val chatroomAdapter = ChatroomAdapter(context, options, true)
+
+        dialogForwardContentBinding.resultsRV.layoutManager = LinearLayoutManager(context)
+        dialogForwardContentBinding.resultsRV.adapter = chatroomAdapter
+        chatroomAdapter.startListening()
+
+        forwardContentDialog.show()
+    }
 
     //OPENS DIALOG FOR FEED MENU
     fun openMenuDialog(context:Context, inflater: LayoutInflater, postModel:PostModel){
         FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {
             val communityModel = it.toObject(CommunityModel::class.java)!!
-
-            //TODO ADD FUNCTIONALITY FOR REPOST
             val menuDialogBinding = DialogMenuBinding.inflate(inflater)
             val menuDialog = DialogPlus.newDialog(context)
                 .setContentHolder(ViewHolder(menuDialogBinding.root))
-                .setMargin(100, 800, 100, 800)
                 .setCancelable(true)
+                .setExpanded(false)
                 .setGravity(Gravity.CENTER)
                 .create()
 
@@ -86,6 +118,7 @@ class DialogUtil {
         val dialogPlus = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(dialogPlusBinding.root))
             .setGravity(Gravity.CENTER)
+            .setExpanded(false)
             .create()
 
         //Community details
@@ -119,6 +152,10 @@ class DialogUtil {
             callback(count)
         }
 
+    }
+
+    override fun onItemClick(id: String, isChecked: Boolean) {
+        TODO("Not yet implemented")
     }
 
 }

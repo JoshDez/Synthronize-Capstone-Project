@@ -9,6 +9,7 @@ data class CommunityModel(
     var communityType: String = "",
     var communityCode: String = "",
     var communityCreatedTimestamp: Timestamp = Timestamp.now(),
+    //Map < userID, role >
     var communityMembers:Map<String, String> = HashMap(),
     var communityChannels:List<String> = listOf("General"),
     var communityMedia:Map<String, String> = HashMap(),

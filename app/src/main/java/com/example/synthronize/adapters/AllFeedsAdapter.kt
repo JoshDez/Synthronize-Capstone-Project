@@ -208,12 +208,12 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                     if (comment.isNotEmpty()){
                         binding.loveLayout.visibility = View.GONE
                         binding.commentLayout.visibility = View.GONE
-                        binding.repostLayout.visibility = View.GONE
+                        binding.sendPostLayout.visibility = View.GONE
                         binding.sendBtn.visibility = View.VISIBLE
                     } else {
                         binding.loveLayout.visibility = View.VISIBLE
                         binding.commentLayout.visibility = View.VISIBLE
-                        binding.repostLayout.visibility = View.VISIBLE
+                        binding.sendPostLayout.visibility = View.VISIBLE
                         binding.sendBtn.visibility = View.GONE
                     }
                 }
@@ -280,12 +280,12 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 .document(postModel.postId).get().addOnSuccessListener {
                     val tempPostModel = it.toObject(PostModel::class.java)!!
                     binding.lovesCountTV.text = tempPostModel.loveList.size.toString()
-                    binding.repostCountTV.text = tempPostModel.repostList.size.toString()
+                    binding.sentPostCountTV.text = tempPostModel.sendPostList.size.toString()
                 }
                 .addOnFailureListener {
                     //if Offline
                     binding.lovesCountTV.text = postModel.loveList.size.toString()
-                    binding.repostCountTV.text = postModel.repostList.size.toString()
+                    binding.sentPostCountTV.text = postModel.sendPostList.size.toString()
                     FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
                         .collection("comments").get().addOnSuccessListener {
                             Toast.makeText(context, "${it.size()}", Toast.LENGTH_SHORT).show()

@@ -9,6 +9,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.example.synthronize.Chatroom
 import com.example.synthronize.databinding.ItemChatroomBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
@@ -17,9 +18,9 @@ import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.firestore.toObject
 import java.text.SimpleDateFormat
 //CHATROOMS
-class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOptions<ChatroomModel>):
+class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOptions<ChatroomModel>,
+                      private val toSendPost:Boolean = false):
     FirestoreRecyclerAdapter<ChatroomModel, ChatroomAdapter.ChatroomViewHolder>(options) {
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatroomViewHolder {
         val inflater = LayoutInflater.from(parent.context)

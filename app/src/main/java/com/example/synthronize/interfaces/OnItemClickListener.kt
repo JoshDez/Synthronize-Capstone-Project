@@ -1,6 +1,6 @@
 package com.example.synthronize.interfaces
 
 interface OnItemClickListener {
-    fun onUserClick(userId: String, isChecked:Boolean = false)
+    fun onItemClick(id: String, isChecked:Boolean = false)
 
 }

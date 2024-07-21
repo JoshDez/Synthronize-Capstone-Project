@@ -60,9 +60,9 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                     }
                     binding.selectUserCB.setOnClickListener {
                         if (binding.selectUserCB.isChecked){
-                            listener.onUserClick(model.userID, true)
+                            listener.onItemClick(model.userID, true)
                         } else {
-                            listener.onUserClick(model.userID, false)
+                            listener.onItemClick(model.userID, false)
                         }
                     }
 
@@ -77,16 +77,16 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                         context.startActivity(intent)
                     }
                     binding.acceptBtn.setOnClickListener {
-                        listener.onUserClick(model.userID, true)
+                        listener.onItemClick(model.userID, true)
                     }
                     binding.rejectBtn.setOnClickListener {
-                        listener.onUserClick(model.userID, false)
+                        listener.onItemClick(model.userID, false)
                     }
 
                 }else {
                     //display check box if user is not the current user
                     binding.userContainerRL.setOnClickListener{
-                        listener.onUserClick(model.userID)
+                        listener.onItemClick(model.userID)
                     }
                 }
             }

@@ -228,7 +228,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/repostLayout"
+            android:id="@+id/sendPostLayout"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:gravity="center"
@@ -237,12 +237,12 @@
             android:layout_weight="1">
 
             <ImageButton
-                android:id="@+id/repostBtn"
+                android:id="@+id/sendPostBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:src="@drawable/repost_icon"
+                android:src="@drawable/send_icon"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:textColor="@color/black"
                 android:textSize="14sp"
@@ -250,7 +250,7 @@
                 app:tint="@color/light_teal"/>
 
             <TextView
-                android:id="@+id/repostCountTV"
+                android:id="@+id/sentPostCountTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"

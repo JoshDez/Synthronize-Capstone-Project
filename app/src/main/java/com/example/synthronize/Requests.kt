@@ -2,10 +2,7 @@ package com.example.synthronize
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivityRequestsBinding
@@ -66,12 +63,12 @@ class Requests : AppCompatActivity(), OnItemClickListener {
 
     }
 
-    override fun onUserClick(userId: String, isChecked: Boolean) {
+    override fun onItemClick(id: String, isChecked: Boolean) {
         //Accepts or Rejects user
         if (isChecked){
             //accepts user
-            FirebaseUtil().retrieveCommunityDocument(communityId).update("communityMembers", FieldValue.arrayUnion(userId)).addOnSuccessListener {
-                FirebaseUtil().retrieveCommunityDocument(communityId).update("joinRequestList", FieldValue.arrayRemove(userId)).addOnSuccessListener {
+            FirebaseUtil().retrieveCommunityDocument(communityId).update("communityMembers", FieldValue.arrayUnion(id)).addOnSuccessListener {
+                FirebaseUtil().retrieveCommunityDocument(communityId).update("joinRequestList", FieldValue.arrayRemove(id)).addOnSuccessListener {
                     Toast.makeText(this, "User Accepted", Toast.LENGTH_SHORT).show()
 
                     setupRecycleView()
@@ -79,7 +76,7 @@ class Requests : AppCompatActivity(), OnItemClickListener {
             }
         } else {
             //rejects user
-            FirebaseUtil().retrieveCommunityDocument(communityId).update("joinRequestList", FieldValue.arrayRemove(userId)).addOnSuccessListener {
+            FirebaseUtil().retrieveCommunityDocument(communityId).update("joinRequestList", FieldValue.arrayRemove(id)).addOnSuccessListener {
                 Toast.makeText(this, "User Rejected", Toast.LENGTH_SHORT).show()
             }
         }

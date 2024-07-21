@@ -13,7 +13,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivityMembersBinding
-import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogUserMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnItemClickListener
@@ -23,7 +22,6 @@ import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
@@ -62,10 +60,10 @@ class Members : AppCompatActivity(), OnItemClickListener {
             }
         })
     }
-    override fun onUserClick(userId: String, isChecked: Boolean) {
-        if (userId != FirebaseUtil().currentUserUid()){
+    override fun onItemClick(id: String, isChecked: Boolean) {
+        if (id != FirebaseUtil().currentUserUid()){
 
-            FirebaseUtil().targetUserDetails(userId).get().addOnSuccessListener { result ->
+            FirebaseUtil().targetUserDetails(id).get().addOnSuccessListener { result ->
                 val userModel = result.toObject(UserModel::class.java)!!
 
                 val dialogPlusBinding = DialogUserMenuBinding.inflate(layoutInflater)
@@ -87,14 +85,14 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 //view profile button
                 dialogPlusBinding.viewProfileBtn.setOnClickListener {
                     val intent = Intent(this, OtherUserProfile::class.java)
-                    intent.putExtra("userID", userId)
+                    intent.putExtra("userID", id)
                     startActivity(intent)
                 }
                 //message user button
                 dialogPlusBinding.messageUserBtn.setOnClickListener {
                     val intent = Intent(this, Chatroom::class.java)
                     intent.putExtra("chatroomName", userModel.fullName)
-                    intent.putExtra("userID", userId)
+                    intent.putExtra("userID", id)
                     intent.putExtra("chatroomType", "direct_message")
                     startActivity(intent)
                     dialogPlus.dismiss()
@@ -107,34 +105,34 @@ class Members : AppCompatActivity(), OnItemClickListener {
                     if (isUserAppAdmin){
                         //Buttons only for App Admin
                         if (userModel.userType != "AppAdmin"){
-                            showKickUserButton(userId, dialogPlusBinding, dialogPlus)
-                            if (!isUserAdmin(userId))
-                                showChangeRoleButton(userId, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
-                            if (!isUserModerator(userId))
-                                showChangeRoleButton(userId, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
-                            if (!isUserMember(userId))
-                                showChangeRoleButton(userId, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
+                            showKickUserButton(id, dialogPlusBinding, dialogPlus)
+                            if (!isUserAdmin(id))
+                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
+                            if (!isUserModerator(id))
+                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
+                            if (!isUserMember(id))
+                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
                         }
                     } else if (isUserAdmin(FirebaseUtil().currentUserUid())){
                         //Buttons only for Admin or Community Admin
-                        if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), userId)){
-                            showKickUserButton(userId, dialogPlusBinding, dialogPlus)
-                            if (!isUserAdmin(userId))
-                                showChangeRoleButton(userId, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
-                            if (!isUserModerator(userId))
-                                showChangeRoleButton(userId, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
-                            if (!isUserMember(userId))
-                                showChangeRoleButton(userId, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
+                        if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), id)){
+                            showKickUserButton(id, dialogPlusBinding, dialogPlus)
+                            if (!isUserAdmin(id))
+                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
+                            if (!isUserModerator(id))
+                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
+                            if (!isUserMember(id))
+                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
                         }
                     } else if (isUserModerator(FirebaseUtil().currentUserUid())){
                         //Buttons only for Moderators
-                        if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), userId)
-                            && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), userId)){
-                            showKickUserButton(userId, dialogPlusBinding, dialogPlus)
-                            if (!isUserModerator(userId))
-                                showChangeRoleButton(userId, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
-                            if (!isUserMember(userId))
-                                showChangeRoleButton(userId, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
+                        if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), id)
+                            && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), id)){
+                            showKickUserButton(id, dialogPlusBinding, dialogPlus)
+                            if (!isUserModerator(id))
+                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
+                            if (!isUserMember(id))
+                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
                         }
                     }
                 }

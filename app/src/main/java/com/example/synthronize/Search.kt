@@ -176,9 +176,9 @@ class Search : AppCompatActivity(), OnItemClickListener {
         }
     }
 
-    override fun onUserClick(userId: String, isChecked:Boolean) {
+    override fun onItemClick(id: String, isChecked:Boolean) {
         val intent = Intent(this, OtherUserProfile::class.java)
-        intent.putExtra("userID", userId)
+        intent.putExtra("userID", id)
         startActivity(intent)
     }
 
