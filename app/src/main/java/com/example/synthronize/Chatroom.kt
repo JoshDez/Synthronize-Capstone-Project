@@ -3,6 +3,7 @@ package com.example.synthronize
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -13,8 +14,12 @@ import com.example.synthronize.databinding.ActivityChatroomBinding
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.MessageModel
+import com.example.synthronize.model.PostModel
+import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import java.lang.Exception
+
 class Chatroom : AppCompatActivity() {
     private lateinit var binding:ActivityChatroomBinding
     private lateinit var chatroomModel: ChatroomModel
@@ -26,6 +31,8 @@ class Chatroom : AppCompatActivity() {
     private var chatroomType = ""
     private var communityId = ""
     private var chatroomID = ""
+    private var postId = ""
+    private var communityIdOfPost = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +50,10 @@ class Chatroom : AppCompatActivity() {
         communityId = intent.getStringExtra("communityId").toString()
         chatroomID = intent.getStringExtra("chatroomId").toString()
 
+        //for sending post
+        postId = intent.getStringExtra("postId").toString()
+        communityIdOfPost = intent.getStringExtra("communityIdOfPost").toString()
+
 
 
         //binding buttons
@@ -55,6 +66,14 @@ class Chatroom : AppCompatActivity() {
             if (message.isNotEmpty()){
                 sendMessage(message)
                 binding.chatBoxEdtTxt.setText("")
+                binding.postLayout.visibility = View.GONE
+                postId = ""
+                communityIdOfPost = ""
+            } else if (postId.isNotEmpty() || postId != "null"){
+                sendMessage("")
+                binding.postLayout.visibility = View.GONE
+                postId = ""
+                communityIdOfPost = ""
             }
         }
 
@@ -62,6 +81,34 @@ class Chatroom : AppCompatActivity() {
         bindChatroomDetails()
         createOrRetrieveChatroomModel()
         setupChatRV()
+        bindPostToBeSent()
+
+    }
+
+    private fun bindPostToBeSent() {
+        if (postId != "null" && postId.isNotEmpty()){
+            try {
+                FirebaseUtil().retrieveCommunityFeedsCollection(communityIdOfPost).document(postId).get().addOnSuccessListener {
+                    val postModel = it.toObject(PostModel::class.java)!!
+                    FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener { user ->
+                        val userModel = user.toObject(UserModel::class.java)!!
+                        binding.postLayout.visibility = View.VISIBLE
+                        //bind post preview
+                        AppUtil().setUserProfilePic(this, userModel.userID, binding.postOwnerProfileCIV)
+                        binding.postOwnerUsernameTV.text = userModel.username
+                        binding.postCaptionTV.text = postModel.caption
+
+                        binding.cancelPostBtn.setOnClickListener {
+                            postId = ""
+                            communityIdOfPost = ""
+                            binding.postLayout.visibility = View.GONE
+                        }
+                    }
+                }
+            } catch (e:Exception){
+
+            }
+        }
     }
 
     private fun getChatroomID() {
@@ -129,7 +176,6 @@ class Chatroom : AppCompatActivity() {
                 } else {
                     chatroomModel = it.result.toObject(ChatroomModel::class.java)!!
                 }
-
             }
         }
     }
@@ -156,10 +202,22 @@ class Chatroom : AppCompatActivity() {
     }
 
     private fun sendMessage(message:String) {
-        val messageModel = MessageModel(message = message, senderID =  FirebaseUtil().currentUserUid(), timestamp =  Timestamp.now())
+
+        val messageModel = MessageModel(
+            message = message, postID = postId, communityIdOfPost = communityIdOfPost,
+            senderID =  FirebaseUtil().currentUserUid(), timestamp =  Timestamp.now()
+        )
+
         chatroomModel.lastMessageUserId = FirebaseUtil().currentUserUid()
-        chatroomModel.lastMessage = message
         chatroomModel.lastMsgTimestamp = Timestamp.now()
+
+        if (message.isEmpty() && postId.isNotEmpty() && postId != "null"){
+            //"sent a post" as the last message
+            chatroomModel.lastMessage = "Sent a post"
+        } else {
+            //send the actual message
+            chatroomModel.lastMessage = message
+        }
 
         //update lastMessageUserID and lastMsgTimestamp
         FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)

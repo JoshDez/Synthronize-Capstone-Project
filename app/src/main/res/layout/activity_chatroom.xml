@@ -83,39 +83,93 @@
         android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_above="@id/userInteractLayout"
+        android:layout_above="@id/bottomLayout"
         android:background="@color/light_teal"
         app:dividerColor="@color/light_teal" />
 
-    <RelativeLayout
-        android:id="@+id/userInteractLayout"
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:padding="10dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <EditText
-            android:id="@+id/chatBoxEdtTxt"
-            android:padding="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@id/sendMsgBtn"
-            android:hint="@string/Write_Message_Here"
-            android:background="@drawable/input_rounded_corners"/>
+        <LinearLayout
+            android:id="@+id/postLayout"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/cancelPostBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="end"
+                android:src="@drawable/cancel_icon"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/red"/>
+            <LinearLayout
+                android:id="@+id/postOwnerProfileLayout"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@+id/sendMsgBtn"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/send_msg_icon"
-            app:tint="@color/light_teal" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/postOwnerProfileCIV"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/profile_not_selected"/>
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/postOwnerUsernameTV"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/light_teal"
+                    android:text="Helloworld"/>
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/postCaptionTV"
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/light_teal"
+                android:text="Helloworld"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/userInteractLayout"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:padding="10dp">
+
+            <EditText
+                android:id="@+id/chatBoxEdtTxt"
+                android:padding="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/sendMsgBtn"
+                android:hint="@string/Write_Message_Here"
+                android:background="@drawable/input_rounded_corners"/>
+
+            <ImageButton
+                android:id="@+id/sendMsgBtn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentEnd="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/send_msg_icon"
+                app:tint="@color/light_teal" />
+
+        </RelativeLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

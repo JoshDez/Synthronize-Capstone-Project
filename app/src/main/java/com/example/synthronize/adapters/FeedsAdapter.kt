@@ -108,7 +108,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
 
         private fun bindSendPost() {
             feedBinding.sendPostBtn.setOnClickListener {
-                DialogUtil().openForwardContentDialog(context, inflater, postModel.postId)
+                DialogUtil().openForwardContentDialog(context, inflater, postModel.postId, postModel.communityId)
             }
         }
 

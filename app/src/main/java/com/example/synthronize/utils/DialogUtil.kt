@@ -24,14 +24,14 @@ import com.orhanobut.dialogplus.ViewHolder
 class DialogUtil: OnItemClickListener {
 
     //OPENS DIALOG FOR SEND POST
-    fun openForwardContentDialog(context:Context, inflater: LayoutInflater, postId:String){
+    fun openForwardContentDialog(context:Context, inflater: LayoutInflater, postId:String, communityIdOfPost:String){
         //prepares dialog
         val dialogForwardContentBinding = DialogForwardContentBinding.inflate(inflater)
         val forwardContentDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(dialogForwardContentBinding.root))
             .setMargin(20, 300, 20, 0)
             .setCancelable(true)
-            .setExpanded(true)
+            .setExpanded(false)
             .setGravity(Gravity.BOTTOM)
             .create()
 
@@ -40,12 +40,18 @@ class DialogUtil: OnItemClickListener {
             .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
         val options:FirestoreRecyclerOptions<ChatroomModel> =
             FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(myQuery, ChatroomModel::class.java).build()
-        //TODO
-        val chatroomAdapter = ChatroomAdapter(context, options, true)
+        val chatroomAdapter = ChatroomAdapter(context, options, postId, communityIdOfPost)
 
         dialogForwardContentBinding.resultsRV.layoutManager = LinearLayoutManager(context)
         dialogForwardContentBinding.resultsRV.adapter = chatroomAdapter
         chatroomAdapter.startListening()
+
+        dialogForwardContentBinding.headerLayout.setOnClickListener {
+            forwardContentDialog.dismiss()
+        }
+        dialogForwardContentBinding.downBtn.setOnClickListener {
+            forwardContentDialog.dismiss()
+        }
 
         forwardContentDialog.show()
     }

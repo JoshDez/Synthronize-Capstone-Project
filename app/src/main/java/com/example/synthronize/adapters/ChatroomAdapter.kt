@@ -19,7 +19,7 @@ import com.google.firebase.firestore.toObject
 import java.text.SimpleDateFormat
 //CHATROOMS
 class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOptions<ChatroomModel>,
-                      private val toSendPost:Boolean = false):
+                      private val postId:String = "", private val communityIdOfPost:String = ""):
     FirestoreRecyclerAdapter<ChatroomModel, ChatroomAdapter.ChatroomViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatroomViewHolder {
@@ -33,7 +33,7 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
     }
 
 
-    class ChatroomViewHolder(private val binding: ItemChatroomBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
+    inner class ChatroomViewHolder(private val binding: ItemChatroomBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
 
         private lateinit var chatroomModel: ChatroomModel
         private lateinit var communityModel: CommunityModel
@@ -86,6 +86,8 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                         intent.putExtra("chatroomId", chatroomModel.chatroomId)
                         intent.putExtra("chatroomType", chatroomModel.chatroomType)
                         intent.putExtra("communityId", communityId)
+                        intent.putExtra("postId", postId)
+                        intent.putExtra("communityIdOfPost", communityIdOfPost)
                         context.startActivity(intent)
                     }
                 }
@@ -118,6 +120,8 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                         intent.putExtra("chatroomName", userModel.fullName)
                         intent.putExtra("userID", uid)
                         intent.putExtra("chatroomType", chatroomModel.chatroomType)
+                        intent.putExtra("postId", postId)
+                        intent.putExtra("communityIdOfPost", communityIdOfPost)
                         context.startActivity(intent)
                     }
                 }

@@ -86,7 +86,7 @@
             <TextView
                 android:id="@+id/recieverMsgTV"
                 android:visibility="gone"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/Chats"
                 android:textColor="@color/light_teal"
@@ -158,11 +158,12 @@
             <TextView
                 android:id="@+id/senderMsgTV"
                 android:visibility="gone"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/Chats"
                 android:textColor="@color/darker_teal"
-                android:textSize="17sp"/>
+                android:textSize="17sp"
+                android:text=""/>
         </LinearLayout>
     </RelativeLayout>
 

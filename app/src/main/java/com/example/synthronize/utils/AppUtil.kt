@@ -39,19 +39,6 @@ class AppUtil {
         }
     }
 
-    fun resetMainToolbar(binding:ActivityMainBinding){
-        binding.backBtn.visibility = View.GONE
-        binding.kebabMenuBtn.visibility = View.GONE
-        binding.hamburgerMenuBtn.visibility = View.GONE
-        binding.searchBtn.visibility = View.GONE
-        binding.toolbarImageCIV.setImageResource(R.drawable.header_logo)
-
-        //resetting main toolbar setOnClickListeners
-        binding.searchBtn.setOnClickListener(null)
-        binding.kebabMenuBtn.setOnClickListener(null)
-        binding.hamburgerMenuBtn.setOnClickListener(null)
-    }
-
     fun setUserCoverPic(context: Context, uid: String, cover:ImageView){
         FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
             var user = it.toObject(UserModel::class.java)!!
@@ -120,6 +107,19 @@ class AppUtil {
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_NO_ANIMATION
             context.startActivity(intent)
         }, delay)
+    }
+
+    fun resetMainToolbar(binding:ActivityMainBinding){
+        binding.backBtn.visibility = View.GONE
+        binding.kebabMenuBtn.visibility = View.GONE
+        binding.hamburgerMenuBtn.visibility = View.GONE
+        binding.searchBtn.visibility = View.GONE
+        binding.toolbarImageCIV.setImageResource(R.drawable.header_logo)
+
+        //resetting main toolbar setOnClickListeners
+        binding.searchBtn.setOnClickListener(null)
+        binding.kebabMenuBtn.setOnClickListener(null)
+        binding.hamburgerMenuBtn.setOnClickListener(null)
     }
 
     //Head to OtherUserProfile activity
