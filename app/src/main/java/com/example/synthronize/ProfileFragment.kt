@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.provider.ContactsContract.Profile
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
+import com.example.synthronize.utils.ProfileUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -52,31 +54,17 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         //checks if the fragment is already added to the activity
         if (isAdded){
             context = requireContext()
+            userId = FirebaseUtil().currentUserUid()
             if (::context.isInitialized){
                 //check for internet
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
-                bindUserDetails()
 
+                //TODO add loading screen
+                bindUserDetails()
 
                 binding.postsRV.layoutManager = LinearLayoutManager(activity)
                 binding.filesRV.layoutManager = LinearLayoutManager(activity)
                 binding.likesRV.layoutManager = LinearLayoutManager(activity)
-
-                //displays the first tab
-                binding.postsRV.visibility = View.VISIBLE
-                setupPostsRV()
-
-                binding.postsBtn.setOnClickListener {
-                    navigate("posts")
-                }
-
-                binding.filesBtn.setOnClickListener {
-                    navigate("files")
-                }
-
-                binding.likesBtn.setOnClickListener {
-                    navigate("likes")
-                }
             }
 
         }
@@ -103,44 +91,12 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         }
     }
 
-
     private fun setupPostsRV(){
-        val postsList:ArrayList<PostModel> = ArrayList()
-
-        FirebaseUtil().retrieveAllCommunityCollection().get()
-            .addOnSuccessListener { querySnapshot ->
-                for (document in querySnapshot.documents) {
-                    FirebaseUtil().retrieveAllCommunityCollection()
-                        .document(document.id) // Access each document within the collection
-                        .collection("feeds")
-                        .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
-                        .get()
-                        .addOnSuccessListener { feedsSnapshot ->
-                            var postsAdded = 0
-                            feedsSnapshot.size()
-
-                            for (post in feedsSnapshot.documents){
-                                var postModel = post.toObject(PostModel::class.java)!!
-                                postsList.add(postModel)
-                                postsAdded += 1
-
-                                //checks if all the user posts in the community are added
-                                if (postsAdded == feedsSnapshot.size()){
-                                    //sorts the list by timestamp
-                                    postsList.sortByDescending {
-                                        it.createdTimestamp
-                                    }
-
-                                    //deploys postsRV
-                                    allFeedsAdapter = AllFeedsAdapter(context, postsList, false)
-                                    binding.postsRV.adapter = allFeedsAdapter
-                                }
-                            }
-                        }
-                }
-            }
+        ProfileUtil().getUserPosts(context, userId){
+            allFeedsAdapter = it
+            binding.postsRV.adapter = allFeedsAdapter
+        }
     }
-
 
     private fun setupLikesRV() {
         //TODO Not Yet Implemented
@@ -151,7 +107,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     }
 
     private fun bindUserDetails() {
-
 
         AppUtil().resetMainToolbar(mainBinding)
 
@@ -174,12 +129,35 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 AppUtil().setUserCoverPic(context, userId, binding.userCoverIV)
 
                 //bind counts
-                getCommunitiesCount()
-                getPostsCount()
-                getFriendsCount()
+                ProfileUtil().getCommunitiesCount(userId) { communityCount ->
+                    binding.communitiesCountTV.text = communityCount.toString()
+                }
+                ProfileUtil().getPostsCount(userId) { postsCount ->
+                    binding.postsCountTV.text = postsCount.toString()
+                }
+                ProfileUtil().getFriendsCount(userId) { friendsCount ->
+                    binding.friendsCountTV.text = friendsCount.toString()
+                }
+                //TODO count for files
 
+
+                //displays the first tab
+                binding.postsRV.visibility = View.VISIBLE
+                setupPostsRV()
+
+
+                //set on click listeners
                 binding.editProfileBtn.setOnClickListener {
                     headToEditProfile()
+                }
+                binding.postsBtn.setOnClickListener {
+                    navigate("posts")
+                }
+                binding.filesBtn.setOnClickListener {
+                    navigate("files")
+                }
+                binding.likesBtn.setOnClickListener {
+                    navigate("likes")
                 }
 
                 mainBinding.kebabMenuBtn.visibility = View.VISIBLE
@@ -249,46 +227,4 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         intent.putExtra("userID", userId)
         startActivity(intent)
     }
-
-    private fun getCommunitiesCount(){
-        FirebaseUtil().retrieveAllCommunityCollection()
-            .whereArrayContains("communityMembers", FirebaseUtil().currentUserUid()).get().addOnSuccessListener {
-                binding.communitiesCountTV.text = it.size().toString()
-            }.addOnFailureListener {
-                binding.communitiesCountTV.text = "0"
-            }
-    }
-
-    private fun getFriendsCount(){
-        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
-            val user = it.toObject(UserModel::class.java)!!
-            binding.friendsCountTV.text = user.friendsList.size.toString()
-        }
-    }
-
-    private fun getPostsCount(){
-        FirebaseUtil().retrieveAllCommunityCollection().get()
-            .addOnSuccessListener { querySnapshot ->
-                var totalPosts = 0
-                for (document in querySnapshot.documents) {
-                    FirebaseUtil().retrieveAllCommunityCollection()
-                        .document(document.id) // Access each document within the collection
-                        .collection("feeds")
-                        .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
-                        .get()
-                        .addOnSuccessListener { feedsSnapshot ->
-                            totalPosts += feedsSnapshot.size()
-                            binding.postsCountTV.text = totalPosts.toString()
-                        }
-                }
-            }
-            .addOnFailureListener {
-                binding.postsCountTV.text = "0"
-            }
-    }
-
-
-
-
-
 }

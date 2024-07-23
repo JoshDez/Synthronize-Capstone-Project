@@ -1,10 +1,12 @@
 package com.example.synthronize.utils
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.request.RequestOptions
 import com.example.synthronize.MainActivity
 import com.example.synthronize.OtherUserProfile
@@ -21,20 +23,25 @@ class AppUtil {
 
     //For Images
     fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView){
-        FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
-            var user = it.toObject(UserModel::class.java)!!
+        if (context is Activity && (context.isDestroyed || context.isFinishing)) {
+            // The activity is not in a valid state to load images
+            return
+        } else {
+            FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
+                var user = it.toObject(UserModel::class.java)!!
 
-            if (user.userMedia.containsKey("profile_photo")){
-                //get the image url from the key
-                var imageUrl = user.userMedia["profile_photo"]!!
+                if (user.userMedia.containsKey("profile_photo")){
+                    //get the image url from the key
+                    var imageUrl = user.userMedia["profile_photo"]!!
 
-                GlideApp.with(context)
-                    //storage reference
-                    .load(FirebaseUtil().retrieveUserProfilePicRef(imageUrl))
-                    .error(R.drawable.profile_not_selected)
-                    .apply(RequestOptions.circleCropTransform())
-                    //image view
-                    .into(civ)
+                    GlideApp.with(context)
+                        //storage reference
+                        .load(FirebaseUtil().retrieveUserProfilePicRef(imageUrl))
+                        .error(R.drawable.profile_not_selected)
+                        .apply(RequestOptions.circleCropTransform())
+                        //image view
+                        .into(civ)
+                }
             }
         }
     }
@@ -42,7 +49,6 @@ class AppUtil {
     fun setUserCoverPic(context: Context, uid: String, cover:ImageView){
         FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
             var user = it.toObject(UserModel::class.java)!!
-
             if (user.userMedia.containsKey("profile_cover_photo")){
                 //get the image url from the key
                 var imageUrl = user.userMedia["profile_cover_photo"]!!

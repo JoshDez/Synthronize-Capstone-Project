@@ -314,20 +314,22 @@
                 android:layout_width="match_parent"
                 android:background="@drawable/gradient_teal"
                 android:layout_height="46dp">
-
                 <TextView
+                    android:id="@+id/postsBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:textColor="@color/light_teal"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textAlignment="center"
                     android:layout_weight="1"
                     android:text="Posts"/>
 
                 <TextView
+                    android:id="@+id/filesBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:textColor="@color/light_teal"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -336,8 +338,10 @@
                     android:text="Files"/>
 
                 <TextView
+                    android:id="@+id/likesBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:textColor="@color/light_teal"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -357,6 +361,20 @@
                 app:dividerColor="@color/light_teal" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/postsRV"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/filesRV"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/likesRV"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </LinearLayout>

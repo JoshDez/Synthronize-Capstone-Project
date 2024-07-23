@@ -75,90 +75,105 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
                 model.communityIdOfPost.isNotEmpty() && model.communityIdOfPost != "null" ){
 
                 FirebaseUtil().retrieveCommunityDocument(model.communityIdOfPost).get().addOnSuccessListener {community ->
-                    val communityModel = community.toObject(CommunityModel::class.java)!!
+                    if (community.exists()){
+                        //community exists
 
-                    FirebaseUtil().retrieveCommunityFeedsCollection(model.communityIdOfPost).document(model.postID).get().addOnSuccessListener {
-                        val postModel = it.toObject(PostModel::class.java)!!
+                        val communityModel = community.toObject(CommunityModel::class.java)!!
 
-                        FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {owner ->
-                            val userModel = owner.toObject(UserModel::class.java)!!
+                        FirebaseUtil().retrieveCommunityFeedsCollection(model.communityIdOfPost).document(model.postID).get().addOnSuccessListener {post ->
+                            if (post.exists()){
+                                //If post exists
 
-                            if (communityModel.communityType == "Private" && !AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
-                                //if post is not available to current user
-                                if (isSender){
-                                    binding.postLayout2.visibility = View.VISIBLE
-                                    binding.postCaptionTV2.text = "Post is Unavailable"
-                                } else {
-                                    binding.postLayout.visibility = View.VISIBLE
-                                    binding.postCaptionTV.text = "Post is Unavailable"
+                                val postModel = post.toObject(PostModel::class.java)!!
+
+                                FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {owner ->
+                                    if (owner.exists()){
+                                        //owner exists
+
+                                        val userModel = owner.toObject(UserModel::class.java)!!
+
+                                        if (communityModel.communityType == "Private" && !AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                            //if post is not available to current user
+                                            displayPostNotAvailable(isSender)
+                                        } else {
+                                            //if post is available to current user
+                                            //BIND POST
+                                            if (isSender){
+                                                //Sender (YOU)
+                                                binding.postLayout2.visibility = View.VISIBLE
+                                                binding.postLayout2.setOnClickListener {
+                                                    headToPost(postModel.postId, postModel.communityId)
+                                                }
+                                                AppUtil().setUserProfilePic(context, postModel.ownerId, binding.postOwnerProfileCIV2)
+                                                binding.postCaptionTV2.text = postModel.caption
+                                                binding.postOwnerUsernameTV2.text = userModel.username
+
+                                                if (postModel.contentList.isNotEmpty()){
+                                                    binding.postThumbnailIV2.visibility = View.VISIBLE
+                                                    GlideApp.with(context)
+                                                        .load(FirebaseUtil().retrieveCommunityContentImageRef(postModel.contentList[0]))
+                                                        .error(R.drawable.baseline_image_24)
+                                                        .into(binding.postThumbnailIV2)
+                                                }
+                                            } else {
+                                                //Receiver
+                                                binding.postLayout.visibility = View.VISIBLE
+
+                                                binding.postLayout.setOnClickListener {
+                                                    headToPost(postModel.postId, postModel.communityId)
+                                                }
+
+                                                AppUtil().setUserProfilePic(context, postModel.ownerId, binding.postOwnerProfileCIV)
+                                                binding.postCaptionTV.text = postModel.caption
+                                                binding.postOwnerUsernameTV.text = userModel.username
+
+                                                if (postModel.contentList.isNotEmpty()){
+                                                    binding.postThumbnail.visibility = View.VISIBLE
+                                                    GlideApp.with(context)
+                                                        .load(FirebaseUtil().retrieveCommunityContentImageRef(postModel.contentList[0]))
+                                                        .error(R.drawable.baseline_image_24)
+                                                        .into(binding.postThumbnail)
+                                                }
+                                            }
+
+                                        }
+
+                                    } else {
+                                        //owner no longer exists
+                                        displayPostNotAvailable(isSender)
+                                    }
                                 }
                             } else {
-                                //if post is available to current user
-                                if (isSender){
-                                    //Sender (YOU)
-                                    binding.postLayout2.visibility = View.VISIBLE
-
-                                    binding.postLayout2.setOnClickListener {
-                                        headToPost(postModel.postId, postModel.communityId)
-                                    }
-
-                                    AppUtil().setUserProfilePic(context, postModel.ownerId, binding.postOwnerProfileCIV2)
-                                    binding.postCaptionTV2.text = postModel.caption
-                                    binding.postOwnerUsernameTV2.text = userModel.username
-
-                                    if (postModel.contentList.isNotEmpty()){
-                                        binding.postThumbnailIV2.visibility = View.VISIBLE
-                                        GlideApp.with(context)
-                                            .load(FirebaseUtil().retrieveCommunityContentImageRef(postModel.contentList[0]))
-                                            .error(R.drawable.baseline_image_24)
-                                            .into(binding.postThumbnailIV2)
-                                    }
-                                } else {
-                                    //Receiver
-                                    binding.postLayout.visibility = View.VISIBLE
-
-                                    binding.postLayout.setOnClickListener {
-                                        headToPost(postModel.postId, postModel.communityId)
-                                    }
-
-                                    AppUtil().setUserProfilePic(context, postModel.ownerId, binding.postOwnerProfileCIV)
-                                    binding.postCaptionTV.text = postModel.caption
-                                    binding.postOwnerUsernameTV.text = userModel.username
-
-                                    if (postModel.contentList.isNotEmpty()){
-                                        binding.postThumbnail.visibility = View.VISIBLE
-                                        GlideApp.with(context)
-                                            .load(FirebaseUtil().retrieveCommunityContentImageRef(postModel.contentList[0]))
-                                            .error(R.drawable.baseline_image_24)
-                                            .into(binding.postThumbnail)
-                                    }
-                                }
-
+                                //if post no longer exists
+                                displayPostNotAvailable(isSender)
                             }
-
+                        }.addOnFailureListener {
+                            //if theres an error retrieving post
+                            displayPostNotAvailable(isSender)
                         }
-
-                    }.addOnFailureListener {
-                        //if post itself is not available
-                        if (isSender){
-                            binding.postLayout2.visibility = View.VISIBLE
-                            binding.postCaptionTV2.text = "Post is Unavailable"
-                        } else {
-                            binding.postLayout.visibility = View.VISIBLE
-                            binding.postCaptionTV.text = "Post is Unavailable"
-                        }
+                    } else {
+                        //community no longer exists
+                        displayPostNotAvailable(isSender)
                     }
                 }.addOnFailureListener {
-                    //if community is not available
-                    if (isSender){
-                        binding.postLayout2.visibility = View.VISIBLE
-                        binding.postCaptionTV2.text = "Post is Unavailable"
-                    } else {
-                        binding.postLayout.visibility = View.VISIBLE
-                        binding.postCaptionTV.text = "Post is Unavailable"
-                    }
+                    //if theres an error retrieving community
+                    displayPostNotAvailable(isSender)
                 }
 
+            }
+        }
+        
+        private fun displayPostNotAvailable(isSender:Boolean){
+            if (isSender){
+                binding.postOwnerProfileLayout2.visibility = View.GONE
+                binding.postThumbnailIV2.visibility = View.GONE
+                binding.postLayout2.visibility = View.VISIBLE
+                binding.postCaptionTV2.text = "Post is Unavailable"
+            } else {
+                binding.postOwnerProfileLayout.visibility = View.GONE
+                binding.postThumbnail.visibility = View.GONE
+                binding.postLayout.visibility = View.VISIBLE
+                binding.postCaptionTV.text = "Post is Unavailable"
             }
         }
 

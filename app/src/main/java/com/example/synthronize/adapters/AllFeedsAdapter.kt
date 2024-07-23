@@ -31,6 +31,7 @@ import com.google.firebase.firestore.Query
 import java.lang.Exception
 import kotlin.random.Random
 
+//FEEDS ADAPTER FOR OUTSIDE OF COMMUNITY FRAGMENT
 class AllFeedsAdapter(private val context: Context, private val feedList: ArrayList<PostModel>, private var isExploreTab:Boolean = true)
     :RecyclerView.Adapter<AllFeedsAdapter.ExploreViewHolder>() {
 
