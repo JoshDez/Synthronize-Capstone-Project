@@ -17,6 +17,7 @@ import com.example.synthronize.model.MessageModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.GlideApp
 import com.google.firebase.firestore.toObject
@@ -110,10 +111,7 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
 
                                                 if (postModel.contentList.isNotEmpty()){
                                                     binding.postThumbnailIV2.visibility = View.VISIBLE
-                                                    GlideApp.with(context)
-                                                        .load(FirebaseUtil().retrieveCommunityContentImageRef(postModel.contentList[0]))
-                                                        .error(R.drawable.baseline_image_24)
-                                                        .into(binding.postThumbnailIV2)
+                                                    ContentUtil().setImageContent(context, postModel.contentList[0], binding.postThumbnailIV2)
                                                 }
                                             } else {
                                                 //Receiver
@@ -129,10 +127,7 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
 
                                                 if (postModel.contentList.isNotEmpty()){
                                                     binding.postThumbnail.visibility = View.VISIBLE
-                                                    GlideApp.with(context)
-                                                        .load(FirebaseUtil().retrieveCommunityContentImageRef(postModel.contentList[0]))
-                                                        .error(R.drawable.baseline_image_24)
-                                                        .into(binding.postThumbnail)
+                                                    ContentUtil().setImageContent(context, postModel.contentList[0], binding.postThumbnail)
                                                 }
                                             }
 

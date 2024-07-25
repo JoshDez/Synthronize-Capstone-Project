@@ -130,6 +130,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 binding.feedWrapperLayout.visibility = View.VISIBLE
                 binding.wrapperName.text = community.communityName
                 AppUtil().setCommunityProfilePic(context, community.communityId, binding.wrapperCIV)
+                AppUtil().changeCommunityButtonStates(context, binding.communityActionBtn, community.communityId)
             }
 
             //SETUP FEED

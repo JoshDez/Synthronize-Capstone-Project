@@ -88,7 +88,6 @@ class ViewPost : AppCompatActivity() {
     }
 
     private fun bindContent(contentList: List<String>){
-
         for (content in contentList){
             //Identifies the content
             val temp = content.split('-')
@@ -96,7 +95,8 @@ class ViewPost : AppCompatActivity() {
                 binding.contentLayout.addView(ContentUtil().getImageView(this, content))
                 binding.contentLayout.addView(ContentUtil().createSpaceView(this))
             }else if (temp[1] == "Video"){
-                //TODO to be implemented
+                binding.contentLayout.addView(ContentUtil().getVideoThumbnail(this, content))
+                binding.contentLayout.addView(ContentUtil().createSpaceView(this))
             }
         }
     }

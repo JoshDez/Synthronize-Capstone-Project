@@ -28,7 +28,7 @@ class ContentUtil {
         val imageParams = LinearLayout.LayoutParams(imageDpToPx.toInt(), imageDpToPx.toInt())
         imageView.layoutParams = imageParams
 
-        setImageContent("Image" ,context, filename, imageView)
+        setImageContent(context, filename, imageView)
 
         //set onclick listener
         imageView.setOnClickListener {
@@ -43,6 +43,7 @@ class ContentUtil {
         return imageView
     }
 
+    //video thumbnail with play icon
     fun getVideoThumbnail(context: Context, filename: String): FrameLayout {
 
         // Create a FrameLayout to hold the video thumbnail and play icon
@@ -60,7 +61,7 @@ class ContentUtil {
         imageView.layoutParams = imageParams
 
         // Add the video thumbnail to the image view
-        setImageContent("Video" ,context, filename, imageView)
+        setImageContent(context, filename, imageView)
 
         // Create ImageView for the foreground (play icon)
         val playIconView = ImageView(context)
@@ -86,15 +87,18 @@ class ContentUtil {
         return frameLayout
     }
 
-    private fun setImageContent(type:String, context: Context, filename: String, imageView:ImageView){
-        if (type == "Image"){
+    fun setImageContent(context: Context, filename: String, imageView:ImageView){
+        var splitFileName = filename.split('-')
+        var postContentType = splitFileName[1]
+
+        if (postContentType == "Image"){
             GlideApp.with(context)
                 //storage reference
                 .load(FirebaseUtil().retrieveCommunityContentImageRef(filename))
                 .error(R.drawable.baseline_image_24)
                 //image view
                 .into(imageView)
-        } else if (type == "Video"){
+        } else if (postContentType == "Video"){
             GlideApp.with(context)
                 //storage reference
                 .load(FirebaseUtil().retrieveCommunityContentVideoRef(filename))
