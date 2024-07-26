@@ -1,21 +1,20 @@
 package com.example.synthronize
 
-import UserLastSeenUpdater
-import android.app.Activity
-import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
-import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.utils.AppUtil
-import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private var currentFragment = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -25,63 +24,96 @@ class MainActivity : AppCompatActivity() {
 
         //BOTTOM NAVIGATION BUTTONS
         binding.communitiesBtn.setOnClickListener {
-            AppUtil().resetMainToolbar(binding)
-            selectNavigation(binding.communitiesBtn.id)
-            replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager), "SELECTION_FRAGMENT")
+            selectFragment("community_selection")
         }
         binding.exploreBtn.setOnClickListener {
-            AppUtil().resetMainToolbar(binding)
-            selectNavigation(binding.exploreBtn.id)
-            replaceFragment(ExploreFragment(binding), "EXPLORE_FRAGMENT")
+            selectFragment("explore")
         }
-
         binding.updatesBtn.setOnClickListener {
-            AppUtil().resetMainToolbar(binding)
-            selectNavigation(binding.updatesBtn.id)
-            replaceFragment(UpdatesFragment(binding), "UPDATES_FRAGMENT")
+            selectFragment("updates")
         }
-
         binding.profileBtn.setOnClickListener {
-            AppUtil().resetMainToolbar(binding)
-            selectNavigation(binding.profileBtn.id)
-            replaceFragment(ProfileFragment(binding), "PROFILE_FRAGMENT")
+            selectFragment("profile")
         }
         binding.chatBtn.setOnClickListener {
-            AppUtil().resetMainToolbar(binding)
-            selectNavigation(binding.chatBtn.id)
-            replaceFragment(ChatFragment(binding), "CHAT_FRAGMENT")
+            selectFragment("chat")
         }
-
-
     }
     //Function that checks if the intent request for a specific fragment
     private fun onStartFragment(){
-        val fragmentRequest = intent.getStringExtra("fragment").toString()
+        var fragmentRequest = intent.getStringExtra("fragment").toString()
         val communityId = intent.getStringExtra("communityId").toString()
-        if (fragmentRequest == "profile"){
-            AppUtil().resetMainToolbar(binding)
-            selectNavigation(binding.profileBtn.id)
-            replaceFragment(ProfileFragment(binding), "PROFILE_FRAGMENT")
-        } else if(fragmentRequest == "chat") {
-            AppUtil().resetMainToolbar(binding)
-            selectNavigation(binding.chatBtn.id)
-            replaceFragment(ChatFragment(binding), "CHAT_FRAGMENT")
-        } else if (fragmentRequest == "community") {
-            AppUtil().resetMainToolbar(binding)
-            selectNavigation(binding.communitiesBtn.id)
-            replaceFragment(CommunityFragment(binding, communityId), "COMMUNITY_FRAGMENT")
-        } else {
-            //default group selection fragment
-            AppUtil().resetMainToolbar(binding)
-            selectNavigation(binding.communitiesBtn.id)
-            replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager), "SELECTION_FRAGMENT")
+
+        when (fragmentRequest) {
+            "profile" -> {
+                selectFragment("profile")
+            }
+            "chat" -> {
+                selectFragment("chat")
+            }
+            "community" -> {
+                selectFragment("community", communityId)
+            }
+            else -> {
+                //default group selection fragment
+                selectFragment("community_selection")
+            }
         }
     }
+
+    private fun selectFragment(fragmentRequest:String = "", communityId:String = ""){
+
+        when (fragmentRequest) {
+            "explore" -> {
+                currentFragment = fragmentRequest
+                selectNavigation(binding.exploreBtn.id)
+                replaceFragment(ExploreFragment(binding), currentFragment)
+
+            }
+            "profile" -> {
+                currentFragment = fragmentRequest
+                AppUtil().resetMainToolbar(binding)
+                selectNavigation(binding.profileBtn.id)
+                replaceFragment(ProfileFragment(binding), currentFragment)
+
+            }
+            "chat" -> {
+                currentFragment = fragmentRequest
+                AppUtil().resetMainToolbar(binding)
+                selectNavigation(binding.chatBtn.id)
+                replaceFragment(ChatFragment(binding), currentFragment)
+
+            }
+            "updates" -> {
+                currentFragment = fragmentRequest
+                AppUtil().resetMainToolbar(binding)
+                selectNavigation(binding.updatesBtn.id)
+                replaceFragment(UpdatesFragment(binding), currentFragment)
+            }
+            "community_selection" -> {
+                //default group selection fragment
+                currentFragment = fragmentRequest
+                AppUtil().resetMainToolbar(binding)
+                selectNavigation(binding.communitiesBtn.id)
+                replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager), currentFragment)
+            }
+            "community" -> {
+                if (communityId.isNotEmpty() && communityId != "null"){
+                    currentFragment = fragmentRequest
+                    AppUtil().resetMainToolbar(binding)
+                    selectNavigation(binding.communitiesBtn.id)
+                    replaceFragment(CommunityFragment(binding, communityId), currentFragment)
+                }
+            }
+        }
+    }
+
     private fun replaceFragment(fragment: Fragment, tag: String) {
         val fragmentManager = supportFragmentManager
         val existingFragment = fragmentManager.findFragmentByTag(tag)
 
         if (existingFragment == null || existingFragment.javaClass != fragment.javaClass) {
+            //replace new fragment
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(binding.mainFrameLayout.id, fragment, tag)
             fragmentTransaction.commitAllowingStateLoss()

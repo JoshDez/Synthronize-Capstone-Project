@@ -2,11 +2,13 @@ package com.example.synthronize
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import com.example.synthronize.adapters.ChatroomAdapter
@@ -21,12 +23,13 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 
-class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
+class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), OnRefreshListener {
     private lateinit var binding: FragmentChatBinding
     private lateinit var chatroomAdapter: ChatroomAdapter
     private lateinit var friendsAdapter: FriendsAdapter
     private lateinit var communityChatroomsAdapter: CommunityChatroomsAdapter
     private lateinit var context: Context
+    private var currentTab = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,17 +63,17 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
                 binding.inboxRV.layoutManager = LinearLayoutManager(activity)
                 binding.communityChatsRV.layoutManager = LinearLayoutManager(activity)
                 binding.friendsListRV.layoutManager = LinearLayoutManager(activity)
+                binding.chatRefreshLayout.setOnRefreshListener(this)
 
-                setupChatroomListForInbox()
+                //set default tab
+                navigate("direct_message")
 
                 binding.inboxBtn.setOnClickListener {
                     navigate("direct_message")
                 }
-
                 binding.communityChatsBtn.setOnClickListener {
                     navigate("community_chat")
                 }
-
                 binding.friendsBtn.setOnClickListener {
                     navigate("friends_list")
                 }
@@ -90,14 +93,17 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         if (tab == "community_chat"){
             binding.communityChatsRV.visibility = View.VISIBLE
             setupChatroomListForCommunity()
+            currentTab = "community_chat"
             //binding.communityChatsBtn.setTextColor(selectedColor)
         }else if (tab == "direct_message"){
             binding.inboxRV.visibility = View.VISIBLE
             setupChatroomListForInbox()
+            currentTab = "direct_message"
             //binding.inboxBtn.setTextColor(selectedColor)
         }else if (tab == "friends_list"){
             binding.friendsListRV.visibility = View.VISIBLE
             setupFriendsList()
+            currentTab = "friends_list"
         }
     }
 
@@ -182,5 +188,13 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment() {
         if (::communityChatroomsAdapter.isInitialized){
             communityChatroomsAdapter.stopListening()
         }
+    }
+
+    override fun onRefresh() {
+        Handler().postDelayed({
+            navigate(currentTab)
+            binding.chatRefreshLayout.isRefreshing = false
+        }, 1000)
+
     }
 }

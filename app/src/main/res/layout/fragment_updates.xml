@@ -100,10 +100,18 @@
         android:background="@color/light_teal"
         app:dividerColor="@color/light_teal" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/notificationRV"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/notificationsRefreshLayout"
         android:layout_below="@id/divider1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/notificationRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </RelativeLayout>

@@ -8,336 +8,351 @@
     android:background="@color/gray2"
     tools:context=".ProfileFragment">
 
-    <ScrollView
-
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/profileRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:orientation="vertical"
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/userInfoLayout"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:background="@color/darker_teal"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <FrameLayout
-                    android:layout_below="@id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:id="@+id/userCoverIV"
-                            android:layout_width="match_parent"
-                            android:layout_height="180dp"
-                            android:src="@color/black"/>
-
-
-                        <LinearLayout
-                            android:id="@+id/postsContainer"
-                            android:layout_below="@id/userCoverIV"
-                            android:orientation="vertical"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginStart="20dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:id="@+id/postsCountTV"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textAlignment="center"
-                                android:text="0"
-                                android:textStyle="bold"
-                                android:textColor="@color/light_teal"/>
-                            <TextView
-                                android:id="@+id/postsTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAlignment="center"
-                                android:textSize="12sp"
-                                android:text="@string/posts"
-                                android:textColor="@color/light_teal"/>
-                        </LinearLayout>
-
-
-
-                        <LinearLayout
-                            android:id="@+id/communitiesContainer"
-                            android:layout_below="@id/userCoverIV"
-                            android:orientation="vertical"
-                            android:layout_toRightOf="@id/postsContainer"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginStart="30dp"
-                            android:layout_width="73dp"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:id="@+id/communitiesCountTV"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textStyle="bold"
-                                android:textAlignment="center"
-                                android:text="0"
-                                android:textColor="@color/light_teal"/>
-                            <TextView
-                                android:id="@+id/communitiesTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAlignment="center"
-                                android:textSize="12sp"
-                                android:text="@string/communities"
-                                android:textColor="@color/light_teal"/>
-                        </LinearLayout>
-
-
-                        <LinearLayout
-                            android:id="@+id/friendsContainer"
-                            android:layout_below="@id/userCoverIV"
-                            android:layout_toLeftOf="@id/filesContainer"
-                            android:orientation="vertical"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginEnd="20dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:id="@+id/friendsCountTV"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textStyle="bold"
-                                android:textAlignment="center"
-                                android:text="0"
-                                android:textColor="@color/light_teal"/>
-                            <TextView
-                                android:id="@+id/friendsTV"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textAlignment="center"
-                                android:textSize="12sp"
-                                android:text="@string/friends"
-                                android:textColor="@color/light_teal"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/filesContainer"
-                            android:layout_below="@id/userCoverIV"
-                            android:layout_alignParentEnd="true"
-                            android:orientation="vertical"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginEnd="10dp"
-                            android:gravity="center"
-                            android:layout_width="73dp"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:id="@+id/filesCountTV"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textStyle="bold"
-                                android:textAlignment="center"
-                                android:text="0"
-                                android:textColor="@color/light_teal"/>
-                            <TextView
-                                android:id="@+id/filesTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAlignment="center"
-                                android:textSize="12sp"
-                                android:text="Files"
-                                android:textColor="@color/light_teal"/>
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/userProfileCIV"
-                            android:layout_width="130dp"
-                            android:layout_height="130dp"
-                            android:layout_centerInParent="true"
-                            android:src="@color/light_teal"/>
-
-
-
-                        <TextView
-                            android:id="@+id/userDisplayNameTV"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="20dp"
-                            android:layout_below="@id/userProfileCIV"
-                            android:layout_centerInParent="true"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:contentDescription="@string/full_name"
-                            android:textAlignment="center"
-                            android:textColor="@color/light_teal"
-                            android:textSize="18sp"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:id="@+id/userNameTV"
-                            android:layout_below="@id/userDisplayNameTV"
-                            android:layout_centerInParent="true"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="20dp"
-                            android:layout_marginTop="2dp"
-                            android:contentDescription="@string/username"
-                            android:textAlignment="center"
-                            android:textColor="@color/light_teal"
-                            android:textSize="16sp"/>
-
-                    </RelativeLayout>
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/userDescriptionTV"
+                <LinearLayout
+                    android:id="@+id/userInfoLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:backgroundTint="#00FFFFFF"
-                    android:drawableTint="#00FFFFFF"
-                    android:contentDescription="@string/user_description"
-                    android:textAlignment="center"
-                    android:textColor="@color/light_teal"
-                    android:textSize="15sp" />
+                    android:background="@color/darker_teal"
+                    android:orientation="vertical">
 
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_below="@id/divider">
 
-                <RelativeLayout
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="15dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:id="@+id/birthdayLayout"
-                        android:visibility="invisible"
-                        android:layout_centerVertical="true"
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/baseline_calendar_month_24"
-                            app:tint="@color/light_teal"/>
-                        <TextView
-                            android:id="@+id/birthdayTV"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginStart="5dp"
-                            android:backgroundTint="#00FFFFFF"
-                            android:drawableTint="#00FFFFFF"
-                            android:text="Birthday: December 19, 2002"
-                            android:contentDescription="@string/user_description"
-                            android:textColor="@color/light_teal"
-                            android:textSize="15sp" />
+                            android:layout_height="wrap_content">
 
-                    </LinearLayout>
+                            <ImageView
+                                android:id="@+id/userCoverIV"
+                                android:layout_width="match_parent"
+                                android:layout_height="180dp"
+                                android:src="@color/black" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/editProfileBtn"
-                        android:layout_width="wrap_content"
+
+                            <LinearLayout
+                                android:id="@+id/postsContainer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/userCoverIV"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="20dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/postsCountTV"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/light_teal"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/postsTV"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/posts"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/light_teal"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:id="@+id/communitiesContainer"
+                                android:layout_width="73dp"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/userCoverIV"
+                                android:layout_marginStart="30dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_toRightOf="@id/postsContainer"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/communitiesCountTV"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/light_teal"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/communitiesTV"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/communities"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/light_teal"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:id="@+id/friendsContainer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/userCoverIV"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginEnd="20dp"
+                                android:layout_toLeftOf="@id/filesContainer"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/friendsCountTV"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/light_teal"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/friendsTV"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/friends"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/light_teal"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/filesContainer"
+                                android:layout_width="73dp"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/userCoverIV"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginEnd="10dp"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/filesCountTV"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/light_teal"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/filesTV"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Files"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/light_teal"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/userProfileCIV"
+                                android:layout_width="130dp"
+                                android:layout_height="130dp"
+                                android:layout_centerInParent="true"
+                                android:src="@color/light_teal" />
+
+
+                            <TextView
+                                android:id="@+id/userDisplayNameTV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/userProfileCIV"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerInParent="true"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginEnd="20dp"
+                                android:contentDescription="@string/full_name"
+                                android:textAlignment="center"
+                                android:textColor="@color/light_teal"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/userNameTV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/userDisplayNameTV"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerInParent="true"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginEnd="20dp"
+                                android:contentDescription="@string/username"
+                                android:textAlignment="center"
+                                android:textColor="@color/light_teal"
+                                android:textSize="16sp" />
+
+                        </RelativeLayout>
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/userDescriptionTV"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="Edit Profile"
-                        app:backgroundTint="@color/light_teal"/>
-                </RelativeLayout>
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="#00FFFFFF"
+                        android:contentDescription="@string/user_description"
+                        android:drawableTint="#00FFFFFF"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_teal"
+                        android:textSize="15sp" />
 
 
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="horizontal"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp">
+
+                        <LinearLayout
+                            android:id="@+id/birthdayLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:orientation="horizontal"
+                            android:visibility="invisible">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/baseline_calendar_month_24"
+                                app:tint="@color/light_teal" />
+
+                            <TextView
+                                android:id="@+id/birthdayTV"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginBottom="10dp"
+                                android:backgroundTint="#00FFFFFF"
+                                android:contentDescription="@string/user_description"
+                                android:drawableTint="#00FFFFFF"
+                                android:text="Birthday: December 19, 2002"
+                                android:textColor="@color/light_teal"
+                                android:textSize="15sp" />
+
+                        </LinearLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/editProfileBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="Edit Profile"
+                            app:backgroundTint="@color/light_teal" />
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_below="@id/mainToolbar"
+                    app:dividerColor="@color/light_teal" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@drawable/gradient_teal"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/postsBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Posts"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/filesBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Files"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/likesBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Likes"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_below="@id/mainToolbar"
+                    app:dividerColor="@color/light_teal" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/postsRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/filesRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/likesRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
             </LinearLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_below="@id/mainToolbar"
-                app:dividerColor="@color/light_teal" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:background="@drawable/gradient_teal"
-                android:layout_height="46dp">
-
-                <TextView
-                    android:id="@+id/postsBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:text="Posts"/>
-
-                <TextView
-                    android:id="@+id/filesBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:text="Files"/>
-
-                <TextView
-                    android:id="@+id/likesBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:text="Likes"/>
-            </LinearLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_below="@id/mainToolbar"
-                app:dividerColor="@color/light_teal" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/postsRV"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/filesRV"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/likesRV"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

@@ -83,7 +83,7 @@
                 android:id="@+id/usernameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Username"
+                android:contentDescription="@string/username"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/light_teal"
-                android:text="2 hours ago"
+                android:contentDescription="@string/timestamp"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -277,7 +277,7 @@
     </LinearLayout>
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="8dp"
         app:dividerColor="@color/gray"/>
 
     <androidx.recyclerview.widget.RecyclerView

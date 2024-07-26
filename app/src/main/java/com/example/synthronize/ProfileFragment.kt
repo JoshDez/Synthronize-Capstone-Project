@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
@@ -26,7 +27,7 @@ import com.example.synthronize.utils.ProfileUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
-class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment() {
+class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment(), OnRefreshListener {
 
     private lateinit var allFeedsAdapter: AllFeedsAdapter
     private lateinit var binding: FragmentProfileBinding
@@ -65,6 +66,8 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 binding.postsRV.layoutManager = LinearLayoutManager(activity)
                 binding.filesRV.layoutManager = LinearLayoutManager(activity)
                 binding.likesRV.layoutManager = LinearLayoutManager(activity)
+                binding.profileRefreshLayout.setOnRefreshListener(this)
+
             }
 
         }
@@ -226,5 +229,12 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         val intent = Intent(requireContext(), EditProfile::class.java)
         intent.putExtra("userID", userId)
         startActivity(intent)
+    }
+
+    override fun onRefresh() {
+        Handler().postDelayed({
+            bindUserDetails()
+            binding.profileRefreshLayout.isRefreshing = false
+        }, 1000)
     }
 }

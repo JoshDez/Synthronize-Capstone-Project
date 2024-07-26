@@ -3,12 +3,14 @@ package com.example.synthronize
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.FeedsAdapter
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentFeedsBinding
@@ -17,7 +19,7 @@ import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 
-class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment() {
+class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment(), OnRefreshListener {
 
     private lateinit var binding: FragmentFeedsBinding
     private lateinit var context: Context
@@ -42,6 +44,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
             if (context != null){
                 bindButtons()
                 setRecyclerView()
+                binding.feedsRefreshLayout.setOnRefreshListener(this)
             }
         }
     }
@@ -87,5 +90,12 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
         if (::feedsAdapter.isInitialized){
             feedsAdapter.stopListening()
         }
+    }
+
+    override fun onRefresh() {
+        Handler().postDelayed({
+            setRecyclerView()
+            binding.feedsRefreshLayout.isRefreshing = false
+        }, 1000)
     }
 }

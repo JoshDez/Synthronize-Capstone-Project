@@ -3,11 +3,15 @@ package com.example.synthronize
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentExploreBinding
@@ -16,7 +20,7 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 
-class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment() {
+class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(), OnRefreshListener {
     // TODO: Rename and change types of parameters
     private lateinit var allFeedsAdapter: AllFeedsAdapter
     private lateinit var binding:FragmentExploreBinding
@@ -42,13 +46,11 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment() 
         if (isAdded && isVisible && !isDetached && !isRemoving){
             context = requireContext()
             if (::context.isInitialized){
-
                 //check for internet
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
-
                 //reset main toolbar
                 AppUtil().resetMainToolbar(mainBinding)
-
+                binding.exploreRefreshLayout.setOnRefreshListener(this)
                 bindButtons()
                 setupRV()
             }
@@ -84,5 +86,12 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment() 
             val intent = Intent(context, Search::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onRefresh() {
+        Handler().postDelayed({
+            setupRV()
+            binding.exploreRefreshLayout.isRefreshing = false
+        }, 1000)
     }
 }

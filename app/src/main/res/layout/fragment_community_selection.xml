@@ -18,16 +18,22 @@
         app:dividerColor="@color/light_teal"
         tools:ignore="NotSibling" />
 
-    <!-- RecyclerView for Group Selection -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/groupSelectionRV"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/selectionRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottomNavigation"
-        android:layout_below="@id/divider1"
-        android:padding="8dp"
-        tools:listitem="@layout/item_community"
-        tools:ignore="NotSibling" />
+        android:layout_height="match_parent">
+        <!-- RecyclerView for Group Selection -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/groupSelectionRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottomNavigation"
+            android:layout_below="@id/divider1"
+            android:padding="8dp"
+            tools:listitem="@layout/item_community"
+            tools:ignore="NotSibling" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <!-- FloatingActionButton for Add Group -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.CommunityAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogAddCommunityBinding
@@ -28,7 +29,7 @@ import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 import java.util.logging.Handler
 
-class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager) : Fragment() {
+class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager) : Fragment(), OnRefreshListener {
     private lateinit var binding: FragmentCommunitySelectionBinding
     private lateinit var dialogBinding: DialogAddCommunityBinding
     private lateinit var communityAdapter: CommunityAdapter
@@ -66,6 +67,9 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
 
                 //reset main toolbar
                 AppUtil().resetMainToolbar(mainBinding)
+
+                //initialize refresh layout
+                binding.selectionRefreshLayout.setOnRefreshListener(this)
 
                 // Set up Add Group FAB
                 binding.addGroupFab.setOnClickListener {
@@ -165,6 +169,13 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
         super.onStop()
         if (::communityAdapter.isInitialized)
             communityAdapter.stopListening()
+    }
+
+    override fun onRefresh() {
+        android.os.Handler().postDelayed({
+            setupRecyclerView()
+            binding.selectionRefreshLayout.isRefreshing = false
+        }, 1000)
     }
 
 

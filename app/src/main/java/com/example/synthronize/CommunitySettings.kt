@@ -101,7 +101,6 @@ class CommunitySettings : AppCompatActivity() {
                 .setMargin(50, 800, 50, 800)
                 .setGravity(Gravity.CENTER)
                 .create()
-
             warningBinding.titleTV.text = "Warning"
             warningBinding.messageTV.text = "Do you want to permanently delete this community?"
             warningBinding.yesBtn.setOnClickListener {
@@ -118,8 +117,6 @@ class CommunitySettings : AppCompatActivity() {
             }
             warningDialog.show()
         }
-
-
     }
 
     private fun setupGeneralLayout() {
@@ -137,9 +134,13 @@ class CommunitySettings : AppCompatActivity() {
         }
 
         binding.leaveCommunityBtn.setOnClickListener {
+            //get the list of userIDs of Admins
             val admin = AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin")
 
-            if (admin.size != 1 && admin[0] != FirebaseUtil().currentUserUid()){
+            if (admin.size == 1 && admin.contains(FirebaseUtil().currentUserUid())){
+                //shows a toast message
+                Toast.makeText(this, "The community should at least have 1 admin available", Toast.LENGTH_SHORT).show()
+            } else {
                 //show error message
                 val dialogPlusBinding = DialogWarningMessageBinding.inflate(layoutInflater)
                 val dialogPlus = DialogPlus.newDialog(this)
@@ -172,9 +173,6 @@ class CommunitySettings : AppCompatActivity() {
                     dialogPlus.dismiss()
                 }
                 dialogPlus.show()
-            } else {
-                //shows a toast message
-                Toast.makeText(this, "The community should at least have 1 admin available", Toast.LENGTH_SHORT).show()
             }
 
 

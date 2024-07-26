@@ -24,7 +24,7 @@
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="20sp"
-            android:text="Name"
+            android:contentDescription="@string/name"
             android:textColor="@color/light_teal"
             android:textAlignment="center"/>
 

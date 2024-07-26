@@ -14,12 +14,12 @@
         android:src="@drawable/profile_not_selected"/>
     <TextView
         android:id="@+id/chatroomNameTV"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="8dp"
         android:textSize="17dp"
-        android:text="FULLNAME"
+        android:contentDescription="@string/full_name"
         android:textColor="@color/light_teal"
         android:layout_above="@id/lastUserMessageTV"
         android:layout_toRightOf="@id/userCircleImageView"/>
@@ -30,7 +30,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginBottom="8dp"
         android:textSize="15dp"
-        android:text="Josh: asldkasdlfflakksd"
+        android:contentDescription="@string/Chats"
         android:textColor="@color/light_teal"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/userCircleImageView"
@@ -42,7 +42,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginBottom="8dp"
         android:textSize="15dp"
-        android:text="Tue:12PM"
+        android:contentDescription="@string/timestamp"
         android:textColor="@color/light_teal"
         android:layout_marginEnd="15dp"
         android:layout_alignParentBottom="true"

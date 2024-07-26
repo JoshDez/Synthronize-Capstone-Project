@@ -58,12 +58,13 @@ class ProfileUtil {
     }
 
     fun getCommunitiesCount(userId:String, callback: (Int) -> Unit){
+        val roles = listOf("Admin", "Moderator", "Member")
         FirebaseUtil().retrieveAllCommunityCollection()
-            .whereArrayContains("communityMembers", userId).get().addOnSuccessListener {
+            .whereIn("communityMembers.${userId}", roles).get().addOnSuccessListener {
                 callback(it.size())
             }.addOnFailureListener {
                 callback(0)
-            }
+        }
     }
 
     fun getFriendsCount(userId:String, callback: (Int) -> Unit){

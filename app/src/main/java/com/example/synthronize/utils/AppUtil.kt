@@ -180,8 +180,6 @@ class AppUtil {
     }
 
 
-
-
     //BUTTON STATES
 
     //Friend request button
@@ -312,7 +310,6 @@ class AppUtil {
                         communityButton.visibility = View.VISIBLE
                         communityButton.text = "Join Community"
                         communityButton.setOnClickListener {
-
                             FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
                                 if (isSuccessful){
                                     FirebaseUtil().addUserToAllCommunityChannels(communityId, FirebaseUtil().currentUserUid()){isSuccessful->

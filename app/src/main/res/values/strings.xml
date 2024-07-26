@@ -97,6 +97,9 @@
     <string name="delete_community">Delete Community</string>
     <string name="edit_community">Edit Community</string>
     <string name="users">Users</string>
+    <string name="timestamp">timestamp</string>
+    <string name="name">Name</string>
+    <string name="group_name">Group Name</string>
 
 
 </resources>

@@ -163,7 +163,6 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 }
                 bindLove()
                 bindComment()
-                bindRepost()
                 bindContent()
             }
         }
@@ -194,10 +193,6 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 binding.viewPager2.visibility = View.GONE
                 binding.circleIndicator3.visibility = View.GONE
             }
-        }
-
-        private fun bindRepost() {
-            //TODO Not yet implemented
         }
 
         private fun bindComment() {

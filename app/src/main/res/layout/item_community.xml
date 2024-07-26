@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:text="THIS IS GROUP EXAMPLE"
+            android:contentDescription="@string/group_name"
             android:textColor="@color/light_teal"
             android:textSize="18sp"
             android:textStyle="bold" />
