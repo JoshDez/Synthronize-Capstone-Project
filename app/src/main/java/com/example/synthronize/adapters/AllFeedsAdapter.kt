@@ -23,12 +23,8 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.Query
-import java.lang.Exception
 import kotlin.random.Random
 
 //FEEDS ADAPTER FOR OUTSIDE OF COMMUNITY FRAGMENT
