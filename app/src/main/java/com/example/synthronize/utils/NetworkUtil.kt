@@ -4,6 +4,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.view.View
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.google.android.material.snackbar.Snackbar
 
 class NetworkUtil(private val context: Context) {
@@ -13,11 +14,12 @@ class NetworkUtil(private val context: Context) {
 
     private lateinit var snackbar: Snackbar
 
-    fun checkNetworkAndShowSnackbar(view: View) {
+    fun checkNetworkAndShowSnackbar(view: View, retryListener: OnNetworkRetryListener) {
         if (!isNetworkAvailable()) {
             // Show Snackbar with retry action
             snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_INDEFINITE)
-                .setAction("Close") {
+                .setAction("Retry") {
+                    retryListener.retryNetwork()
                     snackbar.dismiss()
                 }
             snackbar.show()

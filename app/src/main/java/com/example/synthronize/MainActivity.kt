@@ -9,17 +9,18 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.synthronize.databinding.ActivityMainBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.NetworkUtil
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnNetworkRetryListener {
     private lateinit var binding: ActivityMainBinding
     private var currentFragment = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root)
+        NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root, this)
         onStartFragment()
 
         //BOTTOM NAVIGATION BUTTONS
@@ -149,5 +150,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.groups_toolbar_menu, menu)
         return true
+    }
+
+    override fun retryNetwork() {
     }
 }

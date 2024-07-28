@@ -360,23 +360,38 @@
                 android:background="@color/light_teal"
                 app:dividerColor="@color/light_teal" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/postsRV"
-                android:visibility="gone"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/otherUserRefreshLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/filesRV"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/likesRV"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/postsRV"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/filesRV"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/likesRV"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

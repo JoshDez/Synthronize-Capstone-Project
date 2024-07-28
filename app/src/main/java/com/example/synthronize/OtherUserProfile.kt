@@ -2,11 +2,14 @@ package com.example.synthronize
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.databinding.ActivityOtherUserProfileBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
@@ -15,7 +18,7 @@ import com.example.synthronize.utils.NetworkUtil
 import com.example.synthronize.utils.ProfileUtil
 import com.google.firebase.firestore.FieldValue
 
-class OtherUserProfile : AppCompatActivity() {
+class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener {
     private lateinit var binding:ActivityOtherUserProfileBinding
     private lateinit var userModel: UserModel
     private lateinit var allFeedsAdapter:AllFeedsAdapter
@@ -27,7 +30,7 @@ class OtherUserProfile : AppCompatActivity() {
         setContentView(binding.root)
 
         //check for internet
-        NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root)
+        NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root, this)
 
         userID = intent.getStringExtra("userID").toString()
         bindUserDetails()
@@ -56,9 +59,11 @@ class OtherUserProfile : AppCompatActivity() {
             binding.postsRV.visibility = View.VISIBLE
             setupPostsRV()
             //binding.communityChatsBtn.setTextColor(selectedColor)
+
         }else if (tab == "files"){
             binding.filesRV.visibility = View.VISIBLE
             setupFilesRV()
+
         }else if (tab == "likes"){
             binding.likesRV.visibility = View.VISIBLE
             setupLikesRV()
@@ -83,7 +88,7 @@ class OtherUserProfile : AppCompatActivity() {
 
     private fun bindUserDetails() {
         //TODO: Implement loading start
-
+        binding.otherUserRefreshLayout.isRefreshing = true
         FirebaseUtil().targetUserDetails(userID).get().addOnCompleteListener {
             if (it.isSuccessful && it.result.exists()){
                 userModel = it.result.toObject(UserModel::class.java)!!
@@ -136,8 +141,23 @@ class OtherUserProfile : AppCompatActivity() {
 
                 AppUtil().changeFriendsButtonState(binding.friendBtn, userModel)
                 //TODO: Implement loading stop
+                binding.otherUserRefreshLayout.isRefreshing = false
             }
         }
     }
 
+
+    override fun onRefresh() {
+        binding.otherUserRefreshLayout.isRefreshing = true
+        Handler().postDelayed({
+            bindUserDetails()
+        }, 1000)
+    }
+
+    override fun retryNetwork() {
+        binding.otherUserRefreshLayout.isRefreshing = true
+        Handler().postDelayed({
+            bindUserDetails()
+        }, 1000)
+    }
 }

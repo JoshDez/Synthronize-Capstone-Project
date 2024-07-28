@@ -3,6 +3,7 @@ package com.example.synthronize
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -16,6 +17,7 @@ import com.example.synthronize.adapters.CommunityChatroomsAdapter
 import com.example.synthronize.adapters.FriendsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentChatBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
@@ -23,7 +25,7 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 
-class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), OnRefreshListener {
+class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
     private lateinit var binding: FragmentChatBinding
     private lateinit var chatroomAdapter: ChatroomAdapter
     private lateinit var friendsAdapter: FriendsAdapter
@@ -55,7 +57,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
             if (::context.isInitialized){
 
                 //check for internet
-                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
 
                 //reset main toolbar
                 AppUtil().resetMainToolbar(mainBinding)
@@ -110,11 +112,24 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
     //Set Recycle View
     private fun setupChatroomListForInbox(){
         //already indexed in firebase
+        binding.chatRefreshLayout.isRefreshing =  true
+
         val query:Query = FirebaseUtil().retrieveAllChatRoomReferences()
             .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
             .whereEqualTo("chatroomType", "direct_message")
             .whereNotEqualTo("lastMessage", "")
             .orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
+
+        // Add a listener to handle success or failure of the query
+        query.addSnapshotListener { _, e ->
+            if (e != null) {
+                // Handle the error here (e.g., log the error or show a message to the user)
+                Log.e("Firestore Error", "Error while fetching data", e)
+                return@addSnapshotListener
+            } else {
+                binding.chatRefreshLayout.isRefreshing =  false
+            }
+        }
 
         val options: FirestoreRecyclerOptions<ChatroomModel> =
             FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(query, ChatroomModel::class.java).build()
@@ -130,6 +145,18 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
         val query:Query = FirebaseUtil().retrieveAllCommunityCollection()
             .whereIn("communityMembers.${FirebaseUtil().currentUserUid()}", roles)
 
+
+        // Add a listener to handle success or failure of the query
+        query.addSnapshotListener { _, e ->
+            if (e != null) {
+                // Handle the error here (e.g., log the error or show a message to the user)
+                Log.e("Firestore Error", "Error while fetching data", e)
+                return@addSnapshotListener
+            } else {
+                binding.chatRefreshLayout.isRefreshing =  false
+            }
+        }
+
         val options: FirestoreRecyclerOptions<CommunityModel> =
             FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(query, CommunityModel::class.java).build()
 
@@ -141,6 +168,18 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
     private fun setupFriendsList(){
         val query:Query = FirebaseUtil().allUsersCollectionReference()
             .whereArrayContains("friendsList", FirebaseUtil().currentUserUid())
+
+
+        // Add a listener to handle success or failure of the query
+        query.addSnapshotListener { _, e ->
+            if (e != null) {
+                // Handle the error here (e.g., log the error or show a message to the user)
+                Log.e("Firestore Error", "Error while fetching data", e)
+                return@addSnapshotListener
+            } else {
+                binding.chatRefreshLayout.isRefreshing =  false
+            }
+        }
 
         val options: FirestoreRecyclerOptions<UserModel> =
             FirestoreRecyclerOptions.Builder<UserModel>().setQuery(query, UserModel::class.java).build()
@@ -191,10 +230,17 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
     }
 
     override fun onRefresh() {
+        binding.chatRefreshLayout.isRefreshing =  true
         Handler().postDelayed({
             navigate(currentTab)
-            binding.chatRefreshLayout.isRefreshing = false
         }, 1000)
 
+    }
+
+    override fun retryNetwork() {
+        binding.chatRefreshLayout.isRefreshing =  true
+        Handler().postDelayed({
+            navigate(currentTab)
+        }, 1000)
     }
 }

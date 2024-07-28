@@ -17,6 +17,7 @@ import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.databinding.FragmentProfileBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -27,7 +28,7 @@ import com.example.synthronize.utils.ProfileUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
-class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment(), OnRefreshListener {
+class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
 
     private lateinit var allFeedsAdapter: AllFeedsAdapter
     private lateinit var binding: FragmentProfileBinding
@@ -58,7 +59,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             userId = FirebaseUtil().currentUserUid()
             if (::context.isInitialized){
                 //check for internet
-                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
 
                 //TODO add loading screen
                 bindUserDetails()
@@ -112,6 +113,8 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     private fun bindUserDetails() {
 
         AppUtil().resetMainToolbar(mainBinding)
+
+        binding.profileRefreshLayout.isRefreshing = true
 
         FirebaseUtil().targetUserDetails(FirebaseUtil().currentUserUid()).get().addOnCompleteListener {
             if (it.isSuccessful && it.result.exists()){
@@ -167,6 +170,8 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 mainBinding.kebabMenuBtn.setOnClickListener {
                     openMenuDialog()
                 }
+
+                binding.profileRefreshLayout.isRefreshing = false
             }
         }
     }
@@ -232,9 +237,16 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     }
 
     override fun onRefresh() {
+        binding.profileRefreshLayout.isRefreshing = true
         Handler().postDelayed({
             bindUserDetails()
-            binding.profileRefreshLayout.isRefreshing = false
+        }, 1000)
+    }
+
+    override fun retryNetwork() {
+        binding.profileRefreshLayout.isRefreshing = true
+        Handler().postDelayed({
+            bindUserDetails()
         }, 1000)
     }
 }

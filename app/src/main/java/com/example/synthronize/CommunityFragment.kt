@@ -15,6 +15,7 @@ import androidx.media3.common.util.Log
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -23,7 +24,7 @@ import com.example.synthronize.utils.NetworkUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
-class CommunityFragment(private val mainBinding: ActivityMainBinding, private val communityId:String) : Fragment() {
+class CommunityFragment(private val mainBinding: ActivityMainBinding, private val communityId:String) : Fragment(), OnNetworkRetryListener {
 
     private lateinit var binding: FragmentCommunityBinding
     private lateinit var communityModel: CommunityModel
@@ -44,26 +45,26 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         if (isAdded){
             //retrieve context
             context = requireContext()
 
             if (::context.isInitialized){
-
                 //check for internet
-                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
+                communityFragmentWrapper()
+            }
+        }
+    }
 
-                //retrieve community model
-                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-                    if (it.exists()){
-                        communityModel = it.toObject(CommunityModel::class.java)!!
-                        //content
-                        if (::context.isInitialized){
-                            setupCommunityFragment()
-                        }
-                    }
+    private fun communityFragmentWrapper(){
+        //retrieve community model
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+            if (it.exists()){
+                communityModel = it.toObject(CommunityModel::class.java)!!
+                //content
+                if (::context.isInitialized){
+                    setupCommunityFragment()
                 }
             }
         }
@@ -237,5 +238,9 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
 
             }
         }
+    }
+
+    override fun retryNetwork() {
+        communityFragmentWrapper()
     }
 }

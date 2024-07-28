@@ -15,12 +15,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentExploreBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 
-class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(), OnRefreshListener {
+class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
     // TODO: Rename and change types of parameters
     private lateinit var allFeedsAdapter: AllFeedsAdapter
     private lateinit var binding:FragmentExploreBinding
@@ -47,7 +48,7 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(),
             context = requireContext()
             if (::context.isInitialized){
                 //check for internet
-                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
                 //reset main toolbar
                 AppUtil().resetMainToolbar(mainBinding)
                 binding.exploreRefreshLayout.setOnRefreshListener(this)
@@ -60,6 +61,7 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(),
 
     private fun setupRV() {
         val feedList:ArrayList<PostModel> = ArrayList()
+        binding.exploreRefreshLayout.isRefreshing = true
         FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityType", "Public").get().addOnSuccessListener {it ->
             for (document in it.documents){
                 val id = document.get("communityId") as String
@@ -73,6 +75,7 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(),
                     allFeedsAdapter = AllFeedsAdapter(context, feedList)
                     binding.exploreRV.adapter = allFeedsAdapter
                 }
+                binding.exploreRefreshLayout.isRefreshing = false
             }
         }
 
@@ -89,9 +92,16 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(),
     }
 
     override fun onRefresh() {
+        binding.exploreRefreshLayout.isRefreshing = true
         Handler().postDelayed({
             setupRV()
-            binding.exploreRefreshLayout.isRefreshing = false
+        }, 1000)
+    }
+
+    override fun retryNetwork() {
+        binding.exploreRefreshLayout.isRefreshing = true
+        Handler().postDelayed({
+            setupRV()
         }, 1000)
     }
 }

@@ -3,6 +3,8 @@ package com.example.synthronize
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,17 +21,19 @@ import com.example.synthronize.databinding.DialogAddCommunityBinding
 import com.example.synthronize.databinding.DialogCommunityCodeBinding
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.FragmentCommunitySelectionBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
-import java.util.logging.Handler
 
-class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager) : Fragment(), OnRefreshListener {
+class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager) : Fragment(),
+    OnRefreshListener, OnNetworkRetryListener {
     private lateinit var binding: FragmentCommunitySelectionBinding
     private lateinit var dialogBinding: DialogAddCommunityBinding
     private lateinit var communityAdapter: CommunityAdapter
@@ -70,6 +74,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
 
                 //initialize refresh layout
                 binding.selectionRefreshLayout.setOnRefreshListener(this)
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
 
                 // Set up Add Group FAB
                 binding.addGroupFab.setOnClickListener {
@@ -137,12 +142,26 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
     }
 
     private fun setupRecyclerView() {
+
+        binding.selectionRefreshLayout.isRefreshing = true
+
         //roles
         val roles = listOf("Admin", "Moderator", "Member")
 
         //query firestore
         val communityQuery = FirebaseUtil().retrieveAllCommunityCollection()
                 .whereIn("communityMembers.${FirebaseUtil().currentUserUid()}", roles)
+
+        // Add a listener to handle success or failure of the query
+        communityQuery.addSnapshotListener { _, e ->
+            if (e != null) {
+                // Handle the error here (e.g., log the error or show a message to the user)
+                Log.e("Firestore Error", "Error while fetching data", e)
+                return@addSnapshotListener
+            } else {
+                binding.selectionRefreshLayout.isRefreshing = false
+            }
+        }
 
         //set options for firebase ui
         val options: FirestoreRecyclerOptions<CommunityModel> =
@@ -172,9 +191,16 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
     }
 
     override fun onRefresh() {
-        android.os.Handler().postDelayed({
+        binding.selectionRefreshLayout.isRefreshing = true
+        Handler().postDelayed({
             setupRecyclerView()
-            binding.selectionRefreshLayout.isRefreshing = false
+        }, 1000)
+    }
+
+    override fun retryNetwork() {
+        binding.selectionRefreshLayout.isRefreshing = true
+        Handler().postDelayed({
+            setupRecyclerView()
         }, 1000)
     }
 

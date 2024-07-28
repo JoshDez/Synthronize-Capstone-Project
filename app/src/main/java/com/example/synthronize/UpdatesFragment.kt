@@ -15,12 +15,13 @@ import com.example.synthronize.adapters.RequestsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentUpdatesBinding
 import com.example.synthronize.interfaces.NotificationOnDataChange
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 
-class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(), NotificationOnDataChange, OnRefreshListener {
+class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(), NotificationOnDataChange, OnRefreshListener, OnNetworkRetryListener {
     // TODO: Rename and change types of parameters
     private lateinit var binding: FragmentUpdatesBinding
     private lateinit var requestsAdapter: RequestsAdapter
@@ -49,7 +50,7 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
             if (::context.isInitialized){
 
                 //check for internet
-                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root)
+                NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
 
                 //bind refresh layout
                 binding.notificationsRefreshLayout.setOnRefreshListener(this)
@@ -80,6 +81,7 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
 
 
         if (tab == "notifications"){
+            setupNotifications()
             binding.notificationsIconIV.setImageResource(R.drawable.notifications_selected)
             currentTab = "notifications"
 
@@ -94,7 +96,15 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
             currentTab = "friend_requests"
         }
     }
+
+    private fun setupNotifications(){
+        binding.notificationsRefreshLayout.isRefreshing = true
+        binding.notificationsRefreshLayout.isRefreshing = false
+        //TODO
+    }
+
     private fun setupRVForCommunityInvitations(){
+        binding.notificationsRefreshLayout.isRefreshing = true
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
             val user = it.toObject(UserModel::class.java)!!
             val hosts:ArrayList<String> = ArrayList()
@@ -104,15 +114,18 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
             binding.notificationRV.layoutManager = LinearLayoutManager(context)
             requestsAdapter = RequestsAdapter(communityInvitations = user.communityInvitations, hosts = hosts, listener = this)
             binding.notificationRV.adapter = requestsAdapter
+            binding.notificationsRefreshLayout.isRefreshing = false
         }
     }
 
     private fun setupRVForFriendRequests() {
+        binding.notificationsRefreshLayout.isRefreshing = true
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
             val user = it.toObject(UserModel::class.java)!!
             binding.notificationRV.layoutManager = LinearLayoutManager(context)
             requestsAdapter = RequestsAdapter(user.friendRequests, listener = this)
             binding.notificationRV.adapter = requestsAdapter
+            binding.notificationsRefreshLayout.isRefreshing = false
         }
     }
 
@@ -140,9 +153,16 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
     }
 
     override fun onRefresh() {
+        binding.notificationsRefreshLayout.isRefreshing = true
         Handler().postDelayed({
             navigate(currentTab)
-            binding.notificationsRefreshLayout.isRefreshing = false
+        },1000)
+    }
+
+    override fun retryNetwork() {
+        binding.notificationsRefreshLayout.isRefreshing = true
+        Handler().postDelayed({
+            navigate(currentTab)
         },1000)
     }
 }

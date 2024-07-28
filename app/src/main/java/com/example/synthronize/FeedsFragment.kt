@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +15,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.FeedsAdapter
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentFeedsBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 
-class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment(), OnRefreshListener {
+class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
 
     private lateinit var binding: FragmentFeedsBinding
     private lateinit var context: Context
@@ -41,17 +44,34 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
         if (isAdded){
             //Retrieve Group Model
             context = requireContext()
+            binding.feedsRefreshLayout.isRefreshing = true
             if (context != null){
+                binding.feedsRefreshLayout.setOnRefreshListener(this)
+                NetworkUtil(context).checkNetworkAndShowSnackbar(binding.root, this)
                 bindButtons()
                 setRecyclerView()
-                binding.feedsRefreshLayout.setOnRefreshListener(this)
             }
         }
     }
 
     private fun setRecyclerView() {
+
+        binding.feedsRefreshLayout.isRefreshing = true
+
         val myQuery:Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId)
             .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+        // Add a listener to handle success or failure of the query
+        myQuery.addSnapshotListener { _, e ->
+            if (e != null) {
+                // Handle the error here (e.g., log the error or show a message to the user)
+                Log.e("Firestore Error", "Error while fetching data", e)
+                return@addSnapshotListener
+            } else {
+                binding.feedsRefreshLayout.isRefreshing = false
+            }
+        }
+
 
         //set options for firebase ui
         val options: FirestoreRecyclerOptions<PostModel> =
@@ -93,9 +113,16 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
     }
 
     override fun onRefresh() {
+        binding.feedsRefreshLayout.isRefreshing = true
         Handler().postDelayed({
             setRecyclerView()
-            binding.feedsRefreshLayout.isRefreshing = false
+        }, 1000)
+    }
+
+    override fun retryNetwork() {
+        binding.feedsRefreshLayout.isRefreshing = true
+        Handler().postDelayed({
+            setRecyclerView()
         }, 1000)
     }
 }
