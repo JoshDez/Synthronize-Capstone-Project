@@ -86,9 +86,9 @@ class EditCommunity : AppCompatActivity() {
     }
     private fun retrieveAndBindCommunityDetails() {
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {
-            if (it.isSuccessful && it.result.exists()){
+            if (it.isSuccessful && it.result?.exists() == true){
 
-                communityModel = it.result.toObject(CommunityModel::class.java)!!
+                communityModel = it.result!!.toObject(CommunityModel::class.java)!!
 
                 //bind community details
                 binding.communityNameEdtTxt.setText(communityModel.communityName)
@@ -297,7 +297,7 @@ class EditCommunity : AppCompatActivity() {
     private fun isCommunityNameNotAvailable(communityName: String, callback: (Boolean) -> Unit) {
         FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityName", communityName).get().addOnCompleteListener{
             if (it.isSuccessful){
-                if (!it.result.isEmpty){
+                if (it.result?.isEmpty == false){
                     //username already exists
                     callback(true)
                 } else {

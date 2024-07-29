@@ -20,5 +20,7 @@ data class UserModel(
     //keys: lastSeen, toggleOffline, isDeactivated
     var currentStatus:Map<String, Any> = HashMap(),
     //key: postID  value: uid-interaction timestamp
-    var notifications:Map<String, Map<String, Timestamp>> = HashMap()
+    var notifications:Map<String, Map<String, Timestamp>> = HashMap(),
+    //fcm token for receiving notifications
+    var fcmToken:String = ""
 )

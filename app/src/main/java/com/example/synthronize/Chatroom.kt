@@ -145,7 +145,7 @@ class Chatroom : AppCompatActivity() {
     private fun createOrRetrieveChatroomModel(){
         FirebaseUtil().retrieveChatRoomReference(chatroomID).get().addOnCompleteListener {
             if (it.isSuccessful){
-                if (!it.result.exists() && chatroomType == "direct_message"){
+                if (it.result?.exists() == false && chatroomType == "direct_message"){
                     //First chat in DM
                     chatroomModel = ChatroomModel(chatroomID,
                         "direct_message",
@@ -154,11 +154,11 @@ class Chatroom : AppCompatActivity() {
                         ""
                     )
                     FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
-                } else if (!it.result.exists() && chatroomType == "group_chat"){
+                } else if (it.result?.exists() == false && chatroomType == "group_chat"){
                     //First chat in Group
                     //TODO to be implemented
 
-                } else if (!it.result.exists() && chatroomType == "community_chat"){
+                } else if (it.result?.exists() == false && chatroomType == "community_chat"){
                     FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener { result ->
                         val communityModel = result.toObject(CommunityModel::class.java)!!
 
@@ -174,7 +174,7 @@ class Chatroom : AppCompatActivity() {
                         FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
                     }
                 } else {
-                    chatroomModel = it.result.toObject(ChatroomModel::class.java)!!
+                    chatroomModel = it.result!!.toObject(ChatroomModel::class.java)!!
                 }
             }
         }

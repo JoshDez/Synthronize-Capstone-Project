@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -11,7 +12,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity(), OnNetworkRetryListener {
     private lateinit var binding: ActivityMainBinding
@@ -22,6 +25,7 @@ class MainActivity : AppCompatActivity(), OnNetworkRetryListener {
         setContentView(binding.root)
         NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root, this)
         onStartFragment()
+        getFCMToken()
 
         //BOTTOM NAVIGATION BUTTONS
         binding.communitiesBtn.setOnClickListener {
@@ -147,6 +151,19 @@ class MainActivity : AppCompatActivity(), OnNetworkRetryListener {
             }
         }
     }
+
+    private fun getFCMToken(){
+        //Get Token For Receiving Notifications
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful){
+                val token = it.result
+                FirebaseUtil().currentUserDetails().update("fcmToken", token)
+            } else {
+
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.groups_toolbar_menu, menu)
         return true

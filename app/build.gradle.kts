@@ -44,6 +44,9 @@ android {
 
 dependencies {
 
+    implementation(platform("com.google.firebase:firebase-bom:latest_version"))
+    implementation("com.google.firebase:firebase-messaging")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
