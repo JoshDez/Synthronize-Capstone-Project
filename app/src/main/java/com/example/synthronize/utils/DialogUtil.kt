@@ -22,7 +22,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
-
+//ALERT DIALOGS
 class DialogUtil: OnItemClickListener {
 
     //OPENS DIALOG FOR SEND POST

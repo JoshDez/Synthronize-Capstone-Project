@@ -99,9 +99,6 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(),
     }
 
     override fun retryNetwork() {
-        binding.exploreRefreshLayout.isRefreshing = true
-        Handler().postDelayed({
-            setupRV()
-        }, 1000)
+        onRefresh()
     }
 }

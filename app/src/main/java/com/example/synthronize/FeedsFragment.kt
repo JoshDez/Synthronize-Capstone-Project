@@ -120,9 +120,6 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
     }
 
     override fun retryNetwork() {
-        binding.feedsRefreshLayout.isRefreshing = true
-        Handler().postDelayed({
-            setRecyclerView()
-        }, 1000)
+        onRefresh()
     }
 }

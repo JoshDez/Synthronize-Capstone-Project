@@ -84,14 +84,15 @@
 
     <ScrollView
         android:id="@+id/adminLayout"
-        android:visibility="gone"
-        android:layout_below="@id/navigationLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/navigationLayout"
+        android:visibility="gone">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider3"
@@ -111,54 +112,66 @@
                 android:textSize="16sp"
                 android:visibility="gone" />
 
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/viewCommunityReportsBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/dark_teal"
+                android:text="View Community Reports"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/editCommunityDetailsBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                android:background="@color/dark_teal"
                 android:text="@string/edit_community_details"
-                android:background = "@color/dark_teal"
-                android:textColor="@color/light_teal"/>
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/editCommunityRulesBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                android:background="@color/dark_teal"
                 android:text="@string/edit_community_rules"
-                android:background = "@color/dark_teal"
-                android:textColor="@color/light_teal"/>
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/deleteCommunityBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                android:background="@color/darkish_red"
                 android:text="@string/delete_community"
-                android:background = "@color/darkish_red"
-                android:textColor="@color/light_teal"/>
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
 
 
     <ScrollView
         android:id="@+id/generalLayout"
-        android:layout_below="@id/navigationLayout"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/navigationLayout"
+        android:visibility="gone">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <FrameLayout
-                android:layout_below="@id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="250dp">
+                android:layout_height="250dp"
+                android:layout_below="@id/divider">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -168,85 +181,86 @@
                         android:id="@+id/communityBannerIV"
                         android:layout_width="match_parent"
                         android:layout_height="180dp"
-                        android:src="@color/black"/>
+                        android:src="@color/black" />
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/userProfileCIV"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:layout_marginStart="20dp"
-                        android:layout_centerInParent="true"
                         android:layout_alignParentBottom="true"
-                        android:src="@color/light_teal"/>
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
+                        android:src="@color/light_teal" />
                 </RelativeLayout>
             </FrameLayout>
 
             <TextView
                 android:id="@+id/communityNameTV"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_below="@id/userProfileCIV"
-                android:layout_centerInParent="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/userProfileCIV"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:contentDescription="@string/full_name"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/communityDescriptionTV"
-                android:visibility="gone"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="#00FFFFFF"
-                android:drawableTint="#00FFFFFF"
                 android:contentDescription="@string/user_description"
+                android:drawableTint="#00FFFFFF"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:visibility="gone" />
 
             <TextView
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="#00FFFFFF"
-                android:drawableTint="#00FFFFFF"
                 android:contentDescription="@string/user_description"
+                android:drawableTint="#00FFFFFF"
                 android:text="@string/share_community_with_community_code"
                 android:textColor="@color/light_teal"
                 android:textSize="15sp" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp">
 
                 <EditText
                     android:id="@+id/communityCodeEdtTxt"
                     android:layout_width="wrap_content"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
                     android:backgroundTint="@color/light_teal"
                     android:contentDescription="@string/community_code"
+                    android:editable="false"
+                    android:focusable="false"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
                     android:textSize="15sp" />
@@ -255,17 +269,18 @@
                     android:id="@+id/copyCodeBtn"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/baseline_content_copy_24"
                     android:background="#00D0ADF1"
-                    app:tint="@color/light_teal"/>
+                    android:src="@drawable/baseline_content_copy_24"
+                    app:tint="@color/light_teal" />
 
             </LinearLayout>
+
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider2"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@id/mainToolbar"
+                android:layout_marginTop="10dp"
                 android:background="@color/light_teal"
                 app:dividerColor="@color/light_teal" />
 
@@ -273,30 +288,40 @@
                 android:id="@+id/viewMembersBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:background="@color/dark_teal"
                 android:text="@string/view_all_members"
-                android:background = "@color/dark_teal"
-                android:textColor="@color/light_teal"/>
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/viewCommunityRulesBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                android:background="@color/dark_teal"
                 android:text="@string/view_community_rules"
-                android:background = "@color/dark_teal"
-                android:textColor="@color/light_teal"/>
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/reportCommunityBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                android:background="@color/dark_teal"
                 android:text="Report Community"
-                android:background = "@color/dark_teal"
-                android:textColor="@color/light_teal"/>
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/reportsMadeBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/dark_teal"
+                android:text="Reports Filed"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
 
 
             <androidx.appcompat.widget.AppCompatButton
@@ -304,10 +329,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                android:background="@color/dark_teal"
                 android:text="@string/leave_community"
-                android:background = "@color/dark_teal"
-                android:textColor="@color/light_teal"/>
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
 

@@ -187,14 +187,13 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
         //Option 1
         menuBinding.option1.visibility = View.VISIBLE
-        menuBinding.optiontitle1.text = "Log out"
-        menuBinding.optionIcon1.setImageResource(R.drawable.baseline_logout_24)
+        menuBinding.optiontitle1.text = "Settings"
+        menuBinding.optionIcon1.setImageResource(R.drawable.gear_icon)
         menuBinding.optiontitle1.setOnClickListener {
-            menuDialog.dismiss()
-            Handler().postDelayed({
-                openWarningDialog()
-            }, 500)
+            headToSettings()
         }
+
+
 
         //Option 2
         menuBinding.option2.visibility = View.VISIBLE
@@ -205,7 +204,23 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             menuDialog.dismiss()
         }
 
+        //Option 3
+        menuBinding.option3.visibility = View.VISIBLE
+        menuBinding.optiontitle3.text = "Log out"
+        menuBinding.optionIcon3.setImageResource(R.drawable.baseline_logout_24)
+        menuBinding.optiontitle3.setOnClickListener {
+            menuDialog.dismiss()
+            Handler().postDelayed({
+                openWarningDialog()
+            }, 500)
+        }
+
         menuDialog.show()
+    }
+
+    private fun headToSettings() {
+        val intent = Intent(requireContext(), AppSettings::class.java)
+        startActivity(intent)
     }
 
     private fun openWarningDialog(){
@@ -244,9 +259,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     }
 
     override fun retryNetwork() {
-        binding.profileRefreshLayout.isRefreshing = true
-        Handler().postDelayed({
-            bindUserDetails()
-        }, 1000)
+        onRefresh()
     }
 }

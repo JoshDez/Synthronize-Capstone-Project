@@ -100,6 +100,7 @@
     <string name="timestamp">timestamp</string>
     <string name="name">Name</string>
     <string name="group_name">Group Name</string>
+    <string name="community_reports">Community Reports</string>
 
 
 </resources>

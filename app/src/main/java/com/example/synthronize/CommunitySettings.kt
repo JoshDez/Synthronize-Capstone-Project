@@ -16,7 +16,6 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.toObject
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -84,6 +83,12 @@ class CommunitySettings : AppCompatActivity() {
                 intent.putExtra("communityId", communityModel.communityId)
                 startActivity(intent)
             }
+        }
+
+        binding.viewCommunityReportsBtn.setOnClickListener {
+            val intent = Intent(this, CommunityReports::class.java)
+            intent.putExtra("communityId", communityModel.communityId)
+            startActivity(intent)
         }
 
         binding.editCommunityDetailsBtn.setOnClickListener {
@@ -189,6 +194,13 @@ class CommunitySettings : AppCompatActivity() {
         binding.viewMembersBtn.setOnClickListener {
             val intent = Intent(applicationContext, Members::class.java)
             intent.putExtra("communityId", communityModel.communityId)
+            startActivity(intent)
+        }
+
+        binding.reportsMadeBtn.setOnClickListener {
+            val intent = Intent(applicationContext, CommunityReports::class.java)
+            intent.putExtra("communityId", communityModel.communityId)
+            intent.putExtra("isPersonalReport", true)
             startActivity(intent)
         }
     }

@@ -160,9 +160,6 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
     }
 
     override fun retryNetwork() {
-        binding.notificationsRefreshLayout.isRefreshing = true
-        Handler().postDelayed({
-            navigate(currentTab)
-        },1000)
+        onRefresh()
     }
 }

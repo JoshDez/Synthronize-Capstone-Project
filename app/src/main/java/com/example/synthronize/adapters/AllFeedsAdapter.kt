@@ -159,6 +159,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 }
                 bindLove()
                 bindComment()
+                bindSendPost()
                 bindContent()
             }
         }
@@ -232,6 +233,20 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
 
             //TODO Not yet implemented
         }
+
+        //For Send Post
+        private fun bindSendPost() {
+            binding.sendPostBtn.setOnClickListener {
+                DialogUtil().openForwardContentDialog(context, inflater, postModel.postId, postModel.communityId)
+                if (!postModel.sendPostList.contains(FirebaseUtil().currentUserUid())){
+                    FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
+                        .update("sendPostList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                            updateFeedStatus()
+                        }
+                }
+            }
+        }
+
 
         //FOR LOVE
         private fun bindLove() {

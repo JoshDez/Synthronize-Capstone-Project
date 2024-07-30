@@ -155,9 +155,6 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
     }
 
     override fun retryNetwork() {
-        binding.otherUserRefreshLayout.isRefreshing = true
-        Handler().postDelayed({
-            bindUserDetails()
-        }, 1000)
+        onRefresh()
     }
 }

@@ -198,10 +198,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
     }
 
     override fun retryNetwork() {
-        binding.selectionRefreshLayout.isRefreshing = true
-        Handler().postDelayed({
-            setupRecyclerView()
-        }, 1000)
+        onRefresh()
     }
 
 
