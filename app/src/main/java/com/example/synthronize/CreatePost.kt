@@ -32,6 +32,8 @@ class CreatePost : AppCompatActivity() {
     private lateinit var selectedVideoUri: Uri
     private lateinit var uriHashMap: HashMap<String, Uri>
     private lateinit var communityId:String
+    private lateinit var postId:String
+    private lateinit var existingPostModel: PostModel
     private var contentList:ArrayList<String> = ArrayList()
     private var canPost:Boolean = true
 
@@ -41,6 +43,32 @@ class CreatePost : AppCompatActivity() {
         setContentView(binding.root)
 
         communityId = intent.getStringExtra("communityId").toString()
+        postId = intent.getStringExtra("postId").toString()
+
+
+        if (postId == "null" || postId.isEmpty()){
+            //For New Post
+            bindButtons()
+            AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.profileCIV)
+        } else {
+            //For Existing Post to edit
+            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).get().addOnSuccessListener {
+                existingPostModel = it.toObject(PostModel::class.java)!!
+                binding.captionEdtTxt.setText(existingPostModel.caption)
+                communityId = existingPostModel.communityId
+                AppUtil().setUserProfilePic(this, existingPostModel.ownerId, binding.profileCIV)
+                if (existingPostModel.contentList.isNotEmpty()){
+                    for (filename in existingPostModel.contentList){
+                        contentList = ArrayList(existingPostModel.contentList)
+                        getFileUriFromFirebase(filename)
+                    }
+                    bindButtons()
+                } else {
+                    bindButtons()
+                }
+
+            }
+        }
 
         //Launcher for user content image
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
@@ -67,8 +95,39 @@ class CreatePost : AppCompatActivity() {
                 }
             }
         }
+    }
 
-        //BIND DIALOG
+    private fun bindButtons(){
+        if (postId == "null" || postId.isEmpty()){
+            binding.postBtn.text = "Post"
+            binding.postBtn.setOnClickListener {
+                if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
+                    addPost(){isUploaded ->
+                        if (isUploaded)
+                            Handler().postDelayed({
+                                this.finish()
+                            }, 2000)
+                        else
+                            Toast.makeText(this, "Error occurred while uploading", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        } else {
+            binding.postBtn.text = "Save"
+            binding.postBtn.setOnClickListener {
+                if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
+                    addPost(){isUploaded ->
+                        if (isUploaded)
+                            Handler().postDelayed({
+                                this.finish()
+                            }, 2000)
+                        else
+                            Toast.makeText(this, "Error occurred while saving", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
         binding.addImageBtn.setOnClickListener {
             ImagePicker.with(this).cropSquare().compress(512)
                 .maxResultSize(512, 512)
@@ -85,20 +144,31 @@ class CreatePost : AppCompatActivity() {
             //TODO dialog message
             this.finish()
         }
-        binding.postBtn.setOnClickListener {
-            if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
-                addPost(){isUploaded ->
-                    if (isUploaded)
-                        Handler().postDelayed({
-                            this.finish()
-                        }, 2000)
-                    else
-                        Toast.makeText(this, "Error occured while uploading", Toast.LENGTH_SHORT).show()
-                }
+    }
+
+
+
+    private fun getFileUriFromFirebase(filename: String) {
+        // Create a storage reference from the Firebase Storage instance
+        val fileType = filename.split('-')[1]
+        if (fileType == "Video"){
+            FirebaseUtil().retrieveCommunityContentVideoRef(filename).downloadUrl.addOnSuccessListener {
+                selectedVideoUri = it
+                addVideo(selectedVideoUri, filename)
+            }.addOnFailureListener {
+                Toast.makeText(this, "An error has occurred while downloading, please try again", Toast.LENGTH_SHORT).show()
+            }
+        } else if (fileType == "Image"){
+            FirebaseUtil().retrieveCommunityContentImageRef(filename).downloadUrl.addOnSuccessListener {
+                selectedImageUri = it
+                addImage(selectedImageUri, filename)
+            }.addOnFailureListener {
+                Toast.makeText(this, "An error has occurred while downloading, please try again", Toast.LENGTH_SHORT).show()
             }
         }
-        AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.profileCIV)
     }
+
+
 
     private fun uploadVideo(filename: String, selectedVideoUri: Uri, progressBar: ProgressBar){
         canPost = false
@@ -114,11 +184,15 @@ class CreatePost : AppCompatActivity() {
         }
     }
 
-    private fun addVideo(selectedVideo: Uri) {
+    private fun addVideo(selectedVideo: Uri, existingFilename: String = "") {
         //TODO
         //creates video id
         val userId = FirebaseUtil().currentUserUid()
-        val filename = "$userId-Video-${UUID.randomUUID()}"
+        var filename = existingFilename
+
+        if (filename.isEmpty()){
+            filename = "$userId-Video-${UUID.randomUUID()}"
+        }
 
         //Creates linear layout for image
         val verticalLayout = LinearLayout(this)
@@ -164,8 +238,10 @@ class CreatePost : AppCompatActivity() {
         //adds image to uri hashmap
         addUriToHashMap(filename, selectedVideoUri)
 
-        //immediately uploads video to the firebase storage
-        uploadVideo(filename, selectedVideo, progressBar)
+        if (existingFilename.isEmpty()){
+            //immediately uploads video to the firebase storage
+            uploadVideo(filename, selectedVideo, progressBar)
+        }
 
         //creates cancel button
         val cancelBtn = ImageButton(this)
@@ -187,10 +263,14 @@ class CreatePost : AppCompatActivity() {
         binding.mainPostLayout.addView(verticalLayout)
     }
 
-    private fun addImage(selectedImage:Uri){
+    private fun addImage(selectedImage:Uri, existingFilename: String = ""){
         //creates image filename
         val userId = FirebaseUtil().currentUserUid()
-        val fileName = "$userId-Image-${UUID.randomUUID()}"
+        var fileName = existingFilename
+
+        if (fileName.isEmpty()){
+            fileName = "$userId-Image-${UUID.randomUUID()}"
+        }
 
         //Creates linear layout for image
         val verticalLayout = LinearLayout(this)
@@ -246,6 +326,9 @@ class CreatePost : AppCompatActivity() {
 
     private fun removeUriFromHashMap(contentId:String){
         uriHashMap.remove(contentId)
+        if (contentList.isNotEmpty()){
+            contentList.remove(contentId)
+        }
     }
 
     private fun addUriToHashMap(contentId:String, uri: Uri){
@@ -259,9 +342,9 @@ class CreatePost : AppCompatActivity() {
         val caption = binding.captionEdtTxt.text.toString()
         var delay:Long = 1000
 
-        if (canPost){
+        if (canPost && postId == "null" || postId.isEmpty()){
+            //Upload post
             FirebaseUtil().retrieveCommunityFeedsCollection(communityId).add(tempModel).addOnSuccessListener {
-
                 if (::uriHashMap.isInitialized){
                     for (data in uriHashMap){
                         //data key is imageFileName and value is uri or actual image
@@ -303,9 +386,62 @@ class CreatePost : AppCompatActivity() {
             }
 
 
+        } else if(canPost){
+            //Saving edited post
+            if (::uriHashMap.isInitialized){
+                for (data in uriHashMap){
+                    //data key is imageFileName and value is uri or actual image
+                    //uploads image to the firebase storage
+                    val key = data.key.split('-')
+                    if (key[1] == "Image") {
+                        FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
+                        if (!contentList.contains(data.key)){
+                            contentList.add(data.key)
+                            delay += 100
+                        }
+                    }
+                }
+            }
+
+            //Edit post
+            val postModel = PostModel(
+                postId = postId,
+                caption = caption,
+                contentList = contentList,
+                communityId = communityId,
+                sendPostList = existingPostModel.sendPostList,
+                ownerId = existingPostModel.ownerId,
+                createdTimestamp = existingPostModel.createdTimestamp,
+                loveList = existingPostModel.loveList,
+            )
+
+            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).set(postModel).addOnSuccessListener {
+                deleteFilesFromFirebaseStorage()
+                Handler().postDelayed({
+                    Toast.makeText(this, "Your post is saved successfully!", Toast.LENGTH_SHORT).show()
+                    callback(true)
+                }, delay)
+            }.addOnFailureListener{
+                callback(false)
+            }
+
         } else {
             //the post is not ready to be uploaded
-            Toast.makeText(this, "The video is still uploading", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "content is still uploading", Toast.LENGTH_SHORT).show()
         }
+    }
+    private fun deleteFilesFromFirebaseStorage(){
+        //deletes files that are no longer included in content list while editing
+        for (filename in existingPostModel.contentList){
+            val fileType = filename.split('-')[1]
+            if (!contentList.contains(filename)){
+                if (fileType == "Image"){
+                    FirebaseUtil().retrieveCommunityContentImageRef(filename).delete()
+                } else if (fileType == "Video"){
+                    FirebaseUtil().retrieveCommunityContentVideoRef(filename).delete()
+                }
+            }
+        }
+
     }
 }

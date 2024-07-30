@@ -1,11 +1,13 @@
 package com.example.synthronize.utils
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.synthronize.CreatePost
 import com.example.synthronize.adapters.ChatroomAdapter
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.DialogForwardContentBinding
@@ -71,8 +73,8 @@ class DialogUtil: OnItemClickListener {
 
             if (postModel.ownerId == FirebaseUtil().currentUserUid() ||
                 AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), FirebaseUtil().currentUserUid())){
+                //TODO for moderator
                 //displays delete post option if the user is the owner or admin of the community
-
                 menuDialogBinding.option1.visibility = View.VISIBLE
                 menuDialogBinding.optiontitle1.text = "Delete Post"
                 menuDialogBinding.optiontitle1.setOnClickListener {
@@ -105,6 +107,19 @@ class DialogUtil: OnItemClickListener {
 
                     }, 500)
                 }
+
+                //displays edit post option if the user is the owner or admin of the community
+                menuDialogBinding.option2.visibility = View.VISIBLE
+                menuDialogBinding.optiontitle2.text = "Edit Post"
+                menuDialogBinding.optiontitle2.setOnClickListener {
+                    menuDialog.dismiss()
+                    Handler().postDelayed({
+                        val intent = Intent(context, CreatePost::class.java)
+                        intent.putExtra("postId", postModel.postId)
+                        intent.putExtra("communityId", postModel.communityId)
+                        context.startActivity(intent)
+                    }, 500)
+                }
             } else {
                 menuDialogBinding.option1.visibility = View.VISIBLE
                 menuDialogBinding.optiontitle1.text = "Report Post"
@@ -112,7 +127,6 @@ class DialogUtil: OnItemClickListener {
                     Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
                 }
             }
-
             menuDialog.show()
         }
     }

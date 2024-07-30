@@ -18,6 +18,7 @@ import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.firestore.FieldValue
 import java.lang.Exception
 
 class Chatroom : AppCompatActivity() {

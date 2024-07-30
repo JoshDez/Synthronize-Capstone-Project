@@ -10,15 +10,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
 import com.example.synthronize.ViewPost
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.ItemPostBinding
-import com.example.synthronize.interfaces.OnItemClickListener
-import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommentModel
-import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -29,8 +25,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.toObject
 
 class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private val context: Context, 
                    options: FirestoreRecyclerOptions<PostModel>): FirestoreRecyclerAdapter<PostModel, FeedsAdapter.FeedsViewHolder>(options){
@@ -109,6 +103,12 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
         private fun bindSendPost() {
             feedBinding.sendPostBtn.setOnClickListener {
                 DialogUtil().openForwardContentDialog(context, inflater, postModel.postId, postModel.communityId)
+                if (!postModel.sendPostList.contains(FirebaseUtil().currentUserUid())){
+                    FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
+                        .update("sendPostList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                            updateFeedStatus()
+                        }
+                }
             }
         }
 
