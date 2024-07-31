@@ -11,16 +11,22 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.synthronize.adapters.ReportsAdapter
 import com.example.synthronize.adapters.RequestsAdapter
 import com.example.synthronize.databinding.ActivityCommunityReportsBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
+import com.example.synthronize.model.MessageModel
+import com.example.synthronize.model.ReportModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.Query
 
 //Reports activity for admin and moderator within a community
 class CommunityReports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
     private lateinit var binding:ActivityCommunityReportsBinding
+    private lateinit var reportsAdapter: ReportsAdapter
     private var isPersonalReport:Boolean = false
     private var communityId = ""
     private var currentTab = ""
@@ -79,22 +85,22 @@ class CommunityReports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryL
 
 
         if (tab == "feeds"){
-            setupFeedsReport()
+            setupCommunityReport("Feeds")
             binding.feedsBtn.setTextColor(selectedColor)
             currentTab = "feeds"
 
         } else if (tab == "forums") {
-            setupForumsReport()
+            setupCommunityReport("Forums")
             binding.forumsBtn.setTextColor(selectedColor)
             currentTab = "forums"
 
         } else if (tab == "market") {
-            setupMarketReport()
+            setupCommunityReport("Market")
             binding.marketBtn.setTextColor(selectedColor)
             currentTab = "market"
 
         } else if (tab == "activities") {
-            setupActivitiesReport()
+            setupCommunityReport("Files")
             binding.activitiesBtn.setTextColor(selectedColor)
             currentTab = "activities"
 
@@ -104,24 +110,57 @@ class CommunityReports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryL
         }
     }
 
-    private fun setupPersonalReport() {
-        //TODO("Not yet implemented")
+    private fun setupCommunityReport(reportType:String){
+        val query = FirebaseUtil().retrieveCommunityReportsCollection(communityId)
+            .whereEqualTo("reportType", reportType)
+            .whereEqualTo("reviewed", false)
+            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+        val options: FirestoreRecyclerOptions<ReportModel> =
+            FirestoreRecyclerOptions.Builder<ReportModel>().setQuery(query, ReportModel::class.java).build()
+
+        binding.reportsRV.layoutManager = LinearLayoutManager(this)
+        reportsAdapter = ReportsAdapter(this, options, false, communityId)
+        binding.reportsRV.adapter = reportsAdapter
+        reportsAdapter.startListening()
+
     }
 
-    private fun setupActivitiesReport() {
-        //TODO("Not yet implemented")
+    private fun setupPersonalReport(){
+        val query = FirebaseUtil().retrieveCommunityReportsCollection(communityId)
+            .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
+            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+        val options: FirestoreRecyclerOptions<ReportModel> =
+            FirestoreRecyclerOptions.Builder<ReportModel>().setQuery(query, ReportModel::class.java).build()
+
+        binding.reportsRV.layoutManager = LinearLayoutManager(this)
+        reportsAdapter = ReportsAdapter(this, options, true, communityId)
+        binding.reportsRV.adapter = reportsAdapter
+        reportsAdapter.startListening()
     }
 
-    private fun setupMarketReport() {
-        //TODO("Not yet implemented")
+
+
+    override fun onStart() {
+        super.onStart()
+        if (::reportsAdapter.isInitialized){
+            reportsAdapter.startListening()
+        }
     }
 
-    private fun setupForumsReport() {
-        //TODO("Not yet implemented")
+    override fun onResume() {
+        super.onResume()
+        if (::reportsAdapter.isInitialized){
+            reportsAdapter.notifyDataSetChanged()
+        }
     }
 
-    private fun setupFeedsReport() {
-        //TODO("Not yet implemented")
+    override fun onStop() {
+        super.onStop()
+        if (::reportsAdapter.isInitialized){
+            reportsAdapter.stopListening()
+        }
     }
 
     override fun onRefresh() {

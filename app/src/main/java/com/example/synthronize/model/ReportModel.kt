@@ -5,14 +5,14 @@ import com.google.firebase.Timestamp
 data class ReportModel (
     //id of report
     val reportId: String = "",
-    //type of report (eg Community, User, Post, File, Product, Forum)
+    //type of report (eg Community, User, Feeds, Files, Market, Forums)
     val reportType: String = "",
     //id of the one who filed the report
     val ownerId: String = "",
     //id of the reported user
     val reportedId: String = "",
     //state of the report if its reviewed
-    val isReviewed : Boolean = false,
+    val reviewed : Boolean = false,
     //reason for the report
     val reason:String = "",
     //time when the report is created

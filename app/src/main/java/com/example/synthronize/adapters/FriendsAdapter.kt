@@ -77,8 +77,6 @@ class FriendsAdapter(private val context: Context, options: FirestoreRecyclerOpt
 
         }
 
-
-
         private fun headToProfile(){
             val intent = Intent(context, OtherUserProfile::class.java)
             intent.putExtra("userID", userModel.userID)

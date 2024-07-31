@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darker_teal"
+    tools:context=".ViewReport">
+
+
+    <RelativeLayout
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/darker_teal"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerVertical="true">
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_marginStart="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/back_icon"
+                app:tint="@color/light_teal" />
+            <TextView
+                android:id="@+id/toolbarTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="25dp"
+                android:textColor="@color/light_teal"
+                android:text="Report"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/mainToolbar"
+        app:dividerColor="@color/light_teal" />
+
+    <ScrollView
+        android:layout_below="@id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/reportLayout"
+                android:layout_width="match_parent"
+                android:layout_marginTop="30dp"
+                android:layout_height="70dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userCircleImageView"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/profile_not_selected"/>
+                <TextView
+                    android:id="@+id/fullnameTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="17dp"
+                    android:contentDescription="@string/full_name"
+                    android:textColor="@color/light_teal"
+                    android:layout_above="@id/usernameTV"
+                    android:layout_toRightOf="@id/userCircleImageView"/>
+                <TextView
+                    android:id="@+id/usernameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="15dp"
+                    android:contentDescription="@string/Chats"
+                    android:textColor="@color/light_teal"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@id/userCircleImageView"
+                    android:layout_toLeftOf="@id/createdTimestampTV"/>
+                <TextView
+                    android:id="@+id/createdTimestampTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="15dp"
+                    android:contentDescription="@string/timestamp"
+                    android:textColor="@color/light_teal"
+                    android:layout_marginEnd="15dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:layout_marginTop="20dp"
+                android:textSize="17sp"
+                android:text="Reason Of Report: The object contains Violence and Threats"/>
+
+
+            <!-- FOR IMAGE WITH CAPTION  -->
+
+            <LinearLayout
+                android:id="@+id/imageWithCaptionLayout"
+                android:background="@color/dark_teal"
+                android:padding="10dp"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/reportedUserCIV"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/profile_not_selected"/>
+                    <TextView
+                        android:id="@+id/reportedUserFullnameTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="12dp"
+                        android:contentDescription="@string/full_name"
+                        android:textColor="@color/light_teal"
+                        android:layout_above="@id/reportedUsernameTV"
+                        android:layout_toRightOf="@id/reportedUserCIV"/>
+                    <TextView
+                        android:id="@+id/reportedUsernameTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="12dp"
+                        android:contentDescription="@string/Chats"
+                        android:textColor="@color/light_teal"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toRightOf="@id/reportedUserCIV"
+                        android:layout_toLeftOf="@id/reportedPostCreatedTS"/>
+                    <TextView
+                        android:id="@+id/reportedPostCreatedTS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="15dp"
+                        android:contentDescription="@string/timestamp"
+                        android:textColor="@color/light_teal"
+                        android:layout_marginEnd="15dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"/>
+
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/contentIV"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:src="@drawable/baseline_image_24" />
+
+
+                <TextView
+                    android:id="@+id/contentCaptionTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/light_teal"
+                    android:layout_marginTop="20dp"
+                    android:textSize="17sp"
+                    android:text="Reason Of Report: The object contains Violence and Threats"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="60dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/markAsReviewedBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mark as Reviewed"
+                    android:backgroundTint="@color/teal"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</RelativeLayout>

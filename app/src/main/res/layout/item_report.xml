@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/reportLayout"
+    android:layout_width="match_parent"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_height="70dp"
+    android:layout_marginTop="8dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/userCircleImageView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/profile_not_selected"/>
+    <TextView
+        android:id="@+id/fullnameTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="17dp"
+        android:contentDescription="@string/full_name"
+        android:textColor="@color/light_teal"
+        android:layout_above="@id/reasonTV"
+        android:layout_toRightOf="@id/userCircleImageView"/>
+    <TextView
+        android:id="@+id/reasonTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="15dp"
+        android:contentDescription="@string/Chats"
+        android:textColor="@color/light_teal"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/userCircleImageView"
+        android:layout_toLeftOf="@id/createdTimestampTV"/>
+    <TextView
+        android:id="@+id/createdTimestampTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="15dp"
+        android:contentDescription="@string/timestamp"
+        android:textColor="@color/light_teal"
+        android:layout_marginEnd="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
+
+</RelativeLayout>
