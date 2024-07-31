@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.CreatePost
@@ -12,18 +13,183 @@ import com.example.synthronize.adapters.ChatroomAdapter
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.DialogForwardContentBinding
 import com.example.synthronize.databinding.DialogMenuBinding
+import com.example.synthronize.databinding.DialogReportBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
+import com.example.synthronize.model.ReportModel
 import com.example.synthronize.model.UserModel
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 //ALERT DIALOGS
 class DialogUtil: OnItemClickListener {
+
+    //OPENS DIALOG FOR REPORT
+    fun openReportDialog(context: Context, inflater: LayoutInflater, reportType:String, idToReport:String, communityId:String = ""){
+        var reasonToReport = ""
+
+        val dialogReportBinding = DialogReportBinding.inflate(inflater)
+        val dialogReport = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(dialogReportBinding.root))
+            .setMargin(0, 200, 0, 0)
+            .setCancelable(true)
+            .setExpanded(false)
+            .setGravity(Gravity.BOTTOM)
+            .create()
+
+        if (reportType == "User"){
+            //hide some options for user
+            dialogReportBinding.selfharmLayout.visibility = View.GONE
+        } else if (reportType == "Community"){
+            //hide some options for community
+            dialogReportBinding.selfharmLayout.visibility = View.GONE
+            dialogReportBinding.impersonationLayout.visibility = View.GONE
+        } else {
+            //hide some options for community content
+            dialogReportBinding.impersonationLayout.visibility = View.GONE
+        }
+
+        //options
+        dialogReportBinding.spamRB.setOnClickListener {
+            reasonToReport = "Spam"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.spamRB)
+        }
+        dialogReportBinding.inappropriateRB.setOnClickListener {
+            reasonToReport = "Inappropriate Content"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.inappropriateRB)
+        }
+        dialogReportBinding.misinfoRB.setOnClickListener {
+            reasonToReport = "Misinformation"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.misinfoRB)
+        }
+        dialogReportBinding.harassOrBullyRB.setOnClickListener {
+            reasonToReport = "Harassment or Bullying"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.harassOrBullyRB)
+        }
+        dialogReportBinding.hateSpeechRB.setOnClickListener {
+            reasonToReport = "Hate Speech"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.hateSpeechRB)
+        }
+        dialogReportBinding.violenceRB.setOnClickListener {
+            reasonToReport = "Violence or Threats"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.violenceRB)
+        }
+        dialogReportBinding.nudityRB.setOnClickListener {
+            reasonToReport = "Nudity or Sexual Content"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.nudityRB)
+        }
+        dialogReportBinding.selfHarmRB.setOnClickListener {
+            reasonToReport = "Self-Harm"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.selfHarmRB)
+        }
+        dialogReportBinding.scamRB.setOnClickListener {
+            reasonToReport = "Scam or Fraud"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.scamRB)
+        }
+        dialogReportBinding.impersonationRB.setOnClickListener {
+            reasonToReport = "Impersonation"
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.impersonationRB)
+        }
+
+        //Other option
+        dialogReportBinding.othersRB.setOnClickListener {
+            reasonToReport = "Other"
+            dialogReportBinding.otherEdtTxt.visibility = View.VISIBLE
+            unselectRadioButtons(dialogReportBinding, dialogReportBinding.othersRB)
+        }
+
+        //Submit Button
+        dialogReportBinding.submitBtn.setOnClickListener {
+            if (reasonToReport == "Other"){
+                val reason = dialogReportBinding.otherEdtTxt.text.toString()
+                if (reason.isNotEmpty() && reason != "null"){
+                    sendReportToFirebase(dialogReport, context, reportType, idToReport, reasonToReport, communityId)
+                } else {
+                    Toast.makeText(context, "Please specify your reason", Toast.LENGTH_SHORT).show()
+                }
+            } else if(reasonToReport.isNotEmpty()){
+                sendReportToFirebase(dialogReport, context, reportType, idToReport, reasonToReport, communityId)
+            } else {
+                Toast.makeText(context, "Select your reason", Toast.LENGTH_SHORT).show()
+            }
+        }
+        dialogReportBinding.downBtn.setOnClickListener {
+            dialogReport.dismiss()
+        }
+        dialogReport.show()
+    }
+
+    private fun sendReportToFirebase(dialogReport:DialogPlus, context: Context, reportType:String, idToReport:String, reasonToReport:String,communityId:String = ""){
+        var reportModel = ReportModel()
+
+        if (reportType == "Community" || reportType == "User"){
+            //For Web Admin
+            FirebaseUtil().retrieveReportsCollection().add(reportModel).addOnSuccessListener {
+                reportModel = ReportModel(
+                    reportId = it.id,
+                    reportType = reportType,
+                    ownerId = FirebaseUtil().currentUserUid(),
+                    reportedId = idToReport,
+                    reason = reasonToReport,
+                    createdTimestamp = Timestamp.now()
+                )
+                FirebaseUtil().retrieveReportsCollection().document(it.id).set(reportModel).addOnSuccessListener {
+                    Toast.makeText(context, "Report successfully sent", Toast.LENGTH_SHORT).show()
+                    dialogReport.dismiss()
+                }.addOnFailureListener {
+                    Toast.makeText(context, "Failed to send report", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            //For within Community
+            FirebaseUtil().retrieveCommunityReportsCollection(communityId).add(reportModel).addOnSuccessListener {
+                reportModel = ReportModel(
+                    reportId = it.id,
+                    reportType = reportType,
+                    ownerId = FirebaseUtil().currentUserUid(),
+                    reportedId = idToReport,
+                    reason = reasonToReport,
+                    createdTimestamp = Timestamp.now()
+                )
+                FirebaseUtil().retrieveCommunityReportsCollection(communityId).document(it.id).set(reportModel).addOnSuccessListener {
+                    Toast.makeText(context, "Report successfully sent", Toast.LENGTH_SHORT).show()
+                    dialogReport.dismiss()
+                }.addOnFailureListener {
+                    Toast.makeText(context, "Failed to send report", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun unselectRadioButtons(dialogReportBinding: DialogReportBinding, selectedRadioButton: RadioButton){
+        dialogReportBinding.spamRB.isChecked = false
+        dialogReportBinding.inappropriateRB.isChecked = false
+        dialogReportBinding.misinfoRB.isChecked = false
+        dialogReportBinding.harassOrBullyRB.isChecked = false
+        dialogReportBinding.hateSpeechRB.isChecked = false
+        dialogReportBinding.violenceRB.isChecked = false
+        dialogReportBinding.nudityRB.isChecked = false
+        dialogReportBinding.selfHarmRB.isChecked = false
+        dialogReportBinding.othersRB.isChecked = false
+        dialogReportBinding.scamRB.isChecked = false
+        dialogReportBinding.impersonationRB.isChecked = false
+        dialogReportBinding.otherEdtTxt.visibility = View.GONE
+
+        //selected Radio Button
+        if (selectedRadioButton == dialogReportBinding.othersRB){
+            //if the option is Other
+            selectedRadioButton.isChecked = true
+            dialogReportBinding.otherEdtTxt.visibility = View.VISIBLE
+        } else {
+            selectedRadioButton.isChecked = true
+        }
+    }
+
 
     //OPENS DIALOG FOR SEND POST
     fun openForwardContentDialog(context:Context, inflater: LayoutInflater, postId:String, communityIdOfPost:String){
@@ -31,7 +197,7 @@ class DialogUtil: OnItemClickListener {
         val dialogForwardContentBinding = DialogForwardContentBinding.inflate(inflater)
         val forwardContentDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(dialogForwardContentBinding.root))
-            .setMargin(20, 300, 20, 0)
+            .setMargin(0, 300, 0, 0)
             .setCancelable(true)
             .setExpanded(false)
             .setGravity(Gravity.BOTTOM)
@@ -69,7 +235,6 @@ class DialogUtil: OnItemClickListener {
                 .setExpanded(false)
                 .setGravity(Gravity.CENTER)
                 .create()
-
 
             if (postModel.ownerId == FirebaseUtil().currentUserUid() ||
                 AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), FirebaseUtil().currentUserUid())){
@@ -124,7 +289,10 @@ class DialogUtil: OnItemClickListener {
                 menuDialogBinding.option1.visibility = View.VISIBLE
                 menuDialogBinding.optiontitle1.text = "Report Post"
                 menuDialogBinding.option1.setOnClickListener {
-                    Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
+                    menuDialog.dismiss()
+                    Handler().postDelayed({
+                        DialogUtil().openReportDialog(context, inflater, "Post", postModel.postId, postModel.communityId)
+                    }, 500)
                 }
             }
             menuDialog.show()

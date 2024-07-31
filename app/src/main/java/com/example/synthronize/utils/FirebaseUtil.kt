@@ -120,20 +120,24 @@ class FirebaseUtil {
                 callback(false)
             }
     }
+    fun retrieveReportsCollection():CollectionReference{
+        return FirebaseFirestore.getInstance().collection("reports")
+    }
     fun retrieveAllCommunityCollection():CollectionReference{
         return FirebaseFirestore.getInstance().collection("communities")
     }
     fun retrieveCommunityDocument(communityId:String):DocumentReference{
         return retrieveAllCommunityCollection().document(communityId)
     }
-
     fun retrieveCommunityFeedsCollection(communityId: String):CollectionReference{
         return retrieveCommunityDocument(communityId).collection("feeds")
+    }
+    fun retrieveCommunityReportsCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("reports")
     }
     fun retrieveCommunityEventsCollection(communityId: String):CollectionReference{
         return retrieveCommunityDocument(communityId).collection("events")
     }
-
     fun retrieveCommunityForumsCollection(communityId: String):CollectionReference{
         return retrieveCommunityDocument(communityId).collection("forums")
     }
@@ -143,7 +147,6 @@ class FirebaseUtil {
     fun retrieveCommunityFilesCollection(communityId: String):CollectionReference{
         return retrieveCommunityDocument(communityId).collection("files")
     }
-
     fun removeUserFromAllCommunityChannels(communityId:String, userId:String, callback: (Boolean) -> Unit) {
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
             val communityModel = it.toObject(CommunityModel::class.java)!!
@@ -161,7 +164,6 @@ class FirebaseUtil {
             callback(false)
         }
     }
-
     fun addUserToAllCommunityChannels(communityId:String, userId:String, callback: (Boolean) -> Unit) {
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
             val communityModel = it.toObject(CommunityModel::class.java)!!
@@ -179,5 +181,4 @@ class FirebaseUtil {
             callback(false)
         }
     }
-
 }

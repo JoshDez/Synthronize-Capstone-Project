@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darker_teal"
+    tools:context=".Search">
+
+    <RelativeLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/dark_teal"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/downBtn"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/baseline_keyboard_arrow_down_24"
+            app:tint="@color/light_teal" />
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/headerLayout"
+        android:background="@color/light_teal"
+        app:dividerColor="@color/teal2" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Report"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:textSize="22sp"
+                android:textAlignment="center"
+                android:textColor="@color/light_teal"/>
+
+                <!-- For Reporting Within Community -->
+                <LinearLayout
+                    android:id="@+id/communityContentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/spamLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/spamRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Spam"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/inappropriateLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/inappropriateRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Inappropriate Content"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/misinfoLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/misinfoRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Misinformation"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/harassLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/harassOrBullyRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Harassment or Bullying"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/hatespeechLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/hateSpeechRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Hate Speech"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/violenceLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/violenceRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Violence or Threats"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/scamLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/scamRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Scam or Fraud"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/impersonationLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/impersonationRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Impersonation"
+                            android:textColor="@color/light_teal"
+                            android:textColorLink="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/nudityLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/nudityRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Nudity or Sexual Content"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+
+                    <!-- Option -->
+                    <LinearLayout
+                        android:id="@+id/selfharmLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <RadioButton
+                            android:id="@+id/selfHarmRB"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="RadioButton"
+                            app:buttonTint="@color/light_teal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Self-Harm"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Other Option -->
+            <LinearLayout
+                android:id="@+id/otherLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <RadioButton
+                    android:id="@+id/othersRB"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="RadioButton"
+                    app:buttonTint="@color/light_teal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Other"
+                    android:textColor="@color/light_teal"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+                <!-- Other Edit Text -->
+                <EditText
+                    android:id="@+id/otherEdtTxt"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:hint="Specify your reason..."
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/white"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/submitBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Submit"
+                    android:textSize="20sp"
+                    android:textColor="@color/light_teal"
+                    app:backgroundTint="@color/teal2"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -14,6 +14,7 @@ import com.example.synthronize.databinding.ActivityCommunitySettingsBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
@@ -202,6 +203,10 @@ class CommunitySettings : AppCompatActivity() {
             intent.putExtra("communityId", communityModel.communityId)
             intent.putExtra("isPersonalReport", true)
             startActivity(intent)
+        }
+
+        binding.reportCommunityBtn.setOnClickListener {
+            DialogUtil().openReportDialog(this, layoutInflater, "Community",communityModel.communityId)
         }
     }
 
