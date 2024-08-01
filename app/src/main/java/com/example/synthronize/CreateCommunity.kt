@@ -42,6 +42,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedCommunityProfileUri: Uri
     private lateinit var selectedCommunityBannerUri: Uri
+    private var currentUserType = ""
     private var communityName: String = ""
     private var communityType: String = ""
     private var communityDesc: String = ""
@@ -84,7 +85,11 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         }
 
         //First Layout that the user will see
-        changeLayout(1)
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+            val userModel = it.toObject(UserModel::class.java)!!
+            currentUserType = userModel.userType
+            changeLayout(1)
+        }
     }
 
     private fun changeLayout(layoutNo:Int){
@@ -125,17 +130,23 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                     }
                 }
             }
-
         })
 
-        binding.publicRB.setOnClickListener {
-            binding.privateRB.isChecked = false
+        if (currentUserType == "Student"){
+            //public account as default
+            binding.privateRB.visibility = View.GONE
+            binding.publicRB.isChecked = true
             communityType = "Public"
-        }
 
-        binding.privateRB.setOnClickListener {
-            binding.publicRB.isChecked = false
-            communityType = "Private"
+        } else if (currentUserType == "AppAdmin" || currentUserType == "Teacher"){
+            binding.publicRB.setOnClickListener {
+                binding.privateRB.isChecked = false
+                communityType = "Public"
+            }
+            binding.privateRB.setOnClickListener {
+                binding.publicRB.isChecked = false
+                communityType = "Private"
+            }
         }
 
         binding.nextBtn.setOnClickListener {
