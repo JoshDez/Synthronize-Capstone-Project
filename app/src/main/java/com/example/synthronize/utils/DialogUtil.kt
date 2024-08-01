@@ -291,7 +291,7 @@ class DialogUtil: OnItemClickListener {
                 menuDialogBinding.option1.setOnClickListener {
                     menuDialog.dismiss()
                     Handler().postDelayed({
-                        DialogUtil().openReportDialog(context, inflater, "Feeds", postModel.postId, postModel.communityId)
+                        DialogUtil().openReportDialog(context, inflater, "Post", postModel.postId, postModel.communityId)
                     }, 500)
                 }
             }

@@ -49,4 +49,25 @@
         android:layout_below="@id/mainToolbar"
         app:dividerColor="@color/light_teal" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_below="@id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/reportsFiledBtn"
+            android:padding="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reports Filed"
+            android:textColor="@color/light_teal"
+            android:textSize="24sp"/>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/mainToolbar"
+            app:dividerColor="@color/light_teal" />
+    </LinearLayout>
+
 </RelativeLayout>

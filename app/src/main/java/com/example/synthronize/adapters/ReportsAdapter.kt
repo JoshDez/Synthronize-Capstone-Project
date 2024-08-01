@@ -2,6 +2,7 @@ package com.example.synthronize.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -45,10 +46,10 @@ class ReportsAdapter(private val context: Context, options: FirestoreRecyclerOpt
                 binding.createdTimestampTV.text = DateAndTimeUtil().formatTimestampToDate(reportModel.createdTimestamp)
 
                 when(reportModel.reportType){
-                    "Forums" -> binding.reasonTV.text = "Reported a forum as ${reportModel.reason}"
-                    "Feeds" ->  binding.reasonTV.text = "Reported a post as ${reportModel.reason}"
-                    "Market" -> binding.reasonTV.text = "Reported a product as ${reportModel.reason}"
-                    "Files" ->  binding.reasonTV.text = "Reported a file as ${reportModel.reason}"
+                    "Forum" -> binding.reasonTV.text = "Reported a forum as ${reportModel.reason}"
+                    "Post" ->  binding.reasonTV.text = "Reported a post as ${reportModel.reason}"
+                    "Product" -> binding.reasonTV.text = "Reported a product as ${reportModel.reason}"
+                    "File" ->  binding.reasonTV.text = "Reported a file as ${reportModel.reason}"
                     "Community" ->  binding.reasonTV.text = "Reported a community as ${reportModel.reason}"
                     "User" ->  binding.reasonTV.text = "Reported a user as ${reportModel.reason}"
                 }
@@ -63,6 +64,14 @@ class ReportsAdapter(private val context: Context, options: FirestoreRecyclerOpt
                         headToViewReport(false)
                     }
                 }
+
+                if (reportModel.reviewed){
+                    //if the report is already reviewed
+                    binding.reviewStatusTV.text = "Status: Reviewed"
+                    binding.reviewStatusTV.setTextColor(Color.GREEN)
+                } else {
+                    binding.reviewStatusTV.text = "Status: To be reviewed"
+                }
             }
         }
 
@@ -71,7 +80,6 @@ class ReportsAdapter(private val context: Context, options: FirestoreRecyclerOpt
             intent.putExtra("communityId", communityId)
             intent.putExtra("reportId", reportModel.reportId)
             intent.putExtra("toReview", toReview)
-            intent.putExtra("", toReview)
             context.startActivity(intent)
         }
 

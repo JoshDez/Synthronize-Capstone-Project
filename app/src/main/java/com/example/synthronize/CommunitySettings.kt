@@ -87,7 +87,7 @@ class CommunitySettings : AppCompatActivity() {
         }
 
         binding.viewCommunityReportsBtn.setOnClickListener {
-            val intent = Intent(this, CommunityReports::class.java)
+            val intent = Intent(this, Reports::class.java)
             intent.putExtra("communityId", communityModel.communityId)
             startActivity(intent)
         }
@@ -199,7 +199,7 @@ class CommunitySettings : AppCompatActivity() {
         }
 
         binding.reportsMadeBtn.setOnClickListener {
-            val intent = Intent(applicationContext, CommunityReports::class.java)
+            val intent = Intent(applicationContext, Reports::class.java)
             intent.putExtra("communityId", communityModel.communityId)
             intent.putExtra("isPersonalReport", true)
             startActivity(intent)

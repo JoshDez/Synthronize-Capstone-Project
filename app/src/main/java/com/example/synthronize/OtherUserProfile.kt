@@ -3,20 +3,26 @@ package com.example.synthronize
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.view.Gravity
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.databinding.ActivityOtherUserProfileBinding
+import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.example.synthronize.utils.ProfileUtil
 import com.google.firebase.firestore.FieldValue
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener {
     private lateinit var binding:ActivityOtherUserProfileBinding
@@ -45,7 +51,6 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
             onBackPressed()
         }
     }
-
 
     private fun navigate(tab: String) {
         binding.postsRV.visibility = View.GONE
@@ -139,11 +144,58 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                     startActivity(intent)
                 }
 
+                binding.kebabMenuBtn.setOnClickListener {
+                    openMenuDialog()
+                }
+
                 AppUtil().changeFriendsButtonState(binding.friendBtn, userModel)
                 //TODO: Implement loading stop
                 binding.otherUserRefreshLayout.isRefreshing = false
             }
         }
+    }
+
+    private fun openMenuDialog(){
+        val menuBinding = DialogMenuBinding.inflate(layoutInflater)
+        val menuDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(menuBinding.root))
+            .setMargin(400, 0, 0, 0)
+            .setGravity(Gravity.TOP)
+            .setCancelable(true)
+            .create()
+
+        //Option 1
+        menuBinding.option1.visibility = View.VISIBLE
+        menuBinding.optiontitle1.text = "Search"
+        menuBinding.optionIcon1.setImageResource(R.drawable.gear_icon)
+        menuBinding.optiontitle1.setOnClickListener {
+            val intent = Intent(this, Search::class.java)
+            //TODO to implement search user
+            startActivity(intent)
+        }
+
+
+
+        //Option 2
+        menuBinding.option2.visibility = View.VISIBLE
+        menuBinding.optiontitle2.text = "Block"
+        menuBinding.optionIcon2.setImageResource(R.drawable.baseline_edit_24)
+        menuBinding.optiontitle2.setOnClickListener {
+            Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show()
+        }
+
+        //Option 3
+        menuBinding.option3.visibility = View.VISIBLE
+        menuBinding.optiontitle3.text = "Report"
+        menuBinding.optionIcon3.setImageResource(R.drawable.baseline_logout_24)
+        menuBinding.optiontitle3.setOnClickListener {
+            menuDialog.dismiss()
+            Handler().postDelayed({
+                DialogUtil().openReportDialog(this, layoutInflater, "User", userModel.userID)
+            }, 500)
+        }
+
+        menuDialog.show()
     }
 
 

@@ -3,7 +3,6 @@ package com.example.synthronize.model
 import com.google.firebase.Timestamp
 
 data class UserModel(
-
     var userID: String = "",
     var userType:String = "",
     var fullName: String = "",
@@ -22,5 +21,7 @@ data class UserModel(
     //key: postID  value: uid-interaction timestamp
     var notifications:Map<String, Map<String, Timestamp>> = HashMap(),
     //fcm token for receiving notifications
-    var fcmToken:String = ""
+    var fcmToken:String = "",
+    //Identifies a Student, Teacher, or App Admin
+    var role:String = ""
 )

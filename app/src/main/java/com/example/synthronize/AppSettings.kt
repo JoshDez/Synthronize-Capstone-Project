@@ -1,5 +1,6 @@
 package com.example.synthronize
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,11 @@ class AppSettings : AppCompatActivity() {
 
         binding.backBtn.setOnClickListener {
             onBackPressed()
+        }
+        binding.reportsFiledBtn.setOnClickListener {
+            val intent = Intent(this, Reports::class.java)
+            intent.putExtra("isPersonalReport", true)
+            startActivity(intent)
         }
     }
 }

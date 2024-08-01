@@ -3,28 +3,21 @@ package com.example.synthronize
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.ReportsAdapter
-import com.example.synthronize.adapters.RequestsAdapter
 import com.example.synthronize.databinding.ActivityCommunityReportsBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
-import com.example.synthronize.model.MessageModel
 import com.example.synthronize.model.ReportModel
-import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 
-//Reports activity for admin and moderator within a community
-class CommunityReports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
+//Reports activity for admin and moderator within a community and users outside the community
+class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
     private lateinit var binding:ActivityCommunityReportsBinding
     private lateinit var reportsAdapter: ReportsAdapter
     private var isPersonalReport:Boolean = false
@@ -85,22 +78,22 @@ class CommunityReports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryL
 
 
         if (tab == "feeds"){
-            setupCommunityReport("Feeds")
+            setupCommunityReport("Post")
             binding.feedsBtn.setTextColor(selectedColor)
             currentTab = "feeds"
 
         } else if (tab == "forums") {
-            setupCommunityReport("Forums")
+            setupCommunityReport("Forum")
             binding.forumsBtn.setTextColor(selectedColor)
             currentTab = "forums"
 
         } else if (tab == "market") {
-            setupCommunityReport("Market")
+            setupCommunityReport("Product")
             binding.marketBtn.setTextColor(selectedColor)
             currentTab = "market"
 
         } else if (tab == "activities") {
-            setupCommunityReport("Files")
+            setupCommunityReport("File")
             binding.activitiesBtn.setTextColor(selectedColor)
             currentTab = "activities"
 
@@ -127,17 +120,38 @@ class CommunityReports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryL
     }
 
     private fun setupPersonalReport(){
-        val query = FirebaseUtil().retrieveCommunityReportsCollection(communityId)
-            .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
-            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+        if (communityId == "null" || communityId.isEmpty()){
 
-        val options: FirestoreRecyclerOptions<ReportModel> =
-            FirestoreRecyclerOptions.Builder<ReportModel>().setQuery(query, ReportModel::class.java).build()
+            //Personal report within a community
+            val query = FirebaseUtil().retrieveReportsCollection()
+                .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
+                .orderBy("createdTimestamp", Query.Direction.DESCENDING)
 
-        binding.reportsRV.layoutManager = LinearLayoutManager(this)
-        reportsAdapter = ReportsAdapter(this, options, true, communityId)
-        binding.reportsRV.adapter = reportsAdapter
-        reportsAdapter.startListening()
+            val options: FirestoreRecyclerOptions<ReportModel> =
+                FirestoreRecyclerOptions.Builder<ReportModel>().setQuery(query, ReportModel::class.java).build()
+
+            binding.reportsRV.layoutManager = LinearLayoutManager(this)
+            reportsAdapter = ReportsAdapter(this, options, true)
+            binding.reportsRV.adapter = reportsAdapter
+            reportsAdapter.startListening()
+
+        } else {
+
+            //Personal report within a community
+            val query = FirebaseUtil().retrieveCommunityReportsCollection(communityId)
+                .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
+                .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+            val options: FirestoreRecyclerOptions<ReportModel> =
+                FirestoreRecyclerOptions.Builder<ReportModel>().setQuery(query, ReportModel::class.java).build()
+
+            binding.reportsRV.layoutManager = LinearLayoutManager(this)
+            reportsAdapter = ReportsAdapter(this, options, true, communityId)
+            binding.reportsRV.adapter = reportsAdapter
+            reportsAdapter.startListening()
+
+        }
+
     }
 
 

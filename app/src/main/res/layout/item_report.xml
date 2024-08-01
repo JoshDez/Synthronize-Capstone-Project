@@ -4,37 +4,46 @@
     android:layout_width="match_parent"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
-    android:layout_height="70dp"
+    android:layout_height="100dp"
     android:layout_marginTop="8dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/userCircleImageView"
         android:layout_width="80dp"
+        android:layout_centerVertical="true"
+
         android:layout_height="80dp"
         android:src="@drawable/profile_not_selected"/>
+
     <TextView
         android:id="@+id/fullnameTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/reasonTV"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="17dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@id/userCircleImageView"
         android:contentDescription="@string/full_name"
         android:textColor="@color/light_teal"
-        android:layout_above="@id/reasonTV"
-        android:layout_toRightOf="@id/userCircleImageView"/>
+        android:textSize="17dp" />
+
     <TextView
         android:id="@+id/reasonTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="15dp"
-        android:contentDescription="@string/Chats"
-        android:textColor="@color/light_teal"
-        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="19dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentEnd="true"
         android:layout_toRightOf="@id/userCircleImageView"
-        android:layout_toLeftOf="@id/createdTimestampTV"/>
+        android:contentDescription="@string/Chats"
+        android:layout_centerInParent="true"
+        android:textColor="@color/light_teal"
+        android:textSize="15dp" />
+
     <TextView
         android:id="@+id/createdTimestampTV"
         android:layout_width="wrap_content"
@@ -47,5 +56,20 @@
         android:layout_marginEnd="15dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"/>
+
+
+    <TextView
+        android:id="@+id/reviewStatusTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="8dp"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        android:contentDescription="status"
+        android:textColor="@color/less_saturated_light_teal"
+        android:layout_toRightOf="@id/userCircleImageView"
+        android:layout_toLeftOf="@id/createdTimestampTV"
+        android:layout_below="@id/reasonTV"/>
 
 </RelativeLayout>

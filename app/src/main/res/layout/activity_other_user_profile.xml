@@ -25,11 +25,11 @@
             app:tint="@color/light_teal" />
 
         <ImageButton
-            android:id="@+id/searchBtn"
+            android:id="@+id/kebabMenuBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/search_icon"
+            android:src="@drawable/kebab_menu_icon"
             android:contentDescription="@string/Search"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"

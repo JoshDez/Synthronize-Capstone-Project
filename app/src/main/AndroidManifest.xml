@@ -19,7 +19,7 @@
             android:name=".AppSettings"
             android:exported="false" />
         <activity
-            android:name=".CommunityReports"
+            android:name=".Reports"
             android:exported="false" />
         <activity
             android:name=".ViewMedia"
