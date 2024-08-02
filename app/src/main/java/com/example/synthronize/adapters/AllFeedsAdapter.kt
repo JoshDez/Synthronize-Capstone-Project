@@ -150,7 +150,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 AppUtil().setUserProfilePic(context, owner.userID, binding.profileCIV)
                 binding.usernameTV.text = owner.username
                 binding.descriptionTV.text = postModel.caption
-                binding.timestampTV.text = DateAndTimeUtil().formatTimestampToDate(postModel.createdTimestamp)
+                binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
                 binding.feedWrapperLayout.setOnClickListener {
                     FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {result ->
                         val community = result.toObject(CommunityModel::class.java)!!

@@ -49,7 +49,7 @@ class ViewPost : AppCompatActivity() {
 
             ContentUtil().verifyPostAvailability(postModel) {isAvailable ->
                 if (isAvailable){
-                    binding.feedTimestampTV.text = DateAndTimeUtil().formatTimestampToDate(postModel.createdTimestamp)
+                    binding.feedTimestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
                     binding.captionEdtTxt.setText(postModel.caption)
 
                     FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {result ->

@@ -30,7 +30,7 @@ class CommentAdapter(private val context: Context, options: FirestoreRecyclerOpt
     class CommentViewHolder(private val binding: ItemCommentBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
         fun bind(model: CommentModel){
             binding.commentTV.text = model.comment
-            binding.timestampTV.text = DateAndTimeUtil().formatTimestampToDate(model.commentTimestamp)
+            binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(model.commentTimestamp)
             FirebaseUtil().targetUserDetails(model.commentOwnerId).get().addOnSuccessListener {
                 val user = it.toObject(UserModel::class.java)!!
                 binding.userNameTV.text = user.username

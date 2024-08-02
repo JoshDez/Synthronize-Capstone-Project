@@ -43,7 +43,7 @@ class ReportsAdapter(private val context: Context, options: FirestoreRecyclerOpt
                 val userModel = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, userModel.userID, binding.userCircleImageView)
                 binding.fullnameTV.text = userModel.username
-                binding.createdTimestampTV.text = DateAndTimeUtil().formatTimestampToDate(reportModel.createdTimestamp)
+                binding.createdTimestampTV.text = DateAndTimeUtil().getTimeAgo(reportModel.createdTimestamp)
 
                 when(reportModel.reportType){
                     "Forum" -> binding.reasonTV.text = "Reported a forum as ${reportModel.reason}"

@@ -69,7 +69,7 @@ class ForumsAdapter(
                 forumsBinding.usernameTV.text = owner.username
                 forumsBinding.descriptionTV.text = forumsModel.caption
                 forumsBinding.timestampTV.text =
-                    DateAndTimeUtil().formatTimestampToDate(forumsModel.createdTimestamp)
+                    DateAndTimeUtil().getTimeAgo(forumsModel.createdTimestamp)
                 forumsBinding.usernameTV.setOnClickListener {
                     headToUserProfile()
                 }

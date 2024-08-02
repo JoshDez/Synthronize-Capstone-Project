@@ -159,7 +159,7 @@ class ViewReport : AppCompatActivity() {
                 AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
                 binding.reportedUsernameTV.text = "@${reportedUser.username}"
                 binding.reportedUserFullnameTV.text = reportedUser.fullName
-                binding.reportedPostCreatedTS.text = DateAndTimeUtil().formatTimestampToDate(postModel.createdTimestamp)
+                binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
             }
             if (postModel.contentList.isNotEmpty()){
                 ContentUtil().setImageContent(this, postModel.contentList[0], binding.contentIV)

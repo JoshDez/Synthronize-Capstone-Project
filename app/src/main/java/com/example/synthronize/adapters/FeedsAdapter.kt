@@ -76,7 +76,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 AppUtil().setUserProfilePic(context, owner.userID, feedBinding.profileCIV)
                 feedBinding.usernameTV.text = owner.username
                 feedBinding.descriptionTV.text = postModel.caption
-                feedBinding.timestampTV.text = DateAndTimeUtil().formatTimestampToDate(postModel.createdTimestamp)
+                feedBinding.timestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
                 feedBinding.usernameTV.setOnClickListener {
                     AppUtil().headToUserProfile(context, postModel.ownerId)
                 }
