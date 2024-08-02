@@ -120,6 +120,7 @@ class ViewPost : AppCompatActivity() {
     private fun hideContent(){
         binding.scrollViewLayout.visibility = View.GONE
         binding.bottomToolbar.visibility = View.INVISIBLE
+        binding.divider2.visibility = View.INVISIBLE
         binding.contentNotAvailableLayout.visibility = View.VISIBLE
     }
 
