@@ -15,6 +15,7 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.toObject
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -112,6 +113,17 @@ class AppUtil {
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_NO_ANIMATION
             context.startActivity(intent)
         }, delay)
+    }
+
+    //head back to main activity from community if the user gets banned
+    fun headToMainActivityIfBanned(context: Context, communityId: String){
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+            val communityModel = it.toObject(CommunityModel::class.java)!!
+            if (isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid())){
+                Toast.makeText(context, "You're currently banned from the community", Toast.LENGTH_SHORT).show()
+                headToMainActivity(context)
+            }
+        }
     }
 
     fun resetMainToolbar(binding:ActivityMainBinding){

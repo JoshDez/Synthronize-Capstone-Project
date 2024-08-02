@@ -20,6 +20,7 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -39,7 +40,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
     }
 
     override fun onBindViewHolder(holder: AllFeedsAdapter.ExploreViewHolder, position: Int) {
-        holder.bind(feedList[position])
+        holder.checkAvailabilityBeforeBind(feedList[position])
     }
 
     override fun getItemCount(): Int {
@@ -50,8 +51,22 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
         private lateinit var postModel:PostModel
         private lateinit var viewPageAdapter: ViewPageAdapter
         private var isLoved:Boolean = false
+
+        fun checkAvailabilityBeforeBind(model: PostModel){
+           ContentUtil().verifyPostAvailability(model){isAvailable ->
+               if(isAvailable){
+                   bindPost(model)
+               } else {
+                   bindContentNotAvailable()
+               }
+           }
+        }
+        private fun bindContentNotAvailable(){
+            binding.descriptionTV.text = "Content Not Available"
+            binding.viewPager2.visibility = View.GONE
+        }
         
-        fun bind(model: PostModel){
+        private fun bindPost(model: PostModel){
 
             if (toBindSpecialHolder(10) && isExploreTab){
 

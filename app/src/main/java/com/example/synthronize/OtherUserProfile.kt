@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.databinding.ActivityOtherUserProfileBinding
 import com.example.synthronize.databinding.DialogMenuBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -21,12 +22,14 @@ import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.example.synthronize.utils.ProfileUtil
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.toObject
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
 class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener {
     private lateinit var binding:ActivityOtherUserProfileBinding
     private lateinit var userModel: UserModel
+    private lateinit var myUserModel: UserModel
     private lateinit var allFeedsAdapter:AllFeedsAdapter
     private var userID = ""
 
@@ -69,14 +72,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
             binding.filesRV.visibility = View.VISIBLE
             setupFilesRV()
 
-        }else if (tab == "likes"){
-            binding.likesRV.visibility = View.VISIBLE
-            setupLikesRV()
         }
-    }
-
-    private fun setupLikesRV() {
-        //TODO("Not yet implemented")
     }
 
     private fun setupFilesRV() {
@@ -92,65 +88,79 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
 
 
     private fun bindUserDetails() {
-        //TODO: Implement loading start
         binding.otherUserRefreshLayout.isRefreshing = true
-        FirebaseUtil().targetUserDetails(userID).get().addOnCompleteListener {
-            if (it.isSuccessful && it.result.exists()){
-                userModel = it.result.toObject(UserModel::class.java)!!
-                binding.userDescriptionTV.text = userModel.description
-                binding.userNameTV.text = userModel.username
-                binding.userDisplayNameTV.text = userModel.fullName
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+            myUserModel = it.toObject(UserModel::class.java)!!
 
-                if (userModel.birthday.isNotEmpty()){
-                    binding.birthdayLayout.visibility = View.VISIBLE
-                    binding.birthdayTV.text =  DateAndTimeUtil().formatBirthDate(userModel.birthday)
-                }
 
-                AppUtil().setUserProfilePic(this, userID, binding.userProfileCIV)
-                AppUtil().setUserCoverPic(this, userID, binding.userCoverIV)
+            if (AppUtil().isIdOnList(myUserModel.blockList, userID)){
+                //removes message btn if the user is blocked by current user
+                binding.messageUserBtn.visibility = View.GONE
+            }
 
-                //bind counts
-                ProfileUtil().getCommunitiesCount(userID) { communityCount ->
-                    binding.communitiesCountTV.text = communityCount.toString()
-                }
-                ProfileUtil().getPostsCount(userID) { postsCount ->
-                    binding.postsCountTV.text = postsCount.toString()
-                }
-                ProfileUtil().getFriendsCount(userID) { friendsCount ->
-                    binding.friendsCountTV.text = friendsCount.toString()
-                }
-                //TODO count for files
+            FirebaseUtil().targetUserDetails(userID).get().addOnCompleteListener {otherUser ->
+                if (otherUser.isSuccessful && otherUser.result.exists()){
+                    userModel = otherUser.result.toObject(UserModel::class.java)!!
 
-                //displays the first tab
-                binding.postsRV.visibility = View.VISIBLE
-                setupPostsRV()
+                    if (!AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid())){
+                        //displays the profile
+                        binding.userDescriptionTV.text = userModel.description
+                        binding.userNameTV.text = userModel.username
+                        binding.userDisplayNameTV.text = userModel.fullName
 
-                //set on click listeners
-                binding.postsBtn.setOnClickListener {
-                    navigate("posts")
-                }
-                binding.filesBtn.setOnClickListener {
-                    navigate("files")
-                }
-                binding.likesBtn.setOnClickListener {
-                    navigate("likes")
-                }
+                        if (userModel.birthday.isNotEmpty()){
+                            binding.birthdayLayout.visibility = View.VISIBLE
+                            binding.birthdayTV.text =  DateAndTimeUtil().formatBirthDate(userModel.birthday)
+                        }
 
-                binding.messageUserBtn.setOnClickListener {
-                    val intent = Intent(this, Chatroom::class.java)
-                    intent.putExtra("chatroomName", userModel.fullName)
-                    intent.putExtra("userID", userID)
-                    intent.putExtra("chatroomType", "direct_message")
-                    startActivity(intent)
-                }
+                        AppUtil().setUserProfilePic(this, userID, binding.userProfileCIV)
+                        AppUtil().setUserCoverPic(this, userID, binding.userCoverIV)
 
-                binding.kebabMenuBtn.setOnClickListener {
-                    openMenuDialog()
-                }
+                        //bind counts
+                        ProfileUtil().getCommunitiesCount(userID) { communityCount ->
+                            binding.communitiesCountTV.text = communityCount.toString()
+                        }
+                        ProfileUtil().getPostsCount(userID) { postsCount ->
+                            binding.postsCountTV.text = postsCount.toString()
+                        }
+                        ProfileUtil().getFriendsCount(userID) { friendsCount ->
+                            binding.friendsCountTV.text = friendsCount.toString()
+                        }
+                        //TODO count for files
 
-                AppUtil().changeFriendsButtonState(binding.friendBtn, userModel)
-                //TODO: Implement loading stop
-                binding.otherUserRefreshLayout.isRefreshing = false
+                        //displays the first tab
+                        binding.postsRV.visibility = View.VISIBLE
+                        setupPostsRV()
+
+                        //set on click listeners
+                        binding.postsBtn.setOnClickListener {
+                            navigate("posts")
+                        }
+                        binding.filesBtn.setOnClickListener {
+                            navigate("files")
+                        }
+
+                        binding.messageUserBtn.setOnClickListener {
+                            val intent = Intent(this, Chatroom::class.java)
+                            intent.putExtra("chatroomName", userModel.fullName)
+                            intent.putExtra("userID", userID)
+                            intent.putExtra("chatroomType", "direct_message")
+                            startActivity(intent)
+                        }
+
+                        binding.kebabMenuBtn.setOnClickListener {
+                            openMenuDialog()
+                        }
+
+                        AppUtil().changeFriendsButtonState(binding.friendBtn, userModel)
+                    } else {
+                        //displays profile not available message
+                        binding.kebabMenuBtn.visibility = View.GONE
+                        binding.scrollLayout.visibility = View.GONE
+                        binding.contentNotAvailableLayout.visibility = View.VISIBLE
+                    }
+                    binding.otherUserRefreshLayout.isRefreshing = false
+                }
             }
         }
     }
@@ -174,15 +184,10 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
             startActivity(intent)
         }
 
-
-
         //Option 2
         menuBinding.option2.visibility = View.VISIBLE
-        menuBinding.optiontitle2.text = "Block"
         menuBinding.optionIcon2.setImageResource(R.drawable.baseline_edit_24)
-        menuBinding.optiontitle2.setOnClickListener {
-            Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show()
-        }
+        showBlockUserDialog(menuBinding, menuDialog)
 
         //Option 3
         menuBinding.option3.visibility = View.VISIBLE
@@ -196,6 +201,76 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
         }
 
         menuDialog.show()
+    }
+
+    private fun showBlockUserDialog(menuBinding: DialogMenuBinding, menuDialog: DialogPlus) {
+        if (!AppUtil().isIdOnList(myUserModel.blockList, userID)){
+            menuBinding.optiontitle2.text = "Block"
+            menuBinding.optiontitle2.setOnClickListener {
+                //The user is not yet blocked
+                val warningBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+                val warningDialog = DialogPlus.newDialog(this)
+                    .setContentHolder(ViewHolder(warningBinding.root))
+                    .setGravity(Gravity.CENTER)
+                    .setMargin(50, 700, 50, 700)
+                    .create()
+
+                warningBinding.messageTV.text = "Do you want to block this user? (You will still see this account in communities and group chats)"
+                warningBinding.titleTV.text = "Block User?"
+
+                warningBinding.yesBtn.setOnClickListener {
+                    //adds user to blockList
+                    FirebaseUtil().currentUserDetails().update("blockList", FieldValue.arrayUnion(userID)).addOnSuccessListener {
+                        onBackPressed()
+                        Toast.makeText(this, "The user is now blocked", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+                        Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
+                    }
+                    warningDialog.dismiss()
+                }
+                warningBinding.NoBtn.setOnClickListener {
+                    warningDialog.dismiss()
+                }
+
+                menuDialog.dismiss()
+                Handler().postDelayed({
+                    warningDialog.show()
+                }, 500)
+            }
+
+        } else {
+            menuBinding.optiontitle2.text = "Unblock"
+            menuBinding.optiontitle2.setOnClickListener {
+                //The user is blocked
+                val warningBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+                val warningDialog = DialogPlus.newDialog(this)
+                    .setContentHolder(ViewHolder(warningBinding.root))
+                    .setGravity(Gravity.CENTER)
+                    .setMargin(50, 700, 50, 700)
+                    .create()
+
+                warningBinding.messageTV.text = "Do you want to block this user? (You will still see this account in communities and group chats)?"
+                warningBinding.titleTV.text = "Block User?"
+
+                warningBinding.yesBtn.setOnClickListener {
+                    //removes user from blockList
+                    FirebaseUtil().currentUserDetails().update("blockList", FieldValue.arrayRemove(userID)).addOnSuccessListener {
+                        Toast.makeText(this, "The user is now unblocked", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+                        Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
+                    }
+                    warningDialog.dismiss()
+                }
+                warningBinding.NoBtn.setOnClickListener {
+                    warningDialog.dismiss()
+                }
+
+                menuDialog.dismiss()
+                Handler().postDelayed({
+                    warningDialog.show()
+                }, 500)
+            }
+        }
     }
 
 

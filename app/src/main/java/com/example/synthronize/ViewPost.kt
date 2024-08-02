@@ -1,11 +1,14 @@
 package com.example.synthronize
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.CommentAdapter
 import com.example.synthronize.databinding.ActivityViewPostBinding
 import com.example.synthronize.model.CommentModel
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -15,10 +18,12 @@ import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.toObject
 
 class ViewPost : AppCompatActivity() {
     private lateinit var binding:ActivityViewPostBinding
     private lateinit var commentAdapter: CommentAdapter
+    private lateinit var postModel: PostModel
     private lateinit var communityId:String
     private lateinit var postId:String
 
@@ -31,30 +36,40 @@ class ViewPost : AppCompatActivity() {
         postId = intent.getStringExtra("postId").toString()
 
         getFeedModel()
+
+
+        binding.backBtn.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun getFeedModel(){
         FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).get().addOnSuccessListener {
-            val feedModel = it.toObject(PostModel::class.java)!!
-            binding.feedTimestampTV.text = DateAndTimeUtil().formatTimestampToDate(feedModel.createdTimestamp)
-            binding.captionEdtTxt.setText(feedModel.caption)
-            binding.backBtn.setOnClickListener {
-                this.finish()
+            postModel = it.toObject(PostModel::class.java)!!
+
+            ContentUtil().verifyPostAvailability(postModel) {isAvailable ->
+                if (isAvailable){
+                    binding.feedTimestampTV.text = DateAndTimeUtil().formatTimestampToDate(postModel.createdTimestamp)
+                    binding.captionEdtTxt.setText(postModel.caption)
+
+                    FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {result ->
+                        val user = result.toObject(UserModel::class.java)!!
+                        binding.ownerUsernameTV.text = user.username
+                        AppUtil().setUserProfilePic(this, user.userID, binding.profileCIV)
+                    }
+
+                    if (postModel.contentList.isNotEmpty())
+                        bindContent(postModel.contentList)
+
+                    bindComments()
+                } else {
+                    hideContent()
+                }
+
             }
-
-            FirebaseUtil().targetUserDetails(feedModel.ownerId).get().addOnSuccessListener {result ->
-                val user = result.toObject(UserModel::class.java)!!
-                binding.ownerUsernameTV.text = user.username
-                AppUtil().setUserProfilePic(this, user.userID, binding.profileCIV)
-            }
-
-            if (feedModel.contentList.isNotEmpty())
-                bindContent(feedModel.contentList)
-
-            bindComments()
-
         }
     }
+
 
     private fun bindComments(){
         val query: Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).collection("comments")
@@ -99,6 +114,13 @@ class ViewPost : AppCompatActivity() {
                 binding.contentLayout.addView(ContentUtil().createSpaceView(this))
             }
         }
+    }
+
+
+    private fun hideContent(){
+        binding.scrollViewLayout.visibility = View.GONE
+        binding.bottomToolbar.visibility = View.INVISIBLE
+        binding.contentNotAvailableLayout.visibility = View.VISIBLE
     }
 
     override fun onStart() {

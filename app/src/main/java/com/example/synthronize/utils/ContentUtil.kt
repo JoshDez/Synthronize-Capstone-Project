@@ -16,9 +16,11 @@ import android.widget.Space
 import androidx.core.util.TypedValueCompat
 import com.example.synthronize.R
 import com.example.synthronize.ViewMedia
+import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.PostModel
+import com.example.synthronize.model.UserModel
 
 class ContentUtil {
-
     //FOR FEED
     fun getImageView(context: Context, filename:String): ImageView{
 
@@ -108,13 +110,48 @@ class ContentUtil {
         }
 
     }
-
     fun createSpaceView(context: Context): View {
         val spaceView = Space(context)
         val heightInDp = 20
         val heightInPixels = (heightInDp * context.resources.displayMetrics.density).toInt()
         spaceView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightInPixels)
         return spaceView
+    }
+
+
+    //checks the post availability
+    fun verifyPostAvailability(postModel:PostModel, callback: (Boolean) -> Unit){
+        FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {user ->
+            val userModel = user.toObject(UserModel::class.java)!!
+
+            FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {community ->
+                val communityModel = community.toObject(CommunityModel::class.java)!!
+
+                //if the user is not banned from community and not blocked by the post owner
+                if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid()) &&
+                    !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid())){
+
+                    if (communityModel.communityType == "Private"){
+                        //post is from private community
+                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys.toList(), FirebaseUtil().currentUserUid())){
+                            //The user belongs to the private community
+                            callback(true)
+                        } else {
+                            callback(false)
+                        }
+                    } else {
+                        //post is from public community
+                        callback(true)
+                    }
+                } else {
+                    callback(false)
+                }
+            }.addOnFailureListener {
+                callback(false)
+            }
+        }.addOnFailureListener {
+            callback(false)
+        }
     }
 
 }

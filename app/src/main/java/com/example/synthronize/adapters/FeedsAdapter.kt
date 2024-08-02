@@ -18,6 +18,7 @@ import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -36,7 +37,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
     }
 
     override fun onBindViewHolder(holder: FeedsViewHolder, position: Int, model: PostModel) {
-        holder.bind(model)
+        holder.checkAvailabilityBeforeBind(model)
     }
 
 
@@ -49,7 +50,23 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
         private lateinit var postModel:PostModel
         private lateinit var viewPageAdapter: ViewPageAdapter
         private var isLoved:Boolean = false
-        fun bind(model: PostModel){
+
+
+        fun checkAvailabilityBeforeBind(model: PostModel){
+            ContentUtil().verifyPostAvailability(model){ isAvailable ->
+                if(isAvailable){
+                    bindPost(model)
+                } else {
+                    bindContentNotAvailable()
+                }
+            }
+        }
+        private fun bindContentNotAvailable(){
+            feedBinding.descriptionTV.text = "Content Not Available"
+            feedBinding.viewPager2.visibility = View.GONE
+        }
+
+        private fun bindPost(model: PostModel){
 
             this.postModel = model
 

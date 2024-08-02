@@ -36,7 +36,27 @@
         android:background="@color/light_teal"
         app:dividerColor="@color/light_teal" />
 
+    <LinearLayout
+        android:id="@+id/contentNotAvailableLayout"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider1"
+        android:layout_above="@id/divider2">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Content Not Available"
+            android:textColor="@color/light_teal"
+            android:textSize="24dp"
+            android:gravity="center"/>
+    </LinearLayout>
+
+
     <ScrollView
+        android:id="@+id/scrollViewLayout"
         android:layout_below="@id/divider1"
         android:layout_above="@id/divider2"
         android:layout_width="match_parent"
@@ -92,8 +112,6 @@
                     android:textColorHint="@color/light_teal"
                     android:textColor="@color/light_teal"/>
             </RelativeLayout>
-
-
 
             <LinearLayout
                 android:id="@+id/contentLayout"

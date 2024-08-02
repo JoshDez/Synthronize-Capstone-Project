@@ -147,6 +147,15 @@
             android:layout_height="70dp"
             android:padding="10dp">
 
+            <TextView
+                android:id="@+id/chatroomNotAvailableTV"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="The chatroom is no longer available"
+                android:textColor="@color/light_teal"/>
+
             <EditText
                 android:id="@+id/chatBoxEdtTxt"
                 android:padding="10dp"

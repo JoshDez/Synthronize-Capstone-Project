@@ -36,7 +36,6 @@ class Members : AppCompatActivity(), OnItemClickListener {
     private lateinit var communityId:String
     private lateinit var chatroomId:String
     private lateinit var communityModel: CommunityModel
-    private lateinit var chatroomModel: ChatroomModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +43,6 @@ class Members : AppCompatActivity(), OnItemClickListener {
         setContentView(binding.root)
 
         communityId = intent.getStringExtra("communityId").toString()
-        chatroomId = intent.getStringExtra("chatroomId").toString()
 
         queryUsers()
 

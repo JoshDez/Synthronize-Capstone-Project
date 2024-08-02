@@ -9,15 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.ForumsAdapter
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentForumsBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.ForumsModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 
-class ForumsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment() {
+class ForumsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
 
     private lateinit var binding:FragmentForumsBinding
     private lateinit var context: Context
@@ -40,6 +44,8 @@ class ForumsFragment(private val mainBinding: FragmentCommunityBinding, private 
             //Retrieve Group Model
             context = requireContext()
             if (context != null){
+                NetworkUtil(context).checkNetworkAndShowSnackbar(binding.root, this)
+                AppUtil().headToMainActivityIfBanned(context, communityId)
                 bindButtons()
                 setRecyclerView()
             }
@@ -87,5 +93,12 @@ class ForumsFragment(private val mainBinding: FragmentCommunityBinding, private 
         if (::forumsAdapter.isInitialized){
             forumsAdapter.stopListening()
         }
+    }
+
+    override fun onRefresh() {
+
+    }
+
+    override fun retryNetwork() {
     }
 }

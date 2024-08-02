@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.synthronize.Chatroom
-import com.example.synthronize.R
 import com.example.synthronize.ViewPost
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -19,9 +17,6 @@ import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.FirebaseUtil
-import com.example.synthronize.utils.GlideApp
-import com.google.firebase.firestore.toObject
-import java.text.SimpleDateFormat
 
 class MessageAdapter(private val context: Context, options: FirestoreRecyclerOptions<MessageModel>):
     FirestoreRecyclerAdapter<MessageModel, MessageAdapter.MessageViewHolder>(options) {

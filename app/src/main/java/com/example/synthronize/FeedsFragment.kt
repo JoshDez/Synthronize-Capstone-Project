@@ -17,6 +17,7 @@ import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentFeedsBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.PostModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -48,6 +49,7 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
             if (context != null){
                 binding.feedsRefreshLayout.setOnRefreshListener(this)
                 NetworkUtil(context).checkNetworkAndShowSnackbar(binding.root, this)
+                AppUtil().headToMainActivityIfBanned(context, communityId)
                 bindButtons()
                 setRecyclerView()
             }

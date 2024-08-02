@@ -56,7 +56,6 @@ class Chatroom : AppCompatActivity() {
         communityIdOfPost = intent.getStringExtra("communityIdOfPost").toString()
 
 
-
         //binding buttons
         binding.backBtn.setOnClickListener {
             onBackPressed()
@@ -112,9 +111,27 @@ class Chatroom : AppCompatActivity() {
         }
     }
 
+    private fun checkIfItsBlockedByUser(){
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener { sender ->
+            FirebaseUtil().targetUserDetails(receiverUid).get().addOnSuccessListener {receiver ->
+                val senderModel = sender.toObject(UserModel::class.java)!!
+                val receiverModel = receiver.toObject(UserModel::class.java)!!
+                if (AppUtil().isIdOnList(senderModel.blockList, receiverModel.userID)
+                    || AppUtil().isIdOnList(receiverModel.blockList, senderModel.userID)){
+                    //removes chatbox
+                    binding.chatBoxEdtTxt.visibility = View.GONE
+                    binding.sendMsgBtn.visibility = View.GONE
+                    binding.chatroomNotAvailableTV.visibility = View.VISIBLE
+
+                }
+            }
+        }
+    }
+
     private fun getChatroomID() {
         if (chatroomType == "direct_message"){
             //Chatroom ID for DM
+            checkIfItsBlockedByUser()
             if (FirebaseUtil().currentUserUid().hashCode() < receiverUid.hashCode()){
                chatroomID = "${FirebaseUtil().currentUserUid()}-$receiverUid"
             } else {
