@@ -119,7 +119,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@color/dark_teal"
-                android:text="View Community Reports"
+                android:text="Community Reports"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bannedUsersBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/dark_teal"
+                android:text="Banned Users"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp" />
 

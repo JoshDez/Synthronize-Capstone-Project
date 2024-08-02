@@ -8,21 +8,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentExploreBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 
 class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
-    // TODO: Rename and change types of parameters
     private lateinit var allFeedsAdapter: AllFeedsAdapter
     private lateinit var binding:FragmentExploreBinding
     private lateinit var context:Context
@@ -62,18 +60,22 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(),
     private fun setupRV() {
         val feedList:ArrayList<PostModel> = ArrayList()
         binding.exploreRefreshLayout.isRefreshing = true
-        FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityType", "Public").get().addOnSuccessListener {it ->
+        FirebaseUtil().retrieveAllCommunityCollection()
+            .whereEqualTo("communityType", "Public")
+            .get().addOnSuccessListener {
             for (document in it.documents){
-                val id = document.get("communityId") as String
-                FirebaseUtil().retrieveCommunityFeedsCollection(id).get().addOnSuccessListener {feeds ->
-                    for (post in feeds.documents){
-                        val postModel = post.toObject(PostModel::class.java)!!
-                        feedList.add(postModel)
+                val communityModel = document.toObject(CommunityModel::class.java)!!
+                if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid())){
+                    FirebaseUtil().retrieveCommunityFeedsCollection(communityModel.communityId).get().addOnSuccessListener {feeds ->
+                        for (post in feeds.documents){
+                            val postModel = post.toObject(PostModel::class.java)!!
+                            feedList.add(postModel)
+                        }
+                        feedList.shuffle()
+                        binding.exploreRV.layoutManager = LinearLayoutManager(context)
+                        allFeedsAdapter = AllFeedsAdapter(context, feedList)
+                        binding.exploreRV.adapter = allFeedsAdapter
                     }
-                    feedList.shuffle()
-                    binding.exploreRV.layoutManager = LinearLayoutManager(context)
-                    allFeedsAdapter = AllFeedsAdapter(context, feedList)
-                    binding.exploreRV.adapter = allFeedsAdapter
                 }
                 binding.exploreRefreshLayout.isRefreshing = false
             }

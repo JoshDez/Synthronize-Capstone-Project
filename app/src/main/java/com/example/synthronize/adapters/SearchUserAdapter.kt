@@ -83,7 +83,33 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                         listener.onItemClick(model.userID, false)
                     }
 
-                }else {
+                }else if (purpose == "BlockedUsers"){
+
+                    binding.unbanBtn.visibility = View.VISIBLE
+                    binding.unbanBtn.text = "Unblock"
+                    binding.usernameTV.setOnClickListener {
+                        val intent = Intent(context, OtherUserProfile::class.java)
+                        intent.putExtra("userID", model.userID)
+                        context.startActivity(intent)
+                    }
+                    binding.unbanBtn.setOnClickListener {
+                        listener.onItemClick(model.userID, true)
+                    }
+
+                }else if (purpose == "BannedUsers"){
+
+                    binding.unbanBtn.visibility = View.VISIBLE
+                    binding.unbanBtn.text = "Unban"
+                    binding.usernameTV.setOnClickListener {
+                        val intent = Intent(context, OtherUserProfile::class.java)
+                        intent.putExtra("userID", model.userID)
+                        context.startActivity(intent)
+                    }
+                    binding.unbanBtn.setOnClickListener {
+                        listener.onItemClick(model.userID, true)
+                    }
+
+                } else {
                     //display check box if user is not the current user
                     binding.userContainerRL.setOnClickListener{
                         listener.onItemClick(model.userID)

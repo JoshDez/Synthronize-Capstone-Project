@@ -2,12 +2,10 @@ package com.example.synthronize.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.databinding.ItemSuggestionBinding
 import com.example.synthronize.model.CommunityModel
-import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -43,7 +41,7 @@ class CommunitySuggestionAdapter(private val context: Context, private val commu
             AppUtil().setCommunityProfilePic(context, model.communityId, binding.suggestionCIV)
             binding.suggestionNameTV.text = AppUtil().sliceMessage(model.communityName, 30)
 
-            if (!communityModel.blockList.contains(FirebaseUtil().currentUserUid())){
+            if (!communityModel.bannedUsers.contains(FirebaseUtil().currentUserUid())){
 
                 AppUtil().changeCommunityButtonStates(context, binding.actionBtn, communityModel.communityId)
 

@@ -38,7 +38,7 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
         private lateinit var communityModel: CommunityModel
         fun bind(model: CommunityModel){
             //Checks if user is not on community block list
-            if (!AppUtil().isIdOnList(model.blockList, FirebaseUtil().currentUserUid())){
+            if (!AppUtil().isIdOnList(model.bannedUsers, FirebaseUtil().currentUserUid())){
                 communityModel = model
                 binding.groupNameTextView.text = model.communityName
                 //TODO: Bind community image

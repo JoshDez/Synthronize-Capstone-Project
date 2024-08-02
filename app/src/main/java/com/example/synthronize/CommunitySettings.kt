@@ -86,6 +86,12 @@ class CommunitySettings : AppCompatActivity() {
             }
         }
 
+        binding.bannedUsersBtn.setOnClickListener {
+            val intent = Intent(this, BanAndBlockList::class.java)
+            intent.putExtra("communityId", communityModel.communityId)
+            startActivity(intent)
+        }
+
         binding.viewCommunityReportsBtn.setOnClickListener {
             val intent = Intent(this, Reports::class.java)
             intent.putExtra("communityId", communityModel.communityId)

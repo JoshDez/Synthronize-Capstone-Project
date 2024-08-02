@@ -96,7 +96,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                         for (community in communities.documents){
                             val communityModel = community.toObject(CommunityModel::class.java)!!
                             val myUid = FirebaseUtil().currentUserUid()
-                            if (!communityModel.communityMembers.contains(myUid) && !communityModel.blockList.contains(myUid)){
+                            if (!communityModel.communityMembers.contains(myUid) && !communityModel.bannedUsers.contains(myUid)){
                                 communityIdList.add(communityModel.communityId)
                             }
                         }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/main"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/darker_teal"
+tools:context=".BanAndBlockList">
+
+
+<RelativeLayout
+    android:id="@+id/mainToolbar"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@color/darker_teal"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_centerVertical="true">
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_marginStart="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/back_icon"
+            app:tint="@color/light_teal" />
+        <TextView
+            android:id="@+id/toolbarTitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="25dp"
+            android:textColor="@color/light_teal"
+            android:contentDescription="BanAndBlockUsers"/>
+    </LinearLayout>
+
+</RelativeLayout>
+
+<com.google.android.material.divider.MaterialDivider
+    android:id="@+id/divider"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_below="@id/mainToolbar"
+    app:dividerColor="@color/light_teal" />
+
+
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/banAndBlockRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/divider">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/banAndBlockRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</RelativeLayout>

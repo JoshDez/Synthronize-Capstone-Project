@@ -153,6 +153,17 @@
                 android:textColor="@color/light_teal"/>
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/banUserFromCommunityBtn"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:text="Ban User From Community"
+                android:background = "@color/teal2"
+                android:textColor="@color/light_teal"/>
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/kickUserBtn"
                 android:visibility="gone"
                 android:layout_width="match_parent"
