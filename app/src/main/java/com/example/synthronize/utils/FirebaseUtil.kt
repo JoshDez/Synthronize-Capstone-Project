@@ -76,6 +76,13 @@ class FirebaseUtil {
             .child(url)
     }
 
+    fun retrieveGroupChatProfileRef(url:String): StorageReference {
+        return FirebaseStorage.getInstance().reference
+            .child("groupChatProfilePicture")
+            //name of picture
+            .child(url)
+    }
+
     fun retrieveCommunityBannerPicRef(url:String): StorageReference {
         return FirebaseStorage.getInstance().reference
             .child("communityBannerPicture")

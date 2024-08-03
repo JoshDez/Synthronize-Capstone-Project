@@ -351,4 +351,26 @@ class AppUtil {
         }
     }
 
+    //Detects any bad words
+    fun containsBadWord(context: Context, input: String): Boolean {
+        // List of bad words in English and Filipino
+        val badWords = listOf(
+            "fuck", "shit", "bullshit", "whore", "shithead", // Add more English bad words here
+            "masamang salita1", "masamang salita2" // Add more Filipino bad words here
+        )
+
+        // Convert the input to lowercase to make the check case-insensitive
+        val lowerCaseInput = input.toLowerCase()
+
+        // Check if any bad word is present in the input string
+        for (badWord in badWords) {
+            if (lowerCaseInput.contains(badWord)) {
+                Toast.makeText(context, "Contains Forbidden Word/s", Toast.LENGTH_SHORT).show()
+                return true
+            }
+        }
+
+        return false
+    }
+
 }

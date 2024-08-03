@@ -26,7 +26,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
-//ALERT DIALOGS
+//ALERT DIALOGS AND METHODS
 class DialogUtil: OnItemClickListener {
 
     //OPENS DIALOG FOR REPORT
@@ -341,6 +341,8 @@ class DialogUtil: OnItemClickListener {
         }
 
     }
+
+
 
     override fun onItemClick(id: String, isChecked: Boolean) {
         TODO("Not yet implemented")

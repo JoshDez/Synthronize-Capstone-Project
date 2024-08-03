@@ -9,5 +9,6 @@ data class ChatroomModel(
     var lastMsgTimestamp:Timestamp = Timestamp.now(),
     var lastMessage:String = "",
     var lastMessageUserId:String = "",
-    var chatroomName:String = ""
+    var chatroomName:String = "",
+    var chatroomProfileUrl:String = ""
 )

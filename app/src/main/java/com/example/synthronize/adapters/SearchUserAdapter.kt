@@ -65,7 +65,6 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                             listener.onItemClick(model.userID, false)
                         }
                     }
-
                 }else if(purpose == "PermitUser"){
                     //displays accept and reject button
                     binding.acceptBtn.visibility = View.VISIBLE
@@ -108,7 +107,6 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                     binding.unbanBtn.setOnClickListener {
                         listener.onItemClick(model.userID, true)
                     }
-
                 } else {
                     //display check box if user is not the current user
                     binding.userContainerRL.setOnClickListener{
