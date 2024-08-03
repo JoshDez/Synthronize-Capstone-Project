@@ -165,9 +165,11 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
         //already indexed in firebase
         binding.chatRefreshLayout.isRefreshing =  true
 
+        val forInbox = listOf("group_chat", "direct_message")
+
         val query:Query = FirebaseUtil().retrieveAllChatRoomReferences()
             .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
-            .whereEqualTo("chatroomType", "direct_message")
+            .whereIn("chatroomType", forInbox)
             .whereNotEqualTo("lastMessage", "")
             .orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
 
@@ -284,6 +286,9 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
     }
 
 
+
+
+
     //FOR CREATING GROUP CHAT
     private fun openCreateGCDialog() {
         dialogPlusBinding = DialogCreateGroupchatBinding.inflate(layoutInflater)
@@ -344,12 +349,14 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
                     FirebaseUtil().retrieveGroupChatProfileRef(imageUrl).putFile(selectedGCImage)
                 }
 
+                selectedUserList.add(FirebaseUtil().currentUserUid())
+
                 chatroomModel = ChatroomModel(
                     chatroomId = it.id,
                     chatroomType = "group_chat",
                     userIdList = selectedUserList,
                     lastMsgTimestamp = Timestamp.now(),
-                    lastMessage = "",
+                    lastMessage = "Created a group",
                     lastMessageUserId = FirebaseUtil().currentUserUid(),
                     chatroomName = groupChatName,
                     chatroomProfileUrl = imageUrl
@@ -360,7 +367,8 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
                     Handler().postDelayed({
                         dialogPlus.dismiss()
                         val intent = Intent(context, Chatroom::class.java)
-                        intent.putExtra("chatroomID", chatroomModel.chatroomId)
+                        intent.putExtra("chatroomId", chatroomModel.chatroomId)
+                        intent.putExtra("chatroomType", chatroomModel.chatroomType)
                         startActivity(intent)
                     }, 2000)
                 }.addOnFailureListener {

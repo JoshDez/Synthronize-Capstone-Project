@@ -6,6 +6,7 @@ import android.os.Handler
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.synthronize.MainActivity
 import com.example.synthronize.OtherUserProfile
@@ -22,6 +23,15 @@ import de.hdodenhof.circleimageview.CircleImageView
 class AppUtil {
 
     //For Images
+    fun setGroupChatProfilePic(context:Context, filename: String, civ:CircleImageView){
+        FirebaseUtil().retrieveGroupChatProfileRef(filename)
+        Glide.with(context)
+            .load(FirebaseUtil().retrieveGroupChatProfileRef(filename))
+            .error(R.drawable.community_not_selected)
+            .apply(RequestOptions.circleCropTransform())
+            //image view
+            .into(civ)
+    }
     fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView){
         if (context is Activity && (context.isDestroyed || context.isFinishing)) {
             // The activity is not in a valid state to load images

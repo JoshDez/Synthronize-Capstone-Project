@@ -14,6 +14,7 @@ import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.firestore.toObject
 import java.text.SimpleDateFormat
@@ -49,7 +50,6 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                     bindDirectMessage(chatroomModel.userIdList[1])
                 }
             } else if (chatroomModel.chatroomType == "group_chat"){
-                //TODO: TO BE IMPLEMENTED FOR GROUP CHATS
                 bindGroupChat()
             } else {
                 bindCommunityChat()
@@ -61,14 +61,12 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
             val temp = chatroomModel.chatroomId.split('-')
             val communityId = temp[0]
 
-
             FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
                 val community = it.toObject(CommunityModel::class.java)!!
                 AppUtil().setCommunityProfilePic(context, communityId, binding.userCircleImageView)
                 binding.chatroomNameTV.text = "${chatroomModel.chatroomName} | ${community.communityName}"
                 binding.lastUserMessageTV.text = chatroomModel.lastMessage
-                binding.lastTimestampTV.text =  SimpleDateFormat("HH:MM")
-                    .format(chatroomModel.lastMsgTimestamp.toDate())
+                binding.lastTimestampTV.text = DateAndTimeUtil().getTimeAgo(chatroomModel.lastMsgTimestamp)
 
                 FirebaseUtil().targetUserDetails(chatroomModel.lastMessageUserId).get().addOnSuccessListener {user ->
                     val userModel = user.toObject(UserModel::class.java)!!
@@ -95,17 +93,37 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
         }
 
         private fun bindGroupChat() {
-            TODO("Not yet implemented")
+             FirebaseUtil().targetUserDetails(chatroomModel.lastMessageUserId).get().addOnSuccessListener {
+                val userModel = it.toObject(UserModel::class.java)!!
+
+                 binding.chatroomNameTV.text = chatroomModel.chatroomName
+                 binding.lastTimestampTV.text = DateAndTimeUtil().getTimeAgo(chatroomModel.lastMsgTimestamp)
+                 AppUtil().setGroupChatProfilePic(context, chatroomModel.chatroomProfileUrl, binding.userCircleImageView)
+
+                if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
+                //if the message is not from the current user
+                    binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
+                else
+                //if the message is from the current user
+                    binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
+
+                 binding.chatroomLayout.setOnClickListener {
+                     val intent = Intent(context, Chatroom::class.java)
+                     intent.putExtra("chatroomId", chatroomModel.chatroomId)
+                     intent.putExtra("chatroomType", chatroomModel.chatroomType)
+                     intent.putExtra("postId", postId)
+                     intent.putExtra("communityIdOfPost", communityIdOfPost)
+                     context.startActivity(intent)
+                 }
+            }
         }
         private fun bindDirectMessage(uid:String){
-
             FirebaseUtil().targetUserDetails(uid).get().addOnCompleteListener {
                 if (it.isSuccessful && it.result.exists()){
 
                     val userModel = it.result.toObject(UserModel::class.java)!!
                     binding.chatroomNameTV.text = userModel.fullName
-                    binding.lastTimestampTV.text = SimpleDateFormat("HH:MM")
-                        .format(chatroomModel.lastMsgTimestamp.toDate())
+                    binding.lastTimestampTV.text = DateAndTimeUtil().getTimeAgo(chatroomModel.lastMsgTimestamp)
                     //other fields
                     AppUtil().setUserProfilePic(context, userModel.userID, binding.userCircleImageView)
                     if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
