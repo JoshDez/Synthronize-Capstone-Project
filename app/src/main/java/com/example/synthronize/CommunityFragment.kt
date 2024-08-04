@@ -5,6 +5,9 @@ package com.example.synthronize
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,15 +15,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.media3.common.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.synthronize.adapters.ChatroomAdapter
+import com.example.synthronize.adapters.CommunityChatroomsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
+import com.example.synthronize.databinding.DialogCommunityTextChannelsBinding
+import com.example.synthronize.databinding.DialogCreateGroupchatBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
+import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -29,6 +41,11 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     private lateinit var binding: FragmentCommunityBinding
     private lateinit var communityModel: CommunityModel
     private lateinit var context: Context
+
+    //for community text channels
+    private lateinit var chatroomAdapter:ChatroomAdapter
+    private lateinit var dialogTextChannelsBinding: DialogCommunityTextChannelsBinding
+    private lateinit var dialogTextChannel: DialogPlus
 
     //for Community Admin and App Admin
     private var isUserAdmin = false
@@ -178,28 +195,21 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
         }
 
-        //Option 2: Community General Chat
+        //Option 2: Community Text Channels
         menuBinding.option2.visibility = View.VISIBLE
         menuBinding.optionIcon2.setImageResource(R.drawable.baseline_chat_bubble_24)
-        menuBinding.optiontitle2.text = "Community General Chat"
+        menuBinding.optiontitle2.text = "Community Text Channels"
         menuBinding.optiontitle2.setOnClickListener {
             menuDialog.dismiss()
-            val intent = Intent(context, Chatroom::class.java)
-            intent.putExtra("chatroomName", communityModel.communityChannels[0])
-            intent.putExtra("communityId", communityId)
-            intent.putExtra("chatroomType", "community_chat")
-            intent.putExtra("chatroomId", "$communityId-${communityModel.communityChannels[0]}")
-            startActivity(intent)
+            Handler().postDelayed({
+                openTextChannelsDialog()
+            }, 500)
         }
 
 
         //Option 3: Community Settings
         menuBinding.option3.visibility = View.VISIBLE
-        if (isUserAdmin){
-            menuBinding.optionIcon3.setImageResource(R.drawable.admin_settings)
-        } else {
-            menuBinding.optionIcon3.setImageResource(R.drawable.gear_icon)
-        }
+        menuBinding.optionIcon3.setImageResource(R.drawable.admin_settings)
         menuBinding.optiontitle3.text = "Community Settings"
         menuBinding.optiontitle3.setOnClickListener {
             menuDialog.dismiss()
@@ -208,12 +218,127 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             intent.putExtra("isUserAdmin", isUserAdmin)
             startActivity(intent)
         }
+        menuBinding.option4.visibility = View.VISIBLE
 
+
+        //Option 4: App Settings
+        menuBinding.option4.visibility = View.VISIBLE
+        menuBinding.optionIcon4.setImageResource(R.drawable.gear_icon)
+        menuBinding.optiontitle4.text = "App Settings"
+        menuBinding.optiontitle4.setOnClickListener {
+            menuDialog.dismiss()
+            val intent = Intent(context, AppSettings::class.java)
+            startActivity(intent)
+        }
         menuBinding.option4.visibility = View.VISIBLE
 
         menuDialog.show()
 
     }
+
+    private fun openTextChannelsDialog() {
+        dialogTextChannelsBinding = DialogCommunityTextChannelsBinding.inflate(layoutInflater)
+        dialogTextChannel = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(dialogTextChannelsBinding.root))
+            .setExpanded(false)
+            .create()
+
+        openCommunityTextChannels()
+
+
+        dialogTextChannel.show()
+    }
+
+    private fun openCommunityTextChannels(){
+        dialogTextChannelsBinding.createNewTextChannelLayout.visibility = View.GONE
+        dialogTextChannelsBinding.communityTextChannelsLayout.visibility = View.VISIBLE
+
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+            val myModel = it.toObject(UserModel::class.java)!!
+            var role = ""
+
+            if (myModel.userType == "AppAdmin"){
+                role = "AppAdmin"
+            } else if (isUserAdmin){
+                role = "Admin"
+            } else if (isUserModerator){
+                role = "Moderator"
+            } else {
+                role = "Member"
+            }
+
+            setupTextChannelsRV(role)
+
+            if (role == "AppAdmin" || role == "Admin"){
+                dialogTextChannelsBinding.addTextChannelBtn.visibility = View.VISIBLE
+                dialogTextChannelsBinding.addTextChannelBtn.setOnClickListener {
+                    openCreateTextChannel()
+                }
+            }
+        }
+
+        dialogTextChannelsBinding.backBtn.setOnClickListener {
+            dialogTextChannel.dismiss()
+        }
+
+
+
+
+    }
+
+    private fun openCreateTextChannel() {
+        dialogTextChannelsBinding.communityTextChannelsLayout.visibility = View.GONE
+        dialogTextChannelsBinding.createNewTextChannelLayout.visibility = View.VISIBLE
+
+
+        dialogTextChannelsBinding.backBtn.setOnClickListener {
+            openCommunityTextChannels()
+        }
+
+    }
+
+    private fun setupTextChannelsRV(userType:String){
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+            val community = it.toObject(CommunityModel::class.java)!!
+            val chatroomIds:ArrayList<String> = ArrayList()
+            val query:Query
+
+            if (community.communityChannels.isNotEmpty()){
+                for (channel in community.communityChannels){
+                    chatroomIds.add("${community.communityId}-${channel}")
+                }
+
+                if (userType == "AppAdmin"){
+                    query = FirebaseUtil().retrieveAllChatRoomReferences()
+                        .whereIn("chatroomId", chatroomIds)
+                } else {
+                    query = FirebaseUtil().retrieveAllChatRoomReferences()
+                        .whereIn("chatroomId", chatroomIds)
+                        .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
+                }
+
+                // Add a listener to handle success or failure of the query
+                query.addSnapshotListener { _, e ->
+                    if (e != null) {
+                        // Handle the error here (e.g., log the error or show a message to the user)
+                        android.util.Log.e("Firestore Error", "Error while fetching data", e)
+                        return@addSnapshotListener
+                    } else {
+                        //binding.chatRefreshLayout.isRefreshing =  false
+                    }
+                }
+
+                val options: FirestoreRecyclerOptions<ChatroomModel> =
+                    FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(query, ChatroomModel::class.java).build()
+
+                dialogTextChannelsBinding.textChannelsRV.layoutManager = LinearLayoutManager(context)
+                chatroomAdapter = ChatroomAdapter(context, options)
+                dialogTextChannelsBinding.textChannelsRV.adapter = chatroomAdapter
+                chatroomAdapter.startListening()
+            }
+        }
+    }
+
     private fun selectNavigation(fragment:String) {
         binding.feedsIconIV.setImageResource(R.drawable.feeds_not_selected)
         binding.eventsIconIV.setImageResource(R.drawable.events_not_selected)

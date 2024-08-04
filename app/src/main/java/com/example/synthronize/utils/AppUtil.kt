@@ -365,8 +365,8 @@ class AppUtil {
     fun containsBadWord(context: Context, input: String): Boolean {
         // List of bad words in English and Filipino
         val badWords = listOf(
-            "fuck", "shit", "bullshit", "whore", "shithead", // Add more English bad words here
-            "masamang salita1", "masamang salita2" // Add more Filipino bad words here
+            "fuck", "fucking", "fucked", "fucks", "shit", "shitting", "shits", // Add more English bad words here
+            "puta", "putang", "gago", "gagong", "kupal", "tite" // Add more Filipino bad words here
         )
 
         // Convert the input to lowercase to make the check case-insensitive

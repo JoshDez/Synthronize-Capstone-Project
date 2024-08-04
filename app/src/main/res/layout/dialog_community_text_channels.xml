@@ -35,7 +35,7 @@
                 android:layout_marginStart="10dp"
                 android:textSize="25dp"
                 android:textColor="@color/light_teal"
-                android:text="Create a Group Chat"/>
+                android:text="Community Text Channels"/>
         </LinearLayout>
 
     </RelativeLayout>
@@ -46,9 +46,36 @@
         android:layout_below="@id/mainToolbar"
         app:dividerColor="@color/light_teal" />
 
+    <RelativeLayout
+        android:id="@+id/communityTextChannelsLayout"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/textChannelsRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/addTextChannelBtn"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/baseline_add_24"
+            android:background="@color/teal2"
+            app:tint="@color/light_teal"/>
+
+    </RelativeLayout>
+
 
     <ScrollView
+        android:id="@+id/createNewTextChannelLayout"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_below="@+id/divider"
         android:layout_height="match_parent">
         <LinearLayout
@@ -56,16 +83,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/userProfileCIV"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:layout_marginTop="40dp"
-                android:layout_centerInParent="true"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="center"
-                android:src="@color/light_teal"/>
 
             <Space
                 android:layout_width="match_parent"
@@ -77,7 +94,7 @@
                 android:layout_marginEnd="20dp"
                 android:textColor="@color/light_teal"
                 android:textSize="17sp"
-                android:text="Group chat name"/>
+                android:text="Text Channel Name"/>
             <EditText
                 android:id="@+id/groupChatNameEdtTxt"
                 android:layout_width="match_parent"
@@ -101,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="Add users to chat"
+                android:text="Add users to channel"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
                 android:textSize="20dp" />
@@ -116,49 +133,49 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="visible"/>
 
-                <TextView
-                    android:id="@+id/selectedUsersTV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:text="Selected Users"
-                    android:textColor="@color/light_teal"
-                    android:textSize="17dp" />
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/selectedUsersRV"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp" />
-
-            </LinearLayout>
-
-
-            <EditText
-                android:id="@+id/searchEdtTxt"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_margin="20dp"
-                android:background="@drawable/input_rounded_corners"
-                android:hint="@string/Search"
-                android:padding="10dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/searchedUsersRV"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
+            <CheckBox
+                android:id="@+id/adminCB"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp" />
-
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Community Admins"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp"
+                app:buttonTint = "@color/light_teal"/>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="40dp"/>
+                android:layout_height="30dp"/>
+
+            <CheckBox
+                android:id="@+id/moderatorCB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Community Moderators"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp"
+                app:buttonTint = "@color/light_teal"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="35dp"/>
+
+            <CheckBox
+                android:id="@+id/memberCB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Community Members"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp"
+                app:buttonTint = "@color/light_teal"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/saveBtn"
@@ -167,7 +184,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:backgroundTint="@color/teal"
-                android:text="Create Group Chat"
+                android:text="Create Text Channel"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="20sp"

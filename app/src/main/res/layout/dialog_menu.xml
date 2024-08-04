@@ -77,19 +77,19 @@
 
     <LinearLayout
         android:id="@+id/option3"
-        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="30dp">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/optionIcon3"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
-            app:tint="@color/light_teal"/>
+            app:tint="@color/light_teal" />
 
         <TextView
             android:id="@+id/optiontitle3"
@@ -98,7 +98,7 @@
             android:layout_marginStart="20dp"
             android:contentDescription="@string/menuoption"
             android:textColor="@color/light_teal"
-            android:textSize="17sp"/>
+            android:textSize="17sp" />
     </LinearLayout>
 
 
@@ -111,19 +111,17 @@
 
     <LinearLayout
         android:id="@+id/option4"
-        android:visibility="gone"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="30dp">
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/optionIcon4"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
-            app:tint="@color/light_teal"/>
+            app:tint="@color/light_teal" />
 
         <TextView
             android:id="@+id/optiontitle4"
@@ -132,7 +130,7 @@
             android:layout_marginStart="20dp"
             android:contentDescription="@string/menuoption"
             android:textColor="@color/light_teal"
-            android:textSize="17sp"/>
+            android:textSize="17sp" />
     </LinearLayout>
 
 
