@@ -1,8 +1,10 @@
 package com.example.synthronize
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +35,7 @@ class Chatroom : AppCompatActivity() {
     private var receiverUid = ""
     private var chatroomType = ""
     private var communityId = ""
-    private var chatroomID = ""
+    private var chatroomId = ""
     private var postId = ""
     private var communityIdOfPost = ""
 
@@ -43,15 +45,15 @@ class Chatroom : AppCompatActivity() {
         setContentView(binding.root)
 
         //chatroom details
-        chatroomName = intent.getStringExtra("chatroomName").toString()
+        chatroomId = intent.getStringExtra("chatroomId").toString()
         chatroomType = intent.getStringExtra("chatroomType").toString()
 
         //for direct message
+        chatroomName = intent.getStringExtra("chatroomName").toString()
         receiverUid = intent.getStringExtra("userID").toString()
 
         //for community chats
         communityId = intent.getStringExtra("communityId").toString()
-        chatroomID = intent.getStringExtra("chatroomId").toString()
 
 
         //for sending post
@@ -80,7 +82,6 @@ class Chatroom : AppCompatActivity() {
             }
         }
 
-        getChatroomIDForDM()
         createOrRetrieveChatroomModel()
         bindPostToBeSent()
     }
@@ -106,7 +107,7 @@ class Chatroom : AppCompatActivity() {
                     }
                 }
             } catch (e:Exception){
-
+                Log.d("error", e.message.toString())
             }
         }
     }
@@ -127,43 +128,43 @@ class Chatroom : AppCompatActivity() {
         }
     }
 
-    private fun getChatroomIDForDM() {
-        if (chatroomType == "direct_message"){
-            //Chatroom ID for DM
-            checkIfItsBlockedByUser()
-            if (FirebaseUtil().currentUserUid().hashCode() < receiverUid.hashCode()){
-               chatroomID = "${FirebaseUtil().currentUserUid()}-$receiverUid"
-            } else {
-               chatroomID = "$receiverUid-${FirebaseUtil().currentUserUid()}"
-            }
-        }
-    }
     private fun createOrRetrieveChatroomModel(){
-        FirebaseUtil().retrieveChatRoomReference(chatroomID).get().addOnCompleteListener {
+        FirebaseUtil().retrieveChatRoomReference(chatroomId).get().addOnCompleteListener {
             if (it.isSuccessful){
                 if (it.result?.exists() == false && chatroomType == "direct_message"){
+
+                    //get chatroom Id for DM
+                    checkIfItsBlockedByUser()
+                    if (FirebaseUtil().currentUserUid().hashCode() < receiverUid.hashCode()){
+                        chatroomId = "${FirebaseUtil().currentUserUid()}-$receiverUid"
+                    } else {
+                        chatroomId = "$receiverUid-${FirebaseUtil().currentUserUid()}"
+                    }
+
                     //First chat in DM
-                    chatroomModel = ChatroomModel(chatroomID,
+                    chatroomModel = ChatroomModel(chatroomId,
                         "direct_message",
                         listOf(FirebaseUtil().currentUserUid(), receiverUid),
                         Timestamp.now(),
                         ""
                     )
-                    FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
+
+                    FirebaseUtil().retrieveChatRoomReference(chatroomId).set(chatroomModel)
                     bindChatroomDetails(chatroomModel.chatroomType)
+
                 } else if (it.result?.exists() == false && chatroomType == "community_chat"){
                     FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener { result ->
                         val communityModel = result.toObject(CommunityModel::class.java)!!
                         chatroomModel = ChatroomModel(
                             chatroomName = chatroomName,
-                            chatroomId = chatroomID,
+                            chatroomId = chatroomId,
                             chatroomType = "community_chat",
                             userIdList = communityModel.communityMembers.keys.toList(),
                             lastMsgTimestamp = Timestamp.now(),
                             lastMessage = "",
                             lastMessageUserId = FirebaseUtil().currentUserUid()
                         )
-                        FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
+                        FirebaseUtil().retrieveChatRoomReference(chatroomId).set(chatroomModel)
                         bindChatroomDetails(chatroomModel.chatroomType)
                     }
                 } else {
@@ -198,12 +199,26 @@ class Chatroom : AppCompatActivity() {
                 binding.chatRoomNameTV.text = chatroomModel.chatroomName
             }
         }
+        bindChatroomSettings()
         setupChatRV()
     }
 
+    private fun bindChatroomSettings(){
+        binding.kebabMenuBtn.setOnClickListener {
+            val intent = Intent(this, ChatroomSettings::class.java)
+            intent.putExtra("communityId", communityId)
+            intent.putExtra("chatroomId", chatroomId)
+            intent.putExtra("chatroomType", chatroomType)
+            intent.putExtra("userID", receiverUid)
+            intent.putExtra("chatroomName", chatroomName)
+            startActivity(intent)
+            this.finish()
+        }
+    }
+
     private fun setupChatRV() {
-        if (chatroomID.isNotEmpty()){
-            val myQuery: Query = FirebaseUtil().retrieveChatsFromChatroom(chatroomID)
+        if (chatroomId.isNotEmpty()){
+            val myQuery: Query = FirebaseUtil().retrieveChatsFromChatroom(chatroomId)
                 .orderBy("timestamp", Query.Direction.ASCENDING)
 
             val options: FirestoreRecyclerOptions<MessageModel> =
@@ -241,10 +256,10 @@ class Chatroom : AppCompatActivity() {
         }
 
         //update lastMessageUserID and lastMsgTimestamp
-        FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel)
+        FirebaseUtil().retrieveChatRoomReference(chatroomId).set(chatroomModel)
 
         //add message to chatroom
-        FirebaseUtil().retrieveChatsFromChatroom(chatroomID).add(messageModel)
+        FirebaseUtil().retrieveChatsFromChatroom(chatroomId).add(messageModel)
 
         Handler().postDelayed({
             recyclerView.smoothScrollToPosition(messageAdapter.getMessageCount())

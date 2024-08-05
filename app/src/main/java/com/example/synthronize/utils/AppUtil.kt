@@ -362,11 +362,12 @@ class AppUtil {
     }
 
     //Detects any bad words
-    fun containsBadWord(context: Context, input: String): Boolean {
+    fun containsBadWord(input: String): Boolean {
         // List of bad words in English and Filipino
         val badWords = listOf(
-            "fuck", "fucking", "fucked", "fucks", "shit", "shitting", "shits", // Add more English bad words here
-            "puta", "putang", "gago", "gagong", "kupal", "tite" // Add more Filipino bad words here
+            "fuck", "fucking", "fucked", "fucks", "shit", "shitting", "shits", "asshole", "cunt", "bastard",
+            "cock", "wanker", "crap", "gyatt", "ass", "cum", "creampie", "cock", "cocksucker", "milf", // English swear words
+            "bobo", "puta", "putang", "pota", "potaena", "pakshet", "gago", "gagong", "kupal", "tite", "inamo", "kantot", "kantotan", "burat", "leche", "tarantado", "bakla" // Filipino bad words
         )
 
         // Convert the input to lowercase to make the check case-insensitive
@@ -375,7 +376,6 @@ class AppUtil {
         // Check if any bad word is present in the input string
         for (badWord in badWords) {
             if (lowerCaseInput.contains(badWord)) {
-                Toast.makeText(context, "Contains Forbidden Word/s", Toast.LENGTH_SHORT).show()
                 return true
             }
         }

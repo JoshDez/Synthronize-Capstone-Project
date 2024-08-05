@@ -336,7 +336,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
 
         val groupChatName = dialogPlusBinding.groupChatNameEdtTxt.text.toString()
         if (groupChatName.isEmpty() || groupChatName.length < 3){
-            Toast.makeText(context, "Group chat name should at least be more than 2 chars", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Group chat name should at least have 3 or more characters", Toast.LENGTH_SHORT).show()
         } else if (selectedUserList.size < 2) {
             Toast.makeText(context, "Members should be more than 1", Toast.LENGTH_SHORT).show()
         } else {

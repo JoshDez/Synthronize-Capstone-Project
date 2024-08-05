@@ -10,5 +10,6 @@ data class ChatroomModel(
     var lastMessage:String = "",
     var lastMessageUserId:String = "",
     var chatroomName:String = "",
-    var chatroomProfileUrl:String = ""
+    var chatroomProfileUrl:String = "",
+    var chatroomAdminList:List<String> = listOf()
 )

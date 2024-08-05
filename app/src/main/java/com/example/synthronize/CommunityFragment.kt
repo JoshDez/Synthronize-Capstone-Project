@@ -32,6 +32,8 @@ import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
@@ -289,6 +291,57 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     private fun openCreateTextChannel() {
         dialogTextChannelsBinding.communityTextChannelsLayout.visibility = View.GONE
         dialogTextChannelsBinding.createNewTextChannelLayout.visibility = View.VISIBLE
+
+        dialogTextChannelsBinding.saveBtn.setOnClickListener {
+            val name = dialogTextChannelsBinding.textChannelNameEdtTxt.text.toString()
+            val roles:ArrayList<String> = ArrayList()
+            val chatroomMembers:ArrayList<String> = ArrayList()
+
+            if (dialogTextChannelsBinding.adminCB.isChecked){
+                roles.add("Admin")
+                chatroomMembers.addAll(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"))
+            }
+            if (dialogTextChannelsBinding.moderatorCB.isChecked){
+                roles.add("Moderator")
+                chatroomMembers.addAll(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"))
+            }
+            if (dialogTextChannelsBinding.memberCB.isChecked){
+                roles.add("Member")
+                chatroomMembers.addAll(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Member"))
+            }
+
+            if (name.isEmpty() || name.length < 2){
+                Toast.makeText(context, "Name should at least have more than 2 characters", Toast.LENGTH_SHORT).show()
+            } else if (AppUtil().containsBadWord(name)) {
+                Toast.makeText(context, "The name contains inappropriate word/s", Toast.LENGTH_SHORT).show()
+            } else if (roles.isEmpty()) {
+                Toast.makeText(context, "Select at least one user type", Toast.LENGTH_SHORT).show()
+            } else {
+
+                val chatroomModel = ChatroomModel(
+                    chatroomId = "$communityId-$name",
+                    chatroomType = "community_chat",
+                    userIdList = chatroomMembers,
+                    lastMsgTimestamp = Timestamp.now(),
+                    lastMessage = "Created the text channel",
+                    lastMessageUserId = FirebaseUtil().currentUserUid(),
+                    chatroomName = name
+                )
+
+                FirebaseUtil().retrieveCommunityDocument(communityId).update("communityChannels", FieldValue.arrayUnion(name)).addOnSuccessListener {
+                    FirebaseUtil().retrieveAllChatRoomReferences().document(chatroomModel.chatroomId).set(chatroomModel).addOnSuccessListener {
+                        Toast.makeText(context, "Text channel created successfully", Toast.LENGTH_SHORT).show()
+                        Handler().postDelayed({
+                            dialogTextChannel.dismiss()
+                            val intent = Intent(context, Chatroom::class.java)
+                            intent.putExtra("chatroomId", chatroomModel.chatroomId)
+                            intent.putExtra("communityId", communityId)
+                            startActivity(intent)
+                        }, 2000)
+                    }
+                }
+            }
+        }
 
 
         dialogTextChannelsBinding.backBtn.setOnClickListener {

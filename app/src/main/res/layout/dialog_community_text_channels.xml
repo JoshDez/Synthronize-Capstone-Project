@@ -75,43 +75,46 @@
     <ScrollView
         android:id="@+id/createNewTextChannelLayout"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:layout_height="match_parent"
         android:layout_below="@+id/divider"
-        android:layout_height="match_parent">
+        android:visibility="gone">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="40dp"/>
+                android:layout_height="40dp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:text="Text Channel Name"
                 android:textColor="@color/light_teal"
-                android:textSize="17sp"
-                android:text="Text Channel Name"/>
+                android:textSize="17sp" />
+
             <EditText
-                android:id="@+id/groupChatNameEdtTxt"
+                android:id="@+id/textChannelNameEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/light_teal"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/light_teal"
+                android:contentDescription="@string/full_name"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:textColor="@color/light_teal"
-                android:contentDescription="@string/full_name"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="30dp"/>
+                android:layout_height="30dp" />
 
 
             <TextView
@@ -126,28 +129,28 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="30dp"/>
+                android:layout_height="30dp" />
 
             <LinearLayout
                 android:id="@+id/selectedUsersLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
             <CheckBox
                 android:id="@+id/adminCB"
-                android:layout_marginStart="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:text="Community Admins"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp"
-                app:buttonTint = "@color/light_teal"/>
+                app:buttonTint="@color/light_teal" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="30dp"/>
+                android:layout_height="30dp" />
 
             <CheckBox
                 android:id="@+id/moderatorCB"
@@ -157,11 +160,11 @@
                 android:text="Community Moderators"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp"
-                app:buttonTint = "@color/light_teal"/>
+                app:buttonTint="@color/light_teal" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="35dp"/>
+                android:layout_height="35dp" />
 
             <CheckBox
                 android:id="@+id/memberCB"
@@ -171,11 +174,11 @@
                 android:text="Community Members"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp"
-                app:buttonTint = "@color/light_teal"/>
+                app:buttonTint="@color/light_teal" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="60dp"/>
+                android:layout_height="60dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/saveBtn"
@@ -197,7 +200,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp" />
         </LinearLayout>
     </ScrollView>
 
