@@ -105,7 +105,6 @@ class ChatroomSettings : AppCompatActivity() {
                 FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
                     val community = it.toObject(CommunityModel::class.java)!!
                     binding.chatroomNameTV.text = "${chatroomModel.chatroomName} | ${community.communityName}"
-
                     binding.viewMembersBtn.visibility = View.VISIBLE
                     binding.viewMembersBtn.setOnClickListener {
                         val intent = Intent(this, Members::class.java)

@@ -223,10 +223,8 @@ class CommunitySettings : AppCompatActivity() {
             .whereEqualTo("communityId", communityModel.communityId).get().addOnSuccessListener {channels ->
                 for (channel in channels.documents){
                     val chatModel = channel.toObject(ChatroomModel::class.java)!!
-                    FirebaseUtil().retrieveChatRoomReference(chatModel.communityId).delete()
+                    FirebaseUtil().retrieveChatRoomReference(chatModel.chatroomId).delete()
                 }
-
             }
-
     }
 }

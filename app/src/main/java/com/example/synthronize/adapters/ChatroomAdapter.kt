@@ -57,8 +57,6 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
         }
 
         private fun bindCommunityChat() {
-            //splits the id to extract the communityId
-
             AppUtil().setCommunityProfilePic(context, chatroomModel.communityId, binding.userCircleImageView)
             binding.chatroomNameTV.text = chatroomModel.chatroomName
             binding.lastUserMessageTV.text = chatroomModel.lastMessage

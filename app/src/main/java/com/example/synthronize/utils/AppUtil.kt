@@ -74,7 +74,6 @@ class AppUtil {
     }
 
     fun setCommunityProfilePic(context:Context, communityId: String, civ:CircleImageView){
-
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
             var community = it.toObject(CommunityModel::class.java)!!
 
