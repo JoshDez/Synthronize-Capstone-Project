@@ -11,7 +11,6 @@ data class CommunityModel(
     var communityCreatedTimestamp: Timestamp = Timestamp.now(),
     //Map < userID, role >
     var communityMembers:Map<String, String> = HashMap(),
-    var communityChannels:List<String> = listOf("General"),
     var communityMedia:Map<String, String> = HashMap(),
     var joinRequestList: List<String> = listOf(),
     var bannedUsers: List<String> = listOf(),

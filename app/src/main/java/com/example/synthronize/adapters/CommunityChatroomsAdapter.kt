@@ -45,9 +45,7 @@ class CommunityChatroomsAdapter(private val context: Context, options: Firestore
             binding.communityNameTV.text = communityModel.communityName
             AppUtil().setCommunityProfilePic(context, communityModel.communityId, binding.communityProfileCIV)
             binding.communityChatsRV.layoutManager = LinearLayoutManager(context)
-            setupCommunityChatrooms()
-
-
+            setupCommunityChatroom()
 
             //toggles recycle view
             binding.communityLayout.setOnClickListener {
@@ -64,35 +62,24 @@ class CommunityChatroomsAdapter(private val context: Context, options: Firestore
             binding.communityProfileCIV.setOnClickListener {
                 DialogUtil().openCommunityPreviewDialog(context, inflater, communityModel)
             }
-
-
         }
 
-        private fun setupCommunityChatrooms(){
-            val chatroomIds:ArrayList<String> = ArrayList()
-            binding.communityChatsRV.visibility = View.GONE
+        private fun setupCommunityChatroom(){
+            binding.communityChatsRV.visibility = View.VISIBLE
+            isOpen = true
 
-            for (channel in communityModel.communityChannels){
-                chatroomIds.add("${communityModel.communityId}-$channel")
-            }
+            //already indexed in firebase
+            val query: Query = FirebaseUtil().retrieveAllChatRoomReferences()
+                .whereEqualTo("communityId", communityModel.communityId)
+                .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
+                .orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
 
-            if (chatroomIds.isNotEmpty()){
-                binding.communityChatsRV.visibility = View.VISIBLE
-                isOpen = true
+            val options: FirestoreRecyclerOptions<ChatroomModel> =
+                FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(query, ChatroomModel::class.java).build()
 
-                //already indexed in firebase
-                val query: Query = FirebaseUtil().retrieveAllChatRoomReferences()
-                    .whereIn("chatroomId", chatroomIds)
-                    .orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
-
-                val options: FirestoreRecyclerOptions<ChatroomModel> =
-                    FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(query, ChatroomModel::class.java).build()
-
-                chatroomAdapter = ChatroomAdapter(context, options)
-                binding.communityChatsRV.adapter = chatroomAdapter
-                chatroomAdapter.startListening()
-
-            }
+            chatroomAdapter = ChatroomAdapter(context, options)
+            binding.communityChatsRV.adapter = chatroomAdapter
+            chatroomAdapter.startListening()
 
         }
 

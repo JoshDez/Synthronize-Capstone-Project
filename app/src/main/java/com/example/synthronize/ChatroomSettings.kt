@@ -2,6 +2,7 @@ package com.example.synthronize
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -42,14 +43,7 @@ class ChatroomSettings : AppCompatActivity() {
             chatroomModel = it.toObject(ChatroomModel::class.java)!!
             bindChatroomDetails()
             binding.backBtn.setOnClickListener {
-                val intent = Intent(this, Chatroom::class.java)
-                intent.putExtra("chatroomId", chatroomId)
-                intent.putExtra("chatroomType", chatroomType)
-                intent.putExtra("chatroomName", chatroomName)
-                intent.putExtra("communityId", communityId)
-                intent.putExtra("userID", receiverUid)
-                startActivity(intent)
-                this.finish()
+                onBackPressed()
             }
         }.addOnFailureListener {
             binding.backBtn.setOnClickListener {
@@ -61,15 +55,46 @@ class ChatroomSettings : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        val intent = Intent(this, Chatroom::class.java)
+        intent.putExtra("chatroomId", chatroomId)
+        intent.putExtra("chatroomType", chatroomType)
+        intent.putExtra("chatroomName", chatroomName)
+        intent.putExtra("communityId", communityId)
+        intent.putExtra("userID", receiverUid)
+        startActivity(intent)
+        this.finish()
+        super.onBackPressed()
+    }
+
     private fun bindChatroomDetails(){
         when(chatroomType){
             "direct_message" -> {
                 AppUtil().setUserProfilePic(this, receiverUid, binding.chatroomCIV)
                 binding.chatroomNameTV.text = chatroomName
+                binding.viewProfileBtn.visibility = View.VISIBLE
+                binding.viewProfileBtn.setOnClickListener {
+                    val intent = Intent(this, OtherUserProfile::class.java)
+                    intent.putExtra("userID", receiverUid)
+                    startActivity(intent)
+                }
             }
             "group_chat" -> {
                 AppUtil().setGroupChatProfilePic(this, chatroomModel.chatroomProfileUrl, binding.chatroomCIV)
                 binding.chatroomNameTV.text = chatroomModel.chatroomName
+                binding.viewMembersBtn.visibility = View.VISIBLE
+                binding.viewMembersBtn.setOnClickListener {
+                    val intent = Intent(this, Members::class.java)
+                    intent.putExtra("forChatroomMembers", true)
+                    intent.putExtra("chatroomType", chatroomType)
+                    intent.putExtra("chatroomId", chatroomId)
+                    startActivity(intent)
+                }
+                binding.leaveConversationBtn.visibility = View.VISIBLE
+                binding.leaveConversationBtn.setOnClickListener {
+
+                }
+                showAdminButtons()
             }
             "community_chat" -> {
                 if (chatroomModel.chatroomProfileUrl.isEmpty()){
@@ -80,8 +105,41 @@ class ChatroomSettings : AppCompatActivity() {
                 FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
                     val community = it.toObject(CommunityModel::class.java)!!
                     binding.chatroomNameTV.text = "${chatroomModel.chatroomName} | ${community.communityName}"
+
+                    binding.viewMembersBtn.visibility = View.VISIBLE
+                    binding.viewMembersBtn.setOnClickListener {
+                        val intent = Intent(this, Members::class.java)
+                        intent.putExtra("forChatroomMembers", true)
+                        intent.putExtra("chatroomType", chatroomType)
+                        intent.putExtra("chatroomId", chatroomId)
+                        intent.putExtra("communityId", communityId)
+                        startActivity(intent)
+                    }
+                    showAdminButtons()
                 }
             }
         }
     }
+
+    private fun showAdminButtons(){
+        if (AppUtil().isIdOnList(chatroomModel.chatroomAdminList, FirebaseUtil().currentUserUid())){
+            binding.editChatroomDetailsBtn.visibility = View.VISIBLE
+            binding.editChatroomDetailsBtn.setOnClickListener {
+                editChatroomDetails()
+            }
+            if (chatroomType == "community_chat"){
+                binding.deleteTextChannelBtn.visibility = View.VISIBLE
+                binding.deleteTextChannelBtn.setOnClickListener {
+                    FirebaseUtil().retrieveChatRoomReference(chatroomId).delete().addOnSuccessListener {
+
+                    }
+                }
+            }
+        }
+    }
+
+    private fun editChatroomDetails() {
+
+    }
+
 }

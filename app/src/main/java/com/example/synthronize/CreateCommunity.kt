@@ -320,20 +320,25 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                 //invites the selected users to community
                 inviteUsersToCommunity(communityId)
 
-                //Creates General channel for Community Chat
-                val chatroomID = "$communityId-General"
-                val chatroomModel = ChatroomModel(
-                    chatroomName = "General",
-                    chatroomId = chatroomID,
-                    chatroomType = "community_chat",
-                    userIdList = listOf(FirebaseUtil().currentUserUid()),
-                    lastMsgTimestamp = Timestamp.now(),
-                    lastMessage = "created general channel",
-                    lastMessageUserId = FirebaseUtil().currentUserUid()
-                )
-                FirebaseUtil().retrieveChatRoomReference(chatroomID).set(chatroomModel).addOnSuccessListener {
-                    AppUtil().headToMainActivity(this, "community", delay, communityId)
+                var chatroomModel = ChatroomModel()
+                FirebaseUtil().retrieveAllChatRoomReferences().add(chatroomModel).addOnSuccessListener {chatroom ->
+                    //Creates General channel for Community Chat
+                    val chatroomModel = ChatroomModel(
+                        chatroomName = "General",
+                        chatroomId = chatroom.id,
+                        chatroomType = "community_chat",
+                        userIdList = listOf(FirebaseUtil().currentUserUid()),
+                        lastMsgTimestamp = Timestamp.now(),
+                        lastMessage = "created general channel",
+                        lastMessageUserId = FirebaseUtil().currentUserUid(),
+                        communityId = communityId
+                    )
+                    FirebaseUtil().retrieveChatRoomReference(chatroom.id).set(chatroomModel).addOnSuccessListener {
+                        AppUtil().headToMainActivity(this, "community", delay, communityId)
+                    }
                 }
+
+
             }
         }
     }

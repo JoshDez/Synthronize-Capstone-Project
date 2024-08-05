@@ -108,8 +108,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"/>
 
-
             <LinearLayout
+                android:id="@+id/chatroomMenuLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -122,70 +122,114 @@
                     android:background="@color/light_teal"
                     app:dividerColor="@color/light_teal" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/viewJoinRequestsBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/dark_teal"
-                    android:text="@string/view_join_requests"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/viewCommunityReportsBtn"
+                    android:id="@+id/viewMembersBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@color/dark_teal"
                     android:text="View Members"
                     android:textColor="@color/light_teal"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/editCommunityDetailsBtn"
+                    android:id="@+id/viewProfileBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/dark_teal"
+                    android:text="View Profile"
+                    android:textColor="@color/light_teal"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/editChatroomDetailsBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@color/dark_teal"
                     android:text="Edit Chatroom Details"
                     android:textColor="@color/light_teal"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/deleteCommunityBtn"
+                    android:id="@+id/leaveConversationBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@color/darkish_red"
                     android:text="Leave Conversation"
                     android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/deleteTextChannelBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/darkish_red"
+                    android:text="Delete Text Channel"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
             </LinearLayout>
 
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="40dp"/>
+                android:layout_height="60dp"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/saveBtn"
+            <LinearLayout
+                android:id="@+id/editChatroomButtonsLayout"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:backgroundTint="@color/teal"
-                android:text="Save Chatroom Details"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:cornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.494"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/confirmPassEdtTxt" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/teal"
+                    android:text="Save Chatroom Details"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="15dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.494"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/confirmPassEdtTxt" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancelBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/red"
+                    android:text="Cancel"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="15dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.494"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/confirmPassEdtTxt" />
+            </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"

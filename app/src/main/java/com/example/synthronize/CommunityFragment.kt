@@ -310,6 +310,10 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
                 chatroomMembers.addAll(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Member"))
             }
 
+            if (!dialogTextChannelsBinding.adminCB.isChecked){
+                chatroomMembers.addAll(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"))
+            }
+
             if (name.isEmpty() || name.length < 2){
                 Toast.makeText(context, "Name should at least have more than 2 characters", Toast.LENGTH_SHORT).show()
             } else if (AppUtil().containsBadWord(name)) {
@@ -318,26 +322,24 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
                 Toast.makeText(context, "Select at least one user type", Toast.LENGTH_SHORT).show()
             } else {
 
-                val chatroomModel = ChatroomModel(
-                    chatroomId = "$communityId-$name",
-                    chatroomType = "community_chat",
-                    userIdList = chatroomMembers,
-                    lastMsgTimestamp = Timestamp.now(),
-                    lastMessage = "Created the text channel",
-                    lastMessageUserId = FirebaseUtil().currentUserUid(),
-                    chatroomName = name
-                )
+                var chatroomModel = ChatroomModel()
 
-                FirebaseUtil().retrieveCommunityDocument(communityId).update("communityChannels", FieldValue.arrayUnion(name)).addOnSuccessListener {
+                FirebaseUtil().retrieveAllChatRoomReferences().add(chatroomModel).addOnSuccessListener {
+
+                    chatroomModel = ChatroomModel(
+                        chatroomId = it.id,
+                        chatroomType = "community_chat",
+                        userIdList = chatroomMembers,
+                        lastMsgTimestamp = Timestamp.now(),
+                        lastMessage = "Created the text channel",
+                        lastMessageUserId = FirebaseUtil().currentUserUid(),
+                        chatroomName = name,
+                        communityId = communityId,
+                        chatroomAdminList = AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin")
+                    )
+
                     FirebaseUtil().retrieveAllChatRoomReferences().document(chatroomModel.chatroomId).set(chatroomModel).addOnSuccessListener {
-                        Toast.makeText(context, "Text channel created successfully", Toast.LENGTH_SHORT).show()
-                        Handler().postDelayed({
-                            dialogTextChannel.dismiss()
-                            val intent = Intent(context, Chatroom::class.java)
-                            intent.putExtra("chatroomId", chatroomModel.chatroomId)
-                            intent.putExtra("communityId", communityId)
-                            startActivity(intent)
-                        }, 2000)
+                        openCommunityTextChannels()
                     }
                 }
             }
@@ -351,45 +353,35 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     }
 
     private fun setupTextChannelsRV(userType:String){
-        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-            val community = it.toObject(CommunityModel::class.java)!!
-            val chatroomIds:ArrayList<String> = ArrayList()
-            val query:Query
+        val query:Query
 
-            if (community.communityChannels.isNotEmpty()){
-                for (channel in community.communityChannels){
-                    chatroomIds.add("${community.communityId}-${channel}")
-                }
+        if (userType == "AppAdmin"){
+            query = FirebaseUtil().retrieveAllChatRoomReferences()
+                .whereEqualTo("communityId", communityId)
+        } else {
+            query = FirebaseUtil().retrieveAllChatRoomReferences()
+                .whereEqualTo("communityId", communityId)
+                .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
+        }
 
-                if (userType == "AppAdmin"){
-                    query = FirebaseUtil().retrieveAllChatRoomReferences()
-                        .whereIn("chatroomId", chatroomIds)
-                } else {
-                    query = FirebaseUtil().retrieveAllChatRoomReferences()
-                        .whereIn("chatroomId", chatroomIds)
-                        .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
-                }
-
-                // Add a listener to handle success or failure of the query
-                query.addSnapshotListener { _, e ->
-                    if (e != null) {
-                        // Handle the error here (e.g., log the error or show a message to the user)
-                        android.util.Log.e("Firestore Error", "Error while fetching data", e)
-                        return@addSnapshotListener
-                    } else {
-                        //binding.chatRefreshLayout.isRefreshing =  false
-                    }
-                }
-
-                val options: FirestoreRecyclerOptions<ChatroomModel> =
-                    FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(query, ChatroomModel::class.java).build()
-
-                dialogTextChannelsBinding.textChannelsRV.layoutManager = LinearLayoutManager(context)
-                chatroomAdapter = ChatroomAdapter(context, options)
-                dialogTextChannelsBinding.textChannelsRV.adapter = chatroomAdapter
-                chatroomAdapter.startListening()
+        // Add a listener to handle success or failure of the query
+        query.addSnapshotListener { _, e ->
+            if (e != null) {
+                // Handle the error here (e.g., log the error or show a message to the user)
+                android.util.Log.e("Firestore Error", "Error while fetching data", e)
+                return@addSnapshotListener
+            } else {
+                //binding.chatRefreshLayout.isRefreshing =  false
             }
         }
+
+        val options: FirestoreRecyclerOptions<ChatroomModel> =
+            FirestoreRecyclerOptions.Builder<ChatroomModel>().setQuery(query, ChatroomModel::class.java).build()
+
+        dialogTextChannelsBinding.textChannelsRV.layoutManager = LinearLayoutManager(context)
+        chatroomAdapter = ChatroomAdapter(context, options)
+        dialogTextChannelsBinding.textChannelsRV.adapter = chatroomAdapter
+        chatroomAdapter.startListening()
     }
 
     private fun selectNavigation(fragment:String) {

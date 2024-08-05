@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import com.example.synthronize.Login
+import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.google.firebase.auth.FirebaseAuth
@@ -155,35 +156,24 @@ class FirebaseUtil {
         return retrieveCommunityDocument(communityId).collection("files")
     }
     fun removeUserFromAllCommunityChannels(communityId:String, userId:String, callback: (Boolean) -> Unit) {
-        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-            val communityModel = it.toObject(CommunityModel::class.java)!!
-            if (communityModel.communityChannels.isNotEmpty()){
-                for (channel in communityModel.communityChannels){
-                    //removes user from community channel chatroom
-                    FirebaseUtil().retrieveAllChatRoomReferences().document("${communityModel.communityId}-$channel")
-                        .update("userIdList", FieldValue.arrayRemove(userId))
-                }
-                callback(true)
-            } else {
-                callback(true)
+        FirebaseUtil().retrieveAllChatRoomReferences().whereEqualTo("communityId", communityId).get().addOnSuccessListener {channels ->
+            for (channel in channels.documents){
+                val chatroom = channel.toObject(ChatroomModel::class.java)!!
+                FirebaseUtil().retrieveChatRoomReference(chatroom.chatroomId).update("userIdList", FieldValue.arrayRemove(userId))
+                FirebaseUtil().retrieveChatRoomReference(chatroom.chatroomId).update("chatroomAdminList", FieldValue.arrayRemove(userId))
             }
+            callback(true)
         }.addOnFailureListener {
             callback(false)
         }
     }
     fun addUserToAllCommunityChannels(communityId:String, userId:String, callback: (Boolean) -> Unit) {
-        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-            val communityModel = it.toObject(CommunityModel::class.java)!!
-            if (communityModel.communityChannels.isNotEmpty()){
-                for (channel in communityModel.communityChannels){
-                    //removes user from community channel chatroom
-                    FirebaseUtil().retrieveAllChatRoomReferences().document("${communityModel.communityId}-$channel")
-                        .update("userIdList", FieldValue.arrayUnion(userId))
-                }
-                callback(true)
-            } else {
-                callback(true)
+        FirebaseUtil().retrieveAllChatRoomReferences().whereEqualTo("communityId", communityId).get().addOnSuccessListener {channels ->
+            for (channel in channels.documents){
+                val chatroom = channel.toObject(ChatroomModel::class.java)!!
+                FirebaseUtil().retrieveChatRoomReference(chatroom.chatroomId).update("userIdList", FieldValue.arrayUnion(userId))
             }
+            callback(true)
         }.addOnFailureListener {
             callback(false)
         }

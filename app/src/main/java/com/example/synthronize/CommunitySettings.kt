@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.synthronize.databinding.ActivityCommunitySettingsBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
+import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DialogUtil
@@ -218,8 +219,14 @@ class CommunitySettings : AppCompatActivity() {
 
 
     private fun deleteAllCommunityChannels(){
-        for (channel in communityModel.communityChannels){
-            FirebaseUtil().retrieveChatRoomReference("${communityModel.communityId}-$channel").delete()
-        }
+        FirebaseUtil().retrieveAllChatRoomReferences()
+            .whereEqualTo("communityId", communityModel.communityId).get().addOnSuccessListener {channels ->
+                for (channel in channels.documents){
+                    val chatModel = channel.toObject(ChatroomModel::class.java)!!
+                    FirebaseUtil().retrieveChatRoomReference(chatModel.communityId).delete()
+                }
+
+            }
+
     }
 }

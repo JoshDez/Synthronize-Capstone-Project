@@ -36,6 +36,8 @@ class Members : AppCompatActivity(), OnItemClickListener {
     private lateinit var communityId:String
     private lateinit var chatroomId:String
     private lateinit var communityModel: CommunityModel
+    private lateinit var chatroomModel: ChatroomModel
+    private var forChatroomMembers: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,8 @@ class Members : AppCompatActivity(), OnItemClickListener {
         setContentView(binding.root)
 
         communityId = intent.getStringExtra("communityId").toString()
+        chatroomId = intent.getStringExtra("chatroomId").toString()
+        forChatroomMembers = intent.getBooleanExtra("forChatroomMembers", false)
 
         queryUsers()
 
@@ -97,60 +101,13 @@ class Members : AppCompatActivity(), OnItemClickListener {
                     dialogPlus.dismiss()
                 }
 
-
-                //Additional Buttons
-                //Buttons only for App Admin
-                FirebaseUtil().isUserAppAdmin(FirebaseUtil().currentUserUid()){isUserAppAdmin ->
-                    if (isUserAppAdmin){
-                        //Buttons only for App Admin
-                        if (userModel.userType != "AppAdmin"){
-                            showKickUserButton(id, dialogPlusBinding, dialogPlus)
-                            if (!isUserAdmin(id)){
-                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
-                                showBanUserBtn(id, dialogPlusBinding, dialogPlus)
-                            }
-                            if (!isUserModerator(id)){
-                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
-                                showBanUserBtn(id, dialogPlusBinding, dialogPlus)
-                            }
-                            if (!isUserMember(id)){
-                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
-                                showBanUserBtn(id, dialogPlusBinding, dialogPlus)
-                            }
-                        }
-                    } else if (isUserAdmin(FirebaseUtil().currentUserUid())){
-                        //Buttons only for Admin or Community Admin
-                        if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), id)){
-                            showKickUserButton(id, dialogPlusBinding, dialogPlus)
-                            if (!isUserAdmin(id)){
-                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
-                                showBanUserBtn(id, dialogPlusBinding, dialogPlus)
-                            }
-                            if (!isUserModerator(id)){
-                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
-                                showBanUserBtn(id, dialogPlusBinding, dialogPlus)
-                            }
-                            if (!isUserMember(id)){
-                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
-                                showBanUserBtn(id, dialogPlusBinding, dialogPlus)
-                            }
-                        }
-                    } else if (isUserModerator(FirebaseUtil().currentUserUid())){
-                        //Buttons only for Moderators
-                        if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), id)
-                            && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), id)){
-                            showKickUserButton(id, dialogPlusBinding, dialogPlus)
-                            if (!isUserModerator(id)){
-                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
-                                showBanUserBtn(id, dialogPlusBinding, dialogPlus)
-                            }
-                            if (!isUserMember(id)){
-                                showChangeRoleButton(id, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
-                                showBanUserBtn(id, dialogPlusBinding, dialogPlus)
-                            }
-                        }
-                    }
+                //additional buttons
+                if (forChatroomMembers){
+                    showButtonsForChatroomMembers(userModel, dialogPlusBinding, dialogPlus)
+                } else {
+                    showButtonsForCommunityMembers(userModel, dialogPlusBinding, dialogPlus)
                 }
+
 
                 AppUtil().changeFriendsButtonState(dialogPlusBinding.friendBtn, userModel)
 
@@ -160,6 +117,86 @@ class Members : AppCompatActivity(), OnItemClickListener {
             }
 
         }
+    }
+
+    private fun showButtonsForChatroomMembers(userModel: UserModel, dialogPlusBinding: DialogUserMenuBinding, dialogPlus: DialogPlus) {
+        if (chatroomModel.chatroomAdminList.contains(FirebaseUtil().currentUserUid())){
+            FirebaseUtil().isUserAppAdmin(FirebaseUtil().currentUserUid()){isUserAppAdmin ->
+                if (isUserAppAdmin){
+                    //Buttons only for App Admin
+                    if (userModel.userType != "AppAdmin"){
+                        showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
+                        if (AppUtil().isIdOnList(chatroomModel.chatroomAdminList, userModel.userID)){
+                            showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Member")
+                        } else {
+                            showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
+                        }
+                    }
+                } else if (AppUtil().isIdOnList(chatroomModel.chatroomAdminList, FirebaseUtil().currentUserUid())){
+                    //Buttons only for Chatroom Admin
+                    if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(chatroomModel.chatroomAdminList, userModel.userID)){
+                        showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
+                        showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showButtonsForCommunityMembers(userModel:UserModel, dialogPlusBinding:DialogUserMenuBinding, dialogPlus:DialogPlus){
+        //Additional Buttons for dialog plus
+        FirebaseUtil().isUserAppAdmin(FirebaseUtil().currentUserUid()){isUserAppAdmin ->
+            if (isUserAppAdmin){
+                //Buttons only for App Admin
+                if (userModel.userType != "AppAdmin"){
+                    showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
+                    if (!isUserAdmin(userModel.userID)){
+                        showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
+                        showBanUserBtn(userModel.userID, dialogPlusBinding, dialogPlus)
+                    }
+                    if (!isUserModerator(userModel.userID)){
+                        showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
+                        showBanUserBtn(userModel.userID, dialogPlusBinding, dialogPlus)
+                    }
+                    if (!isUserMember(userModel.userID)){
+                        showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
+                        showBanUserBtn(userModel.userID, dialogPlusBinding, dialogPlus)
+                    }
+                }
+            } else if (isUserAdmin(FirebaseUtil().currentUserUid())){
+                //Buttons only for Admin or Community Admin
+                if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), userModel.userID)){
+                    showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
+                    if (!isUserAdmin(userModel.userID)){
+                        showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
+                        showBanUserBtn(userModel.userID, dialogPlusBinding, dialogPlus)
+                    }
+                    if (!isUserModerator(userModel.userID)){
+                        showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
+                        showBanUserBtn(userModel.userID, dialogPlusBinding, dialogPlus)
+                    }
+                    if (!isUserMember(userModel.userID)){
+                        showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
+                        showBanUserBtn(userModel.userID, dialogPlusBinding, dialogPlus)
+                    }
+                }
+            } else if (isUserModerator(FirebaseUtil().currentUserUid())){
+                //Buttons only for Moderators
+                if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), userModel.userID)
+                    && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), userModel.userID)){
+                    showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
+                    if (!isUserModerator(userModel.userID)){
+                        showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn2, dialogPlus, "Moderator")
+                        showBanUserBtn(userModel.userID, dialogPlusBinding, dialogPlus)
+                    }
+                    if (!isUserMember(userModel.userID)){
+                        showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn3, dialogPlus, "Member")
+                        showBanUserBtn(userModel.userID, dialogPlusBinding, dialogPlus)
+                    }
+                }
+            }
+        }
+
     }
 
     //For User Dialog Menu
@@ -190,6 +227,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
         return false
     }
 
+    //BAN USER BUTTON
     private fun showBanUserBtn(id:String, dialogBinding: DialogUserMenuBinding, dialogPlus: DialogPlus){
         if (!AppUtil().isIdOnList(communityModel.bannedUsers, id)){
             dialogBinding.banUserFromCommunityBtn.visibility = View.VISIBLE
@@ -244,11 +282,14 @@ class Members : AppCompatActivity(), OnItemClickListener {
         }
     }
 
+    //REPORT BUTTON
     private fun showReportButton(id:String, dialogBinding:DialogUserMenuBinding) {
         dialogBinding.reportProfileBtn.setOnClickListener {
             DialogUtil().openReportDialog(this, layoutInflater, "User", id)
         }
     }
+
+    //ROLE CHANGE BUTTON
     private fun showChangeRoleButton(userId: String, changeUserRoleBtn:AppCompatButton, dialogPlus:DialogPlus, role:String){
         changeUserRoleBtn.visibility = View.VISIBLE
         changeUserRoleBtn.text = "Make User $role"
@@ -264,13 +305,34 @@ class Members : AppCompatActivity(), OnItemClickListener {
             warningBinding.titleTV.text = "Change User Role"
 
             warningBinding.yesBtn.setOnClickListener {
-                val newMapUpdate = mapOf(
-                    "communityMembers.${userId}" to role
-                )
-                FirebaseUtil().retrieveCommunityDocument(communityId).update(newMapUpdate).addOnSuccessListener {
-                    Toast.makeText(this, "The user is now $role", Toast.LENGTH_SHORT).show()
-                    queryUsers()
-                    warningDialog.dismiss()
+
+                if (forChatroomMembers){
+                    //for chatroom members
+                    if (role == "Admin"){
+                        //change user to admin
+                        FirebaseUtil().retrieveChatRoomReference(chatroomId).update("chatroomAdminList", FieldValue.arrayUnion(userId)).addOnSuccessListener {
+                            Toast.makeText(this, "The user is now $role", Toast.LENGTH_SHORT).show()
+                            queryUsers()
+                            warningDialog.dismiss()
+                        }
+                    } else {
+                        //change user to member
+                        FirebaseUtil().retrieveChatRoomReference(chatroomId).update("chatroomAdminList", FieldValue.arrayRemove(userId)).addOnSuccessListener {
+                            Toast.makeText(this, "The user is now $role", Toast.LENGTH_SHORT).show()
+                            queryUsers()
+                            warningDialog.dismiss()
+                        }
+                    }
+                } else {
+                    //for community members
+                    val newMapUpdate = mapOf(
+                        "communityMembers.${userId}" to role
+                    )
+                    FirebaseUtil().retrieveCommunityDocument(communityId).update(newMapUpdate).addOnSuccessListener {
+                        Toast.makeText(this, "The user is now $role", Toast.LENGTH_SHORT).show()
+                        queryUsers()
+                        warningDialog.dismiss()
+                    }
                 }
             }
             warningBinding.NoBtn.setOnClickListener {
@@ -287,7 +349,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
         }
     }
 
-
+    //KICK USER BUTTON
     private fun showKickUserButton(userId: String, dialogPlusBinding:DialogUserMenuBinding, dialogPlus:DialogPlus){
         //if the target user is not an admin
         dialogPlusBinding.kickUserBtn.visibility = View.VISIBLE
@@ -299,28 +361,44 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 .setMargin(50, 700, 50, 700)
                 .create()
 
-            warningBinding.messageTV.text = "Do you want to kick this user from the community?"
             warningBinding.titleTV.text = "Kick User"
 
-            warningBinding.yesBtn.setOnClickListener {
-                FirebaseUtil().removeUserFromAllCommunityChannels(communityModel.communityId, FirebaseUtil().currentUserUid()){isSuccessful ->
-                    if (isSuccessful){
-                        val updatedMap = mapOf(
-                            "communityMembers.${userId}" to FieldValue.delete()
-                        )
-                        FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
-                            .update(updatedMap).addOnSuccessListener {
-                                Toast.makeText(this, "The user has been kicked", Toast.LENGTH_SHORT).show()
-                                queryUsers()
-                                warningDialog.dismiss()
-                            }
-                    } else {
-                        Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
+            if (forChatroomMembers){
+                //for kicking user from chatroom
+                warningBinding.messageTV.text = "Do you want to kick this user from the chatroom?"
+                warningBinding.yesBtn.setOnClickListener {
+                    FirebaseUtil().retrieveChatRoomReference(chatroomId).update("chatroomAdminList", FieldValue.arrayRemove(userId))
+                    FirebaseUtil().retrieveChatRoomReference(chatroomId).update("userIdList", FieldValue.arrayRemove(userId)).addOnSuccessListener {
+                        Toast.makeText(this, "The user has been kicked", Toast.LENGTH_SHORT).show()
+                        queryUsers()
+                        warningDialog.dismiss()
                     }
                 }
+            } else {
+                //for kicking user from community
+                warningBinding.messageTV.text = "Do you want to kick this user from the community?"
+
+                warningBinding.yesBtn.setOnClickListener {
+                    FirebaseUtil().removeUserFromAllCommunityChannels(communityModel.communityId, FirebaseUtil().currentUserUid()){isSuccessful ->
+                        if (isSuccessful){
+                            val updatedMap = mapOf(
+                                "communityMembers.${userId}" to FieldValue.delete()
+                            )
+                            FirebaseUtil().retrieveCommunityDocument(communityModel.communityId)
+                                .update(updatedMap).addOnSuccessListener {
+                                    Toast.makeText(this, "The user has been kicked", Toast.LENGTH_SHORT).show()
+                                    queryUsers()
+                                    warningDialog.dismiss()
+                                }
+                        } else {
+                            Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
+                        }
+                    }
 
 
+                }
             }
+
             warningBinding.NoBtn.setOnClickListener {
                 warningDialog.dismiss()
                 Handler().postDelayed({
@@ -340,7 +418,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
         binding.moderatorLayout.visibility = View.INVISIBLE
         binding.adminLayout.visibility = View.INVISIBLE
 
-        if (communityId.isNotEmpty()){
+        if (!forChatroomMembers){
             //For Community Members
             binding.toolbarTitleTV.text = "Community Members"
             FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
@@ -385,8 +463,36 @@ class Members : AppCompatActivity(), OnItemClickListener {
 
             }
         } else {
-            //TODO For Chatroom Members
+            // For Chatroom Members
             binding.toolbarTitleTV.text = "Chatroom Members"
+            binding.moderatorLayout.visibility = View.GONE
+
+            FirebaseUtil().retrieveChatRoomReference(chatroomId).get().addOnSuccessListener {
+                chatroomModel = it.toObject(ChatroomModel::class.java)!!
+
+                //FOR MEMBERS
+                val membersQuery:Query = FirebaseUtil().allUsersCollectionReference()
+                    .whereIn("userID", chatroomModel.userIdList)
+                    .whereGreaterThanOrEqualTo("fullName", searchQuery)
+
+                val membersOptions:FirestoreRecyclerOptions<UserModel> =
+                    FirestoreRecyclerOptions.Builder<UserModel>().setQuery(membersQuery, UserModel::class.java).build()
+
+                setupMembersRV(membersOptions)
+
+
+                //FOR ADMINS
+                if (chatroomModel.chatroomAdminList.isNotEmpty()){
+                    val adminsQuery:Query = FirebaseUtil().allUsersCollectionReference()
+                        .whereIn("userID", chatroomModel.chatroomAdminList)
+                        .whereGreaterThanOrEqualTo("fullName", searchQuery)
+
+                    val adminsOptions:FirestoreRecyclerOptions<UserModel> =
+                        FirestoreRecyclerOptions.Builder<UserModel>().setQuery(adminsQuery, UserModel::class.java).build()
+
+                    setupAdminRV(adminsOptions)
+                }
+            }
         }
     }
 
