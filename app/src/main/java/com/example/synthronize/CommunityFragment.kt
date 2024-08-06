@@ -317,7 +317,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             if (name.isEmpty() || name.length < 2){
                 Toast.makeText(context, "Name should at least have more than 2 characters", Toast.LENGTH_SHORT).show()
             } else if (AppUtil().containsBadWord(name)) {
-                Toast.makeText(context, "The name contains inappropriate word/s", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "The name contains sensitive word/s", Toast.LENGTH_SHORT).show()
             } else if (roles.isEmpty()) {
                 Toast.makeText(context, "Select at least one user type", Toast.LENGTH_SHORT).show()
             } else {

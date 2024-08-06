@@ -77,35 +77,30 @@ class MainActivity : AppCompatActivity(), OnNetworkRetryListener {
             }
             "profile" -> {
                 currentFragment = fragmentRequest
-                AppUtil().resetMainToolbar(binding)
                 selectNavigation(binding.profileBtn.id)
                 replaceFragment(ProfileFragment(binding), currentFragment)
 
             }
             "chat" -> {
                 currentFragment = fragmentRequest
-                AppUtil().resetMainToolbar(binding)
                 selectNavigation(binding.chatBtn.id)
                 replaceFragment(ChatFragment(binding), currentFragment)
 
             }
             "updates" -> {
                 currentFragment = fragmentRequest
-                AppUtil().resetMainToolbar(binding)
                 selectNavigation(binding.updatesBtn.id)
                 replaceFragment(UpdatesFragment(binding), currentFragment)
             }
             "community_selection" -> {
                 //default group selection fragment
                 currentFragment = fragmentRequest
-                AppUtil().resetMainToolbar(binding)
                 selectNavigation(binding.communitiesBtn.id)
                 replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager), currentFragment)
             }
             "community" -> {
                 if (communityId.isNotEmpty() && communityId != "null"){
                     currentFragment = fragmentRequest
-                    AppUtil().resetMainToolbar(binding)
                     selectNavigation(binding.communitiesBtn.id)
                     replaceFragment(CommunityFragment(binding, communityId), currentFragment)
                 }

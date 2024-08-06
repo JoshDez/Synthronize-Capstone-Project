@@ -84,6 +84,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
                         .setGravity(Gravity.CENTER)
                         .setMargin(50, 700, 50, 700)
                         .setCancelable(true)
+                        .setExpanded(false)
                         .create()
 
                     //set dialog on click listeners
@@ -99,6 +100,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
                         val codeDialogPlus = DialogPlus.newDialog(context)
                             .setContentHolder(ViewHolder(codeDialogBinding.root))
                             .setCancelable(true)
+                            .setExpanded(false)
                             .setMargin(50, 800, 50, 700)
                             .create()
 

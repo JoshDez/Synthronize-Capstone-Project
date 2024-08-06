@@ -191,11 +191,9 @@ class Chatroom : AppCompatActivity() {
                 AppUtil().setCommunityProfilePic(this, communityId, binding.chatroomCircleIV)
             }
             "group_chat" -> {
-                Glide.with(this).load(FirebaseUtil().retrieveGroupChatProfileRef(chatroomModel.chatroomProfileUrl))
-                    .error(R.drawable.community_not_selected)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(binding.chatroomCircleIV)
-
+                if (chatroomModel.chatroomProfileUrl.isNotEmpty()){
+                    AppUtil().setGroupChatProfilePic(this, chatroomModel.chatroomProfileUrl, binding.chatroomCircleIV)
+                }
                 binding.chatRoomNameTV.text = chatroomModel.chatroomName
             }
         }

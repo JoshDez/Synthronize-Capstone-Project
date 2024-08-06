@@ -123,7 +123,6 @@ class CommunitySettings : AppCompatActivity() {
                     deleteAllCommunityChannels()
                     AppUtil().headToMainActivity(this)
                 }
-                //TODO delete all channels
             }
             warningBinding.NoBtn.setOnClickListener {
                 warningDialog.dismiss()
@@ -216,7 +215,6 @@ class CommunitySettings : AppCompatActivity() {
             DialogUtil().openReportDialog(this, layoutInflater, "Community",communityModel.communityId)
         }
     }
-
 
     private fun deleteAllCommunityChannels(){
         FirebaseUtil().retrieveAllChatRoomReferences()

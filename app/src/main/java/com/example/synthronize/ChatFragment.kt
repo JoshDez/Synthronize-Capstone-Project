@@ -337,6 +337,8 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
         val groupChatName = dialogPlusBinding.groupChatNameEdtTxt.text.toString()
         if (groupChatName.isEmpty() || groupChatName.length < 3){
             Toast.makeText(context, "Group chat name should at least have 3 or more characters", Toast.LENGTH_SHORT).show()
+        } else if (AppUtil().containsBadWord(groupChatName)) {
+            Toast.makeText(context, "The name contains sensitive word/s", Toast.LENGTH_SHORT).show()
         } else if (selectedUserList.size < 2) {
             Toast.makeText(context, "Members should be more than 1", Toast.LENGTH_SHORT).show()
         } else {
@@ -344,7 +346,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
             FirebaseUtil().retrieveAllChatRoomReferences().add(chatroomModel).addOnSuccessListener {
                 var imageUrl = ""
 
-                if (selectedGCImage != null){
+                if (::selectedGCImage.isInitialized){
                     imageUrl = "${it.id}-${Timestamp.now()}"
                     FirebaseUtil().retrieveGroupChatProfileRef(imageUrl).putFile(selectedGCImage)
                 }
@@ -358,6 +360,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
                     lastMsgTimestamp = Timestamp.now(),
                     lastMessage = "Created a group",
                     lastMessageUserId = FirebaseUtil().currentUserUid(),
+                    chatroomAdminList = listOf(FirebaseUtil().currentUserUid()),
                     chatroomName = groupChatName,
                     chatroomProfileUrl = imageUrl
                 )

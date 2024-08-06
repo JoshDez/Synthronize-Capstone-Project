@@ -90,7 +90,9 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
 
                  binding.chatroomNameTV.text = chatroomModel.chatroomName
                  binding.lastTimestampTV.text = DateAndTimeUtil().getTimeAgo(chatroomModel.lastMsgTimestamp)
-                 AppUtil().setGroupChatProfilePic(context, chatroomModel.chatroomProfileUrl, binding.userCircleImageView)
+                 if (chatroomModel.chatroomProfileUrl.isNotEmpty()){
+                     AppUtil().setGroupChatProfilePic(context, chatroomModel.chatroomProfileUrl, binding.userCircleImageView)
+                 }
 
                 if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
                 //if the message is not from the current user
