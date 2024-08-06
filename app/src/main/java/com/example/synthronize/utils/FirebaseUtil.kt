@@ -155,6 +155,9 @@ class FirebaseUtil {
     fun retrieveCommunityFilesCollection(communityId: String):CollectionReference{
         return retrieveCommunityDocument(communityId).collection("files")
     }
+    fun retrieveCommunityCompetitionsCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("competitions")
+    }
     fun removeUserFromAllCommunityChannels(communityId:String, userId:String, callback: (Boolean) -> Unit) {
         FirebaseUtil().retrieveAllChatRoomReferences().whereEqualTo("communityId", communityId).get().addOnSuccessListener {channels ->
             for (channel in channels.documents){

@@ -65,7 +65,6 @@ class CommunitySettings : AppCompatActivity() {
         binding.generalLayout.visibility = View.GONE
         binding.adminLayout.visibility = View.GONE
 
-
         if (tab == "general"){
             setupGeneralLayout()
             binding.generalBtn.setTextColor(selectedColor)

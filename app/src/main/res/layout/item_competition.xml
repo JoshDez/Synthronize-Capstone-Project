@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/gray2"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/competitionNameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/username"
+                android:textColor="@color/light_teal"
+                android:text="Titanic Algorithm Competition"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/timestampTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:contentDescription="@string/timestamp"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/menuBtn"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/kebab_menu_icon"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:tint="@color/light_teal"/>
+
+    </LinearLayout>
+
+    <!-- Post Image -->
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:animateLayoutChanges="true"
+        android:inAnimation="@android:anim/slide_in_left"
+        android:outAnimation="@android:anim/slide_out_right">
+    </androidx.viewpager2.widget.ViewPager2>
+
+    <me.relex.circleindicator.CircleIndicator3
+        android:id="@+id/circleIndicator3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        app:ci_drawable="@color/light_teal"/>
+
+
+
+    <!-- Post Description -->
+    <TextView
+        android:id="@+id/descriptionTV"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/feed_description"
+        android:textColor="@color/light_teal" />
+
+    <TextView
+        android:id="@+id/rewardsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:contentDescription="@string/username"
+        android:textColor="@color/light_teal"
+        android:text="Rewards: +50 points in exams"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/statusTV"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status: On going"
+            android:textSize="16sp"
+            android:contentDescription="@string/feed_description"
+            android:textColor="@color/light_teal" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/joinCompetitionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="25dp"
+            android:text="Join"
+            android:backgroundTint="@color/light_teal"
+            />
+
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        app:dividerColor="@color/gray"/>
+</LinearLayout>
