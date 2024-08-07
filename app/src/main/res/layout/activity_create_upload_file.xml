@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darker_teal"
+    tools:context=".CreateUploadFile">
+
+
+    <RelativeLayout
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/darker_teal"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerVertical="true">
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_marginStart="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/back_icon"
+                app:tint="@color/light_teal" />
+            <TextView
+                android:id="@+id/toolbarTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="25dp"
+                android:textColor="@color/light_teal"
+                android:text="Upload File"/>
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/uploadBtn"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:hapticFeedbackEnabled="true"
+            android:text="Upload"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/teal"/>
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/mainToolbar"
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
+
+    <ScrollView
+        android:layout_below="@id/divider1"
+        android:layout_above="@id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/mainPostLayout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileCIV"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_not_selected"/>
+
+                <EditText
+                    android:id="@+id/captionEdtTxt"
+                    android:padding="15dp"
+                    android:layout_toRightOf="@id/profileCIV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/light_teal"
+                    android:hint="About your file..."
+                    android:textColorHint="@color/light_teal"
+                    android:textColor="@color/light_teal"/>
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+
+            <RelativeLayout
+                android:id="@+id/fileLayout"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/removeFileBtn"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:foreground="@drawable/baseline_close_24"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="20dp"
+                    android:foregroundTint="@color/white"
+                    android:backgroundTint="#A98C2121"
+                    app:fabCustomSize="50dp"/>
+
+                <ImageView
+                    android:id="@+id/fileIV"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:src="@drawable/baseline_attach_file_24"/>
+
+                <TextView
+                    android:id="@+id/fileNameTV"
+                    android:layout_width="300dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/fileIV"
+                    android:textColor="@color/light_teal"
+                    android:contentDescription="file name"
+                    android:textAlignment="center"
+                    android:textSize="20sp"/>
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/bottomToolbar"
+        android:background="@color/light_teal"
+        app:dividerColor="@color/light_teal" />
+
+    <LinearLayout
+        android:id="@+id/bottomToolbar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/darker_teal"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/addFileBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/baseline_attach_file_24"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/light_teal"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="Attach File"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

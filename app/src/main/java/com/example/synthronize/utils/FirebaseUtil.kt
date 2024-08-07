@@ -102,6 +102,11 @@ class FirebaseUtil {
             .child("communityContentVideo")
             .child(videoFilename)
     }
+    fun retrieveCommunityFileRef(filename:String): StorageReference {
+        return FirebaseStorage.getInstance().reference
+            .child("communityFiles")
+            .child(filename)
+    }
 
 
     //For Community

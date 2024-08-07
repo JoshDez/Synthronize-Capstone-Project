@@ -1,6 +1,7 @@
 package com.example.synthronize
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -123,22 +124,10 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
                 if (isAllowed){
                     binding.addFab.visibility = View.VISIBLE
                     binding.addFab.setOnClickListener{
-                        var model = FileModel()
-                        FirebaseUtil().retrieveCommunityFilesCollection(communityId).add(model).addOnSuccessListener {
-                            model = FileModel(
-                                it.id,
-                                "file.txt",
-                                "file-Timestamp",
-                                FirebaseUtil().currentUserUid(),
-                                false,
-                                "Hello this is my file",
-                                communityId,
-                                Timestamp.now()
-                            )
-                            FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(model.fileId).set(model).addOnSuccessListener {
-                                Toast.makeText(context, "file uploaded successfully", Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                        val intent = Intent(context, CreateUploadFile::class.java)
+                        intent.putExtra("communityId", communityId)
+                        intent.putExtra("isSharedFiles", false)
+                        startActivity(intent)
                     }
                 }
             }
@@ -148,22 +137,10 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             binding.sharedFilesBtn.setTextColor(selectedColor)
             binding.addFab.visibility = View.VISIBLE
             binding.addFab.setOnClickListener{
-                var model = FileModel()
-                FirebaseUtil().retrieveCommunityFilesCollection(communityId).add(model).addOnSuccessListener {
-                    model = FileModel(
-                        it.id,
-                        "file.txt",
-                        "file-Timestamp",
-                        FirebaseUtil().currentUserUid(),
-                        true,
-                        "Hello this is my file",
-                        communityId,
-                        Timestamp.now()
-                    )
-                    FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(model.fileId).set(model).addOnSuccessListener {
-                        Toast.makeText(context, "file uploaded successfully", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                val intent = Intent(context, CreateUploadFile::class.java)
+                intent.putExtra("communityId", communityId)
+                intent.putExtra("isSharedFiles", true)
+                startActivity(intent)
             }
         }
     }
