@@ -16,7 +16,7 @@ class CreateEvent : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        //TODO
         //binding.calendarView.add
 
 

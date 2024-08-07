@@ -56,7 +56,7 @@
 
     <!-- Post Header: User Profile Image, Username, Timestamp -->
     <LinearLayout
-        android:layout_marginTop="20dp"
+        android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -64,23 +64,16 @@
         android:orientation="horizontal">
 
         <!-- User Profile Image -->
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profileCIV"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/community_not_selected"
-            android:scaleType="centerCrop" />
 
         <!-- Username and Timestamp -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/usernameTV"
+                android:id="@+id/eventNameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/username"
@@ -89,108 +82,35 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/timestampTV"
+                android:id="@+id/dateTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/light_teal"
                 android:contentDescription="@string/timestamp"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/menuBtn"
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/participateBtn"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
             android:gravity="center"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:backgroundTint="@color/light_teal"
             android:src="@drawable/kebab_menu_icon"
-            android:textColor="@color/black"
-            android:textSize="14sp"
+            android:layout_weight="1"
+            android:textColor="@color/text_shadow_white"
+            android:textSize="12sp"
+            android:text="Participate"
             android:textStyle="bold"
             app:tint="@color/light_teal"/>
 
     </LinearLayout>
 
-    <!-- Post Image -->
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_margin="16dp"
-        android:gravity="center"
-        android:animateLayoutChanges="true"
-        android:inAnimation="@android:anim/slide_in_left"
-        android:outAnimation="@android:anim/slide_out_right">
-    </androidx.viewpager2.widget.ViewPager2>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/baseline_image_24"/>
-
-
-    <me.relex.circleindicator.CircleIndicator3
-        android:id="@+id/circleIndicator3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        app:ci_drawable="@color/light_teal"/>
-
     <!-- Post Description -->
-    <TextView
-        android:id="@+id/nameTV"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:contentDescription="@string/feed_description"
-        android:textColor="@color/light_teal" />
-
-    <TextView
-        android:id="@+id/descriptionTV"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/feed_description"
-        android:textColor="@color/light_teal" />
-
-    <TextView
-        android:id="@+id/priceTV"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/feed_description"
-        android:textColor="@color/light_teal" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/messageUserBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_teal"
-        android:text="Message User"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:textColor="@color/text_shadow_white"
-        android:textSize="17sp"/>
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="8dp"
         app:dividerColor="@color/gray"/>
-
-
 </LinearLayout>
