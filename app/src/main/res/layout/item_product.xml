@@ -134,159 +134,55 @@
         android:layout_marginTop="10dp"
         app:ci_drawable="@color/light_teal"/>
 
-
-
     <!-- Post Description -->
     <TextView
+        android:id="@+id/nameTV"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:contentDescription="@string/feed_description"
+        android:textColor="@color/light_teal" />
+
+    <TextView
         android:id="@+id/descriptionTV"
-        android:layout_margin="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/feed_description"
         android:textColor="@color/light_teal" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
+    <TextView
+        android:id="@+id/priceTV"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/feed_description"
+        android:textColor="@color/light_teal" />
 
-        <LinearLayout
-            android:id="@+id/loveLayout"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/messageUserBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/light_teal"
+        android:text="Message User"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/text_shadow_white"
+        android:textSize="17sp"/>
 
-            <ImageButton
-                android:id="@+id/loveBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/baseline_favorite_border_24"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:tint="@color/light_teal"/>
-
-            <TextView
-                android:id="@+id/lovesCountTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="0"
-                android:contentDescription="@string/lovescount"
-                android:textColor="@color/light_teal" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/commentLayout"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <ImageButton
-                android:id="@+id/commentBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:src="@drawable/baseline_comment_24"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:tint="@color/light_teal" />
-
-            <TextView
-                android:id="@+id/commentsCountTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="0"
-                android:contentDescription="@string/comment_count"
-                android:textColor="@color/light_teal" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/sendPostLayout"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <ImageButton
-                android:id="@+id/sendPostBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:src="@drawable/send_icon"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:tint="@color/light_teal"/>
-
-            <TextView
-                android:id="@+id/sentPostCountTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="0"
-                android:contentDescription="@string/repost_count"
-                android:textColor="@color/light_teal" />
-
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/commentEdtTxt"
-            android:padding="7dp"
-            android:layout_weight="10"
-            android:layout_width="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_height="45dp"
-            android:background="@drawable/input_rounded_corners"
-            android:hint="Write your comment"/>
-
-        <ImageButton
-            android:id="@+id/sendBtn"
-            android:visibility="gone"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:src="@drawable/send_msg_icon"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:tint="@color/light_teal"/>
-
-    </LinearLayout>
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="8dp"
         app:dividerColor="@color/gray"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/suggestionsRV"
-        android:visibility="gone"
-        android:orientation="horizontal"
-        tools:listitem="@layout/item_suggestion"
-        android:layout_width="wrap_content"
-        android:layout_height="190dp"/>
 
 
 </LinearLayout>

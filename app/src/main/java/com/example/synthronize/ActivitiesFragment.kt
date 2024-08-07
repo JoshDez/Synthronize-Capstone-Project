@@ -173,7 +173,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             .orderBy("createdTimestamp", Query.Direction.DESCENDING)
 
         // Add a listener to handle success or failure of the query
-        myQuery.addSnapshotListener { a, e ->
+        myQuery.addSnapshotListener { _, e ->
             if (e != null) {
                 // Handle the error here (e.g., log the error or show a message to the user)
                 Log.e("Firestore Error", "Error while fetching data", e)
