@@ -104,10 +104,10 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
                 }
 
                 //set default tab
-                navigate("direct_message")
+                navigate("inbox")
 
                 binding.inboxBtn.setOnClickListener {
-                    navigate("direct_message")
+                    navigate("inbox")
                 }
                 binding.communityChatsBtn.setOnClickListener {
                     navigate("community_chat")
@@ -139,22 +139,28 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
         binding.inboxRV.visibility = View.GONE
         binding.communityChatsRV.visibility = View.GONE
         binding.friendsListRV.visibility = View.GONE
+        binding.inboxIconIV.setImageResource(R.drawable.inbox_not_selected)
+        binding.communityChatsIV.setImageResource(R.drawable.community_not_selected)
+        binding.friendsIV.setImageResource(R.drawable.friends_not_selected)
         //binding.communityChatsBtn.setTextColor(unselectedColor)
         //binding.communityChatsRV.visibility = View.GONE
 
 
         if (tab == "community_chat"){
             binding.communityChatsRV.visibility = View.VISIBLE
+            binding.communityChatsIV.setImageResource(R.drawable.community_selected)
             setupChatroomListForCommunity()
             currentTab = "community_chat"
             //binding.communityChatsBtn.setTextColor(selectedColor)
-        }else if (tab == "direct_message"){
+        }else if (tab == "inbox"){
             binding.inboxRV.visibility = View.VISIBLE
+            binding.inboxIconIV.setImageResource(R.drawable.inbox_selected)
             setupChatroomListForInbox()
-            currentTab = "direct_message"
+            currentTab = "inbox"
             //binding.inboxBtn.setTextColor(selectedColor)
         }else if (tab == "friends_list"){
             binding.friendsListRV.visibility = View.VISIBLE
+            binding.friendsIV.setImageResource(R.drawable.friends_selected)
             setupFriendsList()
             currentTab = "friends_list"
         }

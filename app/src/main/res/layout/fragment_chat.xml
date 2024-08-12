@@ -28,10 +28,10 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/notificationsIconIV"
+                android:id="@+id/inboxIconIV"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/notifications_not_selected"
+                android:src="@drawable/inbox_not_selected"
                 app:tint="@color/light_teal"/>
 
             <TextView
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/communityInviteIconIV"
+                android:id="@+id/communityChatsIV"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/community_not_selected"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/friendRequestIconIV"
+                android:id="@+id/friendsIV"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@drawable/friends_not_selected"

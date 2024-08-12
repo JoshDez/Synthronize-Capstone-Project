@@ -76,8 +76,8 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
 
     private fun navigate(tab:String){
         binding.notificationsIconIV.setImageResource(R.drawable.notifications_not_selected)
-        binding.communityInviteIconIV.setImageResource(R.drawable.community_not_selected)
-        binding.friendRequestIconIV.setImageResource(R.drawable.friends_not_selected)
+        binding.communityInviteIconIV.setImageResource(R.drawable.community_invitations_not_selected)
+        binding.friendRequestIconIV.setImageResource(R.drawable.friend_requests_not_selected)
 
 
         if (tab == "notifications"){
@@ -87,12 +87,12 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
 
         } else if (tab == "community_invitations") {
             setupRVForCommunityInvitations()
-            binding.communityInviteIconIV.setImageResource(R.drawable.community_selected)
+            binding.communityInviteIconIV.setImageResource(R.drawable.community_invitations_selected)
             currentTab = "community_invitations"
 
         } else if (tab == "friend_requests") {
             setupRVForFriendRequests()
-            binding.friendRequestIconIV.setImageResource(R.drawable.friends_selected)
+            binding.friendRequestIconIV.setImageResource(R.drawable.friend_requests_selected)
             currentTab = "friend_requests"
         }
     }
