@@ -86,7 +86,7 @@
                     android:id="@+id/profileCIV"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/profile_not_selected"/>
+                    android:src="@drawable/user_default_profile"/>
 
                 <EditText
                     android:id="@+id/captionEdtTxt"

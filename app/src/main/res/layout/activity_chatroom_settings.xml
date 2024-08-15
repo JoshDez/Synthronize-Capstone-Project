@@ -52,7 +52,7 @@
                 android:layout_centerInParent="true"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="center"
-                android:src="@color/light_teal"/>
+                android:src="@drawable/community_default_profile"/>
 
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -64,7 +64,7 @@
                 android:layout_centerInParent="true"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="center"
-                android:src="@color/light_teal"/>
+                android:src="@drawable/community_default_profile"/>
 
             <Space
                 android:layout_width="match_parent"

@@ -1,7 +1,6 @@
 package com.example.synthronize
 
 import android.content.pm.ActivityInfo
-import android.media.browse.MediaBrowser.MediaItem
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -9,16 +8,30 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.media3.datasource.cache.SimpleCache
-import androidx.media3.exoplayer.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.upstream.HttpDataSource
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
+import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import com.google.android.exoplayer2.util.Util
 import com.example.synthronize.databinding.ActivityViewMediaBinding
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.GlideApp
+import com.google.android.exoplayer2.database.ExoDatabaseProvider
+import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 
 class ViewMedia : AppCompatActivity() {
 
     private lateinit var binding:ActivityViewMediaBinding
-    private lateinit var player:ExoPlayer
+    private lateinit var cacheDataSourceFactory: DataSource.Factory
+    private lateinit var videoUri: Uri
+    private var player: SimpleExoPlayer? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,15 +45,12 @@ class ViewMedia : AppCompatActivity() {
 
 
         if (isUrl){
+            //Viewing Post
             if (mediaType == "Video"){
-
                 binding.playerView.visibility = View.VISIBLE
-                initializeExoplayer()
                 FirebaseUtil().retrieveCommunityContentVideoRef(filename).downloadUrl.addOnSuccessListener {uri ->
-                    val mediaItem = androidx.media3.common.MediaItem.fromUri(uri)
-                    player.setMediaItem(mediaItem)
-                    player.prepare()
-                    player.play()
+                    videoUri = uri
+                    initializeExoplayer()
                 }.addOnFailureListener {
                     Log.e("Firebase Storage", it.toString())
                 }
@@ -56,12 +66,10 @@ class ViewMedia : AppCompatActivity() {
             //For Create Post
             if (mediaType == "Video"){
                 binding.playerView.visibility = View.VISIBLE
-                initializeExoplayer()
-                val videoUri = intent.getParcelableExtra<Uri>("VIDEO_URI")
-                if (videoUri != null) {
-
-
-
+                val intentUri = intent.getParcelableExtra<Uri>("VIDEO_URI")
+                if (intentUri != null) {
+                    videoUri = intentUri
+                    initializeExoplayer()
                 }
             } else if (mediaType == "Image") {
                 binding.imageView.visibility = View.VISIBLE
@@ -87,7 +95,56 @@ class ViewMedia : AppCompatActivity() {
     }
 
     private fun initializeExoplayer(){
-        player = ExoPlayer.Builder(this).build()
-        binding.playerView.player = player
+        if (::videoUri.isInitialized){
+            val mediaItem = MediaItem.fromUri(videoUri)
+            val mediaSource = ProgressiveMediaSource.Factory(cacheDataSourceFactory).createMediaSource(mediaItem)
+            player = SimpleExoPlayer.Builder(this).setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory)).build()
+            binding.playerView.player = player
+
+            player!!.playWhenReady = true
+            player!!.seekTo(0, 0)
+            player!!.repeatMode = Player.REPEAT_MODE_OFF
+            player!!.setMediaSource(mediaSource, true)
+            player!!.prepare()
+        } else {
+            return
+        }
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        if (Util.SDK_INT >= 24) {
+            initializeExoplayer()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Util.SDK_INT < 24 || player == null) {
+            initializeExoplayer()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (Util.SDK_INT < 24) {
+            releasePlayer()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (Util.SDK_INT >= 24) {
+            releasePlayer()
+        }
+    }
+
+    private fun releasePlayer() {
+        if (player == null) {
+            return
+        }
+        player!!.release()
+        player = null
     }
 }

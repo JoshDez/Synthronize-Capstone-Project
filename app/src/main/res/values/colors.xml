@@ -14,13 +14,16 @@
     <color name="white">#dcdcdd</color>
     <color name="teal_gray">#4c5c68</color>
     <color name="light_gray">#c5c3c6</color>
+    <color name="slightly_lighter_gray">#5B5E61</color>
     <color name="gray">#46494c</color>
     <color name="gray2">#323335</color>
+    <color name="gray3">#272729</color>
     <color name="dark_teal">#1E2732</color>
     <color name="darker_teal">#12181E</color>
     <color name="teal">#1985A1</color>
     <color name="teal2">#1A4F5C</color>
     <color name="light_teal">#46c0df</color>
+    <color name="light_blue">#2999FB</color>
     <color name="less_saturated_light_teal">#7FB5C3</color>
 
 

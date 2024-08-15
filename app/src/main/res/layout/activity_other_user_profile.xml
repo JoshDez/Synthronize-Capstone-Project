@@ -220,7 +220,7 @@
                         android:layout_width="130dp"
                         android:layout_height="130dp"
                         android:layout_centerInParent="true"
-                        android:src="@color/light_teal" />
+                        android:src="@drawable/user_default_profile" />
 
 
                     <TextView
@@ -265,6 +265,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:autoLink="web"
+                android:textColorLink="@color/light_blue"
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="#00FFFFFF"
                 android:contentDescription="@string/user_description"

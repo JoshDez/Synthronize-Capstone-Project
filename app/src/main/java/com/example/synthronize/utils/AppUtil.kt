@@ -16,7 +16,6 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.toObject
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -27,7 +26,7 @@ class AppUtil {
         FirebaseUtil().retrieveGroupChatProfileRef(filename)
         Glide.with(context)
             .load(FirebaseUtil().retrieveGroupChatProfileRef(filename))
-            .error(R.drawable.community_not_selected)
+            .error(R.drawable.community_default_profile)
             .apply(RequestOptions.circleCropTransform())
             //image view
             .into(civ)
@@ -47,7 +46,7 @@ class AppUtil {
                     GlideApp.with(context)
                         //storage reference
                         .load(FirebaseUtil().retrieveUserProfilePicRef(imageUrl))
-                        .error(R.drawable.profile_not_selected)
+                        .error(R.drawable.user_default_profile)
                         .apply(RequestOptions.circleCropTransform())
                         //image view
                         .into(civ)
@@ -84,7 +83,7 @@ class AppUtil {
                 GlideApp.with(context)
                     //storage reference
                     .load(FirebaseUtil().retrieveCommunityProfilePicRef(imageUrl))
-                    .error(R.drawable.profile_not_selected)
+                    .error(R.drawable.community_default_profile)
                     .apply(RequestOptions.circleCropTransform())
                     //image view
                     .into(civ)

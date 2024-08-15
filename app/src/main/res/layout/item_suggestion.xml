@@ -17,7 +17,7 @@
             android:id="@+id/suggestionCIV"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/community_not_selected"/>
+            android:src="@drawable/community_default_profile"/>
 
         <TextView
             android:id="@+id/suggestionNameTV"

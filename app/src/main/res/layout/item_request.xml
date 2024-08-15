@@ -21,7 +21,7 @@
                 android:id="@+id/profileCIV"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:src="@drawable/profile_not_selected"/>
+                android:src="@drawable/user_default_profile"/>
             <TextView
                 android:id="@+id/requestTV"
                 android:layout_width="wrap_content"

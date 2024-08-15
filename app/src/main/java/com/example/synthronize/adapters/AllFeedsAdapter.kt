@@ -94,6 +94,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                             }
 
                             val friendSuggestionAdapter = FriendSuggestionAdapter(context, uidList)
+                            binding.divider1.visibility = View.VISIBLE
                             binding.suggestionsRV.visibility = View.VISIBLE
                             binding.suggestionsRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                             binding.suggestionsRV.adapter = friendSuggestionAdapter
@@ -123,6 +124,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                         }
 
                         val communitySuggestionAdapter = CommunitySuggestionAdapter(context, communityIdList)
+                        binding.divider1.visibility = View.VISIBLE
                         binding.suggestionsRV.visibility = View.VISIBLE
                         binding.suggestionsRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         binding.suggestionsRV.adapter = communitySuggestionAdapter
@@ -138,6 +140,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
             //SETUP WRAPPER FOR REPOST OR COMMUNITY
             FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {
                 val community = it.toObject(CommunityModel::class.java)!!
+                binding.wrapperDivider.visibility = View.VISIBLE
                 binding.feedWrapperLayout.visibility = View.VISIBLE
                 binding.wrapperName.text = community.communityName
                 AppUtil().setCommunityProfilePic(context, community.communityId, binding.wrapperCIV)

@@ -5,288 +5,308 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/gray2"
+    android:padding="8dp"
     android:orientation="vertical">
 
-
-    <!-- Wrapper Header -->
     <LinearLayout
-        android:id="@+id/feedWrapperLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/dark_teal"
         android:orientation="vertical"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:visibility="gone">
+        android:background="@color/gray3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <!-- Wrapper Header -->
+        <LinearLayout
+            android:id="@+id/feedWrapperLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray3"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- User Profile Image -->
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/wrapperCIV"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/community_default_profile" />
+
+                <!-- Community Name -->
+                <TextView
+                    android:id="@+id/wrapperName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Community Name"
+                    android:textColor="@color/light_teal"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/communityActionBtn"
+                    android:layout_width="70dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="20dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/wrapperDivider"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            app:dividerColor="@color/slightly_lighter_gray"/>
+
+        <!-- Post Header: User Profile Image, Username, Timestamp -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:gravity="center_vertical"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:orientation="horizontal">
 
             <!-- User Profile Image -->
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/wrapperCIV"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:id="@+id/profileCIV"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/community_not_selected" />
+                android:src="@drawable/user_default_profile"
+                android:scaleType="centerCrop" />
 
-            <!-- Community Name -->
-            <TextView
-                android:id="@+id/wrapperName"
-                android:layout_width="wrap_content"
+            <!-- Username and Timestamp -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Username/Community Name"
-                android:textColor="@color/light_teal"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/communityActionBtn"
-                android:layout_width="70dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="20dp" />
-        </LinearLayout>
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/usernameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/username"
+                    android:textColor="@color/light_teal"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-    <!-- Post Header: User Profile Image, Username, Timestamp -->
-    <LinearLayout
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/timestampTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/light_teal"
+                    android:contentDescription="@string/timestamp"
+                    android:textSize="12sp" />
 
-        <!-- User Profile Image -->
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profileCIV"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/community_not_selected"
-            android:scaleType="centerCrop" />
-
-        <!-- Username and Timestamp -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/usernameTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/username"
-                android:textColor="@color/light_teal"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/timestampTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/light_teal"
-                android:contentDescription="@string/timestamp"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/menuBtn"
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/kebab_menu_icon"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:tint="@color/light_teal"/>
-
-    </LinearLayout>
-
-    <!-- Post Image -->
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_margin="16dp"
-        android:gravity="center"
-        android:animateLayoutChanges="true"
-        android:inAnimation="@android:anim/slide_in_left"
-        android:outAnimation="@android:anim/slide_out_right">
-    </androidx.viewpager2.widget.ViewPager2>
-
-    <me.relex.circleindicator.CircleIndicator3
-        android:id="@+id/circleIndicator3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        app:ci_drawable="@color/light_teal"/>
-
-
-
-    <!-- Post Description -->
-    <TextView
-        android:id="@+id/descriptionTV"
-        android:layout_margin="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/feed_description"
-        android:textColor="@color/light_teal" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/loveLayout"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            </LinearLayout>
 
             <ImageButton
-                android:id="@+id/loveBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:id="@+id/menuBtn"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/baseline_favorite_border_24"
+                android:src="@drawable/kebab_menu_icon"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:tint="@color/light_teal"/>
 
-            <TextView
-                android:id="@+id/lovesCountTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="0"
-                android:contentDescription="@string/lovescount"
-                android:textColor="@color/light_teal" />
-
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/commentLayout"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:layout_marginStart="10dp"
+        <!-- Post Image -->
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <ImageButton
-                android:id="@+id/commentBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:src="@drawable/baseline_comment_24"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:tint="@color/light_teal" />
-
-            <TextView
-                android:id="@+id/commentsCountTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="0"
-                android:contentDescription="@string/comment_count"
-                android:textColor="@color/light_teal" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/sendPostLayout"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <ImageButton
-                android:id="@+id/sendPostBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:src="@drawable/send_icon"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:tint="@color/light_teal"/>
-
-            <TextView
-                android:id="@+id/sentPostCountTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="0"
-                android:contentDescription="@string/repost_count"
-                android:textColor="@color/light_teal" />
-
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/commentEdtTxt"
-            android:padding="7dp"
-            android:layout_weight="10"
-            android:layout_width="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_height="45dp"
-            android:background="@drawable/input_rounded_corners"
-            android:hint="Write your comment"/>
-
-        <ImageButton
-            android:id="@+id/sendBtn"
             android:visibility="gone"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_margin="16dp"
             android:gravity="center"
-            android:src="@drawable/send_msg_icon"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:tint="@color/light_teal"/>
+            android:animateLayoutChanges="true"
+            android:inAnimation="@android:anim/slide_in_left"
+            android:outAnimation="@android:anim/slide_out_right">
+        </androidx.viewpager2.widget.ViewPager2>
+
+        <me.relex.circleindicator.CircleIndicator3
+            android:id="@+id/circleIndicator3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            app:ci_drawable="@color/light_teal"/>
+
+        <!-- Post Description -->
+        <TextView
+            android:id="@+id/descriptionTV"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:textColorLink="@color/light_blue"
+            android:contentDescription="@string/feed_description"
+            android:textColor="@color/light_teal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/loveLayout"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/loveBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/baseline_favorite_border_24"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:tint="@color/light_teal"/>
+
+                <TextView
+                    android:id="@+id/lovesCountTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="0"
+                    android:contentDescription="@string/lovescount"
+                    android:textColor="@color/light_teal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/commentLayout"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/commentBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:src="@drawable/baseline_comment_24"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:tint="@color/light_teal" />
+
+                <TextView
+                    android:id="@+id/commentsCountTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="0"
+                    android:contentDescription="@string/comment_count"
+                    android:textColor="@color/light_teal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sendPostLayout"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/sendPostBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:src="@drawable/send_icon"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:tint="@color/light_teal"/>
+
+                <TextView
+                    android:id="@+id/sentPostCountTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="0"
+                    android:contentDescription="@string/repost_count"
+                    android:textColor="@color/light_teal" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/commentEdtTxt"
+                android:padding="7dp"
+                android:layout_weight="10"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_height="45dp"
+                android:background="@drawable/input_rounded_corners"
+                android:hint="Write your comment"/>
+
+            <ImageButton
+                android:id="@+id/sendBtn"
+                android:visibility="gone"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:src="@drawable/send_msg_icon"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:tint="@color/light_teal"/>
+
+        </LinearLayout>
+
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider1"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            app:dividerColor="@color/gray2"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/suggestionsRV"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            tools:listitem="@layout/item_suggestion"
+            android:layout_width="wrap_content"
+            android:background="@color/gray3"
+            android:layout_height="190dp"/>
 
     </LinearLayout>
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        app:dividerColor="@color/gray"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/suggestionsRV"
-        android:visibility="gone"
-        android:orientation="horizontal"
-        tools:listitem="@layout/item_suggestion"
-        android:layout_width="wrap_content"
-        android:layout_height="190dp"/>
-
 
 </LinearLayout>

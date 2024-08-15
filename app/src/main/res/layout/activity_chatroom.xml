@@ -35,7 +35,7 @@
                 android:id="@+id/chatroomCircleIV"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/profile_not_selected"/>
+                android:src="@drawable/community_default_profile"/>
 
             <TextView
                 android:id="@+id/chatRoomNameTV"

@@ -71,7 +71,7 @@
                     android:id="@+id/userCircleImageView"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@drawable/profile_not_selected"/>
+                    android:src="@drawable/user_default_profile"/>
                 <TextView
                     android:id="@+id/fullnameTV"
                     android:layout_width="match_parent"

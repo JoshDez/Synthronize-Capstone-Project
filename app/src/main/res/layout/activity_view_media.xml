@@ -53,12 +53,12 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"/>
 
-        <androidx.media3.ui.PlayerView
+        <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/playerView"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/black"/>
+            android:backgroundTint="@color/black"
+            android:visibility="gone" />
     </RelativeLayout>
 
 

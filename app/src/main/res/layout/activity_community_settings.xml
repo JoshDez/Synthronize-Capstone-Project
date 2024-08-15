@@ -205,7 +205,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerInParent="true"
                         android:layout_marginStart="20dp"
-                        android:src="@color/light_teal" />
+                        android:src="@drawable/community_default_profile" />
                 </RelativeLayout>
             </FrameLayout>
 

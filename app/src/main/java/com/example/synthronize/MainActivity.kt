@@ -10,20 +10,20 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.synthronize.databinding.ActivityMainBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.google.firebase.messaging.FirebaseMessaging
 
-class MainActivity : AppCompatActivity(), OnNetworkRetryListener {
+class MainActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding: ActivityMainBinding
     private var currentFragment = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root, this)
         onStartFragment()
         getFCMToken()
 
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), OnNetworkRetryListener {
                 //default group selection fragment
                 currentFragment = fragmentRequest
                 selectNavigation(binding.communitiesBtn.id)
-                replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager), currentFragment)
+                replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager, this), currentFragment)
             }
             "community" -> {
                 if (communityId.isNotEmpty() && communityId != "null"){
@@ -164,6 +164,15 @@ class MainActivity : AppCompatActivity(), OnNetworkRetryListener {
         return true
     }
 
-    override fun retryNetwork() {
+    override fun onBackPressed() {
+        if (currentFragment == "community_selection"){
+            super.onBackPressed()
+        } else {
+            selectFragment("community_selection")
+        }
+    }
+
+    override fun onItemClick(id: String, isChecked: Boolean) {
+        selectFragment("community", id)
     }
 }

@@ -33,7 +33,7 @@
                         android:layout_height="130dp"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:src="@color/light_teal"/>
+                        android:src="@drawable/user_default_profile"/>
                 </RelativeLayout>
             </FrameLayout>
 

@@ -10,11 +10,12 @@ import com.example.synthronize.databinding.ActivityMainBinding
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.example.synthronize.databinding.ItemCommunityBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
 
 class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager,
-                       private val context: Context, options: FirestoreRecyclerOptions<CommunityModel>):
+                       private val context: Context, options: FirestoreRecyclerOptions<CommunityModel>, private val listener:OnItemClickListener):
     FirestoreRecyclerAdapter<CommunityModel, CommunityAdapter.CommunityViewHolder>(options) {
 
 
@@ -28,7 +29,7 @@ class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val
         holder.bind(model)
     }
 
-    class CommunityViewHolder(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager,
+    inner class CommunityViewHolder(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager,
                               private val communityBinding: ItemCommunityBinding, private val context: Context): RecyclerView.ViewHolder(communityBinding.root){
         fun bind(model: CommunityModel){
             communityBinding.groupNameTextView.text = model.communityName
@@ -36,16 +37,10 @@ class CommunityAdapter(private val mainBinding: ActivityMainBinding, private val
             communityBinding.itemGroupLayout.setOnClickListener {
                 //set the header of main activity
                 mainBinding.toolbarTitleTV.text = model.communityName
-                addCommunityFragmentToMain(model.communityId)
+                listener.onItemClick(model.communityId)
             }
             AppUtil().setCommunityProfilePic(context, model.communityId, communityBinding.profileImage)
         }
-        private fun addCommunityFragmentToMain(communityId:String){
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(mainBinding.mainFrameLayout.id, CommunityFragment(mainBinding, communityId))
-            fragmentTransaction.commit()
-        }
-        
     }
 
 }

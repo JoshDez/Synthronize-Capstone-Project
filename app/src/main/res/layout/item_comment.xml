@@ -17,7 +17,7 @@
             android:id="@+id/userProfileCIV"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/profile_not_selected" />
+            android:src="@drawable/user_default_profile" />
 
         <TextView
             android:id="@+id/userNameTV"
@@ -56,6 +56,8 @@
                 android:id="@+id/commentTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:textColorLink="@color/light_blue"
                 android:contentDescription="@string/comments"
                 android:textColor="@color/light_teal"
                 android:textSize="17sp" />

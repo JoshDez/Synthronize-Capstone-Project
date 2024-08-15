@@ -21,6 +21,7 @@ import com.example.synthronize.databinding.DialogAddCommunityBinding
 import com.example.synthronize.databinding.DialogCommunityCodeBinding
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.FragmentCommunitySelectionBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.utils.AppUtil
@@ -32,7 +33,7 @@ import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
-class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager) : Fragment(),
+class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager, private val mainActivityListener: OnItemClickListener) : Fragment(), OnItemClickListener,
     OnRefreshListener, OnNetworkRetryListener {
     private lateinit var binding: FragmentCommunitySelectionBinding
     private lateinit var dialogBinding: DialogAddCommunityBinding
@@ -169,7 +170,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
         val options: FirestoreRecyclerOptions<CommunityModel> =
              FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(communityQuery, CommunityModel::class.java).build()
 
-        communityAdapter = CommunityAdapter(mainBinding, fragmentManager, context, options)
+        communityAdapter = CommunityAdapter(mainBinding, fragmentManager, context, options, this)
         recyclerView.adapter = communityAdapter
         communityAdapter.startListening()
     }
@@ -201,6 +202,10 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
 
     override fun retryNetwork() {
         onRefresh()
+    }
+
+    override fun onItemClick(id: String, isChecked: Boolean) {
+        mainActivityListener.onItemClick(id)
     }
 
 

@@ -48,26 +48,26 @@
 
     <RelativeLayout
         android:id="@+id/communityTextChannelsLayout"
-        android:orientation="vertical"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/divider">
+        android:layout_below="@id/divider"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/textChannelsRV"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <ImageButton
             android:id="@+id/addTextChannelBtn"
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/baseline_add_24"
             android:background="@color/teal2"
-            app:tint="@color/light_teal"/>
+            android:src="@drawable/baseline_add_24"
+            android:visibility="gone"
+            app:tint="@color/light_teal" />
 
     </RelativeLayout>
 
