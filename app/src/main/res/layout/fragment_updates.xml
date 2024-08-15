@@ -77,7 +77,7 @@
             android:id="@+id/friendRequestIconIV"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:src="@drawable/friends_not_selected"
+            android:src="@drawable/friend_requests_not_selected"
             app:tint="@color/light_teal"/>
 
         <TextView
