@@ -43,7 +43,7 @@ class CommunitySuggestionAdapter(private val context: Context, private val commu
 
             if (!communityModel.bannedUsers.contains(FirebaseUtil().currentUserUid())){
 
-                AppUtil().changeCommunityButtonStates(context, binding.actionBtn, communityModel.communityId)
+                AppUtil().changeCommunityButtonStates(context, binding.actionBtn, communityModel.communityId, true)
 
                 binding.suggestionCIV.setOnClickListener {
                     DialogUtil().openCommunityPreviewDialog(context, inflater, model)

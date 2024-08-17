@@ -1,6 +1,7 @@
 package com.example.synthronize.utils
 
 import android.content.Context
+import android.widget.Toast
 import com.example.synthronize.adapters.AllFeedsAdapter
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
@@ -26,6 +27,7 @@ class ProfileUtil {
                             var postsAdded = 0
                             feedsSnapshot.size()
 
+                            //storing every user post to list
                             for (post in feedsSnapshot.documents){
                                 var postModel = post.toObject(PostModel::class.java)!!
                                 postsList.add(postModel)
@@ -37,15 +39,17 @@ class ProfileUtil {
                                     postsList.sortByDescending {
                                         it.createdTimestamp
                                     }
-
-                                    //increments
-                                    communitiesTraversed += 1
-                                    //deploys postsRV
-                                    if (communitiesTraversed == querySnapshot.documents.size){
-                                        callback(AllFeedsAdapter(context, postsList, false))
-                                    }
                                 }
                             }
+
+                            //increments
+                            communitiesTraversed += 1
+
+                            //deploys postsRV
+                            if (communitiesTraversed == querySnapshot.documents.size){
+                                callback(AllFeedsAdapter(context, postsList, false))
+                            }
+
                         }.addOnFailureListener {
                             //returns the adapter with the only available posts
                             callback(AllFeedsAdapter(context, postsList, false))

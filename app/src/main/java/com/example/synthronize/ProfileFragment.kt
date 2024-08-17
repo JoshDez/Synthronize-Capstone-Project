@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
@@ -98,6 +99,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     private fun setupPostsRV(){
         ProfileUtil().getUserPosts(context, userId){
             allFeedsAdapter = it
+            binding.postsRV.layoutManager = LinearLayoutManager(context)
             binding.postsRV.adapter = allFeedsAdapter
         }
     }

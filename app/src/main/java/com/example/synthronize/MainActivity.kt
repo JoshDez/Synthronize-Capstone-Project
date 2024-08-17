@@ -93,10 +93,9 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
                 replaceFragment(UpdatesFragment(binding), currentFragment)
             }
             "community_selection" -> {
-                //default group selection fragment
                 currentFragment = fragmentRequest
                 selectNavigation(binding.communitiesBtn.id)
-                replaceFragment(CommunitySelectionFragment(binding, supportFragmentManager, this), currentFragment)
+                replaceFragment(CommunitySelectionFragment(binding, this), currentFragment)
             }
             "community" -> {
                 if (communityId.isNotEmpty() && communityId != "null"){

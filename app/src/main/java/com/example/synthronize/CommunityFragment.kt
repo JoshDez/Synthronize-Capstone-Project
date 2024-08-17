@@ -275,10 +275,6 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         dialogTextChannelsBinding.backBtn.setOnClickListener {
             dialogTextChannel.dismiss()
         }
-
-
-
-
     }
 
     private fun openCreateTextChannel() {

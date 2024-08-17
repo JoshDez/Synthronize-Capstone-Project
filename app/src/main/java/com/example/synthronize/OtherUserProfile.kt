@@ -49,6 +49,8 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
         binding.filesRV.layoutManager = LinearLayoutManager(this)
         binding.likesRV.layoutManager = LinearLayoutManager(this)
 
+        binding.otherUserRefreshLayout.setOnRefreshListener(this)
+
         //main set on click listeners
         binding.backBtn.setOnClickListener {
             onBackPressed()
@@ -82,6 +84,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
     private fun setupPostsRV() {
         ProfileUtil().getUserPosts(this, userID){
             allFeedsAdapter = it
+            binding.postsRV.layoutManager = LinearLayoutManager(this)
             binding.postsRV.adapter = allFeedsAdapter
         }
     }
@@ -105,7 +108,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                     if (!AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid())){
                         //displays the profile
                         binding.userDescriptionTV.text = userModel.description
-                        binding.userNameTV.text = userModel.username
+                        binding.userNameTV.text = "@${userModel.username}"
                         binding.userDisplayNameTV.text = userModel.fullName
 
                         if (userModel.birthday.isNotEmpty()){

@@ -72,7 +72,6 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
 
                 if (toBindSpecialHolder(50)){
                     //bind friend suggestions
-
                     FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
                         val myUserModel = it.toObject(UserModel::class.java)!!
 
@@ -93,19 +92,18 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                                 uidList = ArrayList(uidList.take(5))
                             }
 
-                            val friendSuggestionAdapter = FriendSuggestionAdapter(context, uidList)
-                            binding.divider1.visibility = View.VISIBLE
-                            binding.suggestionsRV.visibility = View.VISIBLE
-                            binding.suggestionsRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                            binding.suggestionsRV.adapter = friendSuggestionAdapter
+                            if (uidList.isNotEmpty()){
+                                val friendSuggestionAdapter = FriendSuggestionAdapter(context, uidList)
+                                binding.divider1.visibility = View.VISIBLE
+                                binding.suggestionsRV.visibility = View.VISIBLE
+                                binding.suggestionsRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                                binding.suggestionsRV.adapter = friendSuggestionAdapter
+                            }
 
                         }
-
-
                     }
                 } else {
                     //bind communities
-
                     FirebaseUtil().retrieveAllCommunityCollection().get().addOnSuccessListener {communities ->
                         var communityIdList:ArrayList<String> = ArrayList()
 
@@ -123,28 +121,27 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                             communityIdList = ArrayList(communityIdList.take(5))
                         }
 
-                        val communitySuggestionAdapter = CommunitySuggestionAdapter(context, communityIdList)
-                        binding.divider1.visibility = View.VISIBLE
-                        binding.suggestionsRV.visibility = View.VISIBLE
-                        binding.suggestionsRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                        binding.suggestionsRV.adapter = communitySuggestionAdapter
-
+                        if (communityIdList.isNotEmpty()){
+                            val communitySuggestionAdapter = CommunitySuggestionAdapter(context, communityIdList)
+                            binding.divider1.visibility = View.VISIBLE
+                            binding.suggestionsRV.visibility = View.VISIBLE
+                            binding.suggestionsRV.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                            binding.suggestionsRV.adapter = communitySuggestionAdapter
+                        }
                     }
                 }
-
-
             }
 
             this.postModel = model
 
-            //SETUP WRAPPER FOR REPOST OR COMMUNITY
+            //SETUP WRAPPER FOR COMMUNITY
             FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {
                 val community = it.toObject(CommunityModel::class.java)!!
                 binding.wrapperDivider.visibility = View.VISIBLE
                 binding.feedWrapperLayout.visibility = View.VISIBLE
                 binding.wrapperName.text = community.communityName
                 AppUtil().setCommunityProfilePic(context, community.communityId, binding.wrapperCIV)
-                AppUtil().changeCommunityButtonStates(context, binding.communityActionBtn, community.communityId)
+                AppUtil().changeCommunityButtonStates(context, binding.communityActionBtn, community.communityId, true)
             }
 
             //SETUP FEED

@@ -33,7 +33,7 @@ import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
-class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val fragmentManager: FragmentManager, private val mainActivityListener: OnItemClickListener) : Fragment(), OnItemClickListener,
+class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, private val mainActivityListener: OnItemClickListener) : Fragment(), OnItemClickListener,
     OnRefreshListener, OnNetworkRetryListener {
     private lateinit var binding: FragmentCommunitySelectionBinding
     private lateinit var dialogBinding: DialogAddCommunityBinding
@@ -83,7 +83,6 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
                     val dialogPlus = DialogPlus.newDialog(context)
                         .setContentHolder(ViewHolder(dialogBinding.root))
                         .setGravity(Gravity.CENTER)
-                        .setMargin(50, 700, 50, 700)
                         .setCancelable(true)
                         .setExpanded(false)
                         .create()
@@ -170,7 +169,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
         val options: FirestoreRecyclerOptions<CommunityModel> =
              FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(communityQuery, CommunityModel::class.java).build()
 
-        communityAdapter = CommunityAdapter(mainBinding, fragmentManager, context, options, this)
+        communityAdapter = CommunityAdapter(mainBinding, context, options, this)
         recyclerView.adapter = communityAdapter
         communityAdapter.startListening()
     }

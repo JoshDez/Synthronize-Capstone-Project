@@ -31,187 +31,183 @@
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="300dp"
+                        android:layout_height="220dp"
                         android:layout_below="@id/divider">
 
-                        <RelativeLayout
+
+                        <ImageView
+                            android:id="@+id/userCoverIV"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <ImageView
-                                android:id="@+id/userCoverIV"
-                                android:layout_width="match_parent"
-                                android:layout_height="180dp"
-                                android:src="@color/black" />
-
-
-                            <LinearLayout
-                                android:id="@+id/postsContainer"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/userCoverIV"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="20dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/postsCountTV"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="0"
-                                    android:textAlignment="center"
-                                    android:textColor="@color/light_teal"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/postsTV"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/posts"
-                                    android:textAlignment="center"
-                                    android:textColor="@color/light_teal"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-
-
-                            <LinearLayout
-                                android:id="@+id/communitiesContainer"
-                                android:layout_width="73dp"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/userCoverIV"
-                                android:layout_marginStart="30dp"
-                                android:layout_marginTop="20dp"
-                                android:layout_toRightOf="@id/postsContainer"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/communitiesCountTV"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="0"
-                                    android:textAlignment="center"
-                                    android:textColor="@color/light_teal"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/communitiesTV"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/communities"
-                                    android:textAlignment="center"
-                                    android:textColor="@color/light_teal"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-
-
-                            <LinearLayout
-                                android:id="@+id/friendsContainer"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/userCoverIV"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginEnd="20dp"
-                                android:layout_toLeftOf="@id/filesContainer"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/friendsCountTV"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="0"
-                                    android:textAlignment="center"
-                                    android:textColor="@color/light_teal"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/friendsTV"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/friends"
-                                    android:textAlignment="center"
-                                    android:textColor="@color/light_teal"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/filesContainer"
-                                android:layout_width="73dp"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/userCoverIV"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginEnd="10dp"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/filesCountTV"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="0"
-                                    android:textAlignment="center"
-                                    android:textColor="@color/light_teal"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/filesTV"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Files"
-                                    android:textAlignment="center"
-                                    android:textColor="@color/light_teal"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-
-                        </RelativeLayout>
+                            android:layout_height="180dp"
+                            android:src="@color/black" />
 
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
-
                             <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/userProfileCIV"
                                 android:layout_width="130dp"
                                 android:layout_height="130dp"
                                 android:layout_centerInParent="true"
-                                android:src="@color/light_teal" />
+                                android:layout_alignParentBottom="true"
+                                android:src="@drawable/user_default_profile" />
+                        </RelativeLayout>
+                    </FrameLayout>
 
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:id="@+id/postsContainer"
+                            android:layout_width="73dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_below="@id/userCoverIV"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/userDisplayNameTV"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/postsCountTV"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/userProfileCIV"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginEnd="20dp"
-                                android:contentDescription="@string/full_name"
+                                android:text="0"
                                 android:textAlignment="center"
                                 android:textColor="@color/light_teal"
-                                android:textSize="18sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/userNameTV"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/postsTV"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/userDisplayNameTV"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="2dp"
-                                android:layout_marginEnd="20dp"
-                                android:contentDescription="@string/username"
+                                android:text="@string/posts"
                                 android:textAlignment="center"
                                 android:textColor="@color/light_teal"
-                                android:textSize="16sp" />
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
-                        </RelativeLayout>
-                    </FrameLayout>
+
+                        <LinearLayout
+                            android:id="@+id/communitiesContainer"
+                            android:layout_width="73dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_below="@id/userCoverIV"
+                            android:layout_toRightOf="@id/postsContainer"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/communitiesCountTV"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="@color/light_teal"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/communitiesTV"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/communities"
+                                android:textAlignment="center"
+                                android:textColor="@color/light_teal"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:id="@+id/friendsContainer"
+                            android:layout_width="73dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_below="@id/userCoverIV"
+                            android:layout_toLeftOf="@id/filesContainer"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/friendsCountTV"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="@color/light_teal"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/friendsTV"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/friends"
+                                android:textAlignment="center"
+                                android:textColor="@color/light_teal"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/filesContainer"
+                            android:layout_width="73dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_below="@id/userCoverIV"
+                            android:layout_alignParentEnd="true"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/filesCountTV"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="@color/light_teal"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/filesTV"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Files"
+                                android:textAlignment="center"
+                                android:textColor="@color/light_teal"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:id="@+id/userDisplayNameTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/userProfileCIV"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="@string/full_name"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_teal"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/userNameTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/userDisplayNameTV"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="@string/username"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp" />
+
 
                     <TextView
                         android:id="@+id/userDescriptionTV"
@@ -219,6 +215,7 @@
                         android:layout_height="wrap_content"
                         android:autoLink="web"
                         android:textColorLink="@color/light_blue"
+                        android:layout_marginTop="20dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:layout_marginBottom="10dp"

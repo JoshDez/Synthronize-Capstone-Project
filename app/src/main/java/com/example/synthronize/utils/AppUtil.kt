@@ -32,6 +32,13 @@ class AppUtil {
             .into(civ)
     }
     fun setUserProfilePic(context:Context, uid: String, civ:CircleImageView){
+        //set default user profile first
+        GlideApp.with(context)
+            .load(R.drawable.user_default_profile)
+            .apply(RequestOptions.circleCropTransform())
+            .into(civ)
+
+        //set the current user profile
         if (context is Activity && (context.isDestroyed || context.isFinishing)) {
             // The activity is not in a valid state to load images
             return
@@ -56,6 +63,7 @@ class AppUtil {
     }
 
     fun setUserCoverPic(context: Context, uid: String, cover:ImageView){
+
         FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
             var user = it.toObject(UserModel::class.java)!!
             if (user.userMedia.containsKey("profile_cover_photo")){
@@ -73,6 +81,13 @@ class AppUtil {
     }
 
     fun setCommunityProfilePic(context:Context, communityId: String, civ:CircleImageView){
+        //set default community profile first
+        GlideApp.with(context)
+            .load(R.drawable.community_default_profile)
+            .apply(RequestOptions.circleCropTransform())
+            .into(civ)
+
+        //set the current community profile
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
             var community = it.toObject(CommunityModel::class.java)!!
 
@@ -245,7 +260,7 @@ class AppUtil {
 
 
     //TODO change  material button to image button
-    fun changeCommunityButtonStates(context:Context, communityButton: MaterialButton, communityId: String){
+    fun changeCommunityButtonStates(context:Context, communityButton: MaterialButton, communityId: String, isOnPost:Boolean = false){
         communityButton.visibility = View.GONE
 
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community ->
@@ -259,7 +274,7 @@ class AppUtil {
                     if (myUserModel.userType == "AppAdmin" && !AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())) {
                         //if user is an AppAdmin and not yet joined the community
                         communityButton.visibility = View.VISIBLE
-                        communityButton.text = "Join Community"
+                        communityButton.text = "Join"
                         communityButton.setOnClickListener {
                             FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
                                 if (isSuccessful){
@@ -294,7 +309,7 @@ class AppUtil {
                     } else if (AppUtil().isIdOnList(myUserModel.communityInvitations.values, myUserModel.userID)){
                         //If user is invited to join community
                         communityButton.visibility = View.VISIBLE
-                        communityButton.text = "Accept Request"
+                        communityButton.text = "Accept"
                         communityButton.setOnClickListener {
                             FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
                                 if (isSuccessful){
@@ -329,7 +344,7 @@ class AppUtil {
                         } else {
                             //Join the public community
                             communityButton.visibility = View.VISIBLE
-                            communityButton.text = "Join Community"
+                            communityButton.text = "Join"
                             communityButton.setOnClickListener {
                                 FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
                                     if (isSuccessful){
@@ -348,10 +363,12 @@ class AppUtil {
                         }
                     } else if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())) {
                         //If the user already joined
-                        communityButton.visibility = View.VISIBLE
-                        communityButton.text = "Enter"
-                        communityButton.setOnClickListener {
-                            AppUtil().headToMainActivity(context, "community", 0, communityId)
+                        if (!isOnPost){
+                            communityButton.visibility = View.VISIBLE
+                            communityButton.text = "Enter"
+                            communityButton.setOnClickListener {
+                                AppUtil().headToMainActivity(context, "community", 0, communityId)
+                            }
                         }
                     }
                 }
