@@ -106,36 +106,42 @@
             android:contentDescription="@string/feed_description"
             android:textColor="@color/light_teal" />
 
-
-        <LinearLayout
-            android:id="@+id/fileLayout"
-            android:padding="10dp"
-            android:orientation="horizontal"
-            android:background="@color/dark_teal"
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:backgroundTint="#9C12181E"
             android:layout_marginTop="16dp"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            app:cardCornerRadius="20dp">
 
-            <ImageView
-                android:id="@+id/fileIconIV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/baseline_image_24"/>
+            <LinearLayout
+                android:id="@+id/fileLayout"
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/fileNameTV"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="File.txt"
-                android:paddingStart="20dp"
-                android:gravity="center_vertical"
-                android:textColor="@color/light_teal"
-                android:textSize="16sp"/>
+                <ImageView
+                    android:id="@+id/fileIconIV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/file_icon"/>
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/fileNameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="File.txt"
+                    android:paddingStart="20dp"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/light_teal"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
 
         <LinearLayout

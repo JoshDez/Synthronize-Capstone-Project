@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.app.DownloadManager
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.example.synthronize.R
 import com.example.synthronize.databinding.ItemFileBinding
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.UserModel
@@ -50,9 +51,11 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                 AppUtil().setUserProfilePic(context, fileModel.ownerId, binding.profileCIV)
                 binding.usernameTV.text = user.username
             }
+
             binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
             binding.captionTV.text = fileModel.caption
             binding.fileNameTV.text = fileModel.fileName
+            displayFileIcon()
 
             binding.fileLayout.setOnClickListener {
                 downloadFileFromFirebase()
@@ -84,6 +87,18 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
             }.addOnFailureListener { exception ->
                 // Handle any errors
                 exception.printStackTrace()
+            }
+        }
+
+        private fun displayFileIcon(){
+            val extension = fileModel.fileName.split('.').last()
+
+            if (extension == "pdf"){
+                binding.fileIconIV.setImageResource(R.drawable.pdf_icon)
+            } else if (extension == "docx"){
+                binding.fileIconIV.setImageResource(R.drawable.docx_icon)
+            } else if (extension == "excel"){
+                binding.fileIconIV.setImageResource(R.drawable.excel_icon)
             }
         }
 
