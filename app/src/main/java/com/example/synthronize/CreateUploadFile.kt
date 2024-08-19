@@ -63,11 +63,11 @@ class CreateUploadFile : AppCompatActivity() {
                             fileId = file.id,
                             fileName = fileName,
                             fileUrl = fileUrl,
-                            fileOwnerId = FirebaseUtil().currentUserUid(),
+                            ownerId = FirebaseUtil().currentUserUid(),
                             shareFile = isSharedFiles,
                             caption = caption,
                             communityId = communityId,
-                            uploadTimestamp = Timestamp.now(),
+                            createdTimestamp = Timestamp.now(),
                         )
                         FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(file.id).set(fileModel).addOnSuccessListener {
                             Toast.makeText(this, "your file is successfully uploaded", Toast.LENGTH_SHORT).show()

@@ -112,6 +112,42 @@
                         </RelativeLayout>
                     </FrameLayout>
 
+
+
+                    <TextView
+                        android:id="@+id/userDisplayNameTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/userProfileCIV"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="@string/full_name"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_teal"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/userNameTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/userDisplayNameTV"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="@string/username"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp" />
+
+
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
@@ -231,40 +267,6 @@
                                 android:textSize="12sp" />
                         </LinearLayout>
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/userDisplayNameTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/userProfileCIV"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:contentDescription="@string/full_name"
-                        android:textAlignment="center"
-                        android:textColor="@color/light_teal"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/userNameTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/userDisplayNameTV"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginEnd="20dp"
-                        android:contentDescription="@string/username"
-                        android:textAlignment="center"
-                        android:textColor="@color/light_teal"
-                        android:textSize="16sp" />
-
 
                     <TextView
                         android:id="@+id/userDescriptionTV"

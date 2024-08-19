@@ -144,9 +144,14 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 AppUtil().changeCommunityButtonStates(context, binding.communityActionBtn, community.communityId, true)
             }
 
-            //SETUP FEED
+            //SETUP POST CONTENT
             FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {
                 val owner = it.toObject(UserModel::class.java)!!
+
+                if (postModel.caption.isEmpty()){
+                    binding.descriptionTV.visibility = View.GONE
+                }
+
                 AppUtil().setUserProfilePic(context, owner.userID, binding.profileCIV)
                 binding.usernameTV.text = owner.username
                 binding.descriptionTV.text = postModel.caption

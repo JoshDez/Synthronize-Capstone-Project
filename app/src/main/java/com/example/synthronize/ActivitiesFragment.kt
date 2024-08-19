@@ -74,8 +74,6 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
                 binding.sharedFilesBtn.setOnClickListener {
                     navigate("shared_files")
                 }
-
-
             }
         }
 
@@ -198,7 +196,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
 
         val myQuery: Query = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
             .whereEqualTo("shareFile", false)
-            .orderBy("uploadTimestamp", Query.Direction.DESCENDING)
+            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
 
         // Add a listener to handle success or failure of the query
         myQuery.addSnapshotListener { _, e ->
@@ -226,7 +224,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
 
         val myQuery: Query = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
             .whereEqualTo("shareFile", true)
-            .orderBy("uploadTimestamp", Query.Direction.DESCENDING)
+            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
 
         // Add a listener to handle success or failure of the query
         myQuery.addSnapshotListener { _, e ->

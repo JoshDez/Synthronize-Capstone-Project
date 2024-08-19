@@ -12,7 +12,7 @@
         android:id="@+id/fullNameEdtTxt"
         android:layout_width="320dp"
         android:layout_height="48dp"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="140dp"
         android:background="@drawable/input_rounded_corners"
         android:hint="@string/full_name"
         android:inputType="text"
@@ -72,6 +72,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fullNameEdtTxt" />
 
+    <LinearLayout
+        android:id="@+id/dataPrivacyLayout"
+        android:layout_width="320dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/confirmPassEdtTxt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <CheckBox
+            android:id="@+id/dataPrivacyCB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I have read and agree to the "
+            android:textColor="@color/light_teal"
+            app:buttonTint="@color/light_teal" />
+
+        <TextView
+            android:id="@+id/privacyPolicyBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="Privacy Policy"
+            android:textColor="@color/light_teal"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signUpBtn"
@@ -88,7 +116,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confirmPassEdtTxt" />
+        app:layout_constraintTop_toBottomOf="@+id/dataPrivacyLayout" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/line"

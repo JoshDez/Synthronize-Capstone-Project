@@ -1,9 +1,11 @@
 package com.example.synthronize.adapters
 
 import android.content.Context
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
+import android.app.DownloadManager
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.databinding.ItemFileBinding
 import com.example.synthronize.model.FileModel
@@ -13,6 +15,7 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import java.io.File
 
 class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptions<FileModel>):
     FirestoreRecyclerAdapter<FileModel, FilesAdapter.FileViewHolder>(options) {
@@ -38,14 +41,71 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
         fun bind(model: FileModel){
             fileModel = model
 
-            FirebaseUtil().targetUserDetails(fileModel.fileOwnerId).get().addOnSuccessListener {
+            if (fileModel.caption.isEmpty()){
+                binding.captionTV.visibility = View.GONE
+            }
+
+            FirebaseUtil().targetUserDetails(fileModel.ownerId).get().addOnSuccessListener {
                 val user = it.toObject(UserModel::class.java)!!
-                AppUtil().setUserProfilePic(context, fileModel.fileOwnerId, binding.profileCIV)
+                AppUtil().setUserProfilePic(context, fileModel.ownerId, binding.profileCIV)
                 binding.usernameTV.text = user.username
             }
-            binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.uploadTimestamp)
+            binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
             binding.captionTV.text = fileModel.caption
             binding.fileNameTV.text = fileModel.fileName
+
+            binding.fileLayout.setOnClickListener {
+                downloadFileFromFirebase()
+            }
+        }
+
+        private fun downloadFileFromFirebase() {
+            // Get the file's download URL
+            FirebaseUtil().retrieveCommunityFileRef(fileModel.fileUrl).downloadUrl.addOnSuccessListener { uri ->
+
+                // Get the Downloads directory
+                val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+                // Check for existing files and modify the name if necessary
+                val finalFileName = getUniqueFileName(downloadsDir, fileModel.fileName)
+
+                // Use DownloadManager to handle the download
+                val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                val request = DownloadManager.Request(uri)
+                request.setTitle(finalFileName)
+                request.setDescription("File is being downloaded.")
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                request.setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    finalFileName
+                )
+                // Enqueue the download
+                downloadManager.enqueue(request)
+            }.addOnFailureListener { exception ->
+                // Handle any errors
+                exception.printStackTrace()
+            }
+        }
+
+
+        private fun getUniqueFileName(directory: File, fileName: String): String {
+            var newFileName = fileName
+            var file = File(directory, newFileName)
+            var counter = 1
+
+            // Loop to find a unique file name
+            while (file.exists()) {
+                val fileNameWithoutExtension = fileName.substringBeforeLast(".")
+                val extension = fileName.substringAfterLast(".", "")
+                newFileName = if (extension.isNotEmpty()) {
+                    "$fileNameWithoutExtension ($counter).$extension"
+                } else {
+                    "$fileNameWithoutExtension ($counter)"
+                }
+                file = File(directory, newFileName)
+                counter++
+            }
+            return newFileName
         }
     }
 

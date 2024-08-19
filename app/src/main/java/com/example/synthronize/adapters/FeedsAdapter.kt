@@ -70,8 +70,13 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
 
             this.postModel = model
 
-            //SETUP FEED
+            //SETUP POST CONTENT
             FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {
+
+                if (postModel.caption.isEmpty()){
+                    feedBinding.descriptionTV.visibility = View.GONE
+                }
+
                 val owner = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, owner.userID, feedBinding.profileCIV)
                 feedBinding.usernameTV.text = owner.username

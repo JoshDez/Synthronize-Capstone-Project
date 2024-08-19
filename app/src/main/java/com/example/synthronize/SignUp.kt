@@ -3,12 +3,17 @@ package com.example.synthronize
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.Toast
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.example.synthronize.databinding.ActivitySignUpBinding
+import com.example.synthronize.databinding.DialogPrivacyPolicyBinding
+import com.example.synthronize.databinding.DialogReportBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.FirebaseUtil
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class SignUp : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
@@ -29,17 +34,19 @@ class SignUp : AppCompatActivity() {
 
             //Validates User info and credentials before registration
             if (fullName.isEmpty()) {
-                Toast.makeText(this, "Enter Your Full Name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter your Full Name", Toast.LENGTH_SHORT).show()
             } else if(email.isEmpty()) {
-                Toast.makeText(this, "Enter Your Email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter your Email", Toast.LENGTH_SHORT).show()
             } else if(pass.isEmpty()) {
-                Toast.makeText(this, "Enter Your Password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter your Password", Toast.LENGTH_SHORT).show()
             } else if (pass.length < 6) {
                 Toast.makeText(this, "Password should at least be more than 6 characters", Toast.LENGTH_SHORT).show()
             } else if(confirmPass.isEmpty()) {
-                Toast.makeText(this, "Enter Your Confirm Password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter your Confirm Password", Toast.LENGTH_SHORT).show()
             } else if (confirmPass != pass) {
-                Toast.makeText(this, "Passwords Are Not Matched", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Passwords are not matched", Toast.LENGTH_SHORT).show()
+            } else if (!binding.dataPrivacyCB.isChecked) {
+                Toast.makeText(this, "Please agree to the Privacy Policy to complete your registration.", Toast.LENGTH_SHORT).show()
             } else {
                 firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -77,5 +84,27 @@ class SignUp : AppCompatActivity() {
             startActivity(intent)
             this.finish()
         }
+
+        binding.privacyPolicyBtn.setOnClickListener {
+            openPrivacyPolicy()
+        }
     }
+
+    private fun openPrivacyPolicy(){
+        val dialogPrivacyPolicyBinding = DialogPrivacyPolicyBinding.inflate(layoutInflater)
+        val dialogPrivacyPolicy = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogPrivacyPolicyBinding.root))
+            .setCancelable(true)
+            .setExpanded(false)
+            .setGravity(Gravity.BOTTOM)
+            .create()
+
+        dialogPrivacyPolicyBinding.backBtn.setOnClickListener {
+            dialogPrivacyPolicy.dismiss()
+        }
+
+        dialogPrivacyPolicy.show()
+    }
+
+
 }

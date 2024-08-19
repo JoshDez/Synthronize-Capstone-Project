@@ -102,7 +102,24 @@ class ProfileUtil {
     }
 
     fun getFilesCount(userId:String, callback: (Int) -> Unit){
-        //TODO to be implemented
+        FirebaseUtil().retrieveAllCommunityCollection().get()
+            .addOnSuccessListener { querySnapshot ->
+                var totalPosts = 0
+                for (document in querySnapshot.documents) {
+                    FirebaseUtil().retrieveAllCommunityCollection()
+                        .document(document.id) // Access each document within the collection
+                        .collection("files")
+                        .whereEqualTo("ownerId", userId)
+                        .get()
+                        .addOnSuccessListener { feedsSnapshot ->
+                            totalPosts += feedsSnapshot.size()
+                            callback(totalPosts)
+                        }
+                }
+            }
+            .addOnFailureListener {
+                callback(0)
+            }
     }
 
 }

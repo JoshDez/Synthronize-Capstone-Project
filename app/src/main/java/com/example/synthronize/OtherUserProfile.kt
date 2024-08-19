@@ -57,23 +57,19 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
         }
     }
 
-    private fun navigate(tab: String) {
-        binding.postsRV.visibility = View.GONE
-        binding.filesRV.visibility = View.GONE
-        binding.likesRV.visibility = View.GONE
-        //binding.communityChatsBtn.setTextColor(unselectedColor)
-        //binding.communityChatsRV.visibility = View.GONE
 
+    private fun navigate(tab: String, toRefresh:Boolean = false) {
+        binding.postsRV.visibility = View.INVISIBLE
+        binding.filesRV.visibility = View.INVISIBLE
 
         if (tab == "posts"){
             binding.postsRV.visibility = View.VISIBLE
-            setupPostsRV()
-            //binding.communityChatsBtn.setTextColor(selectedColor)
-
+            if (toRefresh)
+                setupPostsRV()
         }else if (tab == "files"){
             binding.filesRV.visibility = View.VISIBLE
-            setupFilesRV()
-
+            if (toRefresh)
+                setupFilesRV()
         }
     }
 
@@ -129,11 +125,14 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                         ProfileUtil().getFriendsCount(userID) { friendsCount ->
                             binding.friendsCountTV.text = friendsCount.toString()
                         }
-                        //TODO count for files
+                        ProfileUtil().getFilesCount(userID) {filesCount ->
+                            binding.filesCountTV.text = filesCount.toString()
+                        }
+
 
                         //displays the first tab
-                        binding.postsRV.visibility = View.VISIBLE
-                        setupPostsRV()
+                        navigate("posts")
+
 
                         //set on click listeners
                         binding.postsBtn.setOnClickListener {
@@ -154,6 +153,10 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                         binding.kebabMenuBtn.setOnClickListener {
                             openMenuDialog()
                         }
+
+
+                        setupPostsRV()
+                        setupFilesRV()
 
                         AppUtil().changeFriendsButtonState(binding.friendBtn, userModel)
                     } else {
