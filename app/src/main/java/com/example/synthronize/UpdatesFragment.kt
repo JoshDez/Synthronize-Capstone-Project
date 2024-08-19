@@ -25,6 +25,7 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
     // TODO: Rename and change types of parameters
     private lateinit var binding: FragmentUpdatesBinding
     private lateinit var requestsAdapter: RequestsAdapter
+    private lateinit var invitationsAdapter: RequestsAdapter
     private lateinit var context: Context
     private var currentTab = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +60,7 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
                 AppUtil().resetMainToolbar(mainBinding)
 
                 bindButtons()
+
                 navigate("notifications")
 
                 binding.notificationsBtn.setOnClickListener {
@@ -74,32 +76,42 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
         }
     }
 
-    private fun navigate(tab:String){
+    private fun navigate(tab:String, toRefresh:Boolean = false){
         binding.notificationsIconIV.setImageResource(R.drawable.notifications_not_selected)
         binding.communityInviteIconIV.setImageResource(R.drawable.community_invitations_not_selected)
         binding.friendRequestIconIV.setImageResource(R.drawable.friend_requests_not_selected)
+        binding.notificationRV.visibility = View.GONE
+        binding.invitationsRV.visibility = View.GONE
+        binding.requestsRV.visibility = View.GONE
 
 
         if (tab == "notifications"){
-            setupNotifications()
             binding.notificationsIconIV.setImageResource(R.drawable.notifications_selected)
+            binding.notificationRV.visibility = View.VISIBLE
             currentTab = "notifications"
+            if (toRefresh)
+                setupNotifications()
+
 
         } else if (tab == "community_invitations") {
-            setupRVForCommunityInvitations()
             binding.communityInviteIconIV.setImageResource(R.drawable.community_invitations_selected)
+            binding.invitationsRV.visibility = View.VISIBLE
             currentTab = "community_invitations"
+            if (toRefresh || !::invitationsAdapter.isInitialized)
+                setupRVForCommunityInvitations()
 
         } else if (tab == "friend_requests") {
-            setupRVForFriendRequests()
             binding.friendRequestIconIV.setImageResource(R.drawable.friend_requests_selected)
+            binding.requestsRV.visibility = View.VISIBLE
             currentTab = "friend_requests"
+            if (toRefresh || !::requestsAdapter.isInitialized)
+                setupRVForFriendRequests()
         }
     }
 
     private fun setupNotifications(){
-        binding.notificationsRefreshLayout.isRefreshing = true
-        binding.notificationsRefreshLayout.isRefreshing = false
+        //binding.notificationsRefreshLayout.isRefreshing = true
+        //binding.notificationsRefreshLayout.isRefreshing = false
         //TODO
     }
 
@@ -111,9 +123,9 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
             for (key in user.communityInvitations.keys){
                 hosts.add(key)
             }
-            binding.notificationRV.layoutManager = LinearLayoutManager(context)
-            requestsAdapter = RequestsAdapter(communityInvitations = user.communityInvitations, hosts = hosts, listener = this)
-            binding.notificationRV.adapter = requestsAdapter
+            binding.invitationsRV.layoutManager = LinearLayoutManager(context)
+            invitationsAdapter = RequestsAdapter(communityInvitations = user.communityInvitations, hosts = hosts, listener = this)
+            binding.invitationsRV.adapter = invitationsAdapter
             binding.notificationsRefreshLayout.isRefreshing = false
         }
     }
@@ -122,9 +134,9 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
         binding.notificationsRefreshLayout.isRefreshing = true
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
             val user = it.toObject(UserModel::class.java)!!
-            binding.notificationRV.layoutManager = LinearLayoutManager(context)
+            binding.requestsRV.layoutManager = LinearLayoutManager(context)
             requestsAdapter = RequestsAdapter(user.friendRequests, listener = this)
-            binding.notificationRV.adapter = requestsAdapter
+            binding.requestsRV.adapter = requestsAdapter
             binding.notificationsRefreshLayout.isRefreshing = false
         }
     }
@@ -133,12 +145,6 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
     private fun bindButtons(){
         mainBinding.searchBtn.setOnClickListener {
             Toast.makeText(activity, "To be implemented", Toast.LENGTH_SHORT).show()
-        }
-    }
-    override fun onResume() {
-        super.onResume()
-        if (::requestsAdapter.isInitialized){
-            requestsAdapter.notifyDataSetChanged()
         }
     }
 
@@ -155,7 +161,7 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
     override fun onRefresh() {
         binding.notificationsRefreshLayout.isRefreshing = true
         Handler().postDelayed({
-            navigate(currentTab)
+            navigate(currentTab, true)
         },1000)
     }
 

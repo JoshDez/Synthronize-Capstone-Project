@@ -61,24 +61,16 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             if (::context.isInitialized){
                 //check for internet
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
-
-                //TODO add loading screen
                 bindUserDetails()
-
-                binding.postsRV.layoutManager = LinearLayoutManager(activity)
-                binding.filesRV.layoutManager = LinearLayoutManager(activity)
-                binding.likesRV.layoutManager = LinearLayoutManager(activity)
                 binding.profileRefreshLayout.setOnRefreshListener(this)
-
             }
-
         }
     }
 
     private fun navigate(tab: String, toRefresh:Boolean = false) {
-        binding.postsRV.visibility = View.INVISIBLE
-        binding.filesRV.visibility = View.INVISIBLE
-        binding.likesRV.visibility = View.INVISIBLE
+        binding.postsRV.visibility = View.GONE
+        binding.filesRV.visibility = View.GONE
+        binding.likesRV.visibility = View.GONE
 
         if (tab == "posts"){
             binding.postsRV.visibility = View.VISIBLE
@@ -149,10 +141,16 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                     binding.filesCountTV.text = filesCount.toString()
                 }
 
+                //prepares recycler views
+                binding.postsRV.visibility = View.INVISIBLE
+                binding.filesRV.visibility = View.INVISIBLE
+                binding.likesRV.visibility = View.INVISIBLE
+                setupPostsRV()
+                setupFilesRV()
+                setupLikesRV()
 
                 //displays the first tab
                 navigate("posts")
-
 
                 //set on click listeners
                 binding.editProfileBtn.setOnClickListener {

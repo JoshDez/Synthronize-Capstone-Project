@@ -103,6 +103,14 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
                     openMenuDialog()
                 }
 
+                //prepare RV
+                binding.inboxRV.visibility = View.INVISIBLE
+                binding.communityChatsRV.visibility = View.INVISIBLE
+                binding.friendsListRV.visibility = View.INVISIBLE
+                setupChatroomListForCommunity()
+                setupChatroomListForInbox()
+                setupFriendsList()
+
                 //set default tab
                 navigate("inbox")
 
@@ -135,34 +143,32 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
             }
         }
     }
-    private fun navigate(tab:String){
+    private fun navigate(tab:String, toRefresh:Boolean = false){
         binding.inboxRV.visibility = View.GONE
         binding.communityChatsRV.visibility = View.GONE
         binding.friendsListRV.visibility = View.GONE
         binding.inboxIconIV.setImageResource(R.drawable.inbox_not_selected)
         binding.communityChatsIV.setImageResource(R.drawable.community_not_selected)
         binding.friendsIV.setImageResource(R.drawable.friends_not_selected)
-        //binding.communityChatsBtn.setTextColor(unselectedColor)
-        //binding.communityChatsRV.visibility = View.GONE
-
 
         if (tab == "community_chat"){
             binding.communityChatsRV.visibility = View.VISIBLE
             binding.communityChatsIV.setImageResource(R.drawable.community_selected)
-            setupChatroomListForCommunity()
             currentTab = "community_chat"
-            //binding.communityChatsBtn.setTextColor(selectedColor)
+            if (toRefresh)
+                setupChatroomListForCommunity()
         }else if (tab == "inbox"){
             binding.inboxRV.visibility = View.VISIBLE
             binding.inboxIconIV.setImageResource(R.drawable.inbox_selected)
-            setupChatroomListForInbox()
             currentTab = "inbox"
-            //binding.inboxBtn.setTextColor(selectedColor)
+            if (toRefresh)
+                setupChatroomListForInbox()
         }else if (tab == "friends_list"){
             binding.friendsListRV.visibility = View.VISIBLE
             binding.friendsIV.setImageResource(R.drawable.friends_selected)
-            setupFriendsList()
             currentTab = "friends_list"
+            if (toRefresh)
+                setupFriendsList()
         }
     }
 
@@ -502,7 +508,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
     override fun onRefresh() {
         binding.chatRefreshLayout.isRefreshing =  true
         Handler().postDelayed({
-            navigate(currentTab)
+            navigate(currentTab, true)
         }, 1000)
 
     }
