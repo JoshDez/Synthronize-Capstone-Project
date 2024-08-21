@@ -37,7 +37,8 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
     private lateinit var binding: FragmentActivitiesBinding
     private lateinit var context: Context
     private lateinit var competitionsAdapter: CompetitionsAdapter
-    private lateinit var filesAdapter: FilesAdapter
+    private lateinit var resourcesAdapter: FilesAdapter
+    private lateinit var sharedFilesAdapter: FilesAdapter
     private var currentTab = ""
 
     override fun onCreateView(
@@ -79,45 +80,46 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
 
     }
 
-    private fun navigate(tab: String) {
+    private fun navigate(tab: String, toRefresh:Boolean = false) {
         val unselectedColor = ContextCompat.getColor(context, R.color.less_saturated_light_teal)
         val selectedColor = ContextCompat.getColor(context, R.color.light_teal)
         binding.competitionBtn.setTextColor(unselectedColor)
         binding.resourcesBtn.setTextColor(unselectedColor)
         binding.sharedFilesBtn.setTextColor(unselectedColor)
+        binding.competitionsRV.visibility = View.GONE
+        binding.resourcesRV.visibility = View.GONE
+        binding.sharedFilesRV.visibility = View.GONE
+
+
         if (tab == "competitions"){
-            setupCompetitionsRV()
             currentTab = "competitions"
             binding.competitionBtn.setTextColor(selectedColor)
             binding.addFab.visibility = View.GONE
+            binding.competitionsRV.visibility = View.VISIBLE
+
+            if (toRefresh || !::competitionsAdapter.isInitialized)
+                setupCompetitionsRV()
+
             isUserAllowedToPost {isAllowed ->
                 if (isAllowed){
                     binding.addFab.visibility = View.VISIBLE
                     binding.addFab.setOnClickListener{
-                        var model = CompetitionModel()
-                        FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).add(model).addOnSuccessListener {
-                            model = CompetitionModel(
-                                competitionId = it.id,
-                                "Test",
-                                "This is how you do the competition",
-                                "Xbox 369",
-                                FirebaseUtil().currentUserUid(),
-                                listOf(),
-                                Timestamp.now(),
-                                hashMapOf(FirebaseUtil().currentUserUid() to "filename")
-                            )
-                            FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(model.competitionId).set(model).addOnSuccessListener {
-                                Toast.makeText(context, "file uploaded successfully", Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                        val intent = Intent(context, CreateCompetition::class.java)
+                        intent.putExtra("communityId", communityId)
+                        context.startActivity(intent)
                     }
                 }
             }
         }else if (tab == "resources") {
-            setupResourcesRV()
             currentTab = "resources"
             binding.resourcesBtn.setTextColor(selectedColor)
             binding.addFab.visibility = View.GONE
+            binding.resourcesRV.visibility = View.VISIBLE
+
+            if (toRefresh || !::resourcesAdapter.isInitialized)
+                setupResourcesRV()
+
+
             isUserAllowedToPost {isAllowed ->
                 if (isAllowed){
                     binding.addFab.visibility = View.VISIBLE
@@ -130,10 +132,14 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
                 }
             }
         }else if (tab == "shared_files") {
-            setupSharedFilesRV()
             currentTab = "shared_files"
             binding.sharedFilesBtn.setTextColor(selectedColor)
             binding.addFab.visibility = View.VISIBLE
+            binding.sharedFilesRV.visibility = View.VISIBLE
+
+            if (toRefresh || !::sharedFilesAdapter.isInitialized)
+                setupSharedFilesRV()
+
             binding.addFab.setOnClickListener{
                 val intent = Intent(context, CreateUploadFile::class.java)
                 intent.putExtra("communityId", communityId)
@@ -185,9 +191,9 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         val options: FirestoreRecyclerOptions<CompetitionModel> =
             FirestoreRecyclerOptions.Builder<CompetitionModel>().setQuery(myQuery, CompetitionModel::class.java).build()
 
-        binding.activitiesRV.layoutManager = LinearLayoutManager(context)
+        binding.competitionsRV.layoutManager = LinearLayoutManager(context)
         competitionsAdapter = CompetitionsAdapter(context, options)
-        binding.activitiesRV.adapter = competitionsAdapter
+        binding.competitionsRV.adapter = competitionsAdapter
         competitionsAdapter.startListening()
     }
 
@@ -213,10 +219,10 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         val options: FirestoreRecyclerOptions<FileModel> =
             FirestoreRecyclerOptions.Builder<FileModel>().setQuery(myQuery, FileModel::class.java).build()
 
-        binding.activitiesRV.layoutManager = LinearLayoutManager(context)
-        filesAdapter = FilesAdapter(context, options)
-        binding.activitiesRV.adapter = filesAdapter
-        filesAdapter.startListening()
+        binding.resourcesRV.layoutManager = LinearLayoutManager(context)
+        resourcesAdapter = FilesAdapter(context, options)
+        binding.resourcesRV.adapter = resourcesAdapter
+        resourcesAdapter.startListening()
     }
 
     private fun setupSharedFilesRV(){
@@ -241,19 +247,19 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         val options: FirestoreRecyclerOptions<FileModel> =
             FirestoreRecyclerOptions.Builder<FileModel>().setQuery(myQuery, FileModel::class.java).build()
 
-        binding.activitiesRV.layoutManager = LinearLayoutManager(context)
-        filesAdapter = FilesAdapter(context, options)
-        binding.activitiesRV.adapter = filesAdapter
-        filesAdapter.startListening()
+        binding.sharedFilesRV.layoutManager = LinearLayoutManager(context)
+        sharedFilesAdapter = FilesAdapter(context, options)
+        binding.sharedFilesRV.adapter = sharedFilesAdapter
+        sharedFilesAdapter.startListening()
     }
 
     override fun onRefresh() {
         Handler().postDelayed({
-            navigate(currentTab)
+            navigate(currentTab, true)
         }, 1000)
     }
 
     override fun retryNetwork() {
-
+       onRefresh()
     }
 }

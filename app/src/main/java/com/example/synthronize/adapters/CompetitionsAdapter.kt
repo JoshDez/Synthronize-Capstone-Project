@@ -1,11 +1,14 @@
 package com.example.synthronize.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.synthronize.CreateCompetition
+import com.example.synthronize.ViewCompetition
 import com.example.synthronize.databinding.ItemCompetitionBinding
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CompetitionModel
@@ -39,10 +42,15 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
         fun bind(model: CompetitionModel){
             competitionModel = model
             binding.competitionNameTV.text = competitionModel.competitionName
-            binding.descriptionTV.text = competitionModel.instruction
+            binding.descriptionTV.text = competitionModel.description
             binding.statusTV.text = DateAndTimeUtil().formatTimestampToDate(competitionModel.deadline)
-            binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(competitionModel.createdTimestamp)
             binding.rewardsTV.text = competitionModel.rewards
+
+            binding.viewCompetitionBtn.setOnClickListener {
+                val intent = Intent(context, ViewCompetition::class.java)
+                intent.putExtra("competitionId", competitionModel.competitionId)
+                context.startActivity(intent)
+            }
 
         }
     }
