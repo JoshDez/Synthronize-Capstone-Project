@@ -258,7 +258,6 @@ class EditProfile : AppCompatActivity() {
                 binding.birthdayEdtTxt.setText("${selectedMonth + 1}/$selectedDay/$selectedYear")
 
             }, calYear, calMonth, calDay).show()
-
         }
     }
     private fun bindUsernameEdtTxtTextWatcher(currentUsername: String){

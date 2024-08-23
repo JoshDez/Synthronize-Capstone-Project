@@ -42,6 +42,17 @@ class DateAndTimeUtil{
         return dateFormat.format(date)
     }
 
+    fun convertDateToTimestamp(dateString:String): Timestamp{
+        // Define the date format
+        val sdf = SimpleDateFormat("MM/dd/yyyy", Locale.US)
+
+        // Parse the string to a Date object
+        val date: Date? = sdf.parse(dateString)
+
+        // Convert Date to Firebase Timestamp
+        return date?.let { Timestamp(it) }!!
+    }
+
     fun formatBirthDate(inputDate: String): String {
         val inputFormat = SimpleDateFormat("M/d/yy", Locale.US)
         val outputFormat = SimpleDateFormat("MMMM d, yyyy", Locale.US)
@@ -50,8 +61,6 @@ class DateAndTimeUtil{
     }
 
     //TIME
-
-
     fun isCurrentTimestampOlderThanMinutes(timestamp: Timestamp, minutes: Long): Boolean {
         // Get the current Firebase Timestamp
         val currentTimestamp = Timestamp.now()

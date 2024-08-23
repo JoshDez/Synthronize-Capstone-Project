@@ -123,30 +123,100 @@
 
             <Space
                 android:layout_width="match_parent"
+                android:layout_height="40dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/light_teal"
+                android:textSize="15sp"
+                android:text="Competition Rewards"/>
+
+            <EditText
+                android:id="@+id/competitionRewardsEdtTxt"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/light_teal"
+                android:contentDescription="@string/community_description"
+                android:paddingStart="10dp"
+                android:singleLine="false"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
                 android:layout_height="35dp"/>
 
-            <LinearLayout
-                android:id="@+id/instructionsLayout"
-                android:orientation="vertical"
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/light_teal"
+                android:textSize="14sp"
+                android:text="Deadline"/>
+            <EditText
+                android:id="@+id/deadlineEdtTxt"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_teal"
+                android:focusable="false"
+                android:editable="false"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:textAlignment="center"
+                android:hint="Tap to set deadline"
+                android:textColorHint="@color/light_teal"
+                android:contentDescription="deadline"
+                android:paddingStart="10dp"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp"/>
 
-            </LinearLayout>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="35dp"/>
 
-            <com.google.android.material.button.MaterialButton
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/light_teal"
+                android:textSize="15sp"
+                android:text="Instructions"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/instructionsRV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ImageButton
                 android:id="@+id/addInstructionBtn"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:hapticFeedbackEnabled="true"
-                android:text="Add Instruction"
+                android:src="@drawable/baseline_add_24"
+                android:background="@color/light_teal"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                app:backgroundTint="@color/teal"/>
+                app:tint = "@color/light_teal"
+                app:backgroundTint="@color/teal2"/>
 
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
         </LinearLayout>
 
     </ScrollView>
