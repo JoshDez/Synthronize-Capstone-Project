@@ -49,9 +49,9 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
             binding.viewCompetitionBtn.setOnClickListener {
                 val intent = Intent(context, ViewCompetition::class.java)
                 intent.putExtra("competitionId", competitionModel.competitionId)
+                intent.putExtra("communityId", competitionModel.communityId)
                 context.startActivity(intent)
             }
-
         }
     }
 }

@@ -9,6 +9,7 @@ data class CompetitionModel (
     val rewards: String = "",
     val ownerId:String = "",
     val instruction:HashMap<String, List<String>> = hashMapOf(),
+    val communityId:String = "",
     val deadline:Timestamp = Timestamp.now(),
     //HashMap<userID, filename of submission>
     val contestants:HashMap<String, String> = hashMapOf(),

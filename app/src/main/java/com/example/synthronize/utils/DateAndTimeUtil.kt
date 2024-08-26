@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 class DateAndTimeUtil{
 
     //Time ago since timestamp
-    fun getTimeAgo(timestamp: Timestamp): String {
+    fun getTimeAgo(timestamp: Timestamp, isShortened:Boolean = true): String {
         val now = System.currentTimeMillis()
         val past = timestamp.toDate().time
 
@@ -24,14 +24,26 @@ class DateAndTimeUtil{
         val months = days / 30
         val years = days / 365
 
-        return when {
-            seconds < 60 -> "${seconds}s"
-            minutes < 60 -> "${minutes}m"
-            hours < 24 -> "${hours}h"
-            days < 7 -> "${days}d"
-            weeks < 4 -> "${weeks}w"
-            months < 12 -> "${months}mo"
-            else -> "${years}yr"
+        if (isShortened){
+            return when {
+                seconds < 60 -> "${seconds}s"
+                minutes < 60 -> "${minutes}m"
+                hours < 24 -> "${hours}h"
+                days < 7 -> "${days}d"
+                weeks < 4 -> "${weeks}w"
+                months < 12 -> "${months}mo"
+                else -> "${years}yr"
+            }
+        } else {
+            return when {
+                seconds < 60 -> "$seconds seconds ago"
+                minutes < 60 -> "$minutes months ago"
+                hours < 24 -> "$hours hours ago"
+                days < 7 -> "$days days ago"
+                weeks < 4 -> "$weeks weeks ago"
+                months < 12 -> "$months months ago"
+                else -> "$years years ago"
+            }
         }
     }
 

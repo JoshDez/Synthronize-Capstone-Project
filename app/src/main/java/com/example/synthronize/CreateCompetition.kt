@@ -132,6 +132,7 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
                     rewards = rewards,
                     ownerId = FirebaseUtil().currentUserUid(),
                     instruction = getInstructions(),
+                    communityId = communityId,
                     deadline = DateAndTimeUtil().convertDateToTimestamp(deadline),
                     createdTimestamp = Timestamp.now()
                 )
