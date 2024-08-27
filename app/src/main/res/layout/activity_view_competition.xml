@@ -189,7 +189,7 @@ The competition is simple: use machine learning to create a model that predicts 
 
                     <TextView
                         android:id="@+id/instructionsBtn"
-                        android:layout_width="wrap_content"
+                        android:layout_width="80dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:clickable="true"
@@ -202,7 +202,7 @@ The competition is simple: use machine learning to create a model that predicts 
 
                     <TextView
                         android:id="@+id/submissionsBtn"
-                        android:layout_width="wrap_content"
+                        android:layout_width="80dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:clickable="true"
@@ -213,7 +213,38 @@ The competition is simple: use machine learning to create a model that predicts 
                         android:textColor="@color/light_teal"
                         android:textSize="14sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/resultBtn"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:text="Results"
+                        android:textAlignment="center"
+                        android:textColor="@color/light_teal"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/resultsTypeTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:contentDescription="@string/community_name"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="Top 10"
+                    android:visibility="gone"
+                    android:textStyle="bold"
+                    android:textColor="@color/light_teal"
+                    android:textSize="14sp" />
+
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/instructionsRV"
@@ -223,6 +254,12 @@ The competition is simple: use machine learning to create a model that predicts 
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/submissionsRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/resultsRV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone" />
@@ -251,7 +288,7 @@ The competition is simple: use machine learning to create a model that predicts 
         android:padding="10dp">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/joinCompetitionBtn"
+            android:id="@+id/actionBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/text_shadow_white"

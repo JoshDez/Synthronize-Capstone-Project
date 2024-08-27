@@ -8,6 +8,7 @@ data class FileModel (
     val fileUrl:String = "",
     val ownerId:String = "",
     val shareFile:Boolean = true,
+    val forCompetition:Boolean = false,
     val caption:String = "",
     val communityId:String = "",
     val createdTimestamp:Timestamp = Timestamp.now()

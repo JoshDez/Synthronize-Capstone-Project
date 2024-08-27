@@ -22,7 +22,9 @@ class CreateUploadFile : AppCompatActivity() {
     private lateinit var selectedFileUri: Uri
     private val PICK_FILE_REQUEST = 1
     private var communityId = ""
+    private var competitionId = ""
     private var isSharedFiles = false
+    private var forCompetition = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +32,9 @@ class CreateUploadFile : AppCompatActivity() {
         setContentView(binding.root)
 
         communityId = intent.getStringExtra("communityId").toString()
+        competitionId = intent.getStringExtra("competitionId").toString()
         isSharedFiles = intent.getBooleanExtra("isSharedFiles", false)
+        forCompetition = intent.getBooleanExtra("forCompetition", false)
 
         AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.profileCIV)
 
@@ -65,12 +69,15 @@ class CreateUploadFile : AppCompatActivity() {
                             fileUrl = fileUrl,
                             ownerId = FirebaseUtil().currentUserUid(),
                             shareFile = isSharedFiles,
+                            forCompetition = forCompetition,
                             caption = caption,
                             communityId = communityId,
                             createdTimestamp = Timestamp.now(),
                         )
                         FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(file.id).set(fileModel).addOnSuccessListener {
                             Toast.makeText(this, "your file is successfully uploaded", Toast.LENGTH_SHORT).show()
+                            if (forCompetition)
+                                addFileUrlToSubmission(fileUrl)
                             this.finish()
                         }.addOnFailureListener {
                             Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
@@ -83,6 +90,13 @@ class CreateUploadFile : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun addFileUrlToSubmission(fileUrl:String) {
+        val updates = hashMapOf<String, Any>(
+            "contestants.${FirebaseUtil().currentUserUid()}" to fileUrl
+        )
+        FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).update(updates)
     }
 
     private fun openFileChooser() {
@@ -121,14 +135,11 @@ class CreateUploadFile : AppCompatActivity() {
         binding.fileLayout.visibility = View.VISIBLE
         binding.fileNameTV.text = fileName
         selectedFileUri = fileUri
-
         binding.removeFileBtn.setOnClickListener{
             binding.bottomToolbar.visibility = View.VISIBLE
             binding.fileLayout.visibility = View.GONE
             binding.fileNameTV.text = ""
         }
-
-
     }
 
     private fun getFileName(context: Context, uri: Uri): String? {

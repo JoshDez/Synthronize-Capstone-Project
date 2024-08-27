@@ -20,7 +20,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 
-class CompetitionsAdapter(private val context: Context, options: FirestoreRecyclerOptions<CompetitionModel>):
+class CompetitionsAdapter(private val context: Context, options: FirestoreRecyclerOptions<CompetitionModel>, private val isUserAdmin:Boolean):
     FirestoreRecyclerAdapter<CompetitionModel, CompetitionsAdapter.CompetitionViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompetitionViewHolder {
@@ -33,7 +33,7 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
         holder.bind(model)
     }
 
-    class CompetitionViewHolder(private val binding: ItemCompetitionBinding, private val context: Context,
+    inner class CompetitionViewHolder(private val binding: ItemCompetitionBinding, private val context: Context,
                                       private val inflater: LayoutInflater
     ): RecyclerView.ViewHolder(binding.root){
 
@@ -50,6 +50,7 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
                 val intent = Intent(context, ViewCompetition::class.java)
                 intent.putExtra("competitionId", competitionModel.competitionId)
                 intent.putExtra("communityId", competitionModel.communityId)
+                intent.putExtra("isUserAdmin", isUserAdmin)
                 context.startActivity(intent)
             }
         }

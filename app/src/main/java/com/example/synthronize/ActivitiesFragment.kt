@@ -32,7 +32,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
 
-class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
+class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String, private val isUserAdmin:Boolean) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
 
     private lateinit var binding: FragmentActivitiesBinding
     private lateinit var context: Context
@@ -192,7 +192,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             FirestoreRecyclerOptions.Builder<CompetitionModel>().setQuery(myQuery, CompetitionModel::class.java).build()
 
         binding.competitionsRV.layoutManager = LinearLayoutManager(context)
-        competitionsAdapter = CompetitionsAdapter(context, options)
+        competitionsAdapter = CompetitionsAdapter(context, options, isUserAdmin)
         binding.competitionsRV.adapter = competitionsAdapter
         competitionsAdapter.startListening()
     }
@@ -201,6 +201,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         binding.activitiesRefreshLayout.isRefreshing = true
 
         val myQuery: Query = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+            .whereEqualTo("forCompetition", false)
             .whereEqualTo("shareFile", false)
             .orderBy("createdTimestamp", Query.Direction.DESCENDING)
 
@@ -229,6 +230,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         binding.activitiesRefreshLayout.isRefreshing = true
 
         val myQuery: Query = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+            .whereEqualTo("forCompetition", false)
             .whereEqualTo("shareFile", true)
             .orderBy("createdTimestamp", Query.Direction.DESCENDING)
 

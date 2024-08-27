@@ -119,7 +119,6 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
                 isUserModerator = true
             }
         }
-
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -158,7 +157,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         }
         binding.activitiesBtn.setOnClickListener {
             //TODO: changes to buttons
-            replaceFragment(ActivitiesFragment(binding, communityId))
+            replaceFragment(ActivitiesFragment(binding, communityId, isUserAdmin))
             selectNavigation("activities")
         }
 
