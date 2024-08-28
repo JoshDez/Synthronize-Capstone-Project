@@ -31,7 +31,7 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int, model: UserModel) {
         totalItems += 1
-        holder.bind(model)
+        holder.bind(model, position)
     }
 
     fun getTotalItems():Int{
@@ -40,7 +40,7 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
 
     inner class UserViewHolder(private val binding: ItemProfileBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
 
-        fun bind(model: UserModel){
+        fun bind(model: UserModel, position: Int){
 
             AppUtil().setUserProfilePic(context,model.userID, binding.userCircleImageView)
             if (model.username.isNotEmpty())
@@ -50,9 +50,27 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                 binding.userFullNameTV.text = "${model.fullName} (You)"
             }else {
                 binding.userFullNameTV.text = model.fullName
-                if (purpose == "SelectUser"){
+                if (purpose == "SelectUser" || purpose == "SelectUser/All") {
                     //display check box if user is not the current user
                     binding.selectUserCB.visibility = View.VISIBLE
+                    for (userId in selectedUserList) {
+                        if (model.userID == userId) {
+                            binding.selectUserCB.isChecked = true
+                        }
+                    }
+                    binding.selectUserCB.setOnClickListener {
+                        if (binding.selectUserCB.isChecked) {
+                            listener.onItemClick(model.userID, true)
+                        } else {
+                            listener.onItemClick(model.userID, false)
+                        }
+                    }
+                } else if (purpose == "SelectUser/Top"){
+                    //same as select user but the position is visible
+                    binding.selectUserCB.visibility = View.VISIBLE
+                    binding.userPositionTV.visibility = View.VISIBLE
+                    binding.userPositionTV.text = "${position + 1}"
+
                     for (userId in selectedUserList){
                         if (model.userID == userId){
                             binding.selectUserCB.isChecked = true
@@ -65,7 +83,7 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                             listener.onItemClick(model.userID, false)
                         }
                     }
-                }else if(purpose == "PermitUser"){
+                } else if(purpose == "PermitUser"){
                     //displays accept and reject button
                     binding.acceptBtn.visibility = View.VISIBLE
                     binding.rejectBtn.visibility = View.VISIBLE
@@ -83,7 +101,6 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                     }
 
                 }else if (purpose == "BlockedUsers"){
-
                     binding.unbanBtn.visibility = View.VISIBLE
                     binding.unbanBtn.text = "Unblock"
                     binding.usernameTV.setOnClickListener {
@@ -96,7 +113,6 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                     }
 
                 }else if (purpose == "BannedUsers"){
-
                     binding.unbanBtn.visibility = View.VISIBLE
                     binding.unbanBtn.text = "Unban"
                     binding.usernameTV.setOnClickListener {
@@ -111,6 +127,11 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                     //display check box if user is not the current user
                     binding.userContainerRL.setOnClickListener{
                         listener.onItemClick(model.userID)
+                    }
+                    //displays position of the list if its rank
+                    if (purpose == "Top"){
+                        binding.userPositionTV.visibility = View.VISIBLE
+                        binding.userPositionTV.text = "${position + 1}"
                     }
                 }
             }

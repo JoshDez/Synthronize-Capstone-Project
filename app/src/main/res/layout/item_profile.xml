@@ -10,10 +10,22 @@
         android:layout_toLeftOf="@id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/userPositionTV"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:textSize="20dp"
+            android:contentDescription="@string/full_name"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="@color/light_teal"/>
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userCircleImageView"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:layout_toRightOf="@id/userPositionTV"
             android:src="@drawable/user_default_profile"/>
         <TextView
             android:id="@+id/userFullNameTV"
