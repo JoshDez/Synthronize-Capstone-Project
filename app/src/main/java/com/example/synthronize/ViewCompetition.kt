@@ -51,6 +51,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
     private var searchUserQuery = ""
     private var resultType = ""
     private var isUserAdmin = false
+    private var isCompetitionDue = false
     private var selectedUserList:ArrayList<String> = arrayListOf()
     private var submittedContestants:ArrayList<String> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,11 +87,21 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                 binding.descTV.text = competitionModel.description
                 binding.rewardsTV.text = competitionModel.rewards
                 binding.actionBtn.text = "Join Competition (${competitionModel.contestants.keys.size})"
+                binding.actionBtn.visibility = View.GONE
                 resultType = competitionModel.results.keys.toList()[0]
                 selectedUserList = ArrayList(competitionModel.results.getValue(resultType))
 
                 FirebaseUtil().targetUserDetails(competitionModel.ownerId).get().addOnSuccessListener {
                     binding.hostNameTV.text = "created by ${it.getString("fullName")}"
+                }
+
+                DateAndTimeUtil().isTimestampDue(competitionModel.deadline){ isDue,daysLeft ->
+                    isCompetitionDue = isDue
+                    if (isCompetitionDue){
+                        binding.remainingTimeTV.text = "The competition has ended"
+                    } else {
+                        binding.remainingTimeTV.text = "$daysLeft days before it closes"
+                    }
                 }
 
                 navigate(currentTab)
@@ -110,33 +121,38 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
                 //Bind action button
                 if (isUserAdmin){
+                    binding.actionBtn.visibility = View.VISIBLE
                     binding.actionBtn.text = "Select Winner"
                     binding.actionBtn.setOnClickListener {
                         openSelectUserDialog()
                     }
                 } else if (!AppUtil().isIdOnList(competitionModel.contestants.keys, FirebaseUtil().currentUserUid())){
-                    binding.actionBtn.setOnClickListener {
-                        val updates = hashMapOf<String, Any>(
-                            "contestants.${FirebaseUtil().currentUserUid()}" to ""
-                        )
-                        FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).update(updates).addOnSuccessListener {
-                            onRefresh()
+                    if (!isCompetitionDue){
+                        binding.actionBtn.visibility = View.VISIBLE
+                        binding.actionBtn.setOnClickListener {
+                            val updates = hashMapOf<String, Any>(
+                                "contestants.${FirebaseUtil().currentUserUid()}" to ""
+                            )
+                            FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).update(updates).addOnSuccessListener {
+                                onRefresh()
+                            }
                         }
                     }
                 } else {
-                    binding.actionBtn.visibility = View.GONE
-                    if (competitionModel.contestants.getValue(FirebaseUtil().currentUserUid()).isEmpty()){
-                        binding.actionBtn.text = "Submit File"
+                    if (!isCompetitionDue){
                         binding.actionBtn.visibility = View.VISIBLE
-                        binding.actionBtn.setOnClickListener {
-                            val intent = Intent(this, CreateUploadFile::class.java)
-                            intent.putExtra("communityId", communityId)
-                            intent.putExtra("competitionId", competitionId)
-                            intent.putExtra("forCompetition", true)
-                            startActivity(intent)
+                        if (competitionModel.contestants.getValue(FirebaseUtil().currentUserUid()).isEmpty()){
+                            binding.actionBtn.text = "Submit File"
+                            binding.actionBtn.setOnClickListener {
+                                val intent = Intent(this, CreateUploadFile::class.java)
+                                intent.putExtra("communityId", communityId)
+                                intent.putExtra("competitionId", competitionId)
+                                intent.putExtra("forCompetition", true)
+                                startActivity(intent)
+                            }
+                        } else {
+                            binding.actionBtn.visibility = View.GONE
                         }
-                    } else {
-                        binding.actionBtn.visibility = View.GONE
                     }
                 }
                 binding.viewCompetitionRefresh.isRefreshing = false
@@ -179,6 +195,8 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
     }
 
     private fun setupResults() {
+        binding.viewCompetitionRefresh.isRefreshing = true
+
         //displays result type
         if (resultType == "All"){
             binding.resultsTypeTV.text = "Winners"
@@ -193,10 +211,23 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             val options: FirestoreRecyclerOptions<UserModel> =
                 FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
 
+            // Add a listener to handle success or failure of the query
+            myQuery.addSnapshotListener { _, e ->
+                if (e != null) {
+                    // Handle the error here (e.g., log the error or show a message to the user)
+                    Log.e("Firestore Error", "Error while fetching data", e)
+                    return@addSnapshotListener
+                } else {
+                    binding.viewCompetitionRefresh.isRefreshing = false
+                }
+            }
+
             binding.resultsRV.layoutManager = LinearLayoutManager(this)
             resultsAdapter = SearchUserAdapter(this, options, this, "Top")
             binding.resultsRV.adapter = resultsAdapter
             resultsAdapter.startListening()
+        } else {
+            binding.viewCompetitionRefresh.isRefreshing = false
         }
     }
 
@@ -228,6 +259,8 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             submissionsAdapter = CompetitionFilesAdapter(this, options)
             binding.submissionsRV.adapter = submissionsAdapter
             submissionsAdapter.startListening()
+        } else {
+            binding.viewCompetitionRefresh.isRefreshing = false
         }
     }
 

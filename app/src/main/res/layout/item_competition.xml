@@ -40,7 +40,6 @@
             android:gravity="center"
             android:contentDescription="@string/username"
             android:textColor="@color/light_teal"
-            android:text="Titanic Algorithm Competition"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -75,24 +74,39 @@
             android:layout_marginBottom="16dp"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
+            android:autoLink="web"
+            android:textColorLink="@color/light_blue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="The Titanic algorithm competition, originally hosted by Kaggle, is a popular introductory data science challenge. The goal of the competition is to predict which passengers survived the sinking of the RMS Titanic using a variety of factors such as age, gender, passenger class, and socio-economic status."
             android:contentDescription="@string/feed_description"
             android:textColor="@color/light_teal" />
 
-        <TextView
-            android:id="@+id/rewardsTV"
-            android:layout_width="250dp"
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
-            android:contentDescription="@string/username"
-            android:textColor="@color/light_teal"
-            android:text="Rewards: +50 points in exams"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/reward_icon" />
+
+            <TextView
+                android:id="@+id/rewardsTV"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:contentDescription="@string/community_name"
+                android:padding="5dp"
+                android:textColor="@color/light_teal"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <RelativeLayout
             android:orientation="horizontal"
@@ -100,18 +114,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/statusTV"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"
-                android:layout_width="wrap_content"
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Status: On going"
-                android:textSize="16sp"
-                android:contentDescription="@string/feed_description"
-                android:textColor="@color/light_teal" />
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_toLeftOf="@id/viewCompetitionBtn"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/baseline_time_24" />
+
+                <TextView
+                    android:id="@+id/remainingTimeTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:contentDescription="@string/community_name"
+                    android:padding="5dp"
+                    android:textColor="@color/light_teal"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/viewCompetitionBtn"

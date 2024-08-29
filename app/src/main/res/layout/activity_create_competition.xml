@@ -177,6 +177,72 @@
 
             <Space
                 android:layout_width="match_parent"
+                android:layout_height="35dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/light_teal"
+                android:textSize="14sp"
+                android:text="Result Type"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="35dp" />
+
+            <RadioButton
+                android:id="@+id/allRB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="All Correct Answers"
+                android:textColor="@color/light_teal"
+                android:checked="true"
+                android:textSize="16sp"
+                app:buttonTint="@color/light_teal" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/topRB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="Top Answers"
+                    android:textColor="@color/light_teal"
+                    android:textSize="16sp"
+                    app:buttonTint="@color/light_teal" />
+
+                <EditText
+                    android:id="@+id/topEdtTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:backgroundTint="@color/light_teal"
+                    android:contentDescription="@string/community_description"
+                    android:paddingStart="10dp"
+                    android:hint="how many top answers?"
+                    android:inputType="number"
+                    android:textColorHint="@color/less_saturated_light_teal"
+                    android:singleLine="false"
+                    android:textColor="@color/light_teal"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+
+
+            <Space
+                android:layout_width="match_parent"
                 android:layout_height="35dp"/>
 
 

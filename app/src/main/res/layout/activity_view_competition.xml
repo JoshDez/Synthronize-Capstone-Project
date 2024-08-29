@@ -78,7 +78,6 @@
                         android:contentDescription="@string/community_name"
                         android:gravity="center_vertical"
                         android:padding="5dp"
-                        android:text="Ze New Community"
                         android:textColor="@color/light_teal"
                         android:textSize="16dp" />
 
@@ -92,7 +91,6 @@
                         android:contentDescription="@string/community_name"
                         android:gravity="center_vertical"
                         android:padding="5dp"
-                        android:text="2 days ago"
                         android:textColor="@color/light_teal"
                         android:textSize="12dp" />
 
@@ -108,7 +106,6 @@
                     android:contentDescription="@string/community_name"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Titanic Algorithm Competition"
                     android:textColor="@color/light_teal"
                     android:textSize="20sp" />
 
@@ -122,7 +119,6 @@
                     android:contentDescription="@string/community_name"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="host by Josh"
                     android:textColor="@color/light_teal"
                     android:textSize="14sp" />
 
@@ -134,14 +130,11 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="20dp"
+                    android:autoLink="web"
+                    android:textColorLink="@color/light_blue"
                     android:contentDescription="@string/community_name"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="This is the legendary Titanic ML competition – the best, first challenge for you to dive into ML competitions and familiarize yourself with how the Kaggle platform works.
-
-If you want to talk with other users about this competition, come join our Discord! We've got channels for competitions, job postings and career discussions, resources, and socializing with your fellow data scientists. Follow the link here: https://discord.gg/kaggle
-
-The competition is simple: use machine learning to create a model that predicts which passengers survived the Titanic shipwreck."
                     android:textColor="@color/light_teal"
                     android:textSize="14sp" />
 
@@ -166,7 +159,32 @@ The competition is simple: use machine learning to create a model that predicts 
                         android:layout_marginStart="15dp"
                         android:contentDescription="@string/community_name"
                         android:padding="5dp"
-                        android:text="Xbox 360"
+                        android:textColor="@color/light_teal"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/baseline_time_24" />
+
+                    <TextView
+                        android:id="@+id/remainingTimeTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:contentDescription="@string/community_name"
+                        android:padding="5dp"
                         android:textColor="@color/light_teal"
                         android:textSize="14sp"
                         android:textStyle="bold" />

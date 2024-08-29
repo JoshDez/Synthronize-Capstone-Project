@@ -5,9 +5,11 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.CreateCompetition
+import com.example.synthronize.R
 import com.example.synthronize.ViewCompetition
 import com.example.synthronize.databinding.ItemCompetitionBinding
 import com.example.synthronize.model.ChatroomModel
@@ -26,15 +28,14 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompetitionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemCompetitionBinding.inflate(inflater, parent, false)
-        return CompetitionViewHolder(binding, context, inflater)
+        return CompetitionViewHolder(binding, context)
     }
 
     override fun onBindViewHolder(holder: CompetitionViewHolder, position: Int, model: CompetitionModel) {
         holder.bind(model)
     }
 
-    inner class CompetitionViewHolder(private val binding: ItemCompetitionBinding, private val context: Context,
-                                      private val inflater: LayoutInflater
+    inner class CompetitionViewHolder(private val binding: ItemCompetitionBinding, private val context: Context
     ): RecyclerView.ViewHolder(binding.root){
 
         private lateinit var competitionModel: CompetitionModel
@@ -43,8 +44,16 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
             competitionModel = model
             binding.competitionNameTV.text = competitionModel.competitionName
             binding.descriptionTV.text = competitionModel.description
-            binding.statusTV.text = DateAndTimeUtil().formatTimestampToDate(competitionModel.deadline)
             binding.rewardsTV.text = competitionModel.rewards
+
+            DateAndTimeUtil().isTimestampDue(competitionModel.deadline){isDue, daysLeft ->
+                if (isDue){
+                    binding.remainingTimeTV.text = "The competition has ended"
+                } else {
+                    binding.remainingTimeTV.text = "$daysLeft days before it closes"
+                }
+
+            }
 
             binding.viewCompetitionBtn.setOnClickListener {
                 val intent = Intent(context, ViewCompetition::class.java)

@@ -28,6 +28,7 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
     private val instructionMap:HashMap<String, InstructionModel> = HashMap()
     private var idCtr = 0
     private var communityId = ""
+    private var resultType = "All"
     //from adapter
     private var selectedKey:String = ""
     private var selectedInstruction:String = ""
@@ -94,6 +95,20 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
             }
         }
 
+        binding.allRB.setOnClickListener {
+            if (binding.allRB.isChecked){
+                binding.topRB.isChecked = false
+                resultType = "All"
+            }
+        }
+
+        binding.topRB.setOnClickListener {
+            if (binding.topRB.isChecked){
+                binding.allRB.isChecked = false
+                resultType = "Top"
+            }
+        }
+
         binding.postBtn.setOnClickListener {
             uploadCompetition()
         }
@@ -104,6 +119,7 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
         val competitionDesc = binding.competitionDescEdtTxt.text.toString()
         val rewards = binding.competitionRewardsEdtTxt.text.toString()
         val deadline = binding.deadlineEdtTxt.text.toString()
+        val winnersLimit = binding.topEdtTxt.text.toString()
         val instructionList = getInstructions()
 
         if (competitionName.isEmpty() || competitionName.length < 3){
@@ -120,11 +136,18 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
             Toast.makeText(this, "The competition rewards contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (deadline.isEmpty()){
             Toast.makeText(this, "Please select the deadline of the competition", Toast.LENGTH_SHORT).show()
+        }  else if ((resultType == "Top" && winnersLimit.isEmpty()) || (resultType == "Top" && winnersLimit.toInt() < 1)){
+            Toast.makeText(this, "Result type should at least have 1 or more winners", Toast.LENGTH_SHORT).show()
         } else if (instructionList.isEmpty()){
             Toast.makeText(this, "Please provide instructions", Toast.LENGTH_SHORT).show()
         } else {
             var competitionModel = CompetitionModel()
             FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).add(competitionModel).addOnSuccessListener {
+
+                if (resultType == "Top"){
+                    resultType = "$resultType/$winnersLimit"
+                }
+
                 competitionModel = CompetitionModel(
                     competitionId = it.id,
                     competitionName = competitionName,
@@ -133,9 +156,11 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
                     ownerId = FirebaseUtil().currentUserUid(),
                     instruction = getInstructions(),
                     communityId = communityId,
+                    results = hashMapOf(resultType to listOf()),
                     deadline = DateAndTimeUtil().convertDateToTimestamp(deadline),
                     createdTimestamp = Timestamp.now()
                 )
+
                 FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(it.id).set(competitionModel).addOnSuccessListener {
                     Toast.makeText(this, "The competition has been uploaded", Toast.LENGTH_SHORT).show()
                     this.finish()

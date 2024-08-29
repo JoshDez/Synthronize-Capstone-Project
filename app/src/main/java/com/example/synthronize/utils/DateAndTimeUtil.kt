@@ -72,6 +72,27 @@ class DateAndTimeUtil{
         return outputFormat.format(date)
     }
 
+    //Checks if a given Firebase Timestamp is due compared to the current time.
+    fun isTimestampDue(firebaseTimestamp: Timestamp, callback: (Boolean, Long) -> Unit) {
+        // Get the current time in milliseconds
+        val currentTime = System.currentTimeMillis()
+
+        // Get the provided timestamp time in milliseconds
+        val providedTime = firebaseTimestamp.toDate().time
+
+        // Calculate the time difference in milliseconds
+        val timeDifference = providedTime - currentTime
+
+        // Convert time difference to days
+        val daysLeft = TimeUnit.MILLISECONDS.toDays(timeDifference)
+
+        // Determine if the timestamp is due
+        val isDue = timeDifference <= 0
+
+        // Invoke the callback with the result
+        callback(isDue, daysLeft)
+    }
+
     //TIME
     fun isCurrentTimestampOlderThanMinutes(timestamp: Timestamp, minutes: Long): Boolean {
         // Get the current Firebase Timestamp
