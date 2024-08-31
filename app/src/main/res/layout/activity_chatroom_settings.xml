@@ -34,221 +34,240 @@
         android:background="@color/light_teal"
         app:dividerColor="@color/light_teal" />
 
-    <ScrollView
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/chatroomRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_below="@+id/divider1"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/divider1">
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/chatroomCIV"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:layout_marginTop="40dp"
-                android:layout_centerInParent="true"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="center"
-                android:src="@drawable/community_default_profile"/>
-
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/editChatroomCIV"
-                android:visibility="gone"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:layout_marginTop="40dp"
-                android:layout_centerInParent="true"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="center"
-                android:src="@drawable/community_default_profile"/>
-
-            <Space
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/chatroomCIV"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="40dp"
+                    android:src="@drawable/community_default_profile" />
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/editChatroomCIV"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="40dp"
+                    android:src="@drawable/community_default_profile"
+                    android:visibility="gone" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" />
 
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/chatroomNameTV"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:textAlignment="center"
-                            android:backgroundTint="@color/light_teal"
                             android:layout_marginStart="20dp"
-                            android:paddingStart="10dp"
                             android:layout_marginEnd="20dp"
                             android:layout_weight="1"
-                            android:paddingEnd="10dp"
-                            android:textColor="@color/light_teal"
+                            android:backgroundTint="@color/light_teal"
                             android:contentDescription="@string/full_name"
-                            android:textSize="20sp"/>
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/light_teal"
+                            android:textSize="20sp" />
 
 
                         <EditText
                             android:id="@+id/chatroomNameEdtTxt"
-                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:backgroundTint="@color/light_teal"
                             android:layout_marginStart="20dp"
                             android:layout_marginEnd="20dp"
-                            android:paddingStart="10dp"
                             android:layout_weight="1"
+                            android:backgroundTint="@color/light_teal"
+                            android:contentDescription="@string/full_name"
+                            android:paddingStart="10dp"
                             android:paddingEnd="10dp"
                             android:textColor="@color/light_teal"
-                            android:contentDescription="@string/full_name"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="50dp"/>
-
-            <LinearLayout
-                android:id="@+id/chatroomMenuLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:id="@+id/divider3"
+                <Space
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:layout_below="@id/mainToolbar"
-                    android:background="@color/light_teal"
-                    app:dividerColor="@color/light_teal" />
+                    android:layout_height="50dp" />
+
+                <LinearLayout
+                    android:id="@+id/chatroomMenuLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/divider3"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_below="@id/mainToolbar"
+                        android:background="@color/light_teal"
+                        app:dividerColor="@color/light_teal" />
 
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/viewMembersBtn"
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/addMembersBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/dark_teal"
+                        android:text="Add Members"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/viewMembersBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/dark_teal"
+                        android:text="View Members"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/viewProfileBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/dark_teal"
+                        android:text="View Profile"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/editChatroomDetailsBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/dark_teal"
+                        android:text="Edit Chatroom Details"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/leaveConversationBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/darkish_red"
+                        android:text="Leave Conversation"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/deleteTextChannelBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/darkish_red"
+                        android:text="Delete Text Channel"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp" />
+
+                <LinearLayout
+                    android:id="@+id/editChatroomButtonsLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/dark_teal"
-                    android:text="View Members"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/viewProfileBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/dark_teal"
-                    android:text="View Profile"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/editChatroomDetailsBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/dark_teal"
-                    android:text="Edit Chatroom Details"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/saveBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/teal"
+                        android:text="Save Chatroom Details"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.494"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/confirmPassEdtTxt" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/leaveConversationBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/darkish_red"
-                    android:text="Leave Conversation"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/deleteTextChannelBtn"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/cancelBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/red"
+                        android:text="Cancel"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.494"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/confirmPassEdtTxt" />
+                </LinearLayout>
+
+                <Space
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/darkish_red"
-                    android:text="Delete Text Channel"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
+                    android:layout_height="50dp" />
             </LinearLayout>
-
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="60dp"/>
-
-            <LinearLayout
-                android:id="@+id/editChatroomButtonsLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/saveBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:backgroundTint="@color/teal"
-                    android:text="Save Chatroom Details"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="15dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.494"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/confirmPassEdtTxt" />
-
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/cancelBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:backgroundTint="@color/red"
-                    android:text="Cancel"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="15dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.494"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/confirmPassEdtTxt" />
-            </LinearLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="50dp"/>
-        </LinearLayout>
-    </ScrollView>
-
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </RelativeLayout>

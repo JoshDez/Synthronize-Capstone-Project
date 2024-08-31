@@ -5,35 +5,47 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivityChatroomSettingsBinding
+import com.example.synthronize.databinding.DialogSelectUserBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.ChatroomModel
-import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.toObject
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
-class ChatroomSettings : AppCompatActivity() {
+class ChatroomSettings : AppCompatActivity(), OnItemClickListener, OnRefreshListener {
 
     private lateinit var binding:ActivityChatroomSettingsBinding
     private lateinit var chatroomModel: ChatroomModel
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedImage:Uri
+    private lateinit var dialogPlusBinding:DialogSelectUserBinding
+    private lateinit var selectedUsersAdapter:SearchUserAdapter
+    private lateinit var searchUserAdapter:SearchUserAdapter
+    private var selectedUserList:ArrayList<String> = arrayListOf()
+    private var searchUserQuery = ""
     private var chatroomName = ""
     private var receiverUid = ""
     private var chatroomType = ""
@@ -56,17 +68,9 @@ class ChatroomSettings : AppCompatActivity() {
         //for community chats
         communityId = intent.getStringExtra("communityId").toString()
 
-        FirebaseUtil().retrieveChatRoomReference(chatroomId).get().addOnSuccessListener {
-            chatroomModel = it.toObject(ChatroomModel::class.java)!!
-            bindChatroomDetails()
-            binding.backBtn.setOnClickListener {
-                onBackPressed()
-            }
-        }.addOnFailureListener {
-            binding.backBtn.setOnClickListener {
-                onBackPressed()
-            }
-        }
+        bindChatroomSettings()
+
+        binding.chatroomRefreshLayout.setOnRefreshListener(this)
 
         //For Creating Group Chat
         //Launcher for user profile pic and user cover pic
@@ -83,9 +87,23 @@ class ChatroomSettings : AppCompatActivity() {
                 }
             }
         }
+    }
 
-
-
+    private fun bindChatroomSettings(){
+        binding.chatroomRefreshLayout.isRefreshing = true
+        FirebaseUtil().retrieveChatRoomReference(chatroomId).get().addOnSuccessListener {
+            chatroomModel = it.toObject(ChatroomModel::class.java)!!
+            bindChatroomDetails()
+            binding.backBtn.setOnClickListener {
+                onBackPressed()
+            }
+            binding.chatroomRefreshLayout.isRefreshing = false
+        }.addOnFailureListener {
+            binding.backBtn.setOnClickListener {
+                onBackPressed()
+            }
+            binding.chatroomRefreshLayout.isRefreshing = false
+        }
     }
 
     override fun onBackPressed() {
@@ -119,6 +137,10 @@ class ChatroomSettings : AppCompatActivity() {
                     AppUtil().setGroupChatProfilePic(this, chatroomModel.chatroomProfileUrl, binding.editChatroomCIV)
                 }
                 binding.chatroomNameTV.text = chatroomModel.chatroomName
+                binding.addMembersBtn.visibility = View.VISIBLE
+                binding.addMembersBtn.setOnClickListener {
+                    openAddMembersDialog()
+                }
                 binding.viewMembersBtn.visibility = View.VISIBLE
                 binding.viewMembersBtn.setOnClickListener {
                     val intent = Intent(this, Members::class.java)
@@ -286,4 +308,156 @@ class ChatroomSettings : AppCompatActivity() {
         }
     }
 
+
+    private fun openAddMembersDialog() {
+        dialogPlusBinding = DialogSelectUserBinding.inflate(layoutInflater)
+        val dialogPlus = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogPlusBinding.root))
+            .setExpanded(false)
+            .create()
+
+        searchUsers()
+
+        dialogPlusBinding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                searchUserQuery = dialogPlusBinding.searchEdtTxt.text.toString()
+                searchUsers()
+            }
+        })
+
+        setupSelectedUsersRV()
+
+        dialogPlusBinding.backBtn.setOnClickListener {
+            dialogPlus.dismiss()
+        }
+
+        dialogPlusBinding.assignBtn.text = "Add Members"
+        dialogPlusBinding.assignBtn.setOnClickListener {
+            if (selectedUserList.isNotEmpty()){
+                FirebaseUtil().retrieveChatRoomReference(chatroomId).get().addOnSuccessListener {
+                    val currentChatroom = it.toObject(ChatroomModel::class.java)!!
+                    val currentMembers = ArrayList(currentChatroom.userIdList)
+                    for (uid in selectedUserList){
+                        if (!currentMembers.contains(uid)){
+                            currentMembers.add(uid)
+                        }
+                    }
+                    FirebaseUtil().retrieveAllChatRoomReferences().document(chatroomId).update("userIdList", currentMembers).addOnSuccessListener {
+                        Toast.makeText(this, "successfully added users", Toast.LENGTH_SHORT).show()
+                        selectedUserList = arrayListOf()
+                        searchUserQuery = ""
+                        dialogPlus.dismiss()
+                        onRefresh()
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Please select users", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        Handler().postDelayed({
+            dialogPlus.show()
+        }, 500)
+    }
+
+
+    //For Select User Dialog
+    private fun searchUsers() {
+        if (searchUserQuery.isNotEmpty()){
+            if (searchUserQuery[0] == '@'){
+                //search for username
+                val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                    .whereNotIn("userID", chatroomModel.userIdList)
+                    .whereGreaterThanOrEqualTo("username", searchUserQuery.removePrefix("@"))
+
+                val options: FirestoreRecyclerOptions<UserModel> =
+                    FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+                //set up searched users recycler view
+                dialogPlusBinding.searchedUsersRV.layoutManager = LinearLayoutManager(this)
+                searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUserList)
+                dialogPlusBinding.searchedUsersRV.adapter = searchUserAdapter
+                searchUserAdapter.startListening()
+
+            } else {
+                //search for fullName
+                val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                    .whereNotIn("userID", chatroomModel.userIdList)
+                    .whereGreaterThanOrEqualTo("fullName", searchUserQuery)
+
+                val options: FirestoreRecyclerOptions<UserModel> =
+                    FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+                //set up searched users recycler view
+                dialogPlusBinding.searchedUsersRV.layoutManager = LinearLayoutManager(this)
+                searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUserList)
+                dialogPlusBinding.searchedUsersRV.adapter = searchUserAdapter
+                searchUserAdapter.startListening()
+            }
+        } else {
+            //query all users
+            val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                .whereNotIn("userID", chatroomModel.userIdList)
+
+            val options: FirestoreRecyclerOptions<UserModel> =
+                FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+            //set up searched users recycler view
+            dialogPlusBinding.searchedUsersRV.layoutManager = LinearLayoutManager(this)
+            searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUserList)
+            dialogPlusBinding.searchedUsersRV.adapter = searchUserAdapter
+            searchUserAdapter.startListening()
+        }
+    }
+
+    //For Select User Dialog
+    private fun setupSelectedUsersRV(){
+        if (selectedUserList.isNotEmpty()){
+            dialogPlusBinding.selectedUsersLayout.visibility = View.VISIBLE
+            dialogPlusBinding.selectedUsersTV.text = "Selected Users (${selectedUserList.size})"
+
+            val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                .whereIn("userID", selectedUserList)
+
+            val options: FirestoreRecyclerOptions<UserModel> =
+                FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+            //set up searched users recycler view
+            dialogPlusBinding.selectedUsersRV.layoutManager = LinearLayoutManager(this)
+            selectedUsersAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUserList)
+            dialogPlusBinding.selectedUsersRV.adapter = selectedUsersAdapter
+            selectedUsersAdapter.startListening()
+
+        } else {
+            dialogPlusBinding.selectedUsersLayout.visibility = View.GONE
+        }
+    }
+
+    override fun onItemClick(id: String, isChecked: Boolean) {
+        //Interface for select user adapter
+        if (isChecked) {
+            //add user to selected user list
+            selectedUserList.add(id)
+            setupSelectedUsersRV()
+            searchUsers()
+        } else {
+            //remove user to selected user list
+            selectedUserList.remove(id)
+            setupSelectedUsersRV()
+            searchUsers()
+        }
+    }
+
+    override fun onRefresh() {
+        Handler().postDelayed({
+            bindChatroomSettings()
+        }, 1000)
+    }
+
+    override fun onResume() {
+        onRefresh()
+        super.onResume()
+    }
 }
