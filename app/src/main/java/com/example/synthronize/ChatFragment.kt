@@ -181,8 +181,8 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
 
         val query:Query = FirebaseUtil().retrieveAllChatRoomReferences()
             .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
-            .whereIn("chatroomType", forInbox)
             .whereNotEqualTo("lastMessage", "")
+            .whereIn("chatroomType", forInbox)
             .orderBy("lastMsgTimestamp", Query.Direction.DESCENDING)
 
         // Add a listener to handle success or failure of the query

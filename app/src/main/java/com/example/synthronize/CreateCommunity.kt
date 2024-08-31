@@ -39,6 +39,7 @@ import com.orhanobut.dialogplus.ViewHolder
 class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding:ActivityCreateCommunityBinding
     private lateinit var searchUserAdapter:SearchUserAdapter
+    private lateinit var selectedUsersAdapter:SearchUserAdapter
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedCommunityProfileUri: Uri
     private lateinit var selectedCommunityBannerUri: Uri
@@ -46,6 +47,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     private var communityName: String = ""
     private var communityType: String = ""
     private var communityDesc: String = ""
+    private var searchUserQuery = ""
     private var selectedUsersList: ArrayList<String> = ArrayList()
     private var isCommunityProfile = true
 
@@ -180,8 +182,8 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                val name = binding.searchEdtTxt.text.toString()
-                searchUsers(name)
+                searchUserQuery = binding.searchEdtTxt.text.toString()
+                searchUsers()
             }
         })
 
@@ -353,19 +355,74 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
+    private fun setupSelectedUsersRV(){
+        if (selectedUsersList.isNotEmpty()){
 
-    private fun searchUsers(searchQuery:String){
-        val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
-            .whereGreaterThanOrEqualTo("fullName", searchQuery)
+            binding.selectedUsersLayout.visibility = View.VISIBLE
+            binding.selectedUsersTV.text = "Selected Users (${selectedUsersList.size})"
 
-        val options: FirestoreRecyclerOptions<UserModel> =
-            FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+            val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                .whereIn("userID", selectedUsersList)
 
-        //set up searched users recycler view
-        binding.searchedUsersRV.layoutManager = LinearLayoutManager(this)
-        searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUsersList)
-        binding.searchedUsersRV.adapter = searchUserAdapter
-        searchUserAdapter.startListening()
+            val options: FirestoreRecyclerOptions<UserModel> =
+                FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+            //set up searched users recycler view
+            binding.selectedUsersRV.layoutManager = LinearLayoutManager(this)
+            selectedUsersAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUsersList)
+            binding.selectedUsersRV.adapter = selectedUsersAdapter
+            selectedUsersAdapter.startListening()
+
+        } else {
+            binding.selectedUsersTV.text = "Selected Users (0)"
+            binding.selectedUsersLayout.visibility = View.GONE
+        }
+    }
+
+
+    private fun searchUsers(){
+        if (searchUserQuery.isNotEmpty()){
+            if (searchUserQuery[0] == '@'){
+                //search for username
+                val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                    .whereGreaterThanOrEqualTo("username", searchUserQuery.removePrefix("@"))
+
+                val options: FirestoreRecyclerOptions<UserModel> =
+                    FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+                //set up searched users recycler view
+                binding.searchedUsersRV.layoutManager = LinearLayoutManager(this)
+                searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUsersList)
+                binding.searchedUsersRV.adapter = searchUserAdapter
+                searchUserAdapter.startListening()
+
+            } else {
+                //search for fullName
+                val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                    .whereGreaterThanOrEqualTo("fullName", searchUserQuery)
+
+                val options: FirestoreRecyclerOptions<UserModel> =
+                    FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+                //set up searched users recycler view
+                binding.searchedUsersRV.layoutManager = LinearLayoutManager(this)
+                searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUsersList)
+                binding.searchedUsersRV.adapter = searchUserAdapter
+                searchUserAdapter.startListening()
+            }
+        } else {
+            //query all users
+            val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+
+            val options: FirestoreRecyclerOptions<UserModel> =
+                FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+            //set up searched users recycler view
+            binding.searchedUsersRV.layoutManager = LinearLayoutManager(this)
+            searchUserAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser", selectedUsersList)
+            binding.searchedUsersRV.adapter = searchUserAdapter
+            searchUserAdapter.startListening()
+        }
     }
 
     private fun isCommunityNameAvailable(name: String, callback: (Boolean) -> Unit) {
@@ -386,19 +443,19 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             //hides keyboard
             hideKeyboard()
             //create dialog
-            val dialogPlusBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+            val binding = DialogWarningMessageBinding.inflate(layoutInflater)
             val dialogPlus = DialogPlus.newDialog(this)
-                .setContentHolder(ViewHolder(dialogPlusBinding.root))
+                .setContentHolder(ViewHolder(binding.root))
                 .setGravity(Gravity.CENTER)
                 .setMargin(50, 700, 50, 700)
                 .create()
 
-            dialogPlusBinding.titleTV.text = "Exit Community Creation"
-            dialogPlusBinding.messageTV.text = "Do you want to exit Community Creation?"
-            dialogPlusBinding.yesBtn.setOnClickListener {
+            binding.titleTV.text = "Exit Community Creation"
+            binding.messageTV.text = "Do you want to exit Community Creation?"
+            binding.yesBtn.setOnClickListener {
                 super.onBackPressed()
             }
-            dialogPlusBinding.NoBtn.setOnClickListener {
+            binding.NoBtn.setOnClickListener {
                 dialogPlus.dismiss()
             }
             dialogPlus.show()
@@ -416,14 +473,18 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             .joinToString("")
     }
 
-    override fun onItemClick(uid: String, isChecked: Boolean) {
+    override fun onItemClick(id: String, isChecked: Boolean) {
         //Interface for select user adapter
         if (isChecked) {
             //add user to selected user list
-            selectedUsersList.add(uid)
+            selectedUsersList.add(id)
+            setupSelectedUsersRV()
+            searchUsers()
         } else {
             //remove user to selected user list
-            selectedUsersList.remove(uid)
+            selectedUsersList.remove(id)
+            setupSelectedUsersRV()
+            searchUsers()
         }
     }
     override fun onStart() {

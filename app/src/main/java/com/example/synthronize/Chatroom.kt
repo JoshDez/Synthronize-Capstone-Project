@@ -82,8 +82,19 @@ class Chatroom : AppCompatActivity() {
             }
         }
 
+        getChatroomIdForDM()
         createOrRetrieveChatroomModel()
         bindPostToBeSent()
+    }
+
+    private fun getChatroomIdForDM(){
+        if(chatroomType == "direct_message"){
+            if (FirebaseUtil().currentUserUid().hashCode() < receiverUid.hashCode()){
+                chatroomId = "${FirebaseUtil().currentUserUid()}-$receiverUid"
+            } else {
+                chatroomId = "$receiverUid-${FirebaseUtil().currentUserUid()}"
+            }
+        }
     }
 
     private fun bindPostToBeSent() {
@@ -131,15 +142,10 @@ class Chatroom : AppCompatActivity() {
     private fun createOrRetrieveChatroomModel(){
         FirebaseUtil().retrieveChatRoomReference(chatroomId).get().addOnCompleteListener {
             if (it.isSuccessful){
-                if (it.result?.exists() == false && chatroomType == "direct_message"){
+                if (!it.result.exists() && chatroomType == "direct_message"){
 
                     //get chatroom Id for DM
                     checkIfItsBlockedByUser()
-                    if (FirebaseUtil().currentUserUid().hashCode() < receiverUid.hashCode()){
-                        chatroomId = "${FirebaseUtil().currentUserUid()}-$receiverUid"
-                    } else {
-                        chatroomId = "$receiverUid-${FirebaseUtil().currentUserUid()}"
-                    }
 
                     //First chat in DM
                     chatroomModel = ChatroomModel(chatroomId,
@@ -152,7 +158,7 @@ class Chatroom : AppCompatActivity() {
                     FirebaseUtil().retrieveChatRoomReference(chatroomId).set(chatroomModel)
                     bindChatroomDetails(chatroomModel.chatroomType)
 
-                } else if (it.result?.exists() == false && chatroomType == "community_chat"){
+                } else if (!it.result.exists() && chatroomType == "community_chat"){
                     FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener { result ->
                         val communityModel = result.toObject(CommunityModel::class.java)!!
                         chatroomModel = ChatroomModel(
