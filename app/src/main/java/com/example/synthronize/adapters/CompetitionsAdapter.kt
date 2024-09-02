@@ -28,14 +28,14 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompetitionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemCompetitionBinding.inflate(inflater, parent, false)
-        return CompetitionViewHolder(binding, context)
+        return CompetitionViewHolder(binding, context, inflater)
     }
 
     override fun onBindViewHolder(holder: CompetitionViewHolder, position: Int, model: CompetitionModel) {
         holder.bind(model)
     }
 
-    inner class CompetitionViewHolder(private val binding: ItemCompetitionBinding, private val context: Context
+    inner class CompetitionViewHolder(private val binding: ItemCompetitionBinding, private val context: Context, private val inflater: LayoutInflater
     ): RecyclerView.ViewHolder(binding.root){
 
         private lateinit var competitionModel: CompetitionModel
@@ -53,6 +53,11 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
                     binding.remainingTimeTV.text = "$daysLeft days before it closes"
                 }
 
+            }
+
+            binding.menuBtn.setOnClickListener {
+                DialogUtil().openMenuDialog(context, inflater, "Competition", competitionModel.competitionId,
+                    competitionModel.ownerId, competitionModel.communityId)
             }
 
             binding.viewCompetitionBtn.setOnClickListener {

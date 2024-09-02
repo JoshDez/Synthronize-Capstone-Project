@@ -13,6 +13,7 @@ import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -59,6 +60,11 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
 
             binding.fileLayout.setOnClickListener {
                 downloadFileFromFirebase()
+            }
+
+            binding.menuBtn.setOnClickListener {
+                DialogUtil().openMenuDialog(context, inflater, "File", fileModel.fileId,
+                    fileModel.ownerId, fileModel.communityId)
             }
         }
 

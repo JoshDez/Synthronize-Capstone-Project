@@ -2,6 +2,7 @@ package com.example.synthronize.utils
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,8 @@ import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.CompetitionModel
+import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.ReportModel
 import com.example.synthronize.model.UserModel
@@ -224,9 +227,14 @@ class DialogUtil: OnItemClickListener {
         forwardContentDialog.show()
     }
 
+
+
+
+
+
     //OPENS DIALOG FOR FEED MENU
-    fun openMenuDialog(context:Context, inflater: LayoutInflater, postModel:PostModel){
-        FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {
+    fun openMenuDialog(context:Context, inflater: LayoutInflater, contentType:String, contentId:String, contentOwnerId:String, communityId:String, extraId:String = ""){
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
             val communityModel = it.toObject(CommunityModel::class.java)!!
             val menuDialogBinding = DialogMenuBinding.inflate(inflater)
             val menuDialog = DialogPlus.newDialog(context)
@@ -236,12 +244,12 @@ class DialogUtil: OnItemClickListener {
                 .setGravity(Gravity.CENTER)
                 .create()
 
-            if (postModel.ownerId == FirebaseUtil().currentUserUid() ||
+            if (contentOwnerId == FirebaseUtil().currentUserUid() ||
                 AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), FirebaseUtil().currentUserUid())){
                 //TODO for moderator
                 //displays delete post option if the user is the owner or admin of the community
                 menuDialogBinding.option1.visibility = View.VISIBLE
-                menuDialogBinding.optiontitle1.text = "Delete Post"
+                menuDialogBinding.optiontitle1.text = "Delete $contentType"
                 menuDialogBinding.optiontitle1.setOnClickListener {
                     menuDialog.dismiss()
                     Handler().postDelayed({
@@ -253,15 +261,10 @@ class DialogUtil: OnItemClickListener {
                             .setGravity(Gravity.CENTER)
                             .create()
 
-                        warningDialogBinding.titleTV.text = "Delete Post"
-                        warningDialogBinding.messageTV.text = "Do you want to delete this post?"
+                        warningDialogBinding.titleTV.text = "Delete $contentType"
+                        warningDialogBinding.messageTV.text = "Do you want to delete this ${contentType.lowercase()}?"
                         warningDialogBinding.yesBtn.setOnClickListener {
-                            //deletes post from firebase firestore database
-                            FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId).delete()
-                            //deletes content from firebase storage
-                            for (content in postModel.contentList){
-                                FirebaseUtil().retrieveCommunityContentImageRef(content).delete()
-                            }
+                            deleteContent(contentType, contentId, communityId, extraId)
                             warningDialog.dismiss()
                         }
                         warningDialogBinding.NoBtn.setOnClickListener {
@@ -275,29 +278,157 @@ class DialogUtil: OnItemClickListener {
 
                 //displays edit post option if the user is the owner or admin of the community
                 menuDialogBinding.option2.visibility = View.VISIBLE
-                menuDialogBinding.optiontitle2.text = "Edit Post"
+                menuDialogBinding.optiontitle2.text = "Edit $contentType"
                 menuDialogBinding.optiontitle2.setOnClickListener {
                     menuDialog.dismiss()
                     Handler().postDelayed({
-                        val intent = Intent(context, CreatePost::class.java)
-                        intent.putExtra("postId", postModel.postId)
-                        intent.putExtra("communityId", postModel.communityId)
-                        context.startActivity(intent)
+                        editContent(context, contentType, contentId, communityId, extraId)
                     }, 500)
                 }
             } else {
                 menuDialogBinding.option1.visibility = View.VISIBLE
-                menuDialogBinding.optiontitle1.text = "Report Post"
+                menuDialogBinding.optiontitle1.text = "Report $contentType"
                 menuDialogBinding.option1.setOnClickListener {
                     menuDialog.dismiss()
                     Handler().postDelayed({
-                        DialogUtil().openReportDialog(context, inflater, "Post", postModel.postId, postModel.communityId)
+                        DialogUtil().openReportDialog(context, inflater, contentType, contentId, communityId)
                     }, 500)
                 }
             }
             menuDialog.show()
         }
     }
+
+    private fun editContent(context:Context, contentType:String, contentId:String, communityId:String, extraId: String = ""){
+        when(contentType){
+            "Post" -> {
+                val intent = Intent(context, CreatePost::class.java)
+                intent.putExtra("postId", contentId)
+                intent.putExtra("communityId", communityId)
+                context.startActivity(intent)
+            }
+            "Competition" -> {
+                //FOR COMPETITION
+            }
+            "File Submission" -> {
+                //FOR COMPETITION FILE
+            }
+            "File" -> {
+                //FOR FILES
+            }
+        }
+    }
+
+    private fun deleteContent(contentType:String, contentId:String, communityId:String, extraId: String = ""){
+        when(contentType){
+            "Post" -> {
+                FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(contentId).get().addOnSuccessListener {
+                    val postModel = it.toObject(PostModel::class.java)!!
+                    //Deletes media
+                    deleteMediaOrFile(postModel.contentList)
+                    //Deletes Post
+                    FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(contentId).delete()
+                }
+            }
+            "Competition" -> {
+                FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(contentId).get().addOnSuccessListener {
+                    val competitionModel = it.toObject(CompetitionModel::class.java)!!
+                    val imageInstructionList:ArrayList<String> = arrayListOf()
+                    val fileUrlList:ArrayList<String> = arrayListOf()
+
+                    //Deletes media in the instructions
+                    for (instruction in competitionModel.instruction){
+                        val imageInstruction = instruction.value[1]
+                        if(imageInstruction.isNotEmpty()){
+                            imageInstructionList.add(imageInstruction)
+                        }
+                    }
+                    //Deletes file from the firebase
+                    for (file in competitionModel.contestants){
+                        val fileUrl = file.value
+                        if (fileUrl.isNotEmpty()){
+                            fileUrlList.add(fileUrl)
+                        }
+                    }
+                    deleteMediaOrFile(fileUrlList)
+                    //Deletes all fileModels from Firebase
+                    if (fileUrlList.isNotEmpty()){
+                        FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+                            .whereIn("fileUrl", fileUrlList).get().addOnSuccessListener {fileModels ->
+                                for (fileModel in fileModels){
+                                    FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(fileModel.id).delete()
+                                }
+                            }
+                    }
+                    //Deletes Image Instructions
+                    deleteMediaOrFile(imageInstructionList)
+                    //Deletes Competition
+                    FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(contentId).delete()
+
+
+                }
+            }
+            "File" -> {
+                FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(contentId).get().addOnSuccessListener {
+                    val fileModel = it.toObject(FileModel::class.java)!!
+                    //Deletes File from firebase storage
+                    Log.e("test", fileModel.fileUrl)
+                    deleteMediaOrFile(listOf(fileModel.fileUrl))
+                    //Deletes file model from firestore database
+                    FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(contentId).delete()
+                }
+            }
+            "File Submission" -> {
+                //FOR FILE SUBMISSION FOR COMPETITION
+
+                //the extraId is used as competitionId
+                FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(extraId).get().addOnSuccessListener {
+                    val competitionModel = it.toObject(CompetitionModel::class.java)!!
+
+                    FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(contentId).get().addOnSuccessListener {file ->
+                        val fileModel = file.toObject(FileModel::class.java)!!
+
+                        //Deletes file from the firestore database
+                        for (contestant in competitionModel.contestants){
+                            val fileUrl = contestant.value
+                            if (fileUrl == fileModel.fileUrl){
+                                val updates = mapOf(
+                                    "contestants.${contestant.key}" to ""
+                                )
+                                FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(extraId).update(updates)
+                            }
+                        }
+
+                        //Deletes File from firebase storage
+                        deleteMediaOrFile(listOf(fileModel.fileUrl))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteMediaOrFile(mediaList:List<String>){
+        for (media in mediaList){
+            val mediaType = media.split('-')[1]
+            if (mediaType == "Image" || mediaType == "ImageInstruction"){
+                //deletes image from firebase
+                FirebaseUtil().retrieveCommunityContentImageRef(media).delete()
+            } else if (mediaType == "Video"){
+                //deletes video from firebase
+                FirebaseUtil().retrieveCommunityContentVideoRef(media).delete()
+            } else {
+                //deletes file from firebase
+                FirebaseUtil().retrieveCommunityFileRef(media).delete()
+            }
+        }
+    }
+
+
+
+
+
+
+
 
 
     //OPENS COMMUNITY PREVIEW DIALOG

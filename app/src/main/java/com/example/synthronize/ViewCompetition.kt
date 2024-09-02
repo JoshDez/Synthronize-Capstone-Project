@@ -256,7 +256,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                 FirestoreRecyclerOptions.Builder<FileModel>().setQuery(myQuery, FileModel::class.java).build()
 
             binding.submissionsRV.layoutManager = LinearLayoutManager(this)
-            submissionsAdapter = CompetitionFilesAdapter(this, options)
+            submissionsAdapter = CompetitionFilesAdapter(this, options, competitionId)
             binding.submissionsRV.adapter = submissionsAdapter
             submissionsAdapter.startListening()
         } else {

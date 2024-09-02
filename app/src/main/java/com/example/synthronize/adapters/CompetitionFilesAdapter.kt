@@ -13,12 +13,14 @@ import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import java.io.File
 
-class CompetitionFilesAdapter(private val context: Context, options: FirestoreRecyclerOptions<FileModel>):
+class CompetitionFilesAdapter(private val context: Context, options: FirestoreRecyclerOptions<FileModel>,
+    private val competitionId:String):
     FirestoreRecyclerAdapter<FileModel, CompetitionFilesAdapter.FileViewHolder>(options) {
 
 
@@ -33,7 +35,7 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
     }
 
 
-    class FileViewHolder(private val binding: ItemCompetitionFileBinding, private val context: Context,
+    inner class FileViewHolder(private val binding: ItemCompetitionFileBinding, private val context: Context,
                          private val inflater: LayoutInflater
     ): RecyclerView.ViewHolder(binding.root){
 
@@ -59,6 +61,11 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
 
             binding.fileLayout.setOnClickListener {
                 downloadFileFromFirebase()
+            }
+
+            binding.menuBtn.setOnClickListener {
+                DialogUtil().openMenuDialog(context, inflater, "File Submission", fileModel.fileId,
+                    fileModel.ownerId, fileModel.communityId, competitionId)
             }
         }
 
