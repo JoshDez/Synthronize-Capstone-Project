@@ -3,8 +3,6 @@ package com.example.synthronize.utils
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -17,7 +15,6 @@ import androidx.core.util.TypedValueCompat
 import com.example.synthronize.R
 import com.example.synthronize.ViewMedia
 import com.example.synthronize.model.CommunityModel
-import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 
 class ContentUtil {
@@ -120,11 +117,11 @@ class ContentUtil {
 
 
     //checks the post availability
-    fun verifyPostAvailability(postModel:PostModel, callback: (Boolean) -> Unit){
-        FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {user ->
+    fun verifyCommunityContentAvailability(ownerId:String, communityId:String, callback: (Boolean) -> Unit){
+        FirebaseUtil().targetUserDetails(ownerId).get().addOnSuccessListener {user ->
             val userModel = user.toObject(UserModel::class.java)!!
 
-            FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {community ->
+            FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community ->
                 val communityModel = community.toObject(CommunityModel::class.java)!!
 
                 //if the user is not banned from community and not blocked by the post owner

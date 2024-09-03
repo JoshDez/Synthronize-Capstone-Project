@@ -22,6 +22,7 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.PostModel
+import com.example.synthronize.model.ProductModel
 import com.example.synthronize.model.ReportModel
 import com.example.synthronize.model.UserModel
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -288,7 +289,7 @@ class DialogUtil: OnItemClickListener {
             } else {
                 menuDialogBinding.option1.visibility = View.VISIBLE
                 menuDialogBinding.optiontitle1.text = "Report $contentType"
-                menuDialogBinding.option1.setOnClickListener {
+                menuDialogBinding.optiontitle1.setOnClickListener {
                     menuDialog.dismiss()
                     Handler().postDelayed({
                         DialogUtil().openReportDialog(context, inflater, contentType, contentId, communityId)
@@ -368,11 +369,19 @@ class DialogUtil: OnItemClickListener {
 
                 }
             }
+            "Product" -> {
+                FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(contentId).get().addOnSuccessListener {
+                    val productModel = it.toObject(ProductModel::class.java)!!
+                    //Deletes File from firebase storage
+                    deleteMediaOrFile(productModel.imageList)
+                    //Deletes file model from firestore database
+                    FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(contentId).delete()
+                }
+            }
             "File" -> {
                 FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(contentId).get().addOnSuccessListener {
                     val fileModel = it.toObject(FileModel::class.java)!!
                     //Deletes File from firebase storage
-                    Log.e("test", fileModel.fileUrl)
                     deleteMediaOrFile(listOf(fileModel.fileUrl))
                     //Deletes file model from firestore database
                     FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(contentId).delete()

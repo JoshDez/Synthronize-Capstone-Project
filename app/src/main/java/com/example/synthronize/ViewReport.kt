@@ -10,7 +10,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.synthronize.databinding.ActivityViewReportBinding
 import com.example.synthronize.model.CommunityModel
+import com.example.synthronize.model.CompetitionModel
+import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.PostModel
+import com.example.synthronize.model.ProductModel
 import com.example.synthronize.model.ReportModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -48,6 +51,9 @@ class ViewReport : AppCompatActivity() {
                     "Community" -> bindCommunityPreview()
                     "User" -> bindUserPreview()
                     //TODO with forums etc
+                    "Product" -> bindProductPreview()
+                    "File" -> bindFilePreview()
+                    "Competition" -> bindCompetitionPreview()
                 }
 
                 bindDetails()
@@ -113,68 +119,170 @@ class ViewReport : AppCompatActivity() {
         }
     }
 
+    private fun bindFilePreview(){
+        FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(reportModel.reportedId).get().addOnCompleteListener {file ->
+            if (file.result.exists() && file.isSuccessful){
+                val fileModel = file.result.toObject(FileModel::class.java)!!
+                binding.imageWithCaptionLayout.visibility = View.VISIBLE
+                FirebaseUtil().targetUserDetails(fileModel.ownerId).get().addOnCompleteListener {user ->
+                    if (user.isSuccessful){
+                        val reportedUser = user.result.toObject(UserModel::class.java)!!
+                        AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
+                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
+                        binding.reportedUserFullnameTV.text = reportedUser.fullName
+                        binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
+                    }
+                }
+
+                val extension = fileModel.fileName.split('.').last()
+
+                if (extension == "pdf"){
+                    binding.contentIV.setImageResource(R.drawable.pdf_icon)
+                } else if (extension == "docx"){
+                    binding.contentIV.setImageResource(R.drawable.docx_icon)
+                } else if (extension == "excel"){
+                    binding.contentIV.setImageResource(R.drawable.excel_icon)
+                } else {
+                    binding.contentIV.setImageResource(R.drawable.file_icon)
+                }
+
+                binding.contentCaptionTV.text = fileModel.fileName
+
+                binding.imageWithCaptionLayout.setOnClickListener {
+                    //TODO NEED VIEW FILE
+                }
+            }
+        }
+    }
+    private fun bindCompetitionPreview(){
+        FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(reportModel.reportedId).get().addOnCompleteListener {competition ->
+            if (competition.result.exists() && competition.isSuccessful){
+                val competitionModel = competition.result.toObject(CompetitionModel::class.java)!!
+                binding.imageWithCaptionLayout.visibility = View.VISIBLE
+                FirebaseUtil().targetUserDetails(competitionModel.ownerId).get().addOnCompleteListener {user ->
+                    if (user.isSuccessful){
+                        val reportedUser = user.result.toObject(UserModel::class.java)!!
+                        AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
+                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
+                        binding.reportedUserFullnameTV.text = reportedUser.fullName
+                        binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(competitionModel.createdTimestamp)
+                    }
+                }
+
+                binding.contentIV.visibility = View.GONE
+                binding.contentCaptionTV.text = "${competitionModel.competitionName} (${competitionModel.description})"
+
+                binding.imageWithCaptionLayout.setOnClickListener {
+                    val intent = Intent(this, ViewCompetition::class.java)
+                    intent.putExtra("competitionId", competitionModel.competitionId)
+                    intent.putExtra("communityId", competitionModel.communityId)
+                    intent.putExtra("isUserAdmin", true)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
+    private fun bindProductPreview() {
+        FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(reportModel.reportedId).get().addOnCompleteListener {product ->
+            if (product.result.exists() && product.isSuccessful){
+                val productModel = product.result.toObject(ProductModel::class.java)!!
+                binding.imageWithCaptionLayout.visibility = View.VISIBLE
+                FirebaseUtil().targetUserDetails(productModel.ownerId).get().addOnCompleteListener {user ->
+                    if (user.isSuccessful){
+                        val reportedUser = user.result.toObject(UserModel::class.java)!!
+                        AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
+                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
+                        binding.reportedUserFullnameTV.text = reportedUser.fullName
+                        binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(productModel.createdTimestamp)
+                    }
+                }
+                if (productModel.imageList.isNotEmpty()){
+                    ContentUtil().setImageContent(this, productModel.imageList[0], binding.contentIV)
+                } else {
+                    binding.contentIV.visibility = View.GONE
+                }
+                binding.contentCaptionTV.text = productModel.productName
+
+                binding.imageWithCaptionLayout.setOnClickListener {
+                    val intent = Intent(this, ViewProduct::class.java)
+                    intent.putExtra("communityId", communityId)
+                    intent.putExtra("productId", productModel.productId)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
     private fun bindUserPreview(){
-        FirebaseUtil().targetUserDetails(reportModel.reportedId).get().addOnSuccessListener {
-            val userModel = it.toObject(UserModel::class.java)!!
-            binding.profileCommunityLayout.visibility = View.VISIBLE
+        FirebaseUtil().targetUserDetails(reportModel.reportedId).get().addOnCompleteListener {
+            if (it.result.exists() && it.isSuccessful){
+                val userModel = it.result.toObject(UserModel::class.java)!!
+                binding.profileCommunityLayout.visibility = View.VISIBLE
 
-            AppUtil().setUserProfilePic(this, userModel.userID, binding.communityProfileCIV)
-            AppUtil().setUserCoverPic(this, userModel.userID, binding.bannerCoverIV)
+                AppUtil().setUserProfilePic(this, userModel.userID, binding.communityProfileCIV)
+                AppUtil().setUserCoverPic(this, userModel.userID, binding.bannerCoverIV)
 
-            binding.communityProfileNameTV.text = userModel.fullName
-            binding.communityProfileUserNameTV.text = "@${userModel.username}"
-            binding.communityProfileDescriptionTV.text = userModel.description
+                binding.communityProfileNameTV.text = userModel.fullName
+                binding.communityProfileUserNameTV.text = "@${userModel.username}"
+                binding.communityProfileDescriptionTV.text = userModel.description
 
-            binding.profileCommunityLayout.setOnClickListener {
-                AppUtil().headToUserProfile(this, userModel.userID)
+                binding.profileCommunityLayout.setOnClickListener {
+                    AppUtil().headToUserProfile(this, userModel.userID)
+                }
             }
         }
     }
 
     private fun bindCommunityPreview(){
-        FirebaseUtil().retrieveCommunityDocument(reportModel.reportedId).get().addOnSuccessListener {
-            val communityModel = it.toObject(CommunityModel::class.java)!!
-            binding.profileCommunityLayout.visibility = View.VISIBLE
-            binding.communityProfileUserNameTV.visibility = View.GONE
+        FirebaseUtil().retrieveCommunityDocument(reportModel.reportedId).get().addOnCompleteListener {community ->
+            if (community.result.exists() && community.isSuccessful){
+                val communityModel = community.result.toObject(CommunityModel::class.java)!!
+                binding.profileCommunityLayout.visibility = View.VISIBLE
+                binding.communityProfileUserNameTV.visibility = View.GONE
 
-            AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.communityProfileCIV)
-            AppUtil().setCommunityBannerPic(this, communityModel.communityId, binding.bannerCoverIV)
+                AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.communityProfileCIV)
+                AppUtil().setCommunityBannerPic(this, communityModel.communityId, binding.bannerCoverIV)
 
-            binding.communityProfileNameTV.text = communityModel.communityName
-            binding.communityProfileDescriptionTV.text = communityModel.communityDescription
+                binding.communityProfileNameTV.text = communityModel.communityName
+                binding.communityProfileDescriptionTV.text = communityModel.communityDescription
 
-            binding.profileCommunityLayout.setOnClickListener {
-                DialogUtil().openCommunityPreviewDialog(this, layoutInflater, communityModel)
+                binding.profileCommunityLayout.setOnClickListener {
+                    DialogUtil().openCommunityPreviewDialog(this, layoutInflater, communityModel)
+                }
             }
         }
 
     }
 
     private fun bindPostPreview() {
-        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(reportModel.reportedId).get().addOnSuccessListener {
-            val postModel = it.toObject(PostModel::class.java)!!
-            binding.imageWithCaptionLayout.visibility = View.VISIBLE
-            FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {user ->
-                val reportedUser = user.toObject(UserModel::class.java)!!
-                AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
-                binding.reportedUsernameTV.text = "@${reportedUser.username}"
-                binding.reportedUserFullnameTV.text = reportedUser.fullName
-                binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
-            }
-            if (postModel.contentList.isNotEmpty()){
-                ContentUtil().setImageContent(this, postModel.contentList[0], binding.contentIV)
-            } else {
-                binding.contentIV.visibility = View.GONE
-            }
-            binding.contentCaptionTV.text = postModel.caption
+        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(reportModel.reportedId).get().addOnCompleteListener {post ->
+            if (post.result.exists() && post.isSuccessful){
+                val postModel = post.result.toObject(PostModel::class.java)!!
+                binding.imageWithCaptionLayout.visibility = View.VISIBLE
+                FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnCompleteListener {user ->
+                    if (user.isSuccessful){
+                        val reportedUser = user.result.toObject(UserModel::class.java)!!
+                        AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
+                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
+                        binding.reportedUserFullnameTV.text = reportedUser.fullName
+                        binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
+                    }
+                }
+                if (postModel.contentList.isNotEmpty()){
+                    ContentUtil().setImageContent(this, postModel.contentList[0], binding.contentIV)
+                } else {
+                    binding.contentIV.visibility = View.GONE
+                }
+                binding.contentCaptionTV.text = postModel.caption
 
-            binding.imageWithCaptionLayout.setOnClickListener {
-                val intent = Intent(this, ViewPost::class.java)
-                intent.putExtra("communityId", communityId)
-                intent.putExtra("postId", postModel.postId)
-                startActivity(intent)
+                binding.imageWithCaptionLayout.setOnClickListener {
+                    val intent = Intent(this, ViewPost::class.java)
+                    intent.putExtra("communityId", communityId)
+                    intent.putExtra("postId", postModel.postId)
+                    startActivity(intent)
+                }
             }
-
         }
     }
 

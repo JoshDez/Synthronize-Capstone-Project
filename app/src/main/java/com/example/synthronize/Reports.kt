@@ -2,6 +2,7 @@ package com.example.synthronize
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -57,8 +58,11 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
             binding.marketBtn.setOnClickListener {
                 navigate("market")
             }
-            binding.activitiesBtn.setOnClickListener {
-                navigate("activities")
+            binding.competitionsBtn.setOnClickListener {
+                navigate("competitions")
+            }
+            binding.filesBtn.setOnClickListener {
+                navigate("files")
             }
         }
 
@@ -74,7 +78,8 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
         binding.feedsBtn.setTextColor(unselectedColor)
         binding.forumsBtn.setTextColor(unselectedColor)
         binding.marketBtn.setTextColor(unselectedColor)
-        binding.activitiesBtn.setTextColor(unselectedColor)
+        binding.competitionsBtn.setTextColor(unselectedColor)
+        binding.filesBtn.setTextColor(unselectedColor)
 
 
         if (tab == "feeds"){
@@ -92,10 +97,15 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
             binding.marketBtn.setTextColor(selectedColor)
             currentTab = "market"
 
-        } else if (tab == "activities") {
+        } else if (tab == "competitions") {
+            setupCommunityReport("Competition")
+            binding.competitionsBtn.setTextColor(selectedColor)
+            currentTab = "competitions"
+
+        }  else if (tab == "files") {
             setupCommunityReport("File")
-            binding.activitiesBtn.setTextColor(selectedColor)
-            currentTab = "activities"
+            binding.filesBtn.setTextColor(selectedColor)
+            currentTab = "files"
 
         } else if (tab == "personal") {
             setupPersonalReport()
@@ -104,10 +114,23 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
     }
 
     private fun setupCommunityReport(reportType:String){
+        binding.reportsRefreshLayout.isRefreshing = true
         val query = FirebaseUtil().retrieveCommunityReportsCollection(communityId)
             .whereEqualTo("reportType", reportType)
             .whereEqualTo("reviewed", false)
             .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+
+        // Add a listener to handle success or failure of the query
+        query.addSnapshotListener { _, e ->
+            if (e != null) {
+                // Handle the error here (e.g., log the error or show a message to the user)
+                Log.e("Firestore Error", "Error while fetching data", e)
+                return@addSnapshotListener
+            } else {
+                binding.reportsRefreshLayout.isRefreshing = false
+            }
+        }
 
         val options: FirestoreRecyclerOptions<ReportModel> =
             FirestoreRecyclerOptions.Builder<ReportModel>().setQuery(query, ReportModel::class.java).build()
@@ -122,10 +145,24 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
     private fun setupPersonalReport(){
         if (communityId == "null" || communityId.isEmpty()){
 
+            binding.reportsRefreshLayout.isRefreshing = false
+
             //Personal report within a community
             val query = FirebaseUtil().retrieveReportsCollection()
                 .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
                 .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+
+            // Add a listener to handle success or failure of the query
+            query.addSnapshotListener { _, e ->
+                if (e != null) {
+                    // Handle the error here (e.g., log the error or show a message to the user)
+                    Log.e("Firestore Error", "Error while fetching data", e)
+                    return@addSnapshotListener
+                } else {
+                    binding.reportsRefreshLayout.isRefreshing = false
+                }
+            }
 
             val options: FirestoreRecyclerOptions<ReportModel> =
                 FirestoreRecyclerOptions.Builder<ReportModel>().setQuery(query, ReportModel::class.java).build()

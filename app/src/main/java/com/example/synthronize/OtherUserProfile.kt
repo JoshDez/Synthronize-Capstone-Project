@@ -192,13 +192,13 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
 
         //Option 2
         menuBinding.option2.visibility = View.VISIBLE
-        menuBinding.optionIcon2.setImageResource(R.drawable.baseline_edit_24)
+        menuBinding.optionIcon2.setImageResource(R.drawable.block_user_icon)
         showBlockUserDialog(menuBinding, menuDialog)
 
         //Option 3
         menuBinding.option3.visibility = View.VISIBLE
         menuBinding.optiontitle3.text = "Report"
-        menuBinding.optionIcon3.setImageResource(R.drawable.baseline_logout_24)
+        menuBinding.optionIcon3.setImageResource(R.drawable.baseline_edit_24)
         menuBinding.optiontitle3.setOnClickListener {
             menuDialog.dismiss()
             Handler().postDelayed({
@@ -255,8 +255,8 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                     .setMargin(50, 700, 50, 700)
                     .create()
 
-                warningBinding.messageTV.text = "Do you want to block this user? (You will still see this account in communities and group chats)?"
-                warningBinding.titleTV.text = "Block User?"
+                warningBinding.messageTV.text = "Do you want to unblock this user?"
+                warningBinding.titleTV.text = "Unblock User?"
 
                 warningBinding.yesBtn.setOnClickListener {
                     //removes user from blockList

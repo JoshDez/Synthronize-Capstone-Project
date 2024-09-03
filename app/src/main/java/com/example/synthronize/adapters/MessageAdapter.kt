@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.ViewPost
+import com.example.synthronize.ViewProduct
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.example.synthronize.databinding.ItemMessageBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.MessageModel
 import com.example.synthronize.model.PostModel
+import com.example.synthronize.model.ProductModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
@@ -48,6 +50,7 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
                 binding.senderMsgTV.visibility = View.VISIBLE
                 binding.senderMsgTV.text = model.message
                 bindPostMessage(model, true)
+                bindProductMessage(model, true)
             } else {
                 //If user is the receiver
                 binding.senderLayout.visibility = View.GONE
@@ -55,6 +58,7 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
                 binding.recieverMsgTV.visibility = View.VISIBLE
                 binding.recieverMsgTV.text = model.message
                 bindPostMessage(model, false)
+                bindProductMessage(model, false)
                 //retrieve sender user data
                 FirebaseUtil().targetUserDetails(model.senderID).get().addOnCompleteListener {
                     if (it.isSuccessful && it.result.exists()){
@@ -90,7 +94,7 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
 
                                         if (communityModel.communityType == "Private" && !AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
                                             //if post is not available to current user
-                                            displayPostNotAvailable(isSender)
+                                            displayContentNotAvailable(isSender)
                                         } else {
                                             //if post is available to current user
                                             //BIND POST
@@ -130,40 +134,127 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
 
                                     } else {
                                         //owner no longer exists
-                                        displayPostNotAvailable(isSender)
+                                        displayContentNotAvailable(isSender)
                                     }
                                 }
                             } else {
                                 //if post no longer exists
-                                displayPostNotAvailable(isSender)
+                                displayContentNotAvailable(isSender)
                             }
                         }.addOnFailureListener {
                             //if theres an error retrieving post
-                            displayPostNotAvailable(isSender)
+                            displayContentNotAvailable(isSender)
                         }
                     } else {
                         //community no longer exists
-                        displayPostNotAvailable(isSender)
+                        displayContentNotAvailable(isSender)
                     }
                 }.addOnFailureListener {
                     //if theres an error retrieving community
-                    displayPostNotAvailable(isSender)
+                    displayContentNotAvailable(isSender)
+                }
+
+            }
+        }
+
+        private fun bindProductMessage(model: MessageModel, isSender:Boolean){
+            if (model.productID.isNotEmpty() && model.productID != "null" &&
+                model.communityIdOfPost.isNotEmpty() && model.communityIdOfPost != "null" ){
+
+                FirebaseUtil().retrieveCommunityDocument(model.communityIdOfPost).get().addOnSuccessListener {community ->
+                    if (community.exists()){
+                        //community exists
+
+                        val communityModel = community.toObject(CommunityModel::class.java)!!
+
+                        FirebaseUtil().retrieveCommunityMarketCollection(model.communityIdOfPost).document(model.productID).get().addOnSuccessListener {product ->
+                            if (product.exists()){
+                                //If post exists
+
+                                val productModel = product.toObject(ProductModel::class.java)!!
+
+                                FirebaseUtil().targetUserDetails(productModel.ownerId).get().addOnSuccessListener {owner ->
+                                    if (owner.exists()){
+                                        //owner exists
+
+                                        val userModel = owner.toObject(UserModel::class.java)!!
+
+                                        if (communityModel.communityType == "Private" && !AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                            //if post is not available to current user
+                                            displayContentNotAvailable(isSender)
+                                        } else {
+                                            //if post is available to current user
+                                            //BIND PRODUCT
+                                            if (isSender){
+                                                //Sender (YOU)
+                                                binding.postLayout2.visibility = View.VISIBLE
+                                                binding.postLayout2.setOnClickListener {
+                                                    headToProduct(productModel.productId, productModel.communityId)
+                                                }
+                                                AppUtil().setUserProfilePic(context, productModel.ownerId, binding.postOwnerProfileCIV2)
+                                                binding.postCaptionTV2.text = productModel.productName
+                                                binding.postOwnerUsernameTV2.text = userModel.username
+
+                                                if (productModel.imageList.isNotEmpty()){
+                                                    binding.postThumbnailIV2.visibility = View.VISIBLE
+                                                    ContentUtil().setImageContent(context, productModel.imageList[0], binding.postThumbnailIV2)
+                                                }
+                                            } else {
+                                                //Receiver
+                                                binding.postLayout.visibility = View.VISIBLE
+
+                                                binding.postLayout.setOnClickListener {
+                                                    headToProduct(productModel.productId, productModel.communityId)
+                                                }
+
+                                                AppUtil().setUserProfilePic(context, productModel.ownerId, binding.postOwnerProfileCIV)
+                                                binding.postCaptionTV.text = productModel.productName
+                                                binding.postOwnerUsernameTV.text = userModel.username
+
+                                                if (productModel.imageList.isNotEmpty()){
+                                                    binding.postThumbnail.visibility = View.VISIBLE
+                                                    ContentUtil().setImageContent(context, productModel.imageList[0], binding.postThumbnail)
+                                                }
+                                            }
+
+                                        }
+
+                                    } else {
+                                        //owner no longer exists
+                                        displayContentNotAvailable(isSender)
+                                    }
+                                }
+                            } else {
+                                //if post no longer exists
+                                displayContentNotAvailable(isSender)
+                            }
+                        }.addOnFailureListener {
+                            //if theres an error retrieving post
+                            displayContentNotAvailable(isSender)
+                        }
+                    } else {
+                        //community no longer exists
+                        displayContentNotAvailable(isSender)
+                    }
+                }.addOnFailureListener {
+                    //if theres an error retrieving community
+                    displayContentNotAvailable(isSender)
                 }
 
             }
         }
         
-        private fun displayPostNotAvailable(isSender:Boolean){
+        private fun displayContentNotAvailable(isSender:Boolean){
             if (isSender){
                 binding.postOwnerProfileLayout2.visibility = View.GONE
                 binding.postThumbnailIV2.visibility = View.GONE
                 binding.postLayout2.visibility = View.VISIBLE
-                binding.postCaptionTV2.text = "Post is Unavailable"
+                binding.postCaptionTV2.text = "Content not available"
             } else {
                 binding.postOwnerProfileLayout.visibility = View.GONE
                 binding.postThumbnail.visibility = View.GONE
                 binding.postLayout.visibility = View.VISIBLE
-                binding.postCaptionTV.text = "Post is Unavailable"
+                binding.postCaptionTV.text = "Content not available"
             }
         }
 
@@ -171,6 +262,12 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
             val intent = Intent(context, ViewPost::class.java)
             intent.putExtra("communityId", communityId)
             intent.putExtra("postId", postId)
+            context.startActivity(intent)
+        }
+        private fun headToProduct(productId:String, communityId:String){
+            val intent = Intent(context, ViewProduct::class.java)
+            intent.putExtra("communityId", communityId)
+            intent.putExtra("productId", productId)
             context.startActivity(intent)
         }
     }

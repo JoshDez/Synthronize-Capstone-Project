@@ -6,8 +6,9 @@ data class ProductModel (
     val productId:String = "",
     val productName:String = "",
     val productDesc:String = "",
-    val productPrice:Long = 0,
+    val communityId:String = "",
+    val price:Long = 0,
     val imageList:List<String> = listOf(),
-    val sellerId:String = "",
+    val ownerId:String = "",
     val createdTimestamp: Timestamp = Timestamp.now(),
 )

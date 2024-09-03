@@ -1,6 +1,7 @@
 package com.example.synthronize
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -52,23 +53,9 @@ class MarketFragment(private val mainBinding: FragmentCommunityBinding, private 
                 binding.marketRefreshLayout.setOnRefreshListener(this)
                 setupMarketRV()
                 binding.addFab.setOnClickListener {
-                    marketAdapter.stopListening()
-                    var productModel = ProductModel()
-                    FirebaseUtil().retrieveCommunityMarketCollection(communityId).add(productModel).addOnSuccessListener {
-                        productModel = ProductModel(
-                            it.id,
-                            "Xbox 360",
-                            "The product is 10 years old but still working perfectly",
-                            30000,
-                            listOf(),
-                            FirebaseUtil().currentUserUid(),
-                            Timestamp.now(),
-                        )
-                        FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(productModel.productId).set(productModel).addOnSuccessListener {
-                            Toast.makeText(context, "Product is successfully uploaded", Toast.LENGTH_SHORT).show()
-                            onRefresh()
-                        }
-                    }
+                    val intent = Intent(context, CreateProduct::class.java)
+                    intent.putExtra("communityId", communityId)
+                    startActivity(intent)
                 }
             }
         }
