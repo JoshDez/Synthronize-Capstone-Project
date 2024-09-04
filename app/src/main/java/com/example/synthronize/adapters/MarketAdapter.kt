@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.synthronize.Chatroom
+import com.example.synthronize.ViewProduct
 import com.example.synthronize.databinding.ItemProductBinding
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.model.UserModel
@@ -58,7 +59,7 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
         }
 
 
-        fun bindProduct(model: ProductModel){
+        private fun bindProduct(model: ProductModel){
             productModel = model
 
             FirebaseUtil().targetUserDetails(productModel.ownerId).get().addOnSuccessListener {
@@ -85,9 +86,16 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
                 binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(productModel.createdTimestamp)
                 binding.priceTV.text = format.format(productModel.price)
 
+                binding.mainLayout.setOnClickListener {
+                    val intent = Intent(context, ViewProduct::class.java)
+                    intent.putExtra("communityId", productModel.communityId)
+                    intent.putExtra("productId", productModel.productId)
+                    context.startActivity(intent)
+                }
+
                 binding.menuBtn.setOnClickListener {
                     DialogUtil().openMenuDialog(context, inflater, "Product", productModel.productId,
-                        productModel.ownerId, productModel.communityId)
+                        productModel.ownerId, productModel.communityId){}
                 }
 
                 bindContent()

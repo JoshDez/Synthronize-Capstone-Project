@@ -10,6 +10,7 @@
 
 
     <LinearLayout
+        android:id="@+id/mainLayout"
         android:orientation="vertical"
         android:background="@color/gray3"
         android:layout_width="match_parent"
@@ -128,12 +129,15 @@
             android:id="@+id/messageUserBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/light_teal"
+            android:backgroundTint="@color/teal"
+            android:drawableLeft="@drawable/baseline_chat_bubble_24"
+            android:drawableTint="@color/white"
             android:text="Message User"
-            android:textColor="@color/text_shadow_white"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="17sp" />
     </LinearLayout>
 

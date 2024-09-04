@@ -57,7 +57,7 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
 
             binding.menuBtn.setOnClickListener {
                 DialogUtil().openMenuDialog(context, inflater, "Competition", competitionModel.competitionId,
-                    competitionModel.ownerId, competitionModel.communityId)
+                    competitionModel.ownerId, competitionModel.communityId){}
             }
 
             binding.viewCompetitionBtn.setOnClickListener {

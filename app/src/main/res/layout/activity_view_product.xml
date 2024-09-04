@@ -1,10 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/darker_teal"
     tools:context=".ViewProduct">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/viewProductRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/mainToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@color/darker_teal"
+                android:padding="10dp">
+
+                <ImageButton
+                    android:id="@+id/backBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/back_icon"
+                    app:tint="@color/light_teal" />
+
+
+                <ImageButton
+                    android:id="@+id/kebabMenuBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/kebab_menu_icon"
+                    app:tint="@color/light_teal" />
+
+
+            </RelativeLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/mainToolbar"
+                android:background="@color/light_teal"
+                app:dividerColor="@color/light_teal" />
+
+            <LinearLayout
+                android:id="@+id/contentNotAvailableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/divider2"
+                android:layout_below="@id/divider1"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Content Not Available"
+                    android:textColor="@color/light_teal"
+                    android:textSize="24dp" />
+            </LinearLayout>
+
+            <ScrollView
+                android:id="@+id/scrollViewLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/divider2"
+                android:layout_below="@id/divider1">
+
+                <LinearLayout
+                    android:id="@+id/mainPostLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/profileCIV"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@drawable/user_default_profile" />
+
+                        <TextView
+                            android:id="@+id/ownerUsernameTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/profileCIV"
+                            android:paddingStart="10dp"
+                            android:textColor="@color/light_teal"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/feedTimestampTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/ownerUsernameTV"
+                            android:layout_toRightOf="@id/profileCIV"
+                            android:paddingStart="10dp"
+                            android:textColor="@color/light_teal" />
+                    </RelativeLayout>
+
+
+                    <TextView
+                        android:id="@+id/productNameTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="@string/community_name"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:textColor="@color/light_teal"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/descTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:autoLink="web"
+                        android:contentDescription="@string/community_name"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:textColor="@color/light_teal"
+                        android:textColorLink="@color/light_blue"
+                        android:textSize="14sp" />
+
+
+                    <TextView
+                        android:id="@+id/priceTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="@string/community_name"
+                        android:padding="5dp"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/productAvailableTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="@string/community_name"
+                        android:padding="5dp"
+                        android:text="Available"
+                        android:textColor="@color/green"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_above="@id/bottomToolbar"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/light_teal"
+                        app:dividerColor="@color/light_teal" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@color/dark_teal"
+                        android:padding="8dp"
+                        android:text="Preview"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:textColor="@color/light_teal"
+                        android:textSize="20sp" />
+
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_above="@id/bottomToolbar"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/light_teal"
+                        app:dividerColor="@color/light_teal" />
+
+                    <LinearLayout
+                        android:id="@+id/contentLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"></LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_above="@id/bottomToolbar"
+                android:background="@color/light_teal"
+                app:dividerColor="@color/light_teal" />
+
+            <LinearLayout
+                android:id="@+id/bottomToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/darker_teal"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <Button
+                    android:id="@+id/messageUserBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="@color/teal2"
+                    android:drawableLeft="@drawable/baseline_chat_bubble_24"
+                    android:drawableTint="@color/light_teal"
+                    android:padding="10dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:visibility="gone"
+                    android:text="Message User"
+                    android:textColor="@color/light_teal"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/productAvailableBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="@color/teal2"
+                    android:padding="10dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:visibility="gone"
+                    android:text="Message User"
+                    android:textColor="@color/light_teal"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+</RelativeLayout>

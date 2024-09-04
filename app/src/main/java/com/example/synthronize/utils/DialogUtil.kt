@@ -10,6 +10,7 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.CreatePost
+import com.example.synthronize.CreateProduct
 import com.example.synthronize.adapters.ChatroomAdapter
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.DialogForwardContentBinding
@@ -234,7 +235,9 @@ class DialogUtil: OnItemClickListener {
 
 
     //OPENS DIALOG FOR FEED MENU
-    fun openMenuDialog(context:Context, inflater: LayoutInflater, contentType:String, contentId:String, contentOwnerId:String, communityId:String, extraId:String = ""){
+    fun openMenuDialog(context:Context, inflater: LayoutInflater, contentType:String, contentId:String, contentOwnerId:String,
+                       communityId:String, extraId:String = "", closeCurrentActivity: (Boolean) -> Unit){
+
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
             val communityModel = it.toObject(CommunityModel::class.java)!!
             val menuDialogBinding = DialogMenuBinding.inflate(inflater)
@@ -267,9 +270,11 @@ class DialogUtil: OnItemClickListener {
                         warningDialogBinding.yesBtn.setOnClickListener {
                             deleteContent(contentType, contentId, communityId, extraId)
                             warningDialog.dismiss()
+                            closeCurrentActivity(true)
                         }
                         warningDialogBinding.NoBtn.setOnClickListener {
                             warningDialog.dismiss()
+                            closeCurrentActivity(false)
                         }
 
                         warningDialog.show()
@@ -282,6 +287,7 @@ class DialogUtil: OnItemClickListener {
                 menuDialogBinding.optiontitle2.text = "Edit $contentType"
                 menuDialogBinding.optiontitle2.setOnClickListener {
                     menuDialog.dismiss()
+                    closeCurrentActivity(true)
                     Handler().postDelayed({
                         editContent(context, contentType, contentId, communityId, extraId)
                     }, 500)
@@ -290,6 +296,7 @@ class DialogUtil: OnItemClickListener {
                 menuDialogBinding.option1.visibility = View.VISIBLE
                 menuDialogBinding.optiontitle1.text = "Report $contentType"
                 menuDialogBinding.optiontitle1.setOnClickListener {
+                    closeCurrentActivity(false)
                     menuDialog.dismiss()
                     Handler().postDelayed({
                         DialogUtil().openReportDialog(context, inflater, contentType, contentId, communityId)
@@ -316,6 +323,13 @@ class DialogUtil: OnItemClickListener {
             }
             "File" -> {
                 //FOR FILES
+            }
+            "Product" -> {
+                //FOR PRODUCT
+                val intent = Intent(context, CreateProduct::class.java)
+                intent.putExtra("productId", contentId)
+                intent.putExtra("communityId", communityId)
+                context.startActivity(intent)
             }
         }
     }

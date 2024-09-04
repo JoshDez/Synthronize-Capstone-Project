@@ -70,7 +70,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     private fun navigate(tab: String, toRefresh:Boolean = false) {
         binding.postsRV.visibility = View.GONE
         binding.filesRV.visibility = View.GONE
-        binding.likesRV.visibility = View.GONE
 
         if (tab == "posts"){
             binding.postsRV.visibility = View.VISIBLE
@@ -80,10 +79,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             binding.filesRV.visibility = View.VISIBLE
             if (toRefresh)
                 setupFilesRV()
-        }else if (tab == "likes"){
-            binding.likesRV.visibility = View.VISIBLE
-            if (toRefresh)
-                setupLikesRV()
         }
     }
 
@@ -93,10 +88,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             binding.postsRV.layoutManager = LinearLayoutManager(context)
             binding.postsRV.adapter = allFeedsAdapter
         }
-    }
-
-    private fun setupLikesRV() {
-        //TODO Not Yet Implemented
     }
 
     private fun setupFilesRV() {
@@ -144,10 +135,8 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 //prepares recycler views
                 binding.postsRV.visibility = View.INVISIBLE
                 binding.filesRV.visibility = View.INVISIBLE
-                binding.likesRV.visibility = View.INVISIBLE
                 setupPostsRV()
                 setupFilesRV()
-                setupLikesRV()
 
                 //displays the first tab
                 navigate("posts")
@@ -162,10 +151,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 binding.filesBtn.setOnClickListener {
                     navigate("files")
                 }
-                binding.likesBtn.setOnClickListener {
-                    navigate("likes")
-                }
-
                 mainBinding.kebabMenuBtn.visibility = View.VISIBLE
                 mainBinding.kebabMenuBtn.setOnClickListener {
                     openMenuDialog()
@@ -173,7 +158,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
                 setupPostsRV()
                 setupFilesRV()
-                setupLikesRV()
 
                 binding.profileRefreshLayout.isRefreshing = false
             }

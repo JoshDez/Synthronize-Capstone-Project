@@ -65,7 +65,7 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
 
             binding.menuBtn.setOnClickListener {
                 DialogUtil().openMenuDialog(context, inflater, "File Submission", fileModel.fileId,
-                    fileModel.ownerId, fileModel.communityId, competitionId)
+                    fileModel.ownerId, fileModel.communityId, competitionId){}
             }
         }
 

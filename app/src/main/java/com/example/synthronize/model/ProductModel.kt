@@ -9,6 +9,7 @@ data class ProductModel (
     val communityId:String = "",
     val price:Long = 0,
     val imageList:List<String> = listOf(),
+    val available:Boolean = true,
     val ownerId:String = "",
     val createdTimestamp: Timestamp = Timestamp.now(),
 )

@@ -163,7 +163,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                     }
                 }
                 binding.menuBtn.setOnClickListener {
-                    DialogUtil().openMenuDialog(context, inflater, "Post", postModel.postId, postModel.ownerId, postModel.communityId)
+                    DialogUtil().openMenuDialog(context, inflater, "Post", postModel.postId, postModel.ownerId, postModel.communityId){}
                 }
                 binding.profileCIV.setOnClickListener {
                     headToUserProfile()

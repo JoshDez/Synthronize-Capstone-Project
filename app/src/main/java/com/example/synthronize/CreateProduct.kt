@@ -47,10 +47,11 @@ class CreateProduct : AppCompatActivity() {
             bindButtons()
         } else {
             //For Existing Product to edit
-            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(productId).get().addOnSuccessListener {
+            FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(productId).get().addOnSuccessListener {
                 existingProductModel = it.toObject(ProductModel::class.java)!!
                 binding.productNameEdtTxt.setText(existingProductModel.productName)
                 binding.competitionDescEdtTxt.setText(existingProductModel.productDesc)
+                binding.productPriceEdtTxt.setText(existingProductModel.price.toString())
                 communityId = existingProductModel.communityId
                 if (existingProductModel.imageList.isNotEmpty()){
                     for (filename in existingProductModel.imageList){

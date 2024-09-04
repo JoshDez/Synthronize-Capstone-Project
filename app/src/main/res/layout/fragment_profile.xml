@@ -271,7 +271,11 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:text="Edit Profile"
-                            app:backgroundTint="@color/light_teal" />
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:drawableLeft="@drawable/baseline_edit_24"
+                            android:drawableTint="@color/white"
+                            app:backgroundTint="@color/teal2" />
                     </RelativeLayout>
 
 
@@ -318,19 +322,6 @@
                         android:clickable="true"
                         android:focusable="true" />
 
-                    <TextView
-                        android:id="@+id/likesBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="Likes"
-                        android:textAlignment="center"
-                        android:textColor="@color/light_teal"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:clickable="true"
-                        android:focusable="true"/>
                 </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
@@ -348,12 +339,6 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/filesRV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/likesRV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone" />

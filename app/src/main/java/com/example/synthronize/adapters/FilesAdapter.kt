@@ -64,7 +64,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
 
             binding.menuBtn.setOnClickListener {
                 DialogUtil().openMenuDialog(context, inflater, "File", fileModel.fileId,
-                    fileModel.ownerId, fileModel.communityId)
+                    fileModel.ownerId, fileModel.communityId){}
             }
         }
 
