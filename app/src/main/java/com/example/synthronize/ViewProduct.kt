@@ -127,7 +127,9 @@ class ViewProduct : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListen
                             DialogUtil().openMenuDialog(this, layoutInflater, "Product", productModel.productId,
                                 productModel.ownerId, productModel.communityId){closeCurrentActivity ->
                                 if (closeCurrentActivity){
-                                    onBackPressed()
+                                    Handler().postDelayed({
+                                        onBackPressed()
+                                    }, 2000)
                                 }
                             }
                         }

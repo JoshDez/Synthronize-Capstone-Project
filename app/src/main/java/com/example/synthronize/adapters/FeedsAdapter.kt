@@ -91,6 +91,9 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 feedBinding.commentBtn.setOnClickListener {
                     viewPost()
                 }
+                feedBinding.mainLayout.setOnClickListener {
+                    viewPost()
+                }
                 feedBinding.menuBtn.setOnClickListener {
                     DialogUtil().openMenuDialog(context, inflater, "Post", postModel.postId, postModel.ownerId, postModel.communityId){}
                 }

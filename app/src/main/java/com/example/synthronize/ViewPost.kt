@@ -1,28 +1,35 @@
 package com.example.synthronize
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.CommentAdapter
 import com.example.synthronize.databinding.ActivityViewPostBinding
+import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 
-class ViewPost : AppCompatActivity() {
+class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
     private lateinit var binding:ActivityViewPostBinding
     private lateinit var commentAdapter: CommentAdapter
     private lateinit var postModel: PostModel
     private lateinit var communityId:String
     private lateinit var postId:String
+    private var isLoved:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +39,10 @@ class ViewPost : AppCompatActivity() {
         communityId = intent.getStringExtra("communityId").toString()
         postId = intent.getStringExtra("postId").toString()
 
-        getFeedModel()
+        binding.viewPostRefreshLayout.setOnRefreshListener(this)
+        NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root, this)
 
+        getFeedModel()
 
         binding.backBtn.setOnClickListener {
             onBackPressed()
@@ -48,6 +57,7 @@ class ViewPost : AppCompatActivity() {
                 if (isAvailable){
                     binding.feedTimestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
                     binding.captionEdtTxt.setText(postModel.caption)
+                    binding.contentLayout.removeAllViews()
 
                     FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {result ->
                         val user = result.toObject(UserModel::class.java)!!
@@ -55,14 +65,27 @@ class ViewPost : AppCompatActivity() {
                         AppUtil().setUserProfilePic(this, user.userID, binding.profileCIV)
                     }
 
+                    binding.kebabMenuBtn.setOnClickListener {
+                        DialogUtil().openMenuDialog(this, layoutInflater, "Post",
+                            postModel.postId, postModel.ownerId, postModel.communityId){closeCurrentActivity ->
+                            if (closeCurrentActivity){
+                                Handler().postDelayed({
+                                    onBackPressed()
+                                }, 2000)
+                            }
+                        }
+                    }
+
                     if (postModel.contentList.isNotEmpty())
                         bindContent(postModel.contentList)
 
+                    bindLove()
                     bindComments()
+                    bindSendPost()
+                    binding.viewPostRefreshLayout.isRefreshing = false
                 } else {
                     hideContent()
                 }
-
             }
         }
     }
@@ -97,6 +120,74 @@ class ViewPost : AppCompatActivity() {
             }
         }
 
+    }
+
+    //FOR LOVE
+    private fun bindLove() {
+        //default
+        binding.loveBtn.setImageResource(R.drawable.baseline_favorite_border_24)
+
+        updateFeedStatus()
+
+        for (user in postModel.loveList) {
+            if (user == FirebaseUtil().currentUserUid()) {
+                binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
+                isLoved = true
+            }
+        }
+        binding.loveBtn.setOnClickListener {
+            if (isLoved) {
+                //removes love
+                FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId)
+                    .document(postModel.postId)
+                    .update("loveList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
+                    .addOnSuccessListener {
+                        binding.loveBtn.setImageResource(R.drawable.baseline_favorite_border_24)
+                        isLoved = false
+                        updateFeedStatus()
+                    }
+            } else {
+                //adds love
+                FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId)
+                    .document(postModel.postId)
+                    .update("loveList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
+                    .addOnSuccessListener {
+                        binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
+                        isLoved = true
+                        updateFeedStatus()
+                    }
+            }
+        }
+    }
+
+
+    //For Send Post
+    private fun bindSendPost() {
+        binding.sendPostBtn.setOnClickListener {
+            DialogUtil().openForwardContentDialog(this, layoutInflater, postModel.postId, postModel.communityId)
+            if (!postModel.sendPostList.contains(FirebaseUtil().currentUserUid())){
+                FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
+                    .update("sendPostList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                        updateFeedStatus()
+                    }
+            }
+        }
+    }
+
+
+    //Updates feed status every user interaction with the feed
+    private fun updateFeedStatus(){
+        FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId)
+            .document(postModel.postId).get().addOnSuccessListener {
+                val tempPostModel = it.toObject(PostModel::class.java)!!
+                binding.lovesCountTV.text = tempPostModel.loveList.size.toString()
+                binding.sentPostCountTV.text = tempPostModel.sendPostList.size.toString()
+            }
+            .addOnFailureListener {
+                //if Offline
+                binding.lovesCountTV.text = postModel.loveList.size.toString()
+                binding.sentPostCountTV.text = postModel.sendPostList.size.toString()
+            }
     }
 
     private fun bindContent(contentList: List<String>){
@@ -137,5 +228,15 @@ class ViewPost : AppCompatActivity() {
         super.onStop()
         if (::commentAdapter.isInitialized)
             commentAdapter.stopListening()
+    }
+
+    override fun onRefresh() {
+        Handler().postDelayed({
+            getFeedModel()
+        }, 1000)
+    }
+
+    override fun retryNetwork() {
+        onRefresh()
     }
 }

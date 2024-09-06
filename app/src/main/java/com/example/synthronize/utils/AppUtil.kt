@@ -63,19 +63,20 @@ class AppUtil {
     }
 
     fun setUserCoverPic(context: Context, uid: String, cover:ImageView){
+        FirebaseUtil().targetUserDetails(uid).get().addOnCompleteListener {
+            if (it.result.exists()){
+                var user = it.result.toObject(UserModel::class.java)!!
+                if (user.userMedia.containsKey("profile_cover_photo")){
+                    //get the image url from the key
+                    var imageUrl = user.userMedia["profile_cover_photo"]!!
 
-        FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
-            var user = it.toObject(UserModel::class.java)!!
-            if (user.userMedia.containsKey("profile_cover_photo")){
-                //get the image url from the key
-                var imageUrl = user.userMedia["profile_cover_photo"]!!
-
-                GlideApp.with(context)
-                    //storage reference
-                    .load(FirebaseUtil().retrieveUserCoverPicRef(imageUrl))
-                    .error(R.drawable.profile_not_selected)
-                    //image view
-                    .into(cover)
+                    GlideApp.with(context)
+                        //storage reference
+                        .load(FirebaseUtil().retrieveUserCoverPicRef(imageUrl))
+                        .error(R.drawable.profile_not_selected)
+                        //image view
+                        .into(cover)
+                }
             }
         }
     }
@@ -88,20 +89,22 @@ class AppUtil {
             .into(civ)
 
         //set the current community profile
-        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-            var community = it.toObject(CommunityModel::class.java)!!
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {
+            if (it.result.exists()){
+                var community = it.result.toObject(CommunityModel::class.java)!!
 
-            if (community.communityMedia.containsKey("community_photo")){
-                //get the image url from the key
-                var imageUrl = community.communityMedia["community_photo"]!!
+                if (community.communityMedia.containsKey("community_photo")){
+                    //get the image url from the key
+                    var imageUrl = community.communityMedia["community_photo"]!!
 
-                GlideApp.with(context)
-                    //storage reference
-                    .load(FirebaseUtil().retrieveCommunityProfilePicRef(imageUrl))
-                    .error(R.drawable.community_default_profile)
-                    .apply(RequestOptions.circleCropTransform())
-                    //image view
-                    .into(civ)
+                    GlideApp.with(context)
+                        //storage reference
+                        .load(FirebaseUtil().retrieveCommunityProfilePicRef(imageUrl))
+                        .error(R.drawable.community_default_profile)
+                        .apply(RequestOptions.circleCropTransform())
+                        //image view
+                        .into(civ)
+                }
             }
         }
     }

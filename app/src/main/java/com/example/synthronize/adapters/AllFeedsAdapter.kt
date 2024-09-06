@@ -177,6 +177,9 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 binding.commentBtn.setOnClickListener {
                     viewPost()
                 }
+                binding.mainLayout.setOnClickListener {
+                    viewPost()
+                }
                 bindLove()
                 bindComment()
                 bindSendPost()
