@@ -3,6 +3,9 @@ package com.example.synthronize.utils
 import android.content.Context
 import android.widget.Toast
 import com.example.synthronize.adapters.AllFeedsAdapter
+import com.example.synthronize.adapters.FilesAdapter
+import com.example.synthronize.adapters.ProfileFilesAdapter
+import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 
@@ -14,8 +17,9 @@ class ProfileUtil {
 
         val postsList:ArrayList<PostModel> = ArrayList()
 
-        FirebaseUtil().retrieveAllCommunityCollection().get()
-            .addOnSuccessListener { querySnapshot ->
+        FirebaseUtil().retrieveAllCommunityCollection()
+            .whereEqualTo("communityType", "Public")
+            .get().addOnSuccessListener { querySnapshot ->
                 var communitiesTraversed = 0
                 for (document in querySnapshot.documents) {
                     FirebaseUtil().retrieveAllCommunityCollection()
@@ -58,6 +62,57 @@ class ProfileUtil {
             }.addOnFailureListener {
                 //returns the adapter with the only available posts
                 callback(AllFeedsAdapter(context, postsList, false))
+            }
+    }
+    fun getUserFiles(context: Context, userId: String, callback: (ProfileFilesAdapter) -> Unit){
+
+        val filesList:ArrayList<FileModel> = ArrayList()
+
+        FirebaseUtil().retrieveAllCommunityCollection()
+            .whereEqualTo("communityType", "Public")
+            .get().addOnSuccessListener { querySnapshot ->
+                var communitiesTraversed = 0
+                for (document in querySnapshot.documents) {
+                    FirebaseUtil().retrieveAllCommunityCollection()
+                        .document(document.id) // Access each post within a community
+                        .collection("files")
+                        .whereEqualTo("ownerId", userId)
+                        .whereEqualTo("forCompetition", false)
+                        .get()
+                        .addOnSuccessListener { feedsSnapshot ->
+                            var filesAdded = 0
+                            feedsSnapshot.size()
+
+                            //storing every user post to list
+                            for (post in feedsSnapshot.documents){
+                                var fileModel = post.toObject(FileModel::class.java)!!
+                                filesList.add(fileModel)
+                                filesAdded += 1
+                                //checks if all the user posts in the community are added
+                                if (filesAdded == feedsSnapshot.size()){
+                                    //sorts the list by timestamp
+                                    filesList.sortByDescending {
+                                        it.createdTimestamp
+                                    }
+                                }
+                            }
+
+                            //increments
+                            communitiesTraversed += 1
+
+                            //deploys postsRV
+                            if (communitiesTraversed == querySnapshot.documents.size){
+                                callback(ProfileFilesAdapter(context, filesList))
+                            }
+
+                        }.addOnFailureListener {
+                            //returns the adapter with the only available posts
+                            callback(ProfileFilesAdapter(context, filesList))
+                        }
+                }
+            }.addOnFailureListener {
+                //returns the adapter with the only available posts
+                callback(ProfileFilesAdapter(context, filesList))
             }
     }
 

@@ -295,26 +295,28 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <Button
                         android:id="@+id/postsBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="Posts"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:clickable="true"
                         android:focusable="true" />
 
-                    <TextView
+                    <Button
                         android:id="@+id/filesBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="Files"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:textAlignment="center"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp"

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
+import com.example.synthronize.adapters.ProfileFilesAdapter
 import com.example.synthronize.databinding.ActivityOtherUserProfileBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
@@ -31,6 +32,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
     private lateinit var userModel: UserModel
     private lateinit var myUserModel: UserModel
     private lateinit var allFeedsAdapter:AllFeedsAdapter
+    private lateinit var profileFilesAdapter: ProfileFilesAdapter
     private var userID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +76,11 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
     }
 
     private fun setupFilesRV() {
-        //TODO("Not yet implemented")
+        ProfileUtil().getUserFiles(this, userID){
+            profileFilesAdapter = it
+            binding.filesRV.layoutManager = LinearLayoutManager(this)
+            binding.filesRV.adapter = profileFilesAdapter
+        }
     }
 
     private fun setupPostsRV() {

@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
+import com.example.synthronize.adapters.ProfileFilesAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
@@ -32,6 +33,7 @@ import com.orhanobut.dialogplus.ViewHolder
 class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
 
     private lateinit var allFeedsAdapter: AllFeedsAdapter
+    private lateinit var profileFilesAdapter: ProfileFilesAdapter
     private lateinit var binding: FragmentProfileBinding
     private lateinit var context: Context
     private lateinit var userId: String
@@ -91,7 +93,11 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     }
 
     private fun setupFilesRV() {
-        //TODO Not Yet Implemented
+        ProfileUtil().getUserFiles(context, userId){
+            profileFilesAdapter = it
+            binding.filesRV.layoutManager = LinearLayoutManager(context)
+            binding.filesRV.adapter = profileFilesAdapter
+        }
     }
 
     private fun bindUserDetails() {

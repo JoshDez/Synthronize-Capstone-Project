@@ -1,11 +1,11 @@
 package com.example.synthronize.adapters
 
+import android.app.DownloadManager
 import android.content.Context
 import android.os.Environment
 import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.app.DownloadManager
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.R
 import com.example.synthronize.databinding.ItemFileBinding
@@ -16,27 +16,27 @@ import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import java.io.File
 
-class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptions<FileModel>):
-    FirestoreRecyclerAdapter<FileModel, FilesAdapter.FileViewHolder>(options) {
+class ProfileFilesAdapter(private val context: Context, private val filesList: ArrayList<FileModel>)
+    : RecyclerView.Adapter<ProfileFilesAdapter.FileViewHolder>() {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileFilesAdapter.FileViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemFileBinding.inflate(inflater, parent, false)
-        return FileViewHolder(binding, context, inflater)
+        val fileBinding = ItemFileBinding.inflate(inflater, parent, false)
+        return FileViewHolder(fileBinding, context, inflater)
     }
 
-    override fun onBindViewHolder(holder: FileViewHolder, position: Int, model: FileModel) {
-        holder.checkAvailabilityBeforeBind(model)
+    override fun onBindViewHolder(holder: FileViewHolder, position: Int) {
+        holder.checkAvailabilityBeforeBind(filesList[position])
     }
 
-
+    override fun getItemCount(): Int {
+        return filesList.size
+    }
     class FileViewHolder(private val binding: ItemFileBinding, private val context: Context,
-                                private val inflater: LayoutInflater
+                         private val inflater: LayoutInflater
     ): RecyclerView.ViewHolder(binding.root){
 
         private lateinit var fileModel: FileModel
@@ -55,7 +55,6 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
             binding.fileLayout.visibility = View.GONE
             binding.captionTV.text = "File Not Available"
         }
-
         private fun bindFile(model: FileModel){
             fileModel = model
 
@@ -145,5 +144,4 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
             return newFileName
         }
     }
-
 }

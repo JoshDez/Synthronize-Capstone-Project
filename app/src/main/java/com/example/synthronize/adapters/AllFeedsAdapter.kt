@@ -251,7 +251,6 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 }
             }
 
-            //TODO Not yet implemented
         }
 
         //For Send Post
