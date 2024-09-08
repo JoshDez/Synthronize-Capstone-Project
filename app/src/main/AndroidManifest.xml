@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Material3.Light.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".ViewFile"
+            android:exported="false" />
+        <activity
             android:name=".ViewProduct"
             android:exported="false" />
         <activity

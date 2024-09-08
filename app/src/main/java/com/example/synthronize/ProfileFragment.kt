@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
@@ -70,14 +71,20 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     }
 
     private fun navigate(tab: String, toRefresh:Boolean = false) {
+        val unselectedColor = ContextCompat.getColor(context, R.color.less_saturated_light_teal)
+        val selectedColor = ContextCompat.getColor(context, R.color.light_teal)
+        binding.postsBtn.setTextColor(unselectedColor)
+        binding.filesBtn.setTextColor(unselectedColor)
         binding.postsRV.visibility = View.GONE
         binding.filesRV.visibility = View.GONE
 
         if (tab == "posts"){
+            binding.postsBtn.setTextColor(selectedColor)
             binding.postsRV.visibility = View.VISIBLE
             if (toRefresh)
                 setupPostsRV()
         }else if (tab == "files"){
+            binding.filesBtn.setTextColor(selectedColor)
             binding.filesRV.visibility = View.VISIBLE
             if (toRefresh)
                 setupFilesRV()

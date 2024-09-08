@@ -5,10 +5,17 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.app.DownloadManager
+import android.content.Intent
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
+import com.example.synthronize.ViewFile
 import com.example.synthronize.databinding.ItemFileBinding
+import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -18,6 +25,8 @@ import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import java.io.File
 
 class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptions<FileModel>):
@@ -40,6 +49,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
     ): RecyclerView.ViewHolder(binding.root){
 
         private lateinit var fileModel: FileModel
+        private var isLoved = false
 
 
         fun checkAvailabilityBeforeBind(model: FileModel){
@@ -67,20 +77,151 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                 val user = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, fileModel.ownerId, binding.profileCIV)
                 binding.usernameTV.text = user.username
+
+                binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
+                binding.captionTV.text = fileModel.caption
+                binding.fileNameTV.text = fileModel.fileName
+                displayFileIcon()
+
+                binding.fileLayout.setOnClickListener {
+                    downloadFileFromFirebase()
+                }
+
+                binding.menuBtn.setOnClickListener {
+                    DialogUtil().openMenuDialog(context, inflater, "File", fileModel.fileId,
+                        fileModel.ownerId, fileModel.communityId){}
+                }
+
+                binding.profileCIV.setOnClickListener {
+                    headToUserProfile()
+                }
+                binding.usernameTV.setOnClickListener {
+                    headToUserProfile()
+                }
+
+                binding.mainLayout.setOnClickListener {
+                    headToViewFile()
+                }
+                binding.commentBtn.setOnClickListener {
+                    headToViewFile()
+                }
+
+                bindLove()
+                bindComment()
+            }
+        }
+
+        private fun headToViewFile(){
+            val intent = Intent(context, ViewFile::class.java)
+            intent.putExtra("communityId", fileModel.communityId)
+            intent.putExtra("fileId", fileModel.fileId)
+            intent.putExtra("contentType", "File")
+            context.startActivity(intent)
+        }
+
+        private fun bindComment() {
+
+            binding.commentEdtTxt.addTextChangedListener(object: TextWatcher {
+                override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    val comment = binding.commentEdtTxt.text.toString()
+                    if (comment.isNotEmpty()){
+                        binding.loveLayout.visibility = View.GONE
+                        binding.commentLayout.visibility = View.GONE
+                        binding.sendBtn.visibility = View.VISIBLE
+                    } else {
+                        binding.loveLayout.visibility = View.VISIBLE
+                        binding.commentLayout.visibility = View.VISIBLE
+                        binding.sendBtn.visibility = View.GONE
+                    }
+                }
+            })
+
+            binding.sendBtn.setOnClickListener {
+                val comment = binding.commentEdtTxt.text.toString()
+                if (comment.isNotEmpty()){
+                    val commentModel = CommentModel(
+                        commentOwnerId = FirebaseUtil().currentUserUid(),
+                        comment = comment,
+                        commentTimestamp = Timestamp.now()
+                    )
+                    FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId).collection("comments").add(commentModel).addOnCompleteListener {
+                        if (it.isSuccessful){
+                            binding.commentEdtTxt.setText("")
+                            updateFeedStatus()
+                            Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
+
+        //FOR LOVE
+        private fun bindLove() {
+            //default
+            binding.loveBtn.setImageResource(R.drawable.baseline_favorite_border_24)
+
+            updateFeedStatus()
+
+            for (user in fileModel.loveList){
+                if (user == FirebaseUtil().currentUserUid()){
+                    binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
+                    isLoved = true
+                }
             }
 
-            binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
-            binding.captionTV.text = fileModel.caption
-            binding.fileNameTV.text = fileModel.fileName
-            displayFileIcon()
-
-            binding.fileLayout.setOnClickListener {
-                downloadFileFromFirebase()
+            binding.loveBtn.setOnClickListener {
+                if (isLoved){
+                    //removes love
+                    FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId)
+                        .update("loveList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                            binding.loveBtn.setImageResource(R.drawable.baseline_favorite_border_24)
+                            isLoved = false
+                            updateFeedStatus()
+                        }
+                } else {
+                    //adds love
+                    FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId)
+                        .update("loveList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                            binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
+                            isLoved = true
+                            updateFeedStatus()
+                        }
+                }
             }
+        }
 
-            binding.menuBtn.setOnClickListener {
-                DialogUtil().openMenuDialog(context, inflater, "File", fileModel.fileId,
-                    fileModel.ownerId, fileModel.communityId){}
+        //Updates feed status every user interaction with the feed
+        private fun updateFeedStatus(){
+            FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId)
+                .document(fileModel.fileId).get().addOnSuccessListener {
+                    val tempFileModel = it.toObject(fileModel::class.java)!!
+                    binding.lovesCountTV.text = tempFileModel.loveList.size.toString()
+                }
+                .addOnFailureListener {
+                    //if Offline
+                    binding.lovesCountTV.text = fileModel.loveList.size.toString()
+                    FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId)
+                        .collection("comments").get().addOnSuccessListener {
+                            Toast.makeText(context, "${it.size()}", Toast.LENGTH_SHORT).show()
+                            binding.commentsCountTV.text = it.size().toString()
+                        }.addOnFailureListener {
+                            binding.commentsCountTV.text = "0"
+                        }
+                }
+            FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId)
+                .collection("comments").get().addOnSuccessListener {
+                    binding.commentsCountTV.text = it.documents.size.toString()
+                }
+        }
+
+
+        private fun headToUserProfile() {
+            if (fileModel.ownerId != FirebaseUtil().currentUserUid()){
+                val intent = Intent(context, OtherUserProfile::class.java)
+                intent.putExtra("userID", fileModel.ownerId)
+                context.startActivity(intent)
             }
         }
 

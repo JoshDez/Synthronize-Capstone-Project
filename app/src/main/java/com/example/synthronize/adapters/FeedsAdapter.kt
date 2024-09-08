@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
 import com.example.synthronize.ViewPost
 import com.example.synthronize.databinding.FragmentCommunityBinding
@@ -83,7 +84,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 feedBinding.descriptionTV.text = postModel.caption
                 feedBinding.timestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
                 feedBinding.usernameTV.setOnClickListener {
-                    AppUtil().headToUserProfile(context, postModel.ownerId)
+                    headToUserProfile()
                 }
                 feedBinding.descriptionTV.setOnClickListener {
                     viewPost()
@@ -175,8 +176,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     }
                 }
             }
-
-            //TODO Not yet implemented
         }
 
         //FOR LOVE
@@ -238,6 +237,15 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 .collection("comments").get().addOnSuccessListener {
                     feedBinding.commentsCountTV.text = it.documents.size.toString()
                 }
+        }
+
+
+        private fun headToUserProfile() {
+            if (postModel.ownerId != FirebaseUtil().currentUserUid()){
+                val intent = Intent(context, OtherUserProfile::class.java)
+                intent.putExtra("userID", postModel.ownerId)
+                context.startActivity(intent)
+            }
         }
 
         private fun viewPost(){

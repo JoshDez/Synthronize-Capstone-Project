@@ -2,12 +2,15 @@ package com.example.synthronize.adapters
 
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
+import com.example.synthronize.ViewFile
 import com.example.synthronize.databinding.ItemCompetitionFileBinding
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.UserModel
@@ -52,20 +55,41 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
                 val user = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, fileModel.ownerId, binding.profileCIV)
                 binding.usernameTV.text = user.username
+
+                binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
+                binding.captionTV.text = fileModel.caption
+                binding.fileNameTV.text = fileModel.fileName
+                displayFileIcon()
+
+                binding.fileLayout.setOnClickListener {
+                    downloadFileFromFirebase()
+                }
+
+                binding.mainLayout.setOnClickListener {
+                    headToViewFile()
+                }
+
+                binding.profileCIV.setOnClickListener {
+                    headToUserProfile()
+                }
+
+                binding.usernameTV.setOnClickListener {
+                    headToUserProfile()
+                }
+
+                binding.menuBtn.setOnClickListener {
+                    DialogUtil().openMenuDialog(context, inflater, "File Submission", fileModel.fileId,
+                        fileModel.ownerId, fileModel.communityId, competitionId){}
+                }
             }
+        }
 
-            binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
-            binding.captionTV.text = fileModel.caption
-            binding.fileNameTV.text = fileModel.fileName
-            displayFileIcon()
 
-            binding.fileLayout.setOnClickListener {
-                downloadFileFromFirebase()
-            }
-
-            binding.menuBtn.setOnClickListener {
-                DialogUtil().openMenuDialog(context, inflater, "File Submission", fileModel.fileId,
-                    fileModel.ownerId, fileModel.communityId, competitionId){}
+        private fun headToUserProfile() {
+            if (fileModel.ownerId != FirebaseUtil().currentUserUid()){
+                val intent = Intent(context, OtherUserProfile::class.java)
+                intent.putExtra("userID", fileModel.ownerId)
+                context.startActivity(intent)
             }
         }
 
@@ -109,6 +133,14 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
             }
         }
 
+
+        private fun headToViewFile(){
+            val intent = Intent(context, ViewFile::class.java)
+            intent.putExtra("communityId", fileModel.communityId)
+            intent.putExtra("fileId", fileModel.fileId)
+            intent.putExtra("contentType", "File Submission")
+            context.startActivity(intent)
+        }
 
         private fun getUniqueFileName(directory: File, fileName: String): String {
             var newFileName = fileName

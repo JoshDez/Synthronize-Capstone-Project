@@ -9,8 +9,10 @@ import android.view.View
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.synthronize.CreateCompetition
 import com.example.synthronize.CreatePost
 import com.example.synthronize.CreateProduct
+import com.example.synthronize.CreateUploadFile
 import com.example.synthronize.adapters.ChatroomAdapter
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.DialogForwardContentBinding
@@ -250,7 +252,6 @@ class DialogUtil: OnItemClickListener {
 
             if (contentOwnerId == FirebaseUtil().currentUserUid() ||
                 AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), FirebaseUtil().currentUserUid())){
-                //TODO for moderator
                 //displays delete post option if the user is the owner or admin of the community
                 menuDialogBinding.option1.visibility = View.VISIBLE
                 menuDialogBinding.optiontitle1.text = "Delete $contentType"
@@ -292,6 +293,37 @@ class DialogUtil: OnItemClickListener {
                         editContent(context, contentType, contentId, communityId, extraId)
                     }, 500)
                 }
+            } else if (AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), FirebaseUtil().currentUserUid())){
+                //displays delete post option if the user is the owner or admin of the community
+                menuDialogBinding.option1.visibility = View.VISIBLE
+                menuDialogBinding.optiontitle1.text = "Delete $contentType"
+                menuDialogBinding.optiontitle1.setOnClickListener {
+                    menuDialog.dismiss()
+                    Handler().postDelayed({
+                        val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
+                        val warningDialog = DialogPlus.newDialog(context)
+                            .setContentHolder(ViewHolder(warningDialogBinding.root))
+                            .setCancelable(true)
+                            .setMargin(100, 800, 100, 800)
+                            .setGravity(Gravity.CENTER)
+                            .create()
+
+                        warningDialogBinding.titleTV.text = "Delete $contentType"
+                        warningDialogBinding.messageTV.text = "Do you want to delete this ${contentType.lowercase()}?"
+                        warningDialogBinding.yesBtn.setOnClickListener {
+                            deleteContent(contentType, contentId, communityId, extraId)
+                            warningDialog.dismiss()
+                            closeCurrentActivity(true)
+                        }
+                        warningDialogBinding.NoBtn.setOnClickListener {
+                            warningDialog.dismiss()
+                            closeCurrentActivity(false)
+                        }
+
+                        warningDialog.show()
+
+                    }, 500)
+                }
             } else {
                 menuDialogBinding.option1.visibility = View.VISIBLE
                 menuDialogBinding.optiontitle1.text = "Report $contentType"
@@ -316,13 +348,23 @@ class DialogUtil: OnItemClickListener {
                 context.startActivity(intent)
             }
             "Competition" -> {
-                //FOR COMPETITION
+                val intent = Intent(context, CreateCompetition::class.java)
+                intent.putExtra("competitionId", contentId)
+                intent.putExtra("communityId", communityId)
+                context.startActivity(intent)
             }
             "File Submission" -> {
-                //FOR COMPETITION FILE
+                val intent = Intent(context, CreateUploadFile::class.java)
+                intent.putExtra("fileId", contentId)
+                intent.putExtra("competitionId", extraId)
+                intent.putExtra("communityId", communityId)
+                context.startActivity(intent)
             }
             "File" -> {
-                //FOR FILES
+                val intent = Intent(context, CreateUploadFile::class.java)
+                intent.putExtra("fileId", contentId)
+                intent.putExtra("communityId", communityId)
+                context.startActivity(intent)
             }
             "Product" -> {
                 //FOR PRODUCT

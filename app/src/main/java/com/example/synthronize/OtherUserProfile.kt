@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.AllFeedsAdapter
@@ -61,14 +62,20 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
 
 
     private fun navigate(tab: String, toRefresh:Boolean = false) {
+        val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_teal)
+        val selectedColor = ContextCompat.getColor(this, R.color.light_teal)
+        binding.postsBtn.setTextColor(unselectedColor)
+        binding.filesBtn.setTextColor(unselectedColor)
         binding.postsRV.visibility = View.INVISIBLE
         binding.filesRV.visibility = View.INVISIBLE
 
         if (tab == "posts"){
+            binding.postsBtn.setTextColor(selectedColor)
             binding.postsRV.visibility = View.VISIBLE
             if (toRefresh)
                 setupPostsRV()
         }else if (tab == "files"){
+            binding.filesBtn.setTextColor(selectedColor)
             binding.filesRV.visibility = View.VISIBLE
             if (toRefresh)
                 setupFilesRV()

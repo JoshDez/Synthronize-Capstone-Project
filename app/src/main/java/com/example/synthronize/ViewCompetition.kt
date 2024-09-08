@@ -27,6 +27,7 @@ import com.example.synthronize.model.InstructionModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldPath
@@ -155,6 +156,19 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                         }
                     }
                 }
+
+
+                binding.kebabMenuBtn.setOnClickListener {
+                    DialogUtil().openMenuDialog(this, layoutInflater, "Competition", competitionModel.competitionId,
+                        competitionModel.ownerId, competitionModel.communityId){closeCurrentActivity ->
+                        if (closeCurrentActivity){
+                            Handler().postDelayed({
+                                onBackPressed()
+                            }, 2000)
+                        }
+                    }
+                }
+
                 binding.viewCompetitionRefresh.isRefreshing = false
             }
         }

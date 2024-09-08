@@ -84,6 +84,7 @@ class CreateProduct : AppCompatActivity() {
 
     private fun bindButtons(){
 
+
         if (productId == "null" || productId.isEmpty()){
             binding.uploadBtn.text = "Upload"
         } else {
@@ -293,7 +294,7 @@ class CreateProduct : AppCompatActivity() {
                     price = price,
                     imageList = imageList,
                     ownerId = FirebaseUtil().currentUserUid(),
-                    createdTimestamp = Timestamp.now()
+                    createdTimestamp = existingProductModel.createdTimestamp
                 )
 
                 FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(productId).set(productModel).addOnSuccessListener {

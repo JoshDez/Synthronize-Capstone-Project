@@ -1,5 +1,6 @@
 package com.example.synthronize
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -76,6 +77,14 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                         }
                     }
 
+                    binding.profileCIV.setOnClickListener {
+                        headToUserProfile()
+                    }
+
+                    binding.ownerUsernameTV.setOnClickListener {
+                        headToUserProfile()
+                    }
+
                     if (postModel.contentList.isNotEmpty())
                         bindContent(postModel.contentList)
 
@@ -90,6 +99,15 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
         }
     }
 
+
+
+    private fun headToUserProfile() {
+        if (postModel.ownerId != FirebaseUtil().currentUserUid()){
+            val intent = Intent(this, OtherUserProfile::class.java)
+            intent.putExtra("userID", postModel.ownerId)
+            startActivity(intent)
+        }
+    }
 
     private fun bindComments(){
         val query: Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).collection("comments")

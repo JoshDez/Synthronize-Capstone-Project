@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.synthronize.Chatroom
+import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.ViewProduct
 import com.example.synthronize.databinding.ItemProductBinding
 import com.example.synthronize.model.ProductModel
@@ -93,6 +94,14 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
                     context.startActivity(intent)
                 }
 
+                binding.profileCIV.setOnClickListener {
+                    headToUserProfile()
+                }
+
+                binding.usernameTV.setOnClickListener {
+                    headToUserProfile()
+                }
+
                 binding.menuBtn.setOnClickListener {
                     DialogUtil().openMenuDialog(context, inflater, "Product", productModel.productId,
                         productModel.ownerId, productModel.communityId){}
@@ -102,6 +111,14 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
             }
         }
 
+
+        private fun headToUserProfile() {
+            if (productModel.ownerId != FirebaseUtil().currentUserUid()){
+                val intent = Intent(context, OtherUserProfile::class.java)
+                intent.putExtra("userID", productModel.ownerId)
+                context.startActivity(intent)
+            }
+        }
         private fun bindContent() {
             if (productModel.imageList.isNotEmpty()){
                 //displays content with view pager 2

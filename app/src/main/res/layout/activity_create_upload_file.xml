@@ -106,40 +106,38 @@
 
             <RelativeLayout
                 android:id="@+id/fileLayout"
-                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/removeFileBtn"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:foreground="@drawable/baseline_close_24"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="20dp"
-                    android:foregroundTint="@color/white"
                     android:backgroundTint="#A98C2121"
-                    app:fabCustomSize="50dp"/>
+                    android:foreground="@drawable/baseline_close_24"
+                    android:foregroundTint="@color/white"
+                    app:fabCustomSize="50dp" />
 
                 <ImageView
                     android:id="@+id/fileIV"
-                    android:layout_centerHorizontal="true"
                     android:layout_width="300dp"
                     android:layout_height="300dp"
-                    android:src="@drawable/baseline_attach_file_24"/>
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/baseline_attach_file_24" />
 
                 <TextView
                     android:id="@+id/fileNameTV"
                     android:layout_width="300dp"
-                    android:layout_centerHorizontal="true"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/fileIV"
-                    android:textColor="@color/light_teal"
+                    android:layout_centerHorizontal="true"
                     android:contentDescription="file name"
                     android:textAlignment="center"
-                    android:textSize="20sp"/>
-
-
+                    android:textColor="@color/light_teal"
+                    android:textSize="20sp" />
             </RelativeLayout>
 
         </LinearLayout>

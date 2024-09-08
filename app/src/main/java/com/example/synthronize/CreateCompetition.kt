@@ -14,21 +14,31 @@ import com.example.synthronize.databinding.ActivityCreateCompetitionBinding
 import com.example.synthronize.interfaces.OnInstructionModified
 import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.InstructionModel
+import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
 import java.util.Calendar
+import java.util.Date
 
 class CreateCompetition : AppCompatActivity(), OnInstructionModified {
     private lateinit var binding:ActivityCreateCompetitionBinding
     private lateinit var instructionsAdapter: InstructionsAdapter
+    private lateinit var existingCompetitionModel: CompetitionModel
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private val instructionMap:HashMap<String, InstructionModel> = HashMap()
     private var idCtr = 0
     private var communityId = ""
+    private var competitionId = ""
     private var resultType = "All"
+
+    private var calendar = Calendar.getInstance()
+    private var calYear = calendar.get(Calendar.YEAR)
+    private var calMonth = calendar.get(Calendar.MONTH)
+    private var calDay = calendar.get(Calendar.DAY_OF_MONTH)
+
     //from adapter
     private var selectedKey:String = ""
     private var selectedInstruction:String = ""
@@ -39,6 +49,7 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
         setContentView(binding.root)
 
         communityId = intent.getStringExtra("communityId").toString()
+        competitionId = intent.getStringExtra("competitionId").toString()
 
         //Launcher for community profile pic
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
@@ -56,11 +67,73 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
             }
         }
 
+        if (competitionId == "null" || competitionId.isEmpty()){
+            //For New Competition
+            bindButtons()
+        } else {
+            //For Existing Competition to edit
+            FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).get().addOnSuccessListener {
+                existingCompetitionModel = it.toObject(CompetitionModel::class.java)!!
+                binding.competitionNameEdtTxt.setText(existingCompetitionModel.competitionName)
+                binding.competitionDescEdtTxt.setText(existingCompetitionModel.description)
+                binding.competitionRewardsEdtTxt.setText(existingCompetitionModel.rewards)
+                communityId = existingCompetitionModel.communityId
+
+                //bind result type
+                var result = existingCompetitionModel.results.keys.toList()[0]
+                if (result == "All"){
+                    binding.allRB.isChecked = true
+                    binding.topRB.isChecked = false
+                    resultType = "All"
+                } else {
+                    binding.allRB.isChecked = false
+                    binding.topRB.isChecked = true
+                    binding.topEdtTxt.setText(existingCompetitionModel.results.keys.toList()[0]
+                        .split('/').last().toString())
+                    resultType = "Top"
+                }
+
+                //bind deadline
+                val firebaseTimestamp: Timestamp = existingCompetitionModel.deadline
+                val date: Date = firebaseTimestamp.toDate()
+                val calendar = Calendar.getInstance()
+                calendar.time = date
+                calYear = calendar.get(Calendar.YEAR)
+                calMonth = calendar.get(Calendar.MONTH)
+                calDay = calendar.get(Calendar.DAY_OF_MONTH)
+                val stringDate = "${calMonth + 1}/$calDay/$calYear"
+                binding.deadlineEdtTxt.setText(stringDate)
+
+                //bind instructions
+                val orderedKeys = existingCompetitionModel.instruction.keys.toList().sorted()
+                for (key in orderedKeys){
+                    val content = existingCompetitionModel.instruction.getValue(key)
+                    val instructionModel = InstructionModel(
+                        instruction = content[0],
+                        imageName = content[1],
+                        saved = true
+                    )
+                    instructionMap[key] = instructionModel
+                }
+
+                idCtr = orderedKeys.last().toInt() + 1
+
+                setupInstructionsRV()
+                bindButtons()
+
+            }
+        }
+    }
+
+    private fun bindButtons(){
+
+        if (competitionId != "null" && competitionId.isNotEmpty()){
+            binding.postBtn.text = "Save"
+            binding.toolbarTitleTV.text = "Edit Competition"
+        }
+
+
         binding.deadlineEdtTxt.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val calYear = calendar.get(Calendar.YEAR)
-            val calMonth = calendar.get(Calendar.MONTH)
-            val calDay = calendar.get(Calendar.DAY_OF_MONTH)
 
             DatePickerDialog(this, DatePickerDialog.OnDateSetListener{ _, selectedYear, selectedMonth, selectedDay ->
 
@@ -142,14 +215,35 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
             Toast.makeText(this, "Please provide instructions", Toast.LENGTH_SHORT).show()
         } else {
             var competitionModel = CompetitionModel()
-            FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).add(competitionModel).addOnSuccessListener {
 
-                if (resultType == "Top"){
-                    resultType = "$resultType/$winnersLimit"
+            if (resultType == "Top"){
+                resultType = "$resultType/$winnersLimit"
+            }
+
+            if (competitionId == "null" || competitionId.isEmpty()){
+                //New Competition
+                FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).add(competitionModel).addOnSuccessListener {
+                    competitionModel = CompetitionModel(
+                        competitionId = it.id,
+                        competitionName = competitionName,
+                        description = competitionDesc,
+                        rewards = rewards,
+                        ownerId = FirebaseUtil().currentUserUid(),
+                        instruction = getInstructions(),
+                        communityId = communityId,
+                        results = hashMapOf(resultType to listOf()),
+                        deadline = DateAndTimeUtil().convertDateToTimestamp(deadline),
+                        createdTimestamp = Timestamp.now()
+                    )
+                    FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(it.id).set(competitionModel).addOnSuccessListener {
+                        Toast.makeText(this, "The competition has been uploaded", Toast.LENGTH_SHORT).show()
+                        this.finish()
+                    }
                 }
-
+            } else {
+                //Edited Competition
                 competitionModel = CompetitionModel(
-                    competitionId = it.id,
+                    competitionId = competitionId,
                     competitionName = competitionName,
                     description = competitionDesc,
                     rewards = rewards,
@@ -158,13 +252,41 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
                     communityId = communityId,
                     results = hashMapOf(resultType to listOf()),
                     deadline = DateAndTimeUtil().convertDateToTimestamp(deadline),
-                    createdTimestamp = Timestamp.now()
+                    createdTimestamp = existingCompetitionModel.createdTimestamp
                 )
 
-                FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(it.id).set(competitionModel).addOnSuccessListener {
-                    Toast.makeText(this, "The competition has been uploaded", Toast.LENGTH_SHORT).show()
+                deleteInstructionImagesFromStorage()
+
+                FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).set(competitionModel).addOnSuccessListener {
+                    Toast.makeText(this, "The competition has been updated", Toast.LENGTH_SHORT).show()
                     this.finish()
                 }
+            }
+
+        }
+    }
+
+    private fun deleteInstructionImagesFromStorage(){
+        val currentImages:ArrayList<String> = arrayListOf()
+        val pastImages:ArrayList<String> = arrayListOf()
+
+        for (key in instructionMap.keys.toList().sorted()){
+            val tempModel = instructionMap.getValue(key)
+            if (tempModel.imageName.isNotEmpty()){
+                currentImages.add(tempModel.imageName)
+            }
+        }
+        for (key in existingCompetitionModel.instruction.keys.toList().sorted()){
+            val imageName = existingCompetitionModel.instruction.getValue(key)[1]
+            if (imageName.isNotEmpty()){
+                pastImages.add(imageName)
+            }
+        }
+        for (image in pastImages){
+            //past image not included in current images
+            if (!currentImages.contains(image)){
+                //removes image from firebase storage
+                FirebaseUtil().retrieveCommunityContentImageRef(image).delete()
             }
         }
     }

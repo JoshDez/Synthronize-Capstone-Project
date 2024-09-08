@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -141,7 +142,6 @@ class CreatePost : AppCompatActivity() {
             videoPickerLauncher.launch(intent)
         }
         binding.backBtn.setOnClickListener {
-            //TODO dialog message
             this.finish()
         }
     }
@@ -185,7 +185,6 @@ class CreatePost : AppCompatActivity() {
     }
 
     private fun addVideo(selectedVideo: Uri, existingFilename: String = "") {
-        //TODO
         //creates video id
         val userId = FirebaseUtil().currentUserUid()
         var filename = existingFilename
@@ -201,6 +200,10 @@ class CreatePost : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
+
+
+        // Set inner gravity to center
+        verticalLayout.gravity = Gravity.CENTER
         verticalLayout.layoutParams = linearParams
 
         //creates thumbnail
@@ -279,6 +282,9 @@ class CreatePost : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
+
+        // Set inner gravity to center
+        verticalLayout.gravity = Gravity.CENTER
         verticalLayout.layoutParams = linearParams
 
         //creates image view

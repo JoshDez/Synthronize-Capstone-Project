@@ -25,6 +25,7 @@ class ContentUtil {
         val imageView = ImageView(context)
         val imageDpToPx = TypedValueCompat.dpToPx(400F, context.resources.displayMetrics)
         val imageParams = LinearLayout.LayoutParams(imageDpToPx.toInt(), imageDpToPx.toInt())
+        imageParams.gravity = Gravity.CENTER
         imageView.layoutParams = imageParams
 
         setImageContent(context, filename, imageView)
@@ -57,6 +58,7 @@ class ContentUtil {
         // Create ImageView for the video thumbnail
         val imageView = ImageView(context)
         val imageParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        imageParams.gravity = Gravity.CENTER
         imageView.layoutParams = imageParams
 
         // Add the video thumbnail to the image view
