@@ -18,11 +18,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.TypedValueCompat
 import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreatePostBinding
+import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 import java.util.UUID
 
 class CreatePost : AppCompatActivity() {
@@ -103,28 +107,14 @@ class CreatePost : AppCompatActivity() {
             binding.postBtn.text = "Post"
             binding.postBtn.setOnClickListener {
                 if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
-                    addPost(){isUploaded ->
-                        if (isUploaded)
-                            Handler().postDelayed({
-                                this.finish()
-                            }, 2000)
-                        else
-                            Toast.makeText(this, "Error occurred while uploading", Toast.LENGTH_SHORT).show()
-                    }
+                    showLoadingDialog()
                 }
             }
         } else {
             binding.postBtn.text = "Save"
             binding.postBtn.setOnClickListener {
                 if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
-                    addPost(){isUploaded ->
-                        if (isUploaded)
-                            Handler().postDelayed({
-                                this.finish()
-                            }, 2000)
-                        else
-                            Toast.makeText(this, "Error occurred while saving", Toast.LENGTH_SHORT).show()
-                    }
+                    showLoadingDialog()
                 }
             }
         }
@@ -436,6 +426,35 @@ class CreatePost : AppCompatActivity() {
             Toast.makeText(this, "content is still uploading", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun showLoadingDialog(){
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        if (postId.isNotEmpty() && postId != "null"){
+            dialogLoadingBinding.messageTV.text = "Saving..."
+        } else {
+            dialogLoadingBinding.messageTV.text = "Uploading..."
+        }
+        addPost{isUploaded ->
+            if (isUploaded){
+                Handler().postDelayed({
+                    loadingDialog.dismiss()
+                    this.finish()
+                }, 2000)
+            } else {
+                loadingDialog.dismiss()
+                Toast.makeText(this, "Error occurred while uploading", Toast.LENGTH_SHORT).show()
+            }
+        }
+        loadingDialog.show()
+    }
+
     private fun deleteFilesFromFirebaseStorage(){
         //deletes files that are no longer included in content list while editing
         for (filename in existingPostModel.contentList){

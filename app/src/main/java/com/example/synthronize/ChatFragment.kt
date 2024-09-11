@@ -260,6 +260,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
         val menuDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(menuBinding.root))
             .setMargin(400, 0, 0, 0)
+            .setBackgroundColorResId(R.color.transparent)
             .setGravity(Gravity.TOP)
             .setCancelable(true)
             .create()

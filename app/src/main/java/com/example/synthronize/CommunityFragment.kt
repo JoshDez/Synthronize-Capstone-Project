@@ -175,6 +175,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         val menuDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(menuBinding.root))
             .setMargin(50,0,50,0)
+            .setBackgroundColorResId(R.color.transparent)
             .setCancelable(true)
             .setGravity(Gravity.BOTTOM)
             .create()

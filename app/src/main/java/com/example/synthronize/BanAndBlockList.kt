@@ -130,7 +130,7 @@ class BanAndBlockList : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             val warningDialog = DialogPlus.newDialog(this)
                 .setContentHolder(ViewHolder(warningBinding.root))
                 .setGravity(Gravity.CENTER)
-                .setMargin(50, 700, 50, 700)
+                .setBackgroundColorResId(R.color.transparent)
                 .create()
 
             warningBinding.messageTV.text = "Do you want to unblock this user?"
@@ -158,7 +158,7 @@ class BanAndBlockList : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             val warningDialog = DialogPlus.newDialog(this)
                 .setContentHolder(ViewHolder(warningBinding.root))
                 .setGravity(Gravity.CENTER)
-                .setMargin(50, 700, 50, 700)
+                .setBackgroundColorResId(R.color.transparent)
                 .create()
 
             warningBinding.messageTV.text = "Do you want to unban this user?"

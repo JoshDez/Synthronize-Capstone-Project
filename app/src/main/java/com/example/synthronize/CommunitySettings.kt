@@ -129,7 +129,7 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
             val warningBinding = DialogWarningMessageBinding.inflate(layoutInflater)
             val warningDialog = DialogPlus.newDialog(this)
                 .setContentHolder(ViewHolder(warningBinding.root))
-                .setMargin(50, 800, 50, 800)
+                .setBackgroundColorResId(R.color.transparent)
                 .setGravity(Gravity.CENTER)
                 .create()
             warningBinding.titleTV.text = "Warning"
@@ -183,7 +183,7 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
                 val dialogPlus = DialogPlus.newDialog(this)
                     .setContentHolder(ViewHolder(dialogPlusBinding.root))
                     .setGravity(Gravity.CENTER)
-                    .setMargin(50, 800, 50, 800)
+                    .setBackgroundColorResId(R.color.transparent)
                     .setCancelable(true)
                     .create()
 

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.InstructionsAdapter
 import com.example.synthronize.databinding.ActivityCreateCompetitionBinding
+import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.interfaces.OnInstructionModified
 import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.InstructionModel
@@ -20,6 +22,8 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 import java.util.Calendar
 import java.util.Date
 
@@ -235,10 +239,8 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
                         deadline = DateAndTimeUtil().convertDateToTimestamp(deadline),
                         createdTimestamp = Timestamp.now()
                     )
-                    FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(it.id).set(competitionModel).addOnSuccessListener {
-                        Toast.makeText(this, "The competition has been uploaded", Toast.LENGTH_SHORT).show()
-                        this.finish()
-                    }
+
+                    uploadToFirebase(it.id, competitionModel, "The competition has been uploaded")
                 }
             } else {
                 //Edited Competition
@@ -250,17 +252,14 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
                     ownerId = FirebaseUtil().currentUserUid(),
                     instruction = getInstructions(),
                     communityId = communityId,
-                    results = hashMapOf(resultType to listOf()),
+                    results = existingCompetitionModel.results,
                     deadline = DateAndTimeUtil().convertDateToTimestamp(deadline),
                     createdTimestamp = existingCompetitionModel.createdTimestamp
                 )
 
                 deleteInstructionImagesFromStorage()
 
-                FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).set(competitionModel).addOnSuccessListener {
-                    Toast.makeText(this, "The competition has been updated", Toast.LENGTH_SHORT).show()
-                    this.finish()
-                }
+                uploadToFirebase(competitionId, competitionModel, "The competition has been updated")
             }
 
         }
@@ -309,6 +308,36 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
             map[key] = listOf(instruction, imageName)
         }
         return map
+    }
+
+    private fun uploadToFirebase(competitionId:String, competitionModel: CompetitionModel, toastMsg:String){
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        if (this.competitionId.isNotEmpty() && this.competitionId != "null"){
+            dialogLoadingBinding.messageTV.text = "Saving..."
+        } else {
+            dialogLoadingBinding.messageTV.text = "Uploading..."
+        }
+
+        FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).set(competitionModel).addOnCompleteListener {
+            if (it.isSuccessful){
+                Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
+                loadingDialog.dismiss()
+                this.finish()
+            } else {
+                Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
+                loadingDialog.dismiss()
+                this.finish()
+            }
+        }
+
+        loadingDialog.show()
     }
 
     private fun setupInstructionsRV(){

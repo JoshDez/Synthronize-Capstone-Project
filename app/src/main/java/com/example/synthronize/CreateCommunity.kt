@@ -447,7 +447,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             val dialogPlus = DialogPlus.newDialog(this)
                 .setContentHolder(ViewHolder(binding.root))
                 .setGravity(Gravity.CENTER)
-                .setMargin(50, 700, 50, 700)
+                .setBackgroundColorResId(R.color.transparent)
                 .create()
 
             binding.titleTV.text = "Exit Community Creation"

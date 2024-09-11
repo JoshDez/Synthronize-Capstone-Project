@@ -388,13 +388,15 @@ class AppUtil {
             "bobo", "puta", "putang", "pota", "potaena", "pakshet", "gago", "gagong", "kupal", "tite", "inamo", "kantot", "kantotan", "burat", "leche", "tarantado", "bakla" // Filipino bad words
         )
 
-        // Convert the input to lowercase to make the check case-insensitive
-        val lowerCaseInput = input.toLowerCase()
+        // Convert the input to lowercase and split the string by space
+        val words = input.toLowerCase().split(' ')
 
         // Check if any bad word is present in the input string
         for (badWord in badWords) {
-            if (lowerCaseInput.contains(badWord)) {
-                return true
+            for (word in words) {
+                if (word == badWord) {
+                    return true
+                }
             }
         }
 

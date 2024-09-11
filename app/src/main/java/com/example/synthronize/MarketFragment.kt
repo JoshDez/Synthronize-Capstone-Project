@@ -87,6 +87,26 @@ class MarketFragment(private val mainBinding: FragmentCommunityBinding, private 
         binding.marketRV.adapter = marketAdapter
         marketAdapter.startListening()
     }
+    override fun onStart() {
+        super.onStart()
+        if (::marketAdapter.isInitialized){
+            marketAdapter.startListening()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::marketAdapter.isInitialized){
+            marketAdapter.notifyDataSetChanged()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::marketAdapter.isInitialized){
+            marketAdapter.stopListening()
+        }
+    }
 
     override fun onRefresh() {
         Handler().postDelayed({

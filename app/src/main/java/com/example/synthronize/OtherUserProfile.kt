@@ -189,6 +189,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
         val menuDialog = DialogPlus.newDialog(this)
             .setContentHolder(ViewHolder(menuBinding.root))
             .setMargin(400, 0, 0, 0)
+            .setBackgroundColorResId(R.color.transparent)
             .setGravity(Gravity.TOP)
             .setCancelable(true)
             .create()
@@ -231,7 +232,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                 val warningDialog = DialogPlus.newDialog(this)
                     .setContentHolder(ViewHolder(warningBinding.root))
                     .setGravity(Gravity.CENTER)
-                    .setMargin(50, 700, 50, 700)
+                    .setBackgroundColorResId(R.color.transparent)
                     .create()
 
                 warningBinding.messageTV.text = "Do you want to block this user? (You will still see this account in communities and group chats)"
@@ -265,7 +266,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                 val warningDialog = DialogPlus.newDialog(this)
                     .setContentHolder(ViewHolder(warningBinding.root))
                     .setGravity(Gravity.CENTER)
-                    .setMargin(50, 700, 50, 700)
+                    .setBackgroundColorResId(R.color.transparent)
                     .create()
 
                 warningBinding.messageTV.text = "Do you want to unblock this user?"

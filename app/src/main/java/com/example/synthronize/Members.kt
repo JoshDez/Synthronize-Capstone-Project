@@ -237,7 +237,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 val warningDialog = DialogPlus.newDialog(this)
                     .setContentHolder(ViewHolder(warningBinding.root))
                     .setGravity(Gravity.CENTER)
-                    .setMargin(50, 700, 50, 700)
+                    .setBackgroundColorResId(R.color.transparent)
                     .create()
 
                 warningBinding.messageTV.text = "Do you want to ban this user from community?"
@@ -298,7 +298,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
             val warningDialog = DialogPlus.newDialog(this)
                 .setContentHolder(ViewHolder(warningBinding.root))
                 .setGravity(Gravity.CENTER)
-                .setMargin(50, 700, 50, 700)
+                .setBackgroundColorResId(R.color.transparent)
                 .create()
 
             warningBinding.messageTV.text = "Do you want to make this user $role?"
@@ -358,7 +358,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
             val warningDialog = DialogPlus.newDialog(this)
                 .setContentHolder(ViewHolder(warningBinding.root))
                 .setGravity(Gravity.CENTER)
-                .setMargin(50, 700, 50, 700)
+                .setBackgroundColorResId(R.color.transparent)
                 .create()
 
             warningBinding.titleTV.text = "Kick User"

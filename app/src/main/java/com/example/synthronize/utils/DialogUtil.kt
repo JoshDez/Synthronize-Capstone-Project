@@ -13,6 +13,7 @@ import com.example.synthronize.CreateCompetition
 import com.example.synthronize.CreatePost
 import com.example.synthronize.CreateProduct
 import com.example.synthronize.CreateUploadFile
+import com.example.synthronize.R
 import com.example.synthronize.adapters.ChatroomAdapter
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.DialogForwardContentBinding
@@ -247,6 +248,7 @@ class DialogUtil: OnItemClickListener {
                 .setContentHolder(ViewHolder(menuDialogBinding.root))
                 .setCancelable(true)
                 .setExpanded(false)
+                .setBackgroundColorResId(R.color.transparent)
                 .setGravity(Gravity.CENTER)
                 .create()
 
@@ -262,7 +264,7 @@ class DialogUtil: OnItemClickListener {
                         val warningDialog = DialogPlus.newDialog(context)
                             .setContentHolder(ViewHolder(warningDialogBinding.root))
                             .setCancelable(true)
-                            .setMargin(100, 800, 100, 800)
+                            .setBackgroundColorResId(R.color.transparent)
                             .setGravity(Gravity.CENTER)
                             .create()
 
@@ -304,7 +306,7 @@ class DialogUtil: OnItemClickListener {
                         val warningDialog = DialogPlus.newDialog(context)
                             .setContentHolder(ViewHolder(warningDialogBinding.root))
                             .setCancelable(true)
-                            .setMargin(100, 800, 100, 800)
+                            .setBackgroundColorResId(R.color.transparent)
                             .setGravity(Gravity.CENTER)
                             .create()
 

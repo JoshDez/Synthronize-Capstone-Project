@@ -255,6 +255,46 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         sharedFilesAdapter.startListening()
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        if (::resourcesAdapter.isInitialized){
+            resourcesAdapter.startListening()
+        }
+        if (::sharedFilesAdapter.isInitialized){
+            sharedFilesAdapter.startListening()
+        }
+        if (::competitionsAdapter.isInitialized){
+            competitionsAdapter.startListening()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::resourcesAdapter.isInitialized){
+            resourcesAdapter.notifyDataSetChanged()
+        }
+        if (::sharedFilesAdapter.isInitialized){
+            sharedFilesAdapter.notifyDataSetChanged()
+        }
+        if (::competitionsAdapter.isInitialized){
+            competitionsAdapter.notifyDataSetChanged()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::resourcesAdapter.isInitialized){
+            resourcesAdapter.stopListening()
+        }
+        if (::sharedFilesAdapter.isInitialized){
+            sharedFilesAdapter.stopListening()
+        }
+        if (::competitionsAdapter.isInitialized){
+            competitionsAdapter.stopListening()
+        }
+    }
+
     override fun onRefresh() {
         Handler().postDelayed({
             navigate(currentTab, true)

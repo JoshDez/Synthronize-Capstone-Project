@@ -204,7 +204,7 @@ class EditCommunity : AppCompatActivity() {
             val dialogPlus = DialogPlus.newDialog(this)
                 .setContentHolder(ViewHolder(dialogBinding.root))
                 .setGravity(Gravity.CENTER)
-                .setMargin(50, 800, 50, 800)
+                .setBackgroundColorResId(R.color.transparent)
                 .setCancelable(true)
                 .create()
             dialogBinding.yesBtn.setOnClickListener {
