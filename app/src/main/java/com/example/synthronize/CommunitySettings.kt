@@ -123,7 +123,10 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
             startActivity(intent)
         }
         binding.editCommunityRulesBtn.setOnClickListener {
-            Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, CommunityRules::class.java)
+            intent.putExtra("communityId", communityModel.communityId)
+            intent.putExtra("toEdit", true)
+            startActivity(intent)
         }
         binding.deleteCommunityBtn.setOnClickListener {
             val warningBinding = DialogWarningMessageBinding.inflate(layoutInflater)
@@ -211,6 +214,12 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
                 }
                 dialogPlus.show()
             }
+        }
+
+        binding.viewCommunityRulesBtn.setOnClickListener {
+            val intent = Intent(this, CommunityRules::class.java)
+            intent.putExtra("communityId", communityModel.communityId)
+            startActivity(intent)
         }
 
         binding.copyCodeBtn.setOnClickListener {

@@ -14,4 +14,5 @@ data class CommunityModel(
     var communityMedia:Map<String, String> = HashMap(),
     var joinRequestList: List<String> = listOf(),
     var bannedUsers: List<String> = listOf(),
+    var communityRules: List<String> = listOf()
 )
