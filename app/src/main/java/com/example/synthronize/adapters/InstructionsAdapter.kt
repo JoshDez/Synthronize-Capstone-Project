@@ -5,12 +5,14 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.synthronize.R
 import com.example.synthronize.databinding.ItemInstructionBinding
 import com.example.synthronize.interfaces.OnInstructionModified
 import com.example.synthronize.model.InstructionModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 
 //FOR CREATE COMPETITIONS CLASS
@@ -46,7 +48,11 @@ class InstructionsAdapter(private val context: Context, private val instructionM
                 //buttons
                 instructionBinding.saveInstructionBtn.setOnClickListener {
                     val newInstruction = instructionBinding.instructionEdtTxt.text.toString()
-                    if (newInstruction.isNotEmpty()){
+                    if (newInstruction.isEmpty()){
+                        Toast.makeText(context, "Please type your instruction", Toast.LENGTH_SHORT).show()
+                    } else if (AppUtil().containsBadWord(newInstruction)) {
+                        Toast.makeText(context, "Your instruction contains sensitive words", Toast.LENGTH_SHORT).show()
+                    } else {
                         instructionModel.instruction = newInstruction
                         instructionModel.saved = true
                         listener.modifiedInstruction(key, instructionModel)

@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.example.synthronize.databinding.ActivityEditCommunityBinding
+import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
@@ -114,13 +115,14 @@ class EditCommunity : AppCompatActivity() {
     }
 
     private fun validateCommunityDetails() {
-
         if (binding.communityNameEdtTxt.text.toString().isEmpty()) {
             binding.communityNameEdtTxt.error = "full name should not be blank"
 
+        } else if (AppUtil().containsBadWord(binding.communityDescEdtTxt.text.toString())) {
+            binding.communityDescEdtTxt.error = "Your description contains sensitive words"
+
         } else if (isCommunityNameValid) {
 
-            //TODO: Loading to be implemented
             //Set Community Details to userModel
             communityModel.communityName = binding.communityNameEdtTxt.text.toString()
             communityModel.communityDescription = binding.communityDescEdtTxt.text.toString()
@@ -130,6 +132,19 @@ class EditCommunity : AppCompatActivity() {
     }
 
     private fun setCommunityDetailsToFirebase() {
+        //loading
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        dialogLoadingBinding.messageTV.text = "Saving..."
+
+        loadingDialog.show()
+
         if (::communityModel.isInitialized){
             var delay:Long = 0
             //set new user profile pic
@@ -192,6 +207,8 @@ class EditCommunity : AppCompatActivity() {
                     Toast.makeText(this, "Error in updating community details, please try again", Toast.LENGTH_SHORT).show()
                 }
             }
+        } else {
+            loadingDialog.dismiss()
         }
     }
 
@@ -275,6 +292,9 @@ class EditCommunity : AppCompatActivity() {
                 if (name != currentUsername){
                     if (name.isEmpty()){
                         binding.communityNameEdtTxt.error = "Community name should not be empty"
+                        isCommunityNameValid = false
+                    } else if(AppUtil().containsBadWord(name)){
+                        binding.communityNameEdtTxt.error = "Your community name contains sensitive words"
                         isCommunityNameValid = false
                     } else {
                         isCommunityNameNotAvailable(name){ communityNameNotAvailable ->

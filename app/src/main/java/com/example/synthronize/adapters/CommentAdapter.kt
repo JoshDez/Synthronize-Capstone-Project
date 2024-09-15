@@ -2,10 +2,13 @@ package com.example.synthronize.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.OtherUserProfile
+import com.example.synthronize.R
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.databinding.ItemCommentBinding
 import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.UserModel
@@ -14,22 +17,24 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.CollectionReference
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
-class CommentAdapter(private val context: Context, options: FirestoreRecyclerOptions<CommentModel>):
+class CommentAdapter(private val context: Context, options: FirestoreRecyclerOptions<CommentModel>, private var commentPath: CollectionReference):
     FirestoreRecyclerAdapter<CommentModel, CommentAdapter.CommentViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemCommentBinding.inflate(inflater, parent, false)
-        return CommentViewHolder(binding, context)
+        return CommentViewHolder(binding, context, inflater)
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int, model: CommentModel) {
-
         holder.bind(model)
     }
 
-    class CommentViewHolder(private val binding: ItemCommentBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
+    inner class CommentViewHolder(private val binding: ItemCommentBinding, private val context: Context, private val inflater: LayoutInflater): RecyclerView.ViewHolder(binding.root){
         private lateinit var commentModel:CommentModel
 
         fun bind(model: CommentModel){
@@ -47,6 +52,39 @@ class CommentAdapter(private val context: Context, options: FirestoreRecyclerOpt
             binding.userProfileCIV.setOnClickListener {
                 headToUserProfile()
             }
+
+            binding.commentTV.setOnLongClickListener {
+                if (commentModel.commentOwnerId == FirebaseUtil().currentUserUid()){
+                    showWarningDialog()
+                }
+                true
+            }
+
+        }
+
+        private fun showWarningDialog() {
+            val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
+            val warningDialog = DialogPlus.newDialog(context)
+                .setContentHolder(ViewHolder(warningDialogBinding.root))
+                .setBackgroundColorResId(R.color.transparent)
+                .setGravity(Gravity.CENTER)
+                .setCancelable(true)
+                .create()
+
+            warningDialogBinding.titleTV.text = "Delete Comment?"
+            warningDialogBinding.messageTV.text = "Do you want to permanently delete your comment?"
+
+            warningDialogBinding.yesBtn.setOnClickListener {
+                if (commentModel.commentId.isNotEmpty())
+                    commentPath.document(commentModel.commentId).delete()
+
+                warningDialog.dismiss()
+            }
+            warningDialogBinding.NoBtn.setOnClickListener {
+                warningDialog.dismiss()
+            }
+
+            warningDialog.show()
         }
 
 

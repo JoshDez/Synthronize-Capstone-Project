@@ -1,6 +1,8 @@
 package com.example.synthronize
 
 import android.os.Bundle
+import android.os.Handler
+import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -11,11 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.InstructionsAdapter
 import com.example.synthronize.adapters.RulesAdapter
 import com.example.synthronize.databinding.ActivityCommunityRulesBinding
+import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.interfaces.OnCommunityRuleModified
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.InstructionModel
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.firestore.toObject
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class CommunityRules : AppCompatActivity(), OnCommunityRuleModified {
     private lateinit var binding:ActivityCommunityRulesBinding
@@ -85,6 +90,18 @@ class CommunityRules : AppCompatActivity(), OnCommunityRuleModified {
     }
 
     private fun saveCommunityRules() {
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        dialogLoadingBinding.messageTV.text = "Saving..."
+
+        loadingDialog.show()
+
         val keys = ruleMap.keys.toList().sorted()
         val communityRules:ArrayList<String> = arrayListOf()
         for (key in keys){
@@ -92,9 +109,11 @@ class CommunityRules : AppCompatActivity(), OnCommunityRuleModified {
         }
         FirebaseUtil().retrieveCommunityDocument(communityId).update("communityRules", communityRules).addOnCompleteListener {
             if (it.isSuccessful){
+                loadingDialog.dismiss()
                 Toast.makeText(this, "Successfully updated community rules", Toast.LENGTH_SHORT).show()
                 onBackPressed()
             } else {
+                loadingDialog.dismiss()
                 Toast.makeText(this, "Failed to update community rules", Toast.LENGTH_SHORT).show()
             }
         }

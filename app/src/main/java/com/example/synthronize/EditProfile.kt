@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.example.synthronize.databinding.ActivityEditProfileBinding
+import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -107,23 +108,41 @@ class EditProfile : AppCompatActivity() {
     }
 
     private fun validateUserProfileDetails() {
+        val fullName = binding.fullNameEdtTxt.text.toString()
+        val description = binding.descriptionEdtTxt.text.toString()
+        val username = binding.usernameEdtTxt.text.toString().lowercase()
+        val birthday = binding.birthdayEdtTxt.text.toString()
 
-        if (binding.fullNameEdtTxt.text.toString().isEmpty()) {
+        if (fullName.isEmpty()) {
             binding.fullNameEdtTxt.error = "full name should not be blank"
-
+        } else if (AppUtil().containsBadWord(fullName)) {
+            binding.fullNameEdtTxt.error = "Your full name contains sensitive words"
+        } else if (AppUtil().containsBadWord(description)) {
+            binding.descriptionEdtTxt.error = "Your description contains sensitive words"
         } else if (isUsernameValid) {
-
-            //TODO: Loading to be implemented
             //Set User Details to userModel
-            userModel.fullName = binding.fullNameEdtTxt.text.toString()
-            userModel.username = binding.usernameEdtTxt.text.toString().lowercase()
-            userModel.description = binding.descriptionEdtTxt.text.toString()
-            userModel.birthday = binding.birthdayEdtTxt.text.toString()
+            userModel.fullName = fullName
+            userModel.username = username
+            userModel.description = description
+            userModel.birthday = birthday
             setCurrentUserDetailsToFirebase()
         }
     }
 
     private fun setCurrentUserDetailsToFirebase() {
+        //loading
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        dialogLoadingBinding.messageTV.text = "Saving..."
+
+        loadingDialog.show()
+
         if (::userModel.isInitialized){
             var delay:Long = 0
             //set new user profile pic
@@ -186,6 +205,8 @@ class EditProfile : AppCompatActivity() {
                     Toast.makeText(this, "Error in updating user details, please try again", Toast.LENGTH_SHORT).show()
                 }
             }
+        } else {
+            loadingDialog.dismiss()
         }
     }
 
@@ -272,6 +293,9 @@ class EditProfile : AppCompatActivity() {
                 if (username != currentUsername){
                     if (username.length < 3){
                         binding.usernameEdtTxt.error = "username should be more than 3 characters"
+                        isUsernameValid = false
+                    } else if(AppUtil().containsBadWord(username)) {
+                        binding.usernameEdtTxt.error = "Your password contains sensitive words"
                         isUsernameValid = false
                     } else if (isUsernameContainsSpecialCharacters(username)){
                         binding.usernameEdtTxt.error = "username should not contain special characters"

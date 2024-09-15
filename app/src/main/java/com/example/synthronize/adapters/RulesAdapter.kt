@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.databinding.ItemRuleBinding
 import com.example.synthronize.interfaces.OnCommunityRuleModified
+import com.example.synthronize.utils.AppUtil
 
 class RulesAdapter(private val context: Context, private val rules: HashMap<String, String>,
                           private val listener: OnCommunityRuleModified, private val toEdit:Boolean = false):
@@ -43,11 +44,13 @@ class RulesAdapter(private val context: Context, private val rules: HashMap<Stri
                 //buttons
                 ruleBinding.saveRuleBtn.setOnClickListener {
                     val newRule = ruleBinding.ruleEdtTxt.text.toString()
-                    if (newRule.isNotEmpty()){
+                    if (newRule.isEmpty()){
+                        Toast.makeText(context, "Please type your rule", Toast.LENGTH_SHORT).show()
+                    } else if (AppUtil().containsBadWord(newRule)) {
+                        Toast.makeText(context, "Your rule contains sensitive words", Toast.LENGTH_SHORT).show()
+                    } else {
                         listener.modifiedRule(key, newRule)
                         refreshRule()
-                    } else {
-                        Toast.makeText(context, "Please type your rule", Toast.LENGTH_SHORT).show()
                     }
                 }
 

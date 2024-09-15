@@ -11,6 +11,7 @@ import com.example.synthronize.databinding.ActivitySignUpBinding
 import com.example.synthronize.databinding.DialogPrivacyPolicyBinding
 import com.example.synthronize.databinding.DialogReportBinding
 import com.example.synthronize.model.UserModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
@@ -35,10 +36,14 @@ class SignUp : AppCompatActivity() {
             //Validates User info and credentials before registration
             if (fullName.isEmpty()) {
                 Toast.makeText(this, "Please enter your Full Name", Toast.LENGTH_SHORT).show()
+            } else if(AppUtil().containsBadWord(fullName)) {
+                Toast.makeText(this, "Your full name contains sensitive words", Toast.LENGTH_SHORT).show()
             } else if(email.isEmpty()) {
                 Toast.makeText(this, "Please enter your Email", Toast.LENGTH_SHORT).show()
             } else if(pass.isEmpty()) {
                 Toast.makeText(this, "Please enter your Password", Toast.LENGTH_SHORT).show()
+            } else if(AppUtil().containsBadWord(pass)) {
+                Toast.makeText(this, "Your password contains sensitive words", Toast.LENGTH_SHORT).show()
             } else if (pass.length < 6) {
                 Toast.makeText(this, "Password should at least be more than 6 characters", Toast.LENGTH_SHORT).show()
             } else if(confirmPass.isEmpty()) {

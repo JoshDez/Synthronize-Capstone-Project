@@ -161,17 +161,29 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
 
             feedBinding.sendBtn.setOnClickListener {
                 val comment = feedBinding.commentEdtTxt.text.toString()
-                if (comment.isNotEmpty()){
-                    val commentModel = CommentModel(
-                        commentOwnerId = FirebaseUtil().currentUserUid(),
-                        comment = comment,
-                        commentTimestamp = Timestamp.now()
-                    )
+                if (comment.isEmpty()){
+                    Toast.makeText(context, "Please type your comment", Toast.LENGTH_SHORT).show()
+                } else if(AppUtil().containsBadWord(comment)){
+                    Toast.makeText(context, "Your comment contains sensitive words", Toast.LENGTH_SHORT).show()
+                } else {
+                    val commentModel = CommentModel()
+
                     FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId).collection("comments").add(commentModel).addOnCompleteListener {
                         if (it.isSuccessful){
-                            feedBinding.commentEdtTxt.setText("")
-                            updateFeedStatus()
-                            Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
+                            val commentModel = CommentModel(
+                                commentId = it.result.id,
+                                commentOwnerId = FirebaseUtil().currentUserUid(),
+                                comment = comment,
+                                commentTimestamp = Timestamp.now()
+                            )
+                            FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId).collection("comments")
+                                .document(commentModel.commentId).set(commentModel).addOnCompleteListener {task ->
+                                    if (task.isSuccessful){
+                                        feedBinding.commentEdtTxt.setText("")
+                                        updateFeedStatus()
+                                        Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
                         }
                     }
                 }

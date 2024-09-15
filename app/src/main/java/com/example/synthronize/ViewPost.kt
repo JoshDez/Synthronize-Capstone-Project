@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
@@ -112,31 +113,45 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
     }
 
     private fun bindComments(){
-        val query: Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).collection("comments")
-            .orderBy("commentTimestamp", Query.Direction.ASCENDING)
+        val commentsReference = FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).collection("comments")
+
+        val query: Query = commentsReference.orderBy("commentTimestamp", Query.Direction.ASCENDING)
 
         val options: FirestoreRecyclerOptions<CommentModel> =
             FirestoreRecyclerOptions.Builder<CommentModel>().setQuery(query, CommentModel::class.java).build()
 
         binding.commentsRV.layoutManager = LinearLayoutManager(this)
-        commentAdapter = CommentAdapter(this, options)
+        commentAdapter = CommentAdapter(this, options, commentsReference)
         binding.commentsRV.adapter = commentAdapter
         commentAdapter.startListening()
 
         binding.sendBtn.setOnClickListener {
             val comment = binding.commentEdtTxt.text.toString()
-            if (comment.isNotEmpty()){
-                val commentModel = CommentModel(
-                    commentOwnerId = FirebaseUtil().currentUserUid(),
-                    comment = comment,
-                    commentTimestamp = Timestamp.now()
-                )
-                FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).collection("comments").add(commentModel).addOnCompleteListener {
+            if (comment.isEmpty()){
+                Toast.makeText(this, "Please type your comment", Toast.LENGTH_SHORT).show()
+            } else if(AppUtil().containsBadWord(comment)){
+                Toast.makeText(this, "Your comment contains sensitive words", Toast.LENGTH_SHORT).show()
+            } else {
+                commentAdapter.stopListening()
+                val commentModel = CommentModel()
+                commentsReference.add(commentModel).addOnCompleteListener {
                     if (it.isSuccessful){
-                        binding.commentEdtTxt.setText("")
-                        bindComments()
+                        val commentModel = CommentModel(
+                            commentId = it.result.id,
+                            commentOwnerId = FirebaseUtil().currentUserUid(),
+                            comment = comment,
+                            commentTimestamp = Timestamp.now()
+                        )
+
+                        commentsReference.document(commentModel.commentId).set(commentModel).addOnCompleteListener {task ->
+                            if (task.isSuccessful){
+                                binding.commentEdtTxt.setText("")
+                                bindComments()
+                            }
+                        }
                     }
                 }
+
             }
         }
 

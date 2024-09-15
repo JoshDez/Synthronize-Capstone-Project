@@ -17,6 +17,7 @@ import androidx.core.util.TypedValueCompat
 import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreateProductBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -87,7 +88,6 @@ class CreateProduct : AppCompatActivity() {
 
     private fun bindButtons(){
 
-
         if (productId == "null" || productId.isEmpty()){
             binding.uploadBtn.text = "Upload"
         } else {
@@ -95,7 +95,7 @@ class CreateProduct : AppCompatActivity() {
         }
 
         binding.uploadBtn.setOnClickListener {
-            showLoadingDialog()
+            uploadProduct()
         }
 
         binding.addImageBtn.setOnClickListener {
@@ -108,35 +108,6 @@ class CreateProduct : AppCompatActivity() {
         binding.backBtn.setOnClickListener {
             this.finish()
         }
-    }
-
-    private fun showLoadingDialog(){
-        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
-        val loadingDialog = DialogPlus.newDialog(this)
-            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
-            .setCancelable(false)
-            .setBackgroundColorResId(R.color.transparent)
-            .setGravity(Gravity.CENTER)
-            .create()
-
-        if (productId.isNotEmpty() && productId != "null"){
-            dialogLoadingBinding.messageTV.text = "Saving..."
-        } else {
-            dialogLoadingBinding.messageTV.text = "Uploading..."
-        }
-
-        uploadProduct{isUploaded ->
-            if (isUploaded){
-                Handler().postDelayed({
-                    loadingDialog.dismiss()
-                    this.finish()
-                }, 2000)
-            } else {
-                loadingDialog.dismiss()
-                Toast.makeText(this, "Error occurred while uploading", Toast.LENGTH_SHORT).show()
-            }
-        }
-        loadingDialog.show()
     }
     private fun getFileUriFromFirebase(filename: String) {
         // Create a storage reference from the Firebase Storage instance
@@ -225,7 +196,7 @@ class CreateProduct : AppCompatActivity() {
         uriHashMap[contentId] = uri
     }
 
-    private fun uploadProduct(callback: (Boolean) -> Unit){
+    private fun uploadProduct(){
         val tempModel = ProductModel()
         val productName = binding.productNameEdtTxt.text.toString()
         val productDesc = binding.competitionDescEdtTxt.text.toString()
@@ -239,19 +210,14 @@ class CreateProduct : AppCompatActivity() {
         //Validation
         if (productName.isEmpty()){
             Toast.makeText(this, "Please add product name", Toast.LENGTH_SHORT).show()
-            callback(false)
         } else if (AppUtil().containsBadWord(productName)){
             Toast.makeText(this, "Product name contains sensitive words", Toast.LENGTH_SHORT).show()
-            callback(false)
         } else if (productDesc.isEmpty()){
             Toast.makeText(this, "Please add product description", Toast.LENGTH_SHORT).show()
-            callback(false)
         } else if (AppUtil().containsBadWord(productDesc)){
             Toast.makeText(this, "Product description contains sensitive words", Toast.LENGTH_SHORT).show()
-            callback(false)
         } else if (!hasProductImages()){
             Toast.makeText(this, "Please add images of your product", Toast.LENGTH_SHORT).show()
-            callback(false)
         } else {
             //Uploads the produce
             if (productId == "null" || productId.isEmpty()){
@@ -279,20 +245,12 @@ class CreateProduct : AppCompatActivity() {
                         createdTimestamp = Timestamp.now()
                     )
 
-                    //replaces temp model with feeds model
-                    FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(it.id).set(productModel).addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Handler().postDelayed({
-                                Toast.makeText(this, "Your product is uploaded successfully!", Toast.LENGTH_SHORT).show()
-                                callback(true)
-                            }, delay)
-                        } else {
-                            Toast.makeText(this, "Error has occurred!", Toast.LENGTH_SHORT).show()
-                            callback(false)
-                        }
-                    }
+
+                    //uploads product model to firebase
+                    uploadToFirebase(productModel.productId, productModel, "Your product is uploaded successfully!", delay)
+
                 }.addOnFailureListener {
-                    callback(false)
+                    Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 //Saving edited post
@@ -323,18 +281,51 @@ class CreateProduct : AppCompatActivity() {
                     createdTimestamp = existingProductModel.createdTimestamp
                 )
 
-                FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(productId).set(productModel).addOnSuccessListener {
-                    deleteFilesFromFirebaseStorage()
-                    Handler().postDelayed({
-                        Toast.makeText(this, "Your post is saved successfully!", Toast.LENGTH_SHORT).show()
-                        callback(true)
-                    }, delay)
-                }.addOnFailureListener{
-                    callback(false)
-                }
+                //uploads product model to firebase
+                uploadToFirebase(productId, productModel, "Your post is saved successfully!", delay)
+
             }
         }
     }
+
+
+
+    private fun uploadToFirebase(productId:String, productModel: ProductModel, toastMsg:String, postDelay:Long){
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        if (this.productId.isNotEmpty() && this.productId != "null"){
+            dialogLoadingBinding.messageTV.text = "Saving..."
+        } else {
+            dialogLoadingBinding.messageTV.text = "Uploading..."
+        }
+
+        loadingDialog.show()
+
+        FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(productId).set(productModel).addOnCompleteListener {
+            if (it.isSuccessful){
+                Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
+                if (this.productId.isNotEmpty() && this.productId != "null"){
+                    deleteFilesFromFirebaseStorage()
+                }
+                Handler().postDelayed({
+                    loadingDialog.dismiss()
+                    this.finish()
+                }, postDelay)
+            } else {
+                Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
+                loadingDialog.dismiss()
+                this.finish()
+
+            }
+        }
+    }
+
     private fun deleteFilesFromFirebaseStorage(){
         //deletes files that are no longer included in content list while editing
         for (filename in existingProductModel.imageList){

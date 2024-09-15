@@ -154,7 +154,8 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         binding.nextBtn.setOnClickListener {
             if (communityName.isEmpty()){
                 binding.communityNameEdtTxt.error = "Enter community name"
-                Toast.makeText(this, "Enter community name", Toast.LENGTH_SHORT).show()
+            } else if (AppUtil().containsBadWord(communityName)){
+                binding.communityNameEdtTxt.error = "Your community name contains sensitive words"
             } else if (communityType.isEmpty()){
                 Toast.makeText(this, "Select community type", Toast.LENGTH_SHORT).show()
             } else {

@@ -5,17 +5,23 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.OpenableColumns
+import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.synthronize.databinding.ActivityCreateUploadFileBinding
+import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 
 class CreateUploadFile : AppCompatActivity() {
@@ -83,6 +89,7 @@ class CreateUploadFile : AppCompatActivity() {
         }
     }
 
+
     private fun uploadFile() {
         val caption = binding.captionEdtTxt.text.toString()
         val fileName = binding.fileNameTV.text.toString()
@@ -91,6 +98,8 @@ class CreateUploadFile : AppCompatActivity() {
             Toast.makeText(this, "Please attach your file", Toast.LENGTH_SHORT).show()
         } else if (AppUtil().containsBadWord(fileName)){
             Toast.makeText(this, "Your file name contains sensitive words", Toast.LENGTH_SHORT).show()
+        } else if (AppUtil().containsBadWord(caption)){
+            Toast.makeText(this, "Your caption contains sensitive words", Toast.LENGTH_SHORT).show()
         } else {
             if (::selectedFileUri.isInitialized){
                 if (selectedFileUri != Uri.EMPTY){
@@ -98,68 +107,36 @@ class CreateUploadFile : AppCompatActivity() {
                     if (fileId == "null" || fileId.isEmpty()){
                         //New File
                         fileUrl = "$fileName-${Timestamp.now()}"
-                        FirebaseUtil().retrieveCommunityFileRef(fileUrl).putFile(selectedFileUri).addOnSuccessListener {
-                            var fileModel = FileModel()
-                            FirebaseUtil().retrieveCommunityFilesCollection(communityId).add(fileModel).addOnSuccessListener {file ->
-                                fileModel = FileModel(
-                                    fileId = file.id,
-                                    fileName = fileName,
-                                    fileUrl = fileUrl,
-                                    ownerId = FirebaseUtil().currentUserUid(),
-                                    shareFile = isSharedFiles,
-                                    forCompetition = forCompetition,
-                                    caption = caption,
-                                    communityId = communityId,
-                                    createdTimestamp = Timestamp.now(),
-                                )
-                                FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(file.id).set(fileModel).addOnSuccessListener {
-                                    Toast.makeText(this, "your file is successfully uploaded", Toast.LENGTH_SHORT).show()
-                                    if (forCompetition)
-                                        addFileUrlToSubmission(fileUrl)
-                                    this.finish()
-                                }.addOnFailureListener {
-                                    Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
-                                }
-                            }.addOnFailureListener {
-                                Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
-                            }
-                        }.addOnFailureListener{
-                            Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
-                        }
+                        val fileModel = FileModel(
+                            fileName = fileName,
+                            fileUrl = fileUrl,
+                            ownerId = FirebaseUtil().currentUserUid(),
+                            shareFile = isSharedFiles,
+                            forCompetition = forCompetition,
+                            caption = caption,
+                            communityId = communityId,
+                            createdTimestamp = Timestamp.now(),
+                        )
+                        uploadToFirebase(fileModel = fileModel, hasNewFile = true)
                     } else {
                         //Edited File
                         if (fileUrl.isEmpty()){
                             //new file added
                             fileUrl = "$fileName-${Timestamp.now()}"
-                            FirebaseUtil().retrieveCommunityFileRef(fileUrl).putFile(selectedFileUri).addOnSuccessListener {
-                                var fileModel = FileModel(
-                                    fileId = fileId,
-                                    fileName = fileName,
-                                    fileUrl = fileUrl,
-                                    ownerId = FirebaseUtil().currentUserUid(),
-                                    shareFile = isSharedFiles,
-                                    forCompetition = forCompetition,
-                                    loveList = existingFileModel.loveList,
-                                    caption = caption,
-                                    communityId = communityId,
-                                    createdTimestamp = Timestamp.now(),
-                                )
+                            var fileModel = FileModel(
+                                fileId = fileId,
+                                fileName = fileName,
+                                fileUrl = fileUrl,
+                                ownerId = FirebaseUtil().currentUserUid(),
+                                shareFile = isSharedFiles,
+                                forCompetition = forCompetition,
+                                loveList = existingFileModel.loveList,
+                                caption = caption,
+                                communityId = communityId,
+                                createdTimestamp = Timestamp.now(),
+                            )
+                            uploadToFirebase(fileId, fileModel, hasNewFile = true)
 
-                                //deletes the old file
-                                FirebaseUtil().retrieveCommunityFileRef(existingFileModel.fileUrl).delete()
-
-                                //updates fileModel
-                                FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(fileId).set(fileModel).addOnSuccessListener {
-                                    Toast.makeText(this, "your file is successfully updated", Toast.LENGTH_SHORT).show()
-                                    if (forCompetition)
-                                        addFileUrlToSubmission(fileUrl)
-                                    this.finish()
-                                }.addOnFailureListener {
-                                    Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
-                                }
-                            }.addOnFailureListener{
-                                Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
-                            }
                         } else {
                             var fileModel = FileModel(
                                 fileId = fileId,
@@ -174,12 +151,7 @@ class CreateUploadFile : AppCompatActivity() {
                                 createdTimestamp = Timestamp.now(),
                             )
                             //updates fileModel
-                            FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(fileId).set(fileModel).addOnSuccessListener {
-                                Toast.makeText(this, "your file is successfully updated", Toast.LENGTH_SHORT).show()
-                                this.finish()
-                            }.addOnFailureListener {
-                                Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
-                            }
+                            uploadToFirebase(fileId, fileModel)
                         }
 
                     }
@@ -188,6 +160,104 @@ class CreateUploadFile : AppCompatActivity() {
         }
     }
 
+
+    private fun uploadToFirebase(fileId:String = "", fileModel: FileModel = FileModel(), hasNewFile:Boolean = false){
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        if (this.fileId.isNotEmpty() && this.fileId != "null"){
+            dialogLoadingBinding.messageTV.text = "Saving..."
+        } else {
+            dialogLoadingBinding.messageTV.text = "Uploading..."
+        }
+
+        loadingDialog.show()
+
+        if (hasNewFile && fileId.isEmpty()){
+            //New File
+            FirebaseUtil().retrieveCommunityFileRef(fileUrl).putFile(selectedFileUri).addOnSuccessListener {
+                FirebaseUtil().retrieveCommunityFilesCollection(communityId).add(fileModel).addOnSuccessListener {file ->
+                    var newFileModel = FileModel(
+                        fileId = file.id,
+                        fileName = fileModel.fileName,
+                        fileUrl = fileModel.fileUrl,
+                        ownerId = fileModel.ownerId,
+                        shareFile = fileModel.shareFile,
+                        forCompetition = fileModel.forCompetition,
+                        caption = fileModel.caption,
+                        communityId = fileModel.communityId,
+                        createdTimestamp = fileModel.createdTimestamp,
+                    )
+
+                    FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(newFileModel.fileId).set(newFileModel).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            if (forCompetition)
+                                addFileUrlToSubmission(fileUrl)
+                            Toast.makeText(this, "Your file is successfully uploaded", Toast.LENGTH_SHORT).show()
+                            loadingDialog.dismiss()
+                            this.finish()
+                        } else {
+                            Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
+                            loadingDialog.dismiss()
+                            this.finish()
+                        }
+                    }
+
+                }.addOnFailureListener {
+                    Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener{
+                Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
+            }
+
+        } else if (hasNewFile) {
+            //Has existing fileModel
+            FirebaseUtil().retrieveCommunityFileRef(fileUrl).putFile(selectedFileUri).addOnSuccessListener {
+                //deletes the old file
+                FirebaseUtil().retrieveCommunityFileRef(existingFileModel.fileUrl).delete()
+                //updates fileModel
+                FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(fileId)
+                    .set(fileModel).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            if (forCompetition)
+                                addFileUrlToSubmission(fileUrl)
+                            Toast.makeText(this, "Your file is successfully updated", Toast.LENGTH_SHORT).show()
+                            loadingDialog.dismiss()
+                            this.finish()
+                        } else {
+                            Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
+                            loadingDialog.dismiss()
+                            this.finish()
+                        }
+                    }
+            }.addOnFailureListener{
+                Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
+            }
+
+        } else {
+            //edits only the caption of the file
+            FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(fileId)
+                .set(fileModel).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    if (forCompetition)
+                        addFileUrlToSubmission(fileUrl)
+                    Toast.makeText(this, "Your file is successfully updated", Toast.LENGTH_SHORT).show()
+                    loadingDialog.dismiss()
+                    this.finish()
+                } else {
+                    Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
+                    loadingDialog.dismiss()
+                    this.finish()
+
+                }
+            }
+        }
+    }
     private fun addFileUrlToSubmission(fileUrl:String) {
         val updates = hashMapOf<String, Any>(
             "contestants.${FirebaseUtil().currentUserUid()}" to fileUrl

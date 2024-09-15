@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -70,22 +71,26 @@ class Chatroom : AppCompatActivity() {
 
         binding.sendMsgBtn.setOnClickListener {
             val message = binding.chatBoxEdtTxt.text.toString()
-            if (message.isNotEmpty()){
-                sendMessage(message)
-                binding.chatBoxEdtTxt.setText("")
-                binding.postLayout.visibility = View.GONE
-                postId = ""
-                communityIdOfPost = ""
-            } else if (postId.isNotEmpty() || postId != "null"){
-                sendMessage("")
-                binding.postLayout.visibility = View.GONE
-                postId = ""
-                communityIdOfPost = ""
-            } else if (productId.isNotEmpty() || productId != "null"){
-                sendMessage("")
-                binding.postLayout.visibility = View.GONE
-                productId = ""
-                communityIdOfPost = ""
+            if (AppUtil().containsBadWord(message)){
+                Toast.makeText(this, "Your message contains sensitive words", Toast.LENGTH_SHORT).show()
+            } else {
+                if (message.isNotEmpty()){
+                    sendMessage(message)
+                    binding.chatBoxEdtTxt.setText("")
+                    binding.postLayout.visibility = View.GONE
+                    postId = ""
+                    communityIdOfPost = ""
+                } else if (postId.isNotEmpty() || postId != "null"){
+                    sendMessage("")
+                    binding.postLayout.visibility = View.GONE
+                    postId = ""
+                    communityIdOfPost = ""
+                } else if (productId.isNotEmpty() || productId != "null"){
+                    sendMessage("")
+                    binding.postLayout.visibility = View.GONE
+                    productId = ""
+                    communityIdOfPost = ""
+                }
             }
         }
 

@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreatePostBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.model.CompetitionModel
+import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -103,19 +104,18 @@ class CreatePost : AppCompatActivity() {
     }
 
     private fun bindButtons(){
+
         if (postId == "null" || postId.isEmpty()){
             binding.postBtn.text = "Post"
-            binding.postBtn.setOnClickListener {
-                if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
-                    showLoadingDialog()
-                }
-            }
         } else {
             binding.postBtn.text = "Save"
-            binding.postBtn.setOnClickListener {
-                if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
-                    showLoadingDialog()
-                }
+        }
+
+        binding.postBtn.setOnClickListener {
+            if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
+                addPost()
+            } else {
+                Toast.makeText(this, "Please write what's on your mind", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -190,7 +190,6 @@ class CreatePost : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-
 
         // Set inner gravity to center
         verticalLayout.gravity = Gravity.CENTER
@@ -333,13 +332,52 @@ class CreatePost : AppCompatActivity() {
         uriHashMap[contentId] = uri
     }
 
-    private fun addPost(callback: (Boolean) -> Unit){
+
+    private fun uploadToFirebase(postId:String, postModel: PostModel, toastMsg:String, postDelay:Long){
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        if (this.postId.isNotEmpty() && this.postId != "null"){
+            dialogLoadingBinding.messageTV.text = "Saving..."
+        } else {
+            dialogLoadingBinding.messageTV.text = "Uploading..."
+        }
+
+        loadingDialog.show()
+
+        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).set(postModel).addOnCompleteListener {
+            if (it.isSuccessful){
+                Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
+                if (this.postId.isNotEmpty() && this.postId != "null"){
+                    deleteFilesFromFirebaseStorage()
+                }
+                Handler().postDelayed({
+                    loadingDialog.dismiss()
+                    this.finish()
+                }, postDelay)
+            } else {
+                Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
+                loadingDialog.dismiss()
+                this.finish()
+
+            }
+        }
+    }
+
+    private fun addPost(){
         val tempModel = PostModel()
         val caption = binding.captionEdtTxt.text.toString()
         var delay:Long = 1000
 
-        if (canPost && postId == "null" || postId.isEmpty()){
-            //Upload post
+        if (AppUtil().containsBadWord(caption)){
+            Toast.makeText(this, "Caption contains sensitive words", Toast.LENGTH_SHORT).show()
+        } else if (canPost && postId == "null" || postId.isEmpty()){
+            //Upload new post
             FirebaseUtil().retrieveCommunityFeedsCollection(communityId).add(tempModel).addOnSuccessListener {
                 if (::uriHashMap.isInitialized){
                     for (data in uriHashMap){
@@ -364,21 +402,11 @@ class CreatePost : AppCompatActivity() {
                     communityId = communityId,
                     contentList = contentList
                 )
+                //uploads new postModel to firebase
+                uploadToFirebase(postModel.postId, postModel, "Your post is uploaded successfully!", delay)
 
-                //replaces temp model with feeds model
-                FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(it.id).set(postModel).addOnCompleteListener {task ->
-                    if (task.isSuccessful) {
-                        Handler().postDelayed({
-                            Toast.makeText(this, "Your post is uploaded successfully!", Toast.LENGTH_SHORT).show()
-                            callback(true)
-                        }, delay)
-                    } else {
-                        Toast.makeText(this, "Error has occurred!", Toast.LENGTH_SHORT).show()
-                        callback(false)
-                    }
-                }
             }.addOnFailureListener {
-                callback(false)
+                Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
             }
 
 
@@ -411,48 +439,14 @@ class CreatePost : AppCompatActivity() {
                 loveList = existingPostModel.loveList,
             )
 
-            FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).set(postModel).addOnSuccessListener {
-                deleteFilesFromFirebaseStorage()
-                Handler().postDelayed({
-                    Toast.makeText(this, "Your post is saved successfully!", Toast.LENGTH_SHORT).show()
-                    callback(true)
-                }, delay)
-            }.addOnFailureListener{
-                callback(false)
-            }
+
+            //uploads new postModel to firebase
+            uploadToFirebase(postId, postModel, "Your post is saved successfully!", delay)
 
         } else {
             //the post is not ready to be uploaded
             Toast.makeText(this, "content is still uploading", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun showLoadingDialog(){
-        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
-        val loadingDialog = DialogPlus.newDialog(this)
-            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
-            .setCancelable(false)
-            .setBackgroundColorResId(R.color.transparent)
-            .setGravity(Gravity.CENTER)
-            .create()
-
-        if (postId.isNotEmpty() && postId != "null"){
-            dialogLoadingBinding.messageTV.text = "Saving..."
-        } else {
-            dialogLoadingBinding.messageTV.text = "Uploading..."
-        }
-        addPost{isUploaded ->
-            if (isUploaded){
-                Handler().postDelayed({
-                    loadingDialog.dismiss()
-                    this.finish()
-                }, 2000)
-            } else {
-                loadingDialog.dismiss()
-                Toast.makeText(this, "Error occurred while uploading", Toast.LENGTH_SHORT).show()
-            }
-        }
-        loadingDialog.show()
     }
 
     private fun deleteFilesFromFirebaseStorage(){
