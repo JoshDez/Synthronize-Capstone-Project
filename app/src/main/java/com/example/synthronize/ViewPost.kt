@@ -51,6 +51,7 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
     }
 
     private fun getFeedModel(){
+        binding.viewPostRefreshLayout.isRefreshing = true
         FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).get().addOnSuccessListener {
             postModel = it.toObject(PostModel::class.java)!!
 
@@ -95,6 +96,7 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                 } else {
                     hideContent()
                 }
+                binding.viewPostRefreshLayout.isRefreshing = false
             }
         }
     }

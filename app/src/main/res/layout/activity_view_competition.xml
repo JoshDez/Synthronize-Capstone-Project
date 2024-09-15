@@ -49,254 +49,257 @@
         android:background="@color/light_teal"
         app:dividerColor="@color/light_teal" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/viewCompetitionRefresh"
-        android:layout_below="@id/divider1"
-        android:layout_above="@id/divider2"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@id/divider2"
+        android:layout_below="@id/divider1">
 
-        <ScrollView
+        <LinearLayout
+            android:id="@+id/mainPostLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/divider2"
-            android:layout_below="@id/divider1">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/communityProfileCIV"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/community_default_profile" />
+
+                <TextView
+                    android:id="@+id/communityNameTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_toRightOf="@id/communityProfileCIV"
+                    android:contentDescription="@string/community_name"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:textColor="@color/light_teal"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/createdTimestampTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/communityNameTV"
+                    android:layout_marginStart="10dp"
+                    android:layout_toRightOf="@id/communityProfileCIV"
+                    android:contentDescription="@string/community_name"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:textColor="@color/light_teal"
+                    android:textSize="12dp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/competitionNameTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:contentDescription="@string/community_name"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="@color/light_teal"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:id="@+id/hostNameTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:contentDescription="@string/community_name"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="@color/light_teal"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/descTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:autoLink="web"
+                android:contentDescription="@string/community_name"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="@color/light_teal"
+                android:textColorLink="@color/light_blue"
+                android:textSize="14sp" />
+
 
             <LinearLayout
-                android:id="@+id/mainPostLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="20dp">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/communityProfileCIV"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:src="@drawable/community_default_profile" />
-
-                    <TextView
-                        android:id="@+id/communityNameTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_toRightOf="@id/communityProfileCIV"
-                        android:contentDescription="@string/community_name"
-                        android:gravity="center_vertical"
-                        android:padding="5dp"
-                        android:textColor="@color/light_teal"
-                        android:textSize="16dp" />
-
-                    <TextView
-                        android:id="@+id/createdTimestampTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/communityNameTV"
-                        android:layout_marginStart="10dp"
-                        android:layout_toRightOf="@id/communityProfileCIV"
-                        android:contentDescription="@string/community_name"
-                        android:gravity="center_vertical"
-                        android:padding="5dp"
-                        android:textColor="@color/light_teal"
-                        android:textSize="12dp" />
-
-                </RelativeLayout>
+                    android:src="@drawable/reward_icon" />
 
                 <TextView
-                    android:id="@+id/competitionNameTV"
+                    android:id="@+id/rewardsTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="15dp"
                     android:contentDescription="@string/community_name"
-                    android:gravity="center"
                     android:padding="5dp"
                     android:textColor="@color/light_teal"
-                    android:textSize="20sp" />
-
-
-                <TextView
-                    android:id="@+id/hostNameTV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:contentDescription="@string/community_name"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:textColor="@color/light_teal"
-                    android:textSize="14sp" />
-
-
-                <TextView
-                    android:id="@+id/descTV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:autoLink="web"
-                    android:textColorLink="@color/light_blue"
-                    android:contentDescription="@string/community_name"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:textColor="@color/light_teal"
-                    android:textSize="14sp" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:orientation="horizontal"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/reward_icon" />
-
-                    <TextView
-                        android:id="@+id/rewardsTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:contentDescription="@string/community_name"
-                        android:padding="5dp"
-                        android:textColor="@color/light_teal"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:orientation="horizontal"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/baseline_time_24" />
-
-                    <TextView
-                        android:id="@+id/remainingTimeTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:contentDescription="@string/community_name"
-                        android:padding="5dp"
-                        android:textColor="@color/light_teal"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:layout_below="@id/mainToolbar"
-                    android:layout_marginTop="20dp"
-                    app:dividerColor="@color/teal2" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="@drawable/gradient_teal"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/instructionsBtn"
-                        android:layout_width="80dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:text="Instructions"
-                        android:textColor="@color/light_teal"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/submissionsBtn"
-                        android:layout_width="80dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:text="Submissions"
-                        android:textAlignment="center"
-                        android:textColor="@color/light_teal"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/resultBtn"
-                        android:layout_width="80dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:text="Results"
-                        android:textAlignment="center"
-                        android:textColor="@color/light_teal"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/resultsTypeTV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:contentDescription="@string/community_name"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Top 10"
-                    android:visibility="gone"
-                    android:textStyle="bold"
-                    android:textColor="@color/light_teal"
-                    android:textSize="14sp" />
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/instructionsRV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/submissionsRV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/resultsRV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
-
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
-        </ScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/baseline_time_24" />
+
+                <TextView
+                    android:id="@+id/remainingTimeTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:contentDescription="@string/community_name"
+                    android:padding="5dp"
+                    android:textColor="@color/light_teal"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/mainToolbar"
+                android:layout_marginTop="20dp"
+                app:dividerColor="@color/teal2" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:background="@drawable/gradient_teal"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/instructionsBtn"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="Instructions"
+                    android:textColor="@color/light_teal"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/submissionsBtn"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="Submissions"
+                    android:textAlignment="center"
+                    android:textColor="@color/light_teal"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/resultBtn"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="Results"
+                    android:textAlignment="center"
+                    android:textColor="@color/light_teal"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/resultsTypeTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:contentDescription="@string/community_name"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Top 10"
+                android:textColor="@color/light_teal"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/viewCompetitionRefresh"
+                android:layout_width="match_parent"
+                android:layout_height="500dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/instructionsRV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/submissionsRV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/resultsRV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </LinearLayout>
+
+    </ScrollView>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider2"

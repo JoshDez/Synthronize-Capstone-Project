@@ -51,6 +51,7 @@ class ViewProduct : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListen
     }
 
     private fun bindProduct() {
+        binding.viewProductRefreshLayout.isRefreshing = true
         FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(productId).get().addOnSuccessListener {
             productModel = it.toObject(ProductModel::class.java)!!
             val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "PH"))
@@ -142,7 +143,7 @@ class ViewProduct : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListen
                 } else {
                     hideContent()
                 }
-
+                binding.viewProductRefreshLayout.isRefreshing = false
             }
         }
     }

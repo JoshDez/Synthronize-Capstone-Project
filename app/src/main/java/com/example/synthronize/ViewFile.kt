@@ -57,6 +57,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
     }
 
     private fun getFileModel(){
+        binding.viewFileRefreshLayout.isRefreshing = true
         FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(fileId).get().addOnSuccessListener {
             fileModel = it.toObject(FileModel::class.java)!!
 
@@ -113,6 +114,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
                 } else {
                     hideContent()
                 }
+                binding.viewFileRefreshLayout.isRefreshing = false
             }
         }
     }

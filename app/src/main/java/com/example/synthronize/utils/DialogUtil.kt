@@ -504,6 +504,7 @@ class DialogUtil: OnItemClickListener {
         val dialogPlus = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(dialogPlusBinding.root))
             .setGravity(Gravity.CENTER)
+            .setBackgroundColorResId(R.color.transparent)
             .setExpanded(false)
             .create()
 
