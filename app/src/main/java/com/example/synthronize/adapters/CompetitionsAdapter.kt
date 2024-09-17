@@ -43,7 +43,7 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
         fun bind(model: CompetitionModel){
             competitionModel = model
             binding.competitionNameTV.text = competitionModel.competitionName
-            binding.descriptionTV.text = competitionModel.description
+            AppUtil().showMoreAndLessWords(competitionModel.description, binding.descriptionTV, 150)
             binding.rewardsTV.text = competitionModel.rewards
 
             DateAndTimeUtil().isTimestampDue(competitionModel.deadline){isDue, daysLeft ->

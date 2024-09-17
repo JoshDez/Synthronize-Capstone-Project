@@ -82,7 +82,7 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
                     }
                 }
 
-                binding.descriptionTV.text = productModel.productDesc
+                AppUtil().showMoreAndLessWords(productModel.productDesc, binding.descriptionTV, 150)
                 binding.nameTV.text = productModel.productName
                 binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(productModel.createdTimestamp)
                 binding.priceTV.text = format.format(productModel.price)

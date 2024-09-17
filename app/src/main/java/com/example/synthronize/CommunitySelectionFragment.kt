@@ -77,63 +77,17 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
                 binding.selectionRefreshLayout.setOnRefreshListener(this)
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
 
+
+                //bind search community
+                mainBinding.searchBtn.visibility = View.VISIBLE
+                mainBinding.searchBtn.setOnClickListener {
+                    searchCommunity()
+                }
+
+
                 // Set up Add Group FAB
                 binding.addGroupFab.setOnClickListener {
-                    dialogBinding = DialogAddCommunityBinding.inflate(layoutInflater)
-                    val dialogPlus = DialogPlus.newDialog(context)
-                        .setContentHolder(ViewHolder(dialogBinding.root))
-                        .setGravity(Gravity.CENTER)
-                        .setCancelable(true)
-                        .setExpanded(false)
-                        .create()
-
-                    //set dialog on click listeners
-                    dialogBinding.createNewCommunityBtn.setOnClickListener {
-                        val intent = Intent(context, CreateCommunity::class.java)
-                        startActivity(intent)
-                        dialogPlus.dismiss()
-                    }
-
-                    dialogBinding.joinCommunityViaCodeBtn.setOnClickListener {
-                        //CREATES NEW DIALOG FOR COMMUNITY CODE
-                        val codeDialogBinding = DialogCommunityCodeBinding.inflate(layoutInflater)
-                        val codeDialogPlus = DialogPlus.newDialog(context)
-                            .setContentHolder(ViewHolder(codeDialogBinding.root))
-                            .setCancelable(true)
-                            .setExpanded(false)
-                            .setMargin(50, 800, 50, 700)
-                            .create()
-
-                        //confirm button
-                        codeDialogBinding.confirmBtn.setOnClickListener {
-                            val code = codeDialogBinding.codeEdtTxt.text.toString()
-                            if (code.isNotEmpty()){
-                                FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityCode", code).get().addOnSuccessListener {documents ->
-                                    for (document in documents){
-                                        val communityModel = document.toObject(CommunityModel::class.java)
-                                        DialogUtil().openCommunityPreviewDialog(context, layoutInflater, communityModel)
-                                        codeDialogPlus.dismiss()
-                                    }
-                                }
-                            } else {
-                                codeDialogPlus.dismiss()
-                            }
-                        }
-                        dialogPlus.dismiss()
-                        android.os.Handler().postDelayed({
-                            codeDialogPlus.show()
-                        }, 500)
-                    }
-
-                    dialogBinding.searchCommunityBtn.setOnClickListener {
-                        val intent = Intent(context, Search::class.java)
-                        intent.putExtra("searchInCategory", "communities")
-                        startActivity(intent)
-                        dialogPlus.dismiss()
-                    }
-
-                    dialogPlus.show()
-
+                    openAddCommunityDialog()
                 }
 
                 // Fetch groups from Firestore
@@ -141,6 +95,69 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
             }
 
         }
+    }
+
+    private fun searchCommunity(){
+        val intent = Intent(context, Search::class.java)
+        intent.putExtra("searchInCategory", "communities")
+        startActivity(intent)
+    }
+
+    private fun openAddCommunityDialog(){
+        dialogBinding = DialogAddCommunityBinding.inflate(layoutInflater)
+        val dialogPlus = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(dialogBinding.root))
+            .setGravity(Gravity.CENTER)
+            .setBackgroundColorResId(R.color.transparent)
+            .setCancelable(true)
+            .setExpanded(false)
+            .create()
+
+        //set dialog on click listeners
+        dialogBinding.createNewCommunityBtn.setOnClickListener {
+            val intent = Intent(context, CreateCommunity::class.java)
+            startActivity(intent)
+            dialogPlus.dismiss()
+        }
+
+        dialogBinding.joinCommunityViaCodeBtn.setOnClickListener {
+            //CREATES NEW DIALOG FOR COMMUNITY CODE
+            val codeDialogBinding = DialogCommunityCodeBinding.inflate(layoutInflater)
+            val codeDialogPlus = DialogPlus.newDialog(context)
+                .setContentHolder(ViewHolder(codeDialogBinding.root))
+                .setGravity(Gravity.CENTER)
+                .setBackgroundColorResId(R.color.transparent)
+                .setCancelable(true)
+                .setExpanded(false)
+                .create()
+
+            //confirm button
+            codeDialogBinding.confirmBtn.setOnClickListener {
+                val code = codeDialogBinding.codeEdtTxt.text.toString()
+                if (code.isNotEmpty()){
+                    FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityCode", code).get().addOnSuccessListener {documents ->
+                        for (document in documents){
+                            val communityModel = document.toObject(CommunityModel::class.java)
+                            DialogUtil().openCommunityPreviewDialog(context, layoutInflater, communityModel)
+                            codeDialogPlus.dismiss()
+                        }
+                    }
+                } else {
+                    codeDialogPlus.dismiss()
+                }
+            }
+            dialogPlus.dismiss()
+            android.os.Handler().postDelayed({
+                codeDialogPlus.show()
+            }, 500)
+        }
+
+        dialogBinding.searchNewCommunityBtn.setOnClickListener {
+            searchCommunity()
+            dialogPlus.dismiss()
+        }
+
+        dialogPlus.show()
     }
 
     private fun setupRecyclerView() {

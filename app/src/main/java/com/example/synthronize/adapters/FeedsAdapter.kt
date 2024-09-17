@@ -81,13 +81,10 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 val owner = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, owner.userID, feedBinding.profileCIV)
                 feedBinding.usernameTV.text = owner.username
-                feedBinding.descriptionTV.text = postModel.caption
+                AppUtil().showMoreAndLessWords(postModel.caption, feedBinding.descriptionTV, 150)
                 feedBinding.timestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
                 feedBinding.usernameTV.setOnClickListener {
                     headToUserProfile()
-                }
-                feedBinding.descriptionTV.setOnClickListener {
-                    viewPost()
                 }
                 feedBinding.commentBtn.setOnClickListener {
                     viewPost()

@@ -116,7 +116,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
 
                     if (!AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid())){
                         //displays the profile
-                        binding.userDescriptionTV.text = userModel.description
+                        AppUtil().showMoreAndLessWords(userModel.description, binding.userDescriptionTV, 50)
                         binding.userNameTV.text = "@${userModel.username}"
                         binding.userDisplayNameTV.text = userModel.fullName
 

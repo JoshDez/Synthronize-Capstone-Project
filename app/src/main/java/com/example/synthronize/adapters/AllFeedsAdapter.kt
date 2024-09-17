@@ -154,7 +154,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
 
                 AppUtil().setUserProfilePic(context, owner.userID, binding.profileCIV)
                 binding.usernameTV.text = owner.username
-                binding.descriptionTV.text = postModel.caption
+                AppUtil().showMoreAndLessWords(postModel.caption, binding.descriptionTV, 150)
                 binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
                 binding.feedWrapperLayout.setOnClickListener {
                     FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {result ->
@@ -170,9 +170,6 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 }
                 binding.usernameTV.setOnClickListener {
                     headToUserProfile()
-                }
-                binding.descriptionTV.setOnClickListener {
-                    viewPost()
                 }
                 binding.commentBtn.setOnClickListener {
                     viewPost()

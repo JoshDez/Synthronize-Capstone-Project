@@ -510,7 +510,7 @@ class DialogUtil: OnItemClickListener {
 
         //Community details
         dialogPlusBinding.communityNameTV.text = communityModel.communityName
-        dialogPlusBinding.communityDescriptionTV.text = communityModel.communityDescription
+        AppUtil().showMoreAndLessWords(communityModel.communityDescription, dialogPlusBinding.communityDescriptionTV, 50)
         dialogPlusBinding.totalMembersCountTV.text = "${communityModel.communityMembers.size}"
         getFriendsJoinedCount(communityModel.communityMembers.keys.toList()){count->
             dialogPlusBinding.friendsJoinedCountTV.text = count.toString()
@@ -541,10 +541,6 @@ class DialogUtil: OnItemClickListener {
 
     }
 
-
-
-    override fun onItemClick(id: String, isChecked: Boolean) {
-        TODO("Not yet implemented")
-    }
+    override fun onItemClick(id: String, isChecked: Boolean) {}
 
 }

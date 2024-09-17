@@ -121,7 +121,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
                 binding.userNameTV.text = "@${userModel.username}"
                 binding.userDisplayNameTV.text = userModel.fullName
-                binding.userDescriptionTV.text = userModel.description
+                AppUtil().showMoreAndLessWords(userModel.description, binding.userDescriptionTV, 50)
                 if (userModel.birthday.isNotEmpty()){
                     binding.birthdayLayout.visibility = View.VISIBLE
                     binding.birthdayTV.text = DateAndTimeUtil().formatBirthDate(userModel.birthday)

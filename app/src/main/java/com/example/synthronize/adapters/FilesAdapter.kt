@@ -79,7 +79,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                 binding.usernameTV.text = user.username
 
                 binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
-                binding.captionTV.text = fileModel.caption
+                AppUtil().showMoreAndLessWords(fileModel.caption, binding.captionTV, 150)
                 binding.fileNameTV.text = fileModel.fileName
                 displayFileIcon()
 

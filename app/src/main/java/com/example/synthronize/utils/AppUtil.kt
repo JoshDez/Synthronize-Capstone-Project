@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Handler
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -178,6 +179,24 @@ class AppUtil {
             return "${string.slice(0..intCap)}..."
         } else {
             return string
+        }
+    }
+
+    fun showMoreAndLessWords(string: String, textView: TextView, charLengthLimit:Int){
+        var showMore = false
+        if (string.length > charLengthLimit){
+            textView.text = "${string.slice(0..charLengthLimit)}  (show more)"
+            textView.setOnClickListener {
+                if (showMore){
+                    textView.text = "${string.slice(0..charLengthLimit)}  (show more)"
+                    showMore = false
+                } else {
+                    textView.text = "$string  (show less)"
+                    showMore = true
+                }
+            }
+        } else {
+            textView.text = string
         }
     }
 
