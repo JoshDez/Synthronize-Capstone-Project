@@ -223,6 +223,13 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
                             if (task.isSuccessful){
                                 binding.commentEdtTxt.setText("")
                                 bindComments()
+
+                                //gets comments count before sending the notification
+                                commentsReference.get().addOnSuccessListener { comments ->
+                                        //sends notification
+                                        AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Comment",
+                                            "${comments.size()}","File", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                                }
                             }
                         }
                     }
@@ -265,6 +272,9 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
                         binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
                         isLoved = true
                         updateFeedStatus()
+                        //sends notification
+                        AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Love",
+                            "${fileModel.loveList.size + 1}","File", DateAndTimeUtil().timestampToString(Timestamp.now()))
                     }
             }
         }

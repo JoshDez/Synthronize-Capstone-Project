@@ -147,6 +147,15 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                             if (task.isSuccessful){
                                 binding.commentEdtTxt.setText("")
                                 bindComments()
+
+
+                                //gets comments count before sending the notification
+                                FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
+                                    .collection("comments").get().addOnSuccessListener { comments ->
+                                        //sends notification
+                                        AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Comment",
+                                            "${comments.size()}","Post", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                                    }
                             }
                         }
                     }
@@ -190,6 +199,9 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                         binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
                         isLoved = true
                         updateFeedStatus()
+                        //sends notification
+                        AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Love",
+                            "${postModel.loveList.size + 1}","Post", DateAndTimeUtil().timestampToString(Timestamp.now()))
                     }
             }
         }

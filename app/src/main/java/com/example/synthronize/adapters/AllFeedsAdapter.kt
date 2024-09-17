@@ -185,7 +185,6 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
         }
 
 
-
         private fun toBindSpecialHolder(chance: Int): Boolean {
             // Generate a random number between 0 and 99
             val randomValue = Random.nextInt(100)
@@ -255,7 +254,17 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                                     if (task.isSuccessful){
                                         binding.commentEdtTxt.setText("")
                                         updateFeedStatus()
+
                                         Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
+
+                                        //gets comments count before sending notification
+                                        FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
+                                            .collection("comments").get().addOnSuccessListener { comments ->
+                                                //sends notification
+                                                AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Comment",
+                                                    "${comments.size()}","Post", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                                        }
+
                                     }
                                 }
                         }
@@ -309,6 +318,9 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                             binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
                             isLoved = true
                             updateFeedStatus()
+                            //sends notification
+                            AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Love",
+                                "${postModel.loveList.size + 1}","Post", DateAndTimeUtil().timestampToString(Timestamp.now()))
                         }
                 }
             }

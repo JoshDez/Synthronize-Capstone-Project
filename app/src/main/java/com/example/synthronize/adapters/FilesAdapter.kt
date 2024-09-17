@@ -160,6 +160,13 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                                         binding.commentEdtTxt.setText("")
                                         updateFeedStatus()
                                         Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
+
+                                        //gets comments count before sending the notification
+                                        FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId).collection("comments").get().addOnSuccessListener { comments ->
+                                            //sends notification
+                                            AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Comment",
+                                                "${comments.size()}","File", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                                        }
                                     }
                                 }
                         }
@@ -198,6 +205,9 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                             binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
                             isLoved = true
                             updateFeedStatus()
+                            //sends notification
+                            AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Love",
+                                "${fileModel.loveList.size + 1}","File", DateAndTimeUtil().timestampToString(Timestamp.now()))
                         }
                 }
             }

@@ -30,6 +30,7 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
@@ -135,6 +136,10 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                                 "contestants.${FirebaseUtil().currentUserUid()}" to ""
                             )
                             FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).update(updates).addOnSuccessListener {
+                                //sends notification
+                                AppUtil().sendNotificationToUser(competitionModel.competitionId, competitionModel.ownerId, "Join",
+                                    "${competitionModel.contestants.keys.size + 1}","Competition", DateAndTimeUtil().timestampToString(
+                                        Timestamp.now()))
                                 onRefresh()
                             }
                         }

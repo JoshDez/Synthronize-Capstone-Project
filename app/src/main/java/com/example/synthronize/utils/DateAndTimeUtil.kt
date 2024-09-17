@@ -107,4 +107,17 @@ class DateAndTimeUtil{
         return differenceInMillis > TimeUnit.MINUTES.toMillis(minutes)
     }
 
+    //Timestamp and String conversion
+    fun timestampToString(timestamp: Timestamp, format: String = "yyyy-MM-dd HH:mm:ss"): String {
+        val date = timestamp.toDate()
+        val formatter = SimpleDateFormat(format, Locale.getDefault())
+        return formatter.format(date)
+    }
+
+    fun stringToTimestamp(dateString: String, format: String = "yyyy-MM-dd HH:mm:ss"): Timestamp {
+        val formatter = SimpleDateFormat(format, Locale.getDefault())
+        val date = formatter.parse(dateString)
+        return Timestamp(date)
+    }
+
 }

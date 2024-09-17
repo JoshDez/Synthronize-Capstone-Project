@@ -16,6 +16,7 @@ import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -280,6 +281,23 @@ class AppUtil {
         }
     }
 
+
+    //Sends a notification to the user
+    fun sendNotificationToUser(contentId:String, contentOwnerId:String, action:String,
+                               repeatedAction:String, contentType:String, timestamp:String){
+        if (contentOwnerId != FirebaseUtil().currentUserUid()){
+            FirebaseUtil().targetUserDetails(contentOwnerId).get().addOnSuccessListener {
+                if (it.exists()){
+                    //key: contentId  value: List{ "userId"(user who did the action), "action"(comment or love), "repeatedAction"(how many who did the action),
+                    // "contentType"(type of content), "timestamp"(timestamp in string form when action executed) }
+                    val mapUpdate = hashMapOf<String, Any>(
+                        "notifications.$contentId" to listOf(FirebaseUtil().currentUserUid(), action, repeatedAction, contentType, timestamp)
+                    )
+                    FirebaseUtil().targetUserDetails(contentOwnerId).update(mapUpdate)
+                }
+            }
+        }
+    }
 
     //TODO change  material button to image button
     fun changeCommunityButtonStates(context:Context, communityButton: MaterialButton, communityId: String, isOnPost:Boolean = false){
