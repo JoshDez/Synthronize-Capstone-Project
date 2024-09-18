@@ -165,7 +165,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                                         FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId).collection("comments").get().addOnSuccessListener { comments ->
                                             //sends notification
                                             AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Comment",
-                                                "${comments.size()}","File", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                                                "${comments.size()}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                                         }
                                     }
                                 }
@@ -207,7 +207,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                             updateFeedStatus()
                             //sends notification
                             AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Love",
-                                "${fileModel.loveList.size + 1}","File", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                                "${fileModel.loveList.size + 1}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                         }
                 }
             }

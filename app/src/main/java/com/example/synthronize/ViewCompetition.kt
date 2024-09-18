@@ -138,7 +138,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                             FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).update(updates).addOnSuccessListener {
                                 //sends notification
                                 AppUtil().sendNotificationToUser(competitionModel.competitionId, competitionModel.ownerId, "Join",
-                                    "${competitionModel.contestants.keys.size + 1}","Competition", DateAndTimeUtil().timestampToString(
+                                    "${competitionModel.contestants.keys.size + 1}","Competition", competitionModel.communityId, DateAndTimeUtil().timestampToString(
                                         Timestamp.now()))
                                 onRefresh()
                             }

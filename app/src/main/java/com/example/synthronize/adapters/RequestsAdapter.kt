@@ -37,7 +37,7 @@ class RequestsAdapter(private var friendRequests:List<String> = listOf(),
 
     override fun onBindViewHolder(holder: RequestsAdapter.RequestViewHolder, position: Int) {
         if (friendRequests.isNotEmpty()){
-            holder.bindFriendRequest(friendRequests[0])
+            holder.bindFriendRequest(friendRequests[position])
         }else {
             //community invitations
             holder.bindCommunityInvitations(hosts[position], communityInvitations)

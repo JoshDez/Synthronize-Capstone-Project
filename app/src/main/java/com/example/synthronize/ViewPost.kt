@@ -154,7 +154,7 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                                     .collection("comments").get().addOnSuccessListener { comments ->
                                         //sends notification
                                         AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Comment",
-                                            "${comments.size()}","Post", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                                            "${comments.size()}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                                     }
                             }
                         }
@@ -201,7 +201,7 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                         updateFeedStatus()
                         //sends notification
                         AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Love",
-                            "${postModel.loveList.size + 1}","Post", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                            "${postModel.loveList.size + 1}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                     }
             }
         }

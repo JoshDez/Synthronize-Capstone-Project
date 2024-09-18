@@ -228,7 +228,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
                                 commentsReference.get().addOnSuccessListener { comments ->
                                         //sends notification
                                         AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Comment",
-                                            "${comments.size()}","File", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                                            "${comments.size()}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                                 }
                             }
                         }
@@ -274,7 +274,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
                         updateFeedStatus()
                         //sends notification
                         AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Love",
-                            "${fileModel.loveList.size + 1}","File", DateAndTimeUtil().timestampToString(Timestamp.now()))
+                            "${fileModel.loveList.size + 1}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                     }
             }
         }

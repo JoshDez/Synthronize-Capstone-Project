@@ -3,6 +3,7 @@ package com.example.synthronize
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.synthronize.adapters.NotificationsAdapter
 import com.example.synthronize.adapters.RequestsAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentUpdatesBinding
@@ -26,6 +28,7 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
     private lateinit var binding: FragmentUpdatesBinding
     private lateinit var requestsAdapter: RequestsAdapter
     private lateinit var invitationsAdapter: RequestsAdapter
+    private lateinit var notificationsAdapter: NotificationsAdapter
     private lateinit var context: Context
     private var currentTab = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +92,7 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
             binding.notificationsIconIV.setImageResource(R.drawable.notifications_selected)
             binding.notificationRV.visibility = View.VISIBLE
             currentTab = "notifications"
-            if (toRefresh)
+            if (toRefresh || !::notificationsAdapter.isInitialized)
                 setupNotifications()
 
 
@@ -110,9 +113,32 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
     }
 
     private fun setupNotifications(){
-        //binding.notificationsRefreshLayout.isRefreshing = true
-        //binding.notificationsRefreshLayout.isRefreshing = false
-        //TODO
+        binding.notificationsRefreshLayout.isRefreshing = true
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+            val user = it.toObject(UserModel::class.java)!!
+            val toSortKeys:ArrayList<String> = ArrayList()
+            val sortedKeys:ArrayList<String> = ArrayList()
+
+            try {
+                //sort the keys by the timestamp of its value
+                for (key in user.notifications.keys){
+                    toSortKeys.add("${user.notifications.getValue(key)[5]}/$key")
+                }
+                toSortKeys.sortDescending()
+
+                //extract keys
+                for (key in toSortKeys){
+                    sortedKeys.add(key.split("/")[1])
+                }
+
+                binding.notificationRV.layoutManager = LinearLayoutManager(context)
+                notificationsAdapter = NotificationsAdapter(context, sortedKeys = sortedKeys, notifications = user.notifications, listener = this)
+                binding.notificationRV.adapter = notificationsAdapter
+                binding.notificationsRefreshLayout.isRefreshing = false
+            } catch (e:Exception){
+                Log.d("error in setup notifications", e.message.toString())
+            }
+        }
     }
 
     private fun setupRVForCommunityInvitations(){

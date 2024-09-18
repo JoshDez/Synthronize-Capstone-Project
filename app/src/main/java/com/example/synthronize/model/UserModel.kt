@@ -29,7 +29,7 @@ data class UserModel(
     var userMedia:Map<String, String> = HashMap(),
     //keys: lastSeen, toggleOffline, isDeactivated
     var currentStatus:Map<String, Any> = HashMap(),
-    //key: contentId  value: List(userId, action, repeatedAction, contentType, timestamp)
+    //key: contentId  value: List(userId, action, repeatedAction, contentType, communityId, timestamp)
     var notifications:Map<String, List<String>> = HashMap(),
     //fcm token for receiving notifications
     var fcmToken:String = "",

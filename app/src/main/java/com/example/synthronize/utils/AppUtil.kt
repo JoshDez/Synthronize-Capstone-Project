@@ -284,14 +284,14 @@ class AppUtil {
 
     //Sends a notification to the user
     fun sendNotificationToUser(contentId:String, contentOwnerId:String, action:String,
-                               repeatedAction:String, contentType:String, timestamp:String){
+                               repeatedAction:String, contentType:String, communityId: String, timestamp:String){
         if (contentOwnerId != FirebaseUtil().currentUserUid()){
             FirebaseUtil().targetUserDetails(contentOwnerId).get().addOnSuccessListener {
                 if (it.exists()){
                     //key: contentId  value: List{ "userId"(user who did the action), "action"(comment or love), "repeatedAction"(how many who did the action),
-                    // "contentType"(type of content), "timestamp"(timestamp in string form when action executed) }
+                    // "contentType"(type of content), "communityId"(communityId in which the content belongs to), "timestamp"(timestamp in string form when action executed) }
                     val mapUpdate = hashMapOf<String, Any>(
-                        "notifications.$contentId" to listOf(FirebaseUtil().currentUserUid(), action, repeatedAction, contentType, timestamp)
+                        "notifications.$contentId" to listOf(FirebaseUtil().currentUserUid(), action, repeatedAction, contentType, communityId, timestamp)
                     )
                     FirebaseUtil().targetUserDetails(contentOwnerId).update(mapUpdate)
                 }

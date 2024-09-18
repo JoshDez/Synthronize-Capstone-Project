@@ -2,13 +2,20 @@ package com.example.synthronize.adapters
 
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
+import com.example.synthronize.ViewFile
 import com.example.synthronize.databinding.ItemFileBinding
+import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -16,6 +23,8 @@ import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import java.io.File
 
 class ProfileFilesAdapter(private val context: Context, private val filesList: ArrayList<FileModel>)
@@ -40,6 +49,7 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
     ): RecyclerView.ViewHolder(binding.root){
 
         private lateinit var fileModel: FileModel
+        private var isLoved = false
 
 
         fun checkAvailabilityBeforeBind(model: FileModel){
@@ -81,7 +91,162 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
                 DialogUtil().openMenuDialog(context, inflater, "File", fileModel.fileId,
                     fileModel.ownerId, fileModel.communityId){}
             }
+
+            binding.profileCIV.setOnClickListener {
+                headToUserProfile()
+            }
+            binding.usernameTV.setOnClickListener {
+                headToUserProfile()
+            }
+
+            binding.mainLayout.setOnClickListener {
+                headToViewFile()
+            }
+            binding.commentBtn.setOnClickListener {
+                headToViewFile()
+            }
+
+            bindLove()
+            bindComment()
         }
+
+        private fun headToViewFile(){
+            val intent = Intent(context, ViewFile::class.java)
+            intent.putExtra("communityId", fileModel.communityId)
+            intent.putExtra("fileId", fileModel.fileId)
+            intent.putExtra("contentType", "File")
+            context.startActivity(intent)
+        }
+
+        private fun bindComment() {
+
+            binding.commentEdtTxt.addTextChangedListener(object: TextWatcher {
+                override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    val comment = binding.commentEdtTxt.text.toString()
+                    if (comment.isNotEmpty()){
+                        binding.loveLayout.visibility = View.GONE
+                        binding.commentLayout.visibility = View.GONE
+                        binding.sendBtn.visibility = View.VISIBLE
+                    } else {
+                        binding.loveLayout.visibility = View.VISIBLE
+                        binding.commentLayout.visibility = View.VISIBLE
+                        binding.sendBtn.visibility = View.GONE
+                    }
+                }
+            })
+
+            binding.sendBtn.setOnClickListener {
+                val comment = binding.commentEdtTxt.text.toString()
+                if (comment.isEmpty()){
+                    Toast.makeText(context, "Please type your comment", Toast.LENGTH_SHORT).show()
+                } else if(AppUtil().containsBadWord(comment)){
+                    Toast.makeText(context, "Your comment contains sensitive words", Toast.LENGTH_SHORT).show()
+                } else {
+                    val commentModel = CommentModel()
+                    FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId).collection("comments").add(commentModel).addOnCompleteListener {
+                        if (it.isSuccessful){
+                            val commentModel = CommentModel(
+                                commentId = it.result.id,
+                                commentOwnerId = FirebaseUtil().currentUserUid(),
+                                comment = comment,
+                                commentTimestamp = Timestamp.now()
+                            )
+                            FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId).collection("comments")
+                                .document(commentModel.commentId).set(commentModel).addOnCompleteListener {task ->
+                                    if (task.isSuccessful){
+                                        binding.commentEdtTxt.setText("")
+                                        updateFeedStatus()
+                                        Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
+
+                                        //gets comments count before sending the notification
+                                        FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId).collection("comments").get().addOnSuccessListener { comments ->
+                                            //sends notification
+                                            AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Comment",
+                                                "${comments.size()}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(
+                                                    Timestamp.now()))
+                                        }
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
+        }
+
+        //FOR LOVE
+        private fun bindLove() {
+            //default
+            binding.loveBtn.setImageResource(R.drawable.baseline_favorite_border_24)
+
+            updateFeedStatus()
+
+            for (user in fileModel.loveList){
+                if (user == FirebaseUtil().currentUserUid()){
+                    binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
+                    isLoved = true
+                }
+            }
+
+            binding.loveBtn.setOnClickListener {
+                if (isLoved){
+                    //removes love
+                    FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId)
+                        .update("loveList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                            binding.loveBtn.setImageResource(R.drawable.baseline_favorite_border_24)
+                            isLoved = false
+                            updateFeedStatus()
+                        }
+                } else {
+                    //adds love
+                    FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId)
+                        .update("loveList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                            binding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
+                            isLoved = true
+                            updateFeedStatus()
+                            //sends notification
+                            AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Love",
+                                "${fileModel.loveList.size + 1}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(
+                                    Timestamp.now()))
+                        }
+                }
+            }
+        }
+
+        //Updates feed status every user interaction with the feed
+        private fun updateFeedStatus(){
+            FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId)
+                .document(fileModel.fileId).get().addOnSuccessListener {
+                    val tempFileModel = it.toObject(fileModel::class.java)!!
+                    binding.lovesCountTV.text = tempFileModel.loveList.size.toString()
+                }
+                .addOnFailureListener {
+                    //if Offline
+                    binding.lovesCountTV.text = fileModel.loveList.size.toString()
+                    FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId)
+                        .collection("comments").get().addOnSuccessListener {
+                            Toast.makeText(context, "${it.size()}", Toast.LENGTH_SHORT).show()
+                            binding.commentsCountTV.text = it.size().toString()
+                        }.addOnFailureListener {
+                            binding.commentsCountTV.text = "0"
+                        }
+                }
+            FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId)
+                .collection("comments").get().addOnSuccessListener {
+                    binding.commentsCountTV.text = it.documents.size.toString()
+                }
+        }
+
+
+        private fun headToUserProfile() {
+            if (fileModel.ownerId != FirebaseUtil().currentUserUid()){
+                val intent = Intent(context, OtherUserProfile::class.java)
+                intent.putExtra("userID", fileModel.ownerId)
+                context.startActivity(intent)
+            }
+        }
+
 
         private fun downloadFileFromFirebase() {
             // Get the file's download URL
