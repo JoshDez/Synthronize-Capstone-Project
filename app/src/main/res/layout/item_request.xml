@@ -36,7 +36,7 @@
                     android:id="@+id/requestTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
+                    android:textSize="17dp"
                     android:contentDescription="@string/full_name"
                     android:textColor="@color/light_teal"/>
                 <TextView
