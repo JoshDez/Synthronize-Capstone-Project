@@ -181,7 +181,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                                         updateFeedStatus()
                                         Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
 
-
                                         //gets comments count before sending the notification
                                         FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
                                             .collection("comments").get().addOnSuccessListener { comments ->
