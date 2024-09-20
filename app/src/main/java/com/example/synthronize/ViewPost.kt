@@ -20,6 +20,7 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
@@ -53,51 +54,55 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
 
     private fun getFeedModel(){
         binding.viewPostRefreshLayout.isRefreshing = true
-        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).get().addOnSuccessListener {
-            postModel = it.toObject(PostModel::class.java)!!
+        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(postId).get().addOnCompleteListener {
+            if (it.result.exists()){
+                postModel = it.result.toObject(PostModel::class.java)!!
 
-            ContentUtil().verifyCommunityContentAvailability(postModel.ownerId, postModel.communityId) { isAvailable ->
-                if (isAvailable){
-                    binding.feedTimestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
-                    binding.captionEdtTxt.setText(postModel.caption)
-                    binding.contentLayout.removeAllViews()
+                ContentUtil().verifyCommunityContentAvailability(postModel.ownerId, postModel.communityId) { isAvailable ->
+                    if (isAvailable){
+                        binding.feedTimestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
+                        binding.captionEdtTxt.setText(postModel.caption)
+                        binding.contentLayout.removeAllViews()
 
-                    FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {result ->
-                        val user = result.toObject(UserModel::class.java)!!
-                        binding.ownerUsernameTV.text = user.username
-                        AppUtil().setUserProfilePic(this, user.userID, binding.profileCIV)
-                    }
+                        FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {result ->
+                            val user = result.toObject(UserModel::class.java)!!
+                            binding.ownerUsernameTV.text = user.username
+                            AppUtil().setUserProfilePic(this, user.userID, binding.profileCIV)
+                        }
 
-                    binding.kebabMenuBtn.setOnClickListener {
-                        DialogUtil().openMenuDialog(this, layoutInflater, "Post",
-                            postModel.postId, postModel.ownerId, postModel.communityId){closeCurrentActivity ->
-                            if (closeCurrentActivity){
-                                Handler().postDelayed({
-                                    onBackPressed()
-                                }, 2000)
+                        binding.kebabMenuBtn.setOnClickListener {
+                            DialogUtil().openMenuDialog(this, layoutInflater, "Post",
+                                postModel.postId, postModel.ownerId, postModel.communityId){closeCurrentActivity ->
+                                if (closeCurrentActivity){
+                                    Handler().postDelayed({
+                                        onBackPressed()
+                                    }, 2000)
+                                }
                             }
                         }
+
+                        binding.profileCIV.setOnClickListener {
+                            headToUserProfile()
+                        }
+
+                        binding.ownerUsernameTV.setOnClickListener {
+                            headToUserProfile()
+                        }
+
+                        if (postModel.contentList.isNotEmpty())
+                            bindContent(postModel.contentList)
+
+                        bindLove()
+                        bindComments()
+                        bindSendPost()
+                        binding.viewPostRefreshLayout.isRefreshing = false
+                    } else {
+                        hideContent()
                     }
-
-                    binding.profileCIV.setOnClickListener {
-                        headToUserProfile()
-                    }
-
-                    binding.ownerUsernameTV.setOnClickListener {
-                        headToUserProfile()
-                    }
-
-                    if (postModel.contentList.isNotEmpty())
-                        bindContent(postModel.contentList)
-
-                    bindLove()
-                    bindComments()
-                    bindSendPost()
                     binding.viewPostRefreshLayout.isRefreshing = false
-                } else {
-                    hideContent()
                 }
-                binding.viewPostRefreshLayout.isRefreshing = false
+            } else {
+                hideContent()
             }
         }
     }
@@ -153,7 +158,7 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                                 FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
                                     .collection("comments").get().addOnSuccessListener { comments ->
                                         //sends notification
-                                        AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Comment",
+                                        NotificationUtil().sendNotificationToUser(this, postModel.postId, postModel.ownerId, "Comment",
                                             "${comments.size()}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                                     }
                             }
@@ -200,7 +205,7 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                         isLoved = true
                         updateFeedStatus()
                         //sends notification
-                        AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Love",
+                        NotificationUtil().sendNotificationToUser(this, postModel.postId, postModel.ownerId, "Love",
                             "${postModel.loveList.size + 1}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                     }
             }

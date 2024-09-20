@@ -146,14 +146,12 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
-    private fun getFCMToken(){
-        //Get Token For Receiving Notifications
-        FirebaseMessaging.getInstance().token.addOnCompleteListener {
-            if (it.isSuccessful){
-                val token = it.result
+    private fun getFCMToken() {
+        // Get Token For Receiving Notifications
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
                 FirebaseUtil().currentUserDetails().update("fcmToken", token)
-            } else {
-
             }
         }
     }

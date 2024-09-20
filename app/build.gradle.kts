@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.Packaging
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -33,13 +34,26 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    packaging {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+        }
+    }
+
 }
 
 dependencies {
@@ -69,10 +83,9 @@ dependencies {
 
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("me.relex:circleindicator:2.1.6")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
 
-    //implementation("androidx.media3:media3-exoplayer:1.3.1")
-    //implementation("androidx.media3:media3-exoplayer-dash:1.3.1")
-    //implementation("androidx.media3:media3-ui:1.3.1")
     implementation("com.google.android.exoplayer:exoplayer:2.19.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 

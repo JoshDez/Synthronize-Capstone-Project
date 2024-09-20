@@ -24,6 +24,7 @@ import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import kotlin.random.Random
@@ -261,7 +262,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                                         FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
                                             .collection("comments").get().addOnSuccessListener { comments ->
                                                 //sends notification
-                                                AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Comment",
+                                                NotificationUtil().sendNotificationToUser(context, postModel.postId, postModel.ownerId, "Comment",
                                                     "${comments.size()}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                                         }
 
@@ -319,7 +320,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                             isLoved = true
                             updateFeedStatus()
                             //sends notification
-                            AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Love",
+                            NotificationUtil().sendNotificationToUser(context, postModel.postId, postModel.ownerId, "Love",
                                 "${postModel.loveList.size + 1}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                         }
                 }

@@ -29,6 +29,7 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldPath
@@ -77,108 +78,125 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
     private fun bindCompetition(){
         binding.viewCompetitionRefresh.isRefreshing = true
-        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community->
-            val communityModel = community.toObject(CommunityModel::class.java)!!
-            AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.communityProfileCIV)
-            binding.communityNameTV.text = communityModel.communityName
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {community->
+            if (community.result.exists()){
+                val communityModel = community.result.toObject(CommunityModel::class.java)!!
+                AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.communityProfileCIV)
+                binding.communityNameTV.text = communityModel.communityName
 
-            FirebaseUtil().retrieveCommunityCompetitionsCollection(communityModel.communityId).document(competitionId).get().addOnSuccessListener { competition ->
-                competitionModel = competition.toObject(CompetitionModel::class.java)!!
-                binding.createdTimestampTV.text = DateAndTimeUtil().getTimeAgo(competitionModel.createdTimestamp, false)
-                binding.competitionNameTV.text = competitionModel.competitionName
-                binding.descTV.text = competitionModel.description
-                binding.rewardsTV.text = competitionModel.rewards
-                binding.actionBtn.text = "Join Competition (${competitionModel.contestants.keys.size})"
-                binding.actionBtn.visibility = View.GONE
-                resultType = competitionModel.results.keys.toList()[0]
-                selectedUserList = ArrayList(competitionModel.results.getValue(resultType))
+                FirebaseUtil().retrieveCommunityCompetitionsCollection(communityModel.communityId).document(competitionId).get().addOnCompleteListener { competition ->
 
-                FirebaseUtil().targetUserDetails(competitionModel.ownerId).get().addOnSuccessListener {
-                    binding.hostNameTV.text = "created by ${it.getString("fullName")}"
-                }
+                    if (competition.result.exists()){
+                        competitionModel = competition.result.toObject(CompetitionModel::class.java)!!
+                        binding.createdTimestampTV.text = DateAndTimeUtil().getTimeAgo(competitionModel.createdTimestamp, false)
+                        binding.competitionNameTV.text = competitionModel.competitionName
+                        binding.descTV.text = competitionModel.description
+                        binding.rewardsTV.text = competitionModel.rewards
+                        binding.actionBtn.text = "Join Competition (${competitionModel.contestants.keys.size})"
+                        binding.actionBtn.visibility = View.GONE
+                        resultType = competitionModel.results.keys.toList()[0]
+                        selectedUserList = ArrayList(competitionModel.results.getValue(resultType))
 
-                DateAndTimeUtil().isTimestampDue(competitionModel.deadline){ isDue,daysLeft ->
-                    isCompetitionDue = isDue
-                    if (isCompetitionDue){
-                        binding.remainingTimeTV.text = "The competition has ended"
-                    } else {
-                        binding.remainingTimeTV.text = "$daysLeft days before it closes"
-                    }
-                }
+                        FirebaseUtil().targetUserDetails(competitionModel.ownerId).get().addOnSuccessListener {
+                            binding.hostNameTV.text = "created by ${it.getString("fullName")}"
+                        }
 
-                navigate(currentTab)
-
-                //buttons
-                binding.instructionsBtn.setOnClickListener {
-                    navigate("instructions")
-                }
-                binding.submissionsBtn.setOnClickListener {
-                    navigate("submissions")
-                }
-                binding.resultBtn.setOnClickListener {
-                    navigate("results")
-                }
-
-                getSubmittedContestants()
-
-                //Bind action button
-                if (isUserAdmin){
-                    binding.actionBtn.visibility = View.VISIBLE
-                    binding.actionBtn.text = "Select Winner"
-                    binding.actionBtn.setOnClickListener {
-                        openSelectUserDialog()
-                    }
-                } else if (!AppUtil().isIdOnList(competitionModel.contestants.keys, FirebaseUtil().currentUserUid())){
-                    if (!isCompetitionDue){
-                        binding.actionBtn.visibility = View.VISIBLE
-                        binding.actionBtn.setOnClickListener {
-                            val updates = hashMapOf<String, Any>(
-                                "contestants.${FirebaseUtil().currentUserUid()}" to ""
-                            )
-                            FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).update(updates).addOnSuccessListener {
-                                //sends notification
-                                AppUtil().sendNotificationToUser(competitionModel.competitionId, competitionModel.ownerId, "Join",
-                                    "${competitionModel.contestants.keys.size + 1}","Competition", competitionModel.communityId, DateAndTimeUtil().timestampToString(
-                                        Timestamp.now()))
-                                onRefresh()
+                        DateAndTimeUtil().isTimestampDue(competitionModel.deadline){ isDue,daysLeft ->
+                            isCompetitionDue = isDue
+                            if (isCompetitionDue){
+                                binding.remainingTimeTV.text = "The competition has ended"
+                            } else {
+                                binding.remainingTimeTV.text = "$daysLeft days before it closes"
                             }
                         }
-                    }
-                } else {
-                    if (!isCompetitionDue){
-                        binding.actionBtn.visibility = View.VISIBLE
-                        if (competitionModel.contestants.getValue(FirebaseUtil().currentUserUid()).isEmpty()){
-                            binding.actionBtn.text = "Submit File"
+
+                        navigate(currentTab)
+
+                        //buttons
+                        binding.instructionsBtn.setOnClickListener {
+                            navigate("instructions")
+                        }
+                        binding.submissionsBtn.setOnClickListener {
+                            navigate("submissions")
+                        }
+                        binding.resultBtn.setOnClickListener {
+                            navigate("results")
+                        }
+
+                        getSubmittedContestants()
+
+                        //Bind action button
+                        if (isUserAdmin){
+                            binding.actionBtn.visibility = View.VISIBLE
+                            binding.actionBtn.text = "Select Winner"
                             binding.actionBtn.setOnClickListener {
-                                val intent = Intent(this, CreateUploadFile::class.java)
-                                intent.putExtra("communityId", communityId)
-                                intent.putExtra("competitionId", competitionId)
-                                intent.putExtra("forCompetition", true)
-                                startActivity(intent)
+                                openSelectUserDialog()
+                            }
+                        } else if (!AppUtil().isIdOnList(competitionModel.contestants.keys, FirebaseUtil().currentUserUid())){
+                            if (!isCompetitionDue){
+                                binding.actionBtn.visibility = View.VISIBLE
+                                binding.actionBtn.setOnClickListener {
+                                    val updates = hashMapOf<String, Any>(
+                                        "contestants.${FirebaseUtil().currentUserUid()}" to ""
+                                    )
+                                    FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).update(updates).addOnSuccessListener {
+                                        //sends notification
+                                        NotificationUtil().sendNotificationToUser(this, competitionModel.competitionId, competitionModel.ownerId, "Join",
+                                            "${competitionModel.contestants.keys.size + 1}","Competition", competitionModel.communityId, DateAndTimeUtil().timestampToString(
+                                                Timestamp.now()))
+                                        onRefresh()
+                                    }
+                                }
                             }
                         } else {
-                            binding.actionBtn.visibility = View.GONE
+                            if (!isCompetitionDue){
+                                binding.actionBtn.visibility = View.VISIBLE
+                                if (competitionModel.contestants.getValue(FirebaseUtil().currentUserUid()).isEmpty()){
+                                    binding.actionBtn.text = "Submit File"
+                                    binding.actionBtn.setOnClickListener {
+                                        val intent = Intent(this, CreateUploadFile::class.java)
+                                        intent.putExtra("communityId", communityId)
+                                        intent.putExtra("competitionId", competitionId)
+                                        intent.putExtra("forCompetition", true)
+                                        startActivity(intent)
+                                    }
+                                } else {
+                                    binding.actionBtn.visibility = View.GONE
+                                }
+                            }
                         }
-                    }
-                }
 
 
-                binding.kebabMenuBtn.setOnClickListener {
-                    DialogUtil().openMenuDialog(this, layoutInflater, "Competition", competitionModel.competitionId,
-                        competitionModel.ownerId, competitionModel.communityId){closeCurrentActivity ->
-                        if (closeCurrentActivity){
-                            Handler().postDelayed({
-                                onBackPressed()
-                            }, 2000)
+                        binding.kebabMenuBtn.setOnClickListener {
+                            DialogUtil().openMenuDialog(this, layoutInflater, "Competition", competitionModel.competitionId,
+                                competitionModel.ownerId, competitionModel.communityId){closeCurrentActivity ->
+                                if (closeCurrentActivity){
+                                    Handler().postDelayed({
+                                        onBackPressed()
+                                    }, 2000)
+                                }
+                            }
                         }
-                    }
-                }
 
-                binding.viewCompetitionRefresh.isRefreshing = false
+                        binding.viewCompetitionRefresh.isRefreshing = false
+                    } else {
+                        hideContent()
+                    }
+
+                }
+            } else {
+                hideContent()
             }
+
         }
     }
 
+    private fun hideContent(){
+        binding.scrollViewLayout.visibility = View.GONE
+        binding.bottomToolbar.visibility = View.INVISIBLE
+        binding.divider2.visibility = View.INVISIBLE
+        binding.contentNotAvailableLayout.visibility = View.VISIBLE
+    }
 
     private fun navigate(tab:String){
         val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_teal)

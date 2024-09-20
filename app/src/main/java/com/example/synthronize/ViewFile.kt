@@ -16,6 +16,7 @@ import com.example.synthronize.databinding.ActivityViewFileBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.FileModel
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
@@ -23,6 +24,7 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
@@ -59,63 +61,66 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
 
     private fun getFileModel(){
         binding.viewFileRefreshLayout.isRefreshing = true
-        FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(fileId).get().addOnSuccessListener {
-            fileModel = it.toObject(FileModel::class.java)!!
+        FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(fileId).get().addOnCompleteListener {
+            if (it.result.exists()){
+                fileModel = it.result.toObject(FileModel::class.java)!!
+                ContentUtil().verifyCommunityContentAvailability(fileModel.ownerId, fileModel.communityId) { isAvailable ->
+                    if (isAvailable){
+                        binding.feedTimestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
+                        binding.captionEdtTxt.setText(fileModel.caption)
+                        binding.fileNameTV.text = fileModel.fileName
+                        displayFileIcon()
 
-            ContentUtil().verifyCommunityContentAvailability(fileModel.ownerId, fileModel.communityId) { isAvailable ->
-                if (isAvailable){
-                    binding.feedTimestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
-                    binding.captionEdtTxt.setText(fileModel.caption)
-                    binding.fileNameTV.text = fileModel.fileName
-                    displayFileIcon()
+                        FirebaseUtil().targetUserDetails(fileModel.ownerId).get().addOnSuccessListener { result ->
+                            val user = result.toObject(UserModel::class.java)!!
+                            binding.ownerUsernameTV.text = user.username
+                            AppUtil().setUserProfilePic(this, user.userID, binding.profileCIV)
+                        }
 
-                    FirebaseUtil().targetUserDetails(fileModel.ownerId).get().addOnSuccessListener { result ->
-                        val user = result.toObject(UserModel::class.java)!!
-                        binding.ownerUsernameTV.text = user.username
-                        AppUtil().setUserProfilePic(this, user.userID, binding.profileCIV)
-                    }
-
-                    binding.kebabMenuBtn.setOnClickListener {
-                        DialogUtil().openMenuDialog(this, layoutInflater, contentType,
-                            fileModel.fileId, fileModel.ownerId, fileModel.communityId){closeCurrentActivity ->
-                            if (closeCurrentActivity){
-                                Handler().postDelayed({
-                                    onBackPressed()
-                                }, 2000)
+                        binding.kebabMenuBtn.setOnClickListener {
+                            DialogUtil().openMenuDialog(this, layoutInflater, contentType,
+                                fileModel.fileId, fileModel.ownerId, fileModel.communityId){closeCurrentActivity ->
+                                if (closeCurrentActivity){
+                                    Handler().postDelayed({
+                                        onBackPressed()
+                                    }, 2000)
+                                }
                             }
                         }
-                    }
 
-                    binding.ownerUsernameTV.setOnClickListener {
-                        headToUserProfile()
-                    }
+                        binding.ownerUsernameTV.setOnClickListener {
+                            headToUserProfile()
+                        }
 
-                    binding.ownerUsernameTV.setOnClickListener {
-                        headToUserProfile()
-                    }
+                        binding.ownerUsernameTV.setOnClickListener {
+                            headToUserProfile()
+                        }
 
-                    binding.fileLayout.setOnClickListener {
-                        downloadFileFromFirebase()
-                    }
+                        binding.fileLayout.setOnClickListener {
+                            downloadFileFromFirebase()
+                        }
 
-                    if (contentType == "File Submission"){
-                        binding.bottomToolbar.visibility = View.INVISIBLE
-                        binding.commentsRV.visibility = View.GONE
-                        binding.loveLayout.visibility = View.GONE
-                        binding.commentsTV.visibility = View.GONE
-                        binding.divider2.visibility = View.GONE
-                        binding.divider3.visibility = View.GONE
-                        binding.divider4.visibility = View.GONE
+                        if (contentType == "File Submission"){
+                            binding.bottomToolbar.visibility = View.INVISIBLE
+                            binding.commentsRV.visibility = View.GONE
+                            binding.loveLayout.visibility = View.GONE
+                            binding.commentsTV.visibility = View.GONE
+                            binding.divider2.visibility = View.GONE
+                            binding.divider3.visibility = View.GONE
+                            binding.divider4.visibility = View.GONE
 
+                        } else {
+                            bindLove()
+                            bindComments()
+                        }
+                        binding.viewFileRefreshLayout.isRefreshing = false
                     } else {
-                        bindLove()
-                        bindComments()
+                        hideContent()
                     }
                     binding.viewFileRefreshLayout.isRefreshing = false
-                } else {
-                    hideContent()
                 }
-                binding.viewFileRefreshLayout.isRefreshing = false
+            } else {
+                hideContent()
             }
         }
     }
@@ -227,7 +232,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
                                 //gets comments count before sending the notification
                                 commentsReference.get().addOnSuccessListener { comments ->
                                         //sends notification
-                                        AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Comment",
+                                    NotificationUtil().sendNotificationToUser(this, fileModel.fileId, fileModel.ownerId, "Comment",
                                             "${comments.size()}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                                 }
                             }
@@ -273,7 +278,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
                         isLoved = true
                         updateFeedStatus()
                         //sends notification
-                        AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Love",
+                        NotificationUtil().sendNotificationToUser(this, fileModel.fileId, fileModel.ownerId, "Love",
                             "${fileModel.loveList.size + 1}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                     }
             }

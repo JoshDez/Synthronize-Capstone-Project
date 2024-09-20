@@ -23,6 +23,7 @@ import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
@@ -185,7 +186,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                                         FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
                                             .collection("comments").get().addOnSuccessListener { comments ->
                                                 //sends notification
-                                                AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Comment",
+                                                NotificationUtil().sendNotificationToUser(context, postModel.postId, postModel.ownerId, "Comment",
                                                     "${comments.size()}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                                         }
                                     }
@@ -227,7 +228,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                             isLoved = true
                             updateFeedStatus()
                             //sends notification
-                            AppUtil().sendNotificationToUser(postModel.postId, postModel.ownerId, "Love",
+                            NotificationUtil().sendNotificationToUser(context, postModel.postId, postModel.ownerId, "Love",
                                 "${postModel.loveList.size + 1}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                         }
                 }

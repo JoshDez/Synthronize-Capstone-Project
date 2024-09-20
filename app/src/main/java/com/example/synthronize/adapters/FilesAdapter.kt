@@ -23,6 +23,7 @@ import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
@@ -164,7 +165,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                                         //gets comments count before sending the notification
                                         FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId).collection("comments").get().addOnSuccessListener { comments ->
                                             //sends notification
-                                            AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Comment",
+                                            NotificationUtil().sendNotificationToUser(context, fileModel.fileId, fileModel.ownerId, "Comment",
                                                 "${comments.size()}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                                         }
                                     }
@@ -206,7 +207,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                             isLoved = true
                             updateFeedStatus()
                             //sends notification
-                            AppUtil().sendNotificationToUser(fileModel.fileId, fileModel.ownerId, "Love",
+                            NotificationUtil().sendNotificationToUser(context, fileModel.fileId, fileModel.ownerId, "Love",
                                 "${fileModel.loveList.size + 1}","File", fileModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
                         }
                 }

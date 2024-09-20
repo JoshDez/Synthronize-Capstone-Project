@@ -2,6 +2,7 @@ package com.example.synthronize.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Handler
 import android.view.View
 import android.widget.ImageView
@@ -16,9 +17,21 @@ import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.google.android.material.button.MaterialButton
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.auth.oauth2.ServiceAccountCredentials
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
 
 
 class AppUtil {
@@ -281,24 +294,6 @@ class AppUtil {
         }
     }
 
-
-    //Sends a notification to the user
-    fun sendNotificationToUser(contentId:String, contentOwnerId:String, action:String,
-                               repeatedAction:String, contentType:String, communityId: String, timestamp:String){
-        if (contentOwnerId != FirebaseUtil().currentUserUid()){
-            FirebaseUtil().targetUserDetails(contentOwnerId).get().addOnSuccessListener {
-                if (it.exists()){
-                    //key: contentId  value: List{ "userId"(user who did the action), "action"(comment or love), "repeatedAction"(how many who did the action),
-                    // "contentType"(type of content), "communityId"(communityId in which the content belongs to), "timestamp"(timestamp in string form when action executed) }
-                    val mapUpdate = hashMapOf<String, Any>(
-                        "notifications.$contentId" to listOf(FirebaseUtil().currentUserUid(), action, repeatedAction, contentType, communityId, timestamp)
-                    )
-                    FirebaseUtil().targetUserDetails(contentOwnerId).update(mapUpdate)
-                }
-            }
-        }
-    }
-
     //TODO change  material button to image button
     fun changeCommunityButtonStates(context:Context, communityButton: MaterialButton, communityId: String, isOnPost:Boolean = false){
         communityButton.visibility = View.GONE
@@ -439,5 +434,4 @@ class AppUtil {
 
         return false
     }
-
 }

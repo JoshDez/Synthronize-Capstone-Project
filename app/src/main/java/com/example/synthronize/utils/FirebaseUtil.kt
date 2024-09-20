@@ -20,9 +20,11 @@ class FirebaseUtil {
 
     //For Authentication
     fun logoutUser(context: Context){
-        FirebaseAuth.getInstance().signOut()
-        val intent = Intent(context, Login::class.java)
-        context.startActivity(intent)
+        FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(context, Login::class.java)
+            context.startActivity(intent)
+        }
     }
     fun currentUserUid(): String {
         return FirebaseAuth.getInstance().uid!!
