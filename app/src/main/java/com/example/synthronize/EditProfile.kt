@@ -222,11 +222,16 @@ class EditProfile : AppCompatActivity() {
                 .setBackgroundColorResId(R.color.transparent)
                 .setCancelable(true)
                 .create()
+
+            dialogBinding.titleTV.text = "Warning"
+            dialogBinding.messageTV.text = "Do you want to exit without saving?"
+
             dialogBinding.yesBtn.setOnClickListener {
-                validateUserProfileDetails()
+                dialogPlus.dismiss()
+                super.onBackPressed()
             }
             dialogBinding.NoBtn.setOnClickListener {
-                super.onBackPressed()
+                dialogPlus.dismiss()
             }
 
             dialogPlus.show()

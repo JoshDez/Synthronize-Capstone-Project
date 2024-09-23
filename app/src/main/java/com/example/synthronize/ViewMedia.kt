@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import java.io.File
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -24,6 +25,7 @@ import com.example.synthronize.databinding.ActivityViewMediaBinding
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.GlideApp
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
+import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 
 class ViewMedia : AppCompatActivity() {
@@ -43,6 +45,7 @@ class ViewMedia : AppCompatActivity() {
         val isUrl = intent.getBooleanExtra("isUrl", false)
         val filename = intent.getStringExtra("filename").toString()
 
+        setupCache()
 
         if (isUrl){
             //Viewing Post
@@ -90,27 +93,55 @@ class ViewMedia : AppCompatActivity() {
     override fun onBackPressed() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         Handler(Looper.getMainLooper()).postDelayed({
+            releasePlayer()
             super.onBackPressed()
         }, 500)
+    }
+
+    private fun setupCache() {
+        // Set up cache eviction policy and database provider for caching
+        val cacheSize = 100L * 1024 * 1024 // 100 MB
+        val evictor = LeastRecentlyUsedCacheEvictor(cacheSize)
+        val databaseProvider = ExoDatabaseProvider(this)
+
+        // Initialize the SimpleCache with cache directory, evictor, and database provider
+        val cacheDir = File(cacheDir, "media") // Create a subdirectory for media cache
+
+        // Set up HTTP Data Source Factory for network requests
+        val httpDataSourceFactory = DefaultHttpDataSource.Factory()
+
+        // Create a DefaultDataSource.Factory for loading data from upstream
+        val dataSourceFactory = DefaultDataSource.Factory(this, httpDataSourceFactory)
+
+        // Create a CacheDataSource.Factory with the above data source factory and cache
+        cacheDataSourceFactory = CacheDataSource.Factory()
+            .setCache(SimpleCache(cacheDir, evictor, databaseProvider))
+            .setUpstreamDataSourceFactory(dataSourceFactory)
+            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
     }
 
     private fun initializeExoplayer(){
         if (::videoUri.isInitialized){
             val mediaItem = MediaItem.fromUri(videoUri)
-            val mediaSource = ProgressiveMediaSource.Factory(cacheDataSourceFactory).createMediaSource(mediaItem)
-            player = SimpleExoPlayer.Builder(this).setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory)).build()
+            player = SimpleExoPlayer.Builder(this)
+                .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
+                .build()
+
+            // Attach player to the player view
             binding.playerView.player = player
 
-            player!!.playWhenReady = true
-            player!!.seekTo(0, 0)
-            player!!.repeatMode = Player.REPEAT_MODE_OFF
-            player!!.setMediaSource(mediaSource, true)
-            player!!.prepare()
+//          Prepare the player with the media item
+            player?.apply {
+                setMediaItem(mediaItem)
+                playWhenReady = true
+                seekTo(0, 0)
+                repeatMode = Player.REPEAT_MODE_OFF
+                prepare()
+            }
         } else {
             return
         }
     }
-
 
     override fun onStart() {
         super.onStart()

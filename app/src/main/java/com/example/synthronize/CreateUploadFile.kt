@@ -9,10 +9,12 @@ import android.os.Handler
 import android.provider.OpenableColumns
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.synthronize.databinding.ActivityCreateUploadFileBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.ProductModel
@@ -35,6 +37,8 @@ class CreateUploadFile : AppCompatActivity() {
     private var fileUrl = ""
     private var isSharedFiles = false
     private var forCompetition = false
+    private var restrictedFileTypes = listOf("jpeg", "jpg", "png", "gif", "bmp", "webp", "tiff", "svg", "ico", "heic", "mp4",
+        "mov", "avi", "mkv", "wmv", "flv", "webm", "m4v", "3gp", "mpeg", "mpg")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,6 +159,8 @@ class CreateUploadFile : AppCompatActivity() {
                         }
 
                     }
+                } else {
+                    Toast.makeText(this, "Please attach your file", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -258,6 +264,7 @@ class CreateUploadFile : AppCompatActivity() {
             }
         }
     }
+
     private fun addFileUrlToSubmission(fileUrl:String) {
         val updates = hashMapOf<String, Any>(
             "contestants.${FirebaseUtil().currentUserUid()}" to fileUrl
@@ -279,7 +286,6 @@ class CreateUploadFile : AppCompatActivity() {
         )
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
         startActivityForResult(intent, PICK_FILE_REQUEST)
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -289,7 +295,12 @@ class CreateUploadFile : AppCompatActivity() {
             if (fileUri != null) {
                 val fileName = getFileName(this, fileUri)
                 if (fileName != null){
-                    displayFile(fileName, fileUri)
+                    val extension = fileName.split('.').last()
+                    if (!restrictedFileTypes.contains(extension)){
+                        displayFile(fileName, fileUri)
+                    } else {
+                        Toast.makeText(this, "The file type is not accepted", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -305,6 +316,7 @@ class CreateUploadFile : AppCompatActivity() {
         displayFileIcon(fileName)
 
         binding.removeFileBtn.setOnClickListener{
+            binding.divider2.visibility = View.VISIBLE
             binding.bottomToolbar.visibility = View.VISIBLE
             binding.fileLayout.visibility = View.GONE
             binding.fileNameTV.text = ""
@@ -350,5 +362,47 @@ class CreateUploadFile : AppCompatActivity() {
             }
         }
         return result
+    }
+
+    override fun onBackPressed() {
+        if (isModified()){
+            //hides keyboard
+            hideKeyboard()
+            //Dialog for saving user profile
+            val dialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+            val dialogPlus = DialogPlus.newDialog(this)
+                .setContentHolder(ViewHolder(dialogBinding.root))
+                .setGravity(Gravity.CENTER)
+                .setBackgroundColorResId(R.color.transparent)
+                .setCancelable(true)
+                .create()
+
+            dialogBinding.titleTV.text = "Warning"
+            dialogBinding.messageTV.text = "Do you want to exit without saving?"
+
+            dialogBinding.yesBtn.setOnClickListener {
+                //removes uploaded videos from firebase storage
+                dialogPlus.dismiss()
+                super.onBackPressed()
+            }
+            dialogBinding.NoBtn.setOnClickListener {
+                dialogPlus.dismiss()
+            }
+
+            dialogPlus.show()
+        } else {
+            super.onBackPressed()
+        }
+
+    }
+
+    private fun isModified(): Boolean {
+        return binding.captionEdtTxt.text.toString().isNotEmpty() ||
+                ::selectedFileUri.isInitialized
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.backBtn.windowToken, 0)
     }
 }

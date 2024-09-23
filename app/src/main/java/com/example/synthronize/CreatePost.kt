@@ -1,12 +1,14 @@
 package com.example.synthronize
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -15,10 +17,12 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.util.TypedValueCompat
 import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreatePostBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.PostModel
@@ -41,6 +45,7 @@ class CreatePost : AppCompatActivity() {
     private lateinit var postId:String
     private lateinit var existingPostModel: PostModel
     private var contentList:ArrayList<String> = ArrayList()
+    private var uploadedVideos:ArrayList<String> = ArrayList()
     private var canPost:Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,11 +137,9 @@ class CreatePost : AppCompatActivity() {
             videoPickerLauncher.launch(intent)
         }
         binding.backBtn.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
     }
-
-
 
     private fun getFileUriFromFirebase(filename: String) {
         // Create a storage reference from the Firebase Storage instance
@@ -160,12 +163,24 @@ class CreatePost : AppCompatActivity() {
 
 
 
-    private fun uploadVideo(filename: String, selectedVideoUri: Uri, progressBar: ProgressBar){
+    private fun uploadVideo(filename: String, selectedVideoUri: Uri, progressBar: ProgressBar, cancelBtn:ImageButton, verticalLayout: LinearLayout){
         canPost = false
+        progressBar.visibility = View.VISIBLE
+
         FirebaseUtil().retrieveCommunityContentVideoRef(filename).putFile(selectedVideoUri).addOnSuccessListener {
-            Toast.makeText(this, "Video Uploaded Successfully", Toast.LENGTH_SHORT).show()
             contentList.add(filename)
+            uploadedVideos.add(filename)
             canPost = true
+
+            //adds functionality to cancel button
+            cancelBtn.setOnClickListener {
+                binding.mainPostLayout.removeView(verticalLayout)
+                //removes video
+                removeUriFromHashMap(filename)
+                FirebaseUtil().retrieveCommunityContentVideoRef(filename).delete()
+            }
+
+
         }.addOnFailureListener {
             Toast.makeText(this, "Failed To Upload Video", Toast.LENGTH_SHORT).show()
         }.addOnProgressListener {
@@ -183,7 +198,7 @@ class CreatePost : AppCompatActivity() {
             filename = "$userId-Video-${UUID.randomUUID()}"
         }
 
-        //Creates linear layout for image
+        //Creates linear layout for Video
         val verticalLayout = LinearLayout(this)
         verticalLayout.orientation = LinearLayout.VERTICAL
         val linearParams = LinearLayout.LayoutParams(
@@ -210,40 +225,37 @@ class CreatePost : AppCompatActivity() {
             startActivity(intent)
         }
 
-
         //inserts selected image to Image View
         Glide.with(this).load(selectedVideo)
+            .centerCrop()
             .into(postVideo)
         verticalLayout.addView(postVideo)
 
         // Adds the ProgressBar
         val progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
-            isIndeterminate = true
+            isIndeterminate = false // Use determinate mode to show actual progress
+            max = 100 // Set max value
+            progressDrawable = ContextCompat.getDrawable(this@CreatePost, R.drawable.custom_progress_bar)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            visibility = View.VISIBLE // Show the progress bar initially
         }
+        progressBar.visibility = View.INVISIBLE
         verticalLayout.addView(progressBar)
 
         //adds image to uri hashmap
         addUriToHashMap(filename, selectedVideoUri)
 
-        if (existingFilename.isEmpty()){
-            //immediately uploads video to the firebase storage
-            uploadVideo(filename, selectedVideo, progressBar)
-        }
 
         //creates cancel button
         val cancelBtn = ImageButton(this)
         cancelBtn.setImageResource(R.drawable.cancel_icon)
         cancelBtn.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         cancelBtn.setOnClickListener {
-            binding.mainPostLayout.removeView(verticalLayout)
-            //removes image
-            removeUriFromHashMap(filename)
+            Toast.makeText(this, "The video is still uploading..", Toast.LENGTH_SHORT).show()
         }
+
         val cancelBtnParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -253,6 +265,11 @@ class CreatePost : AppCompatActivity() {
 
         //adds the views to the main layout
         binding.mainPostLayout.addView(verticalLayout)
+
+        if (existingFilename.isEmpty()){
+            //immediately uploads video to the firebase storage
+            uploadVideo(filename, selectedVideo, progressBar, cancelBtn, verticalLayout)
+        }
     }
 
     private fun addImage(selectedImage:Uri, existingFilename: String = ""){
@@ -462,5 +479,53 @@ class CreatePost : AppCompatActivity() {
             }
         }
 
+    }
+
+
+
+
+    override fun onBackPressed() {
+        if (isModified()){
+            //hides keyboard
+            hideKeyboard()
+            //Dialog for saving user profile
+            val dialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+            val dialogPlus = DialogPlus.newDialog(this)
+                .setContentHolder(ViewHolder(dialogBinding.root))
+                .setGravity(Gravity.CENTER)
+                .setBackgroundColorResId(R.color.transparent)
+                .setCancelable(true)
+                .create()
+
+            dialogBinding.titleTV.text = "Warning"
+            dialogBinding.messageTV.text = "Do you want to exit without saving?"
+
+            dialogBinding.yesBtn.setOnClickListener {
+                //removes uploaded videos from firebase storage
+                for (video in uploadedVideos){
+                    FirebaseUtil().retrieveCommunityContentVideoRef(video).delete()
+                }
+                dialogPlus.dismiss()
+                super.onBackPressed()
+            }
+            dialogBinding.NoBtn.setOnClickListener {
+                dialogPlus.dismiss()
+            }
+
+            dialogPlus.show()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+
+    private fun isModified(): Boolean {
+        return binding.captionEdtTxt.text.toString().isNotEmpty() ||
+                ::selectedImageUri.isInitialized || ::selectedVideoUri.isInitialized
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.backBtn.windowToken, 0)
     }
 }
