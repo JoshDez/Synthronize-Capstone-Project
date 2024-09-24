@@ -11,7 +11,7 @@
     <RelativeLayout
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:background="@color/darker_teal"
         android:padding="10dp">
 
@@ -23,6 +23,18 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/back_icon"
+            app:tint="@color/light_teal" />
+
+        <ImageButton
+            android:id="@+id/optionsBtn"
+            android:layout_marginEnd="10dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/kebab_menu_icon"
             app:tint="@color/light_teal" />
 
 
@@ -44,19 +56,17 @@
         android:layout_height="match_parent"
         android:gravity="center">
 
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:visibility="gone"
-            android:foregroundGravity="center"
+        <com.github.chrisbanes.photoview.PhotoView
+            android:id="@+id/photoView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:visibility="gone"
             android:backgroundTint="@color/black"/>
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/playerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:backgroundTint="@color/black"
             android:visibility="gone" />
     </RelativeLayout>

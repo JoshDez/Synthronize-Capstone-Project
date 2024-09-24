@@ -199,13 +199,13 @@ class AppUtil {
     fun showMoreAndLessWords(string: String, textView: TextView, charLengthLimit:Int){
         var showMore = false
         if (string.length > charLengthLimit){
-            textView.text = "${string.slice(0..charLengthLimit)}  (show more)"
+            textView.text = "${string.slice(0..charLengthLimit)}....(show more)"
             textView.setOnClickListener {
                 if (showMore){
-                    textView.text = "${string.slice(0..charLengthLimit)}  (show more)"
+                    textView.text = "${string.slice(0..charLengthLimit)}....(show more)"
                     showMore = false
                 } else {
-                    textView.text = "$string  (show less)"
+                    textView.text = "$string....(show less)"
                     showMore = true
                 }
             }
