@@ -15,26 +15,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/darker_teal"
-            android:padding="20dp">
+            android:paddingTop="20dp">
 
             <LinearLayout
                 android:id="@+id/option1"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/optionIcon1"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="20dp"
                     app:tint="@color/light_teal" />
 
                 <TextView
                     android:id="@+id/optiontitle1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:contentDescription="@string/menuoption"
                     android:textColor="@color/light_teal"
@@ -51,9 +55,11 @@
             <LinearLayout
                 android:id="@+id/option2"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:visibility="gone">
 
                 <ImageView
@@ -61,12 +67,13 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
                     app:tint="@color/light_teal" />
 
                 <TextView
                     android:id="@+id/optiontitle2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:contentDescription="@string/menuoption"
                     android:textColor="@color/light_teal"
@@ -83,9 +90,10 @@
             <LinearLayout
                 android:id="@+id/option3"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:orientation="horizontal"
                 android:visibility="gone">
 
@@ -94,12 +102,13 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
                     app:tint="@color/light_teal" />
 
                 <TextView
                     android:id="@+id/optiontitle3"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:contentDescription="@string/menuoption"
                     android:textColor="@color/light_teal"
@@ -116,8 +125,11 @@
             <LinearLayout
                 android:id="@+id/option4"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:visibility="gone">
 
                 <ImageView
@@ -125,12 +137,13 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
                     app:tint="@color/light_teal" />
 
                 <TextView
                     android:id="@+id/optiontitle4"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:contentDescription="@string/menuoption"
                     android:textColor="@color/light_teal"

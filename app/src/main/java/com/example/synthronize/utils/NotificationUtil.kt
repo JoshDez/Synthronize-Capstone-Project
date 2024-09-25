@@ -2,6 +2,7 @@ package com.example.synthronize.utils
 
 import android.content.Context
 import android.os.AsyncTask
+import android.util.Log
 import com.example.synthronize.model.UserModel
 import com.google.auth.oauth2.ServiceAccountCredentials
 import okhttp3.MediaType
@@ -59,6 +60,10 @@ class NotificationUtil {
                         "Join" -> {
                             //adds action to the notification message
                             body = "${userModel.username} joined your ${contentType.lowercase()}"
+                        }
+                        "Share" -> {
+                            //adds action to the notification message
+                            body = "${userModel.username} shared your ${contentType.lowercase()}"
                         }
                     }
                     //create json
@@ -132,10 +137,11 @@ class NotificationUtil {
 
         override fun doInBackground(vararg params: Void?): String? {
             return try {
-                val inputStream: InputStream = context.assets.open("synthronize-firebase-adminsdk-ygvk8-ab597daf32.json")
+                val inputStream: InputStream = context.assets.open("synthronize-firebase-adminsdk-ygvk8-7d055bf54c.json")
                 val credentials = ServiceAccountCredentials.fromStream(inputStream)
                 val scopedCredentials = credentials.createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
                 scopedCredentials.refreshIfExpired()
+
                 scopedCredentials.accessToken.tokenValue
             } catch (e: IOException) {
                 e.printStackTrace()

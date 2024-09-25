@@ -131,6 +131,11 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)
                         .update("sendPostList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
                             updateFeedStatus()
+                            if (!postModel.sendPostList.contains(FirebaseUtil().currentUserUid())){
+                                //sends notification
+                                NotificationUtil().sendNotificationToUser(context, postModel.postId, postModel.ownerId, "Share",
+                                    "${postModel.sendPostList.size + 1}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
+                            }
                         }
                 }
             }

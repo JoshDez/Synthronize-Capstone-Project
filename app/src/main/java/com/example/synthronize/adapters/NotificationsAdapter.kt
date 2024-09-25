@@ -93,6 +93,10 @@ class NotificationsAdapter(private var context:Context,
                             //adds action to the notification message
                             binding.requestTV.text = binding.requestTV.text.toString() + "joined "
                         }
+                        "Share" -> {
+                            //adds action to the notification message
+                            binding.requestTV.text = binding.requestTV.text.toString() + "shared "
+                        }
                     }
 
                     
