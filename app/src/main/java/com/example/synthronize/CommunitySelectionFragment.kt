@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
@@ -40,6 +42,8 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
     private lateinit var communityAdapter: CommunityAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var context:Context
+
+    private var searchQuery = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,9 +85,28 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
                 //bind search community
                 mainBinding.searchBtn.visibility = View.VISIBLE
                 mainBinding.searchBtn.setOnClickListener {
-                    searchCommunity()
+                    binding.searchContainerLL.visibility = View.VISIBLE
+                    mainBinding.searchBtn.visibility = View.GONE
                 }
 
+                //bind cancel button beside the search bar
+                binding.cancelBtn.setOnClickListener {
+                    mainBinding.searchBtn.visibility = View.VISIBLE
+                    binding.searchContainerLL.visibility = View.GONE
+                    searchQuery = ""
+                    binding.searchEdtTxt.setText("")
+                    setupRecyclerView()
+                }
+
+                //bind search bar for search groups
+                binding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable?) {
+                        searchQuery = binding.searchEdtTxt.text.toString()
+                        setupRecyclerView()
+                    }
+                })
 
                 // Set up Add Group FAB
                 binding.addGroupFab.setOnClickListener {
@@ -92,15 +115,11 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
 
                 // Fetch groups from Firestore
                 setupRecyclerView()
+
+
             }
 
         }
-    }
-
-    private fun searchCommunity(){
-        val intent = Intent(context, Search::class.java)
-        intent.putExtra("searchInCategory", "communities")
-        startActivity(intent)
     }
 
     private fun openAddCommunityDialog(){
@@ -153,7 +172,9 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
         }
 
         dialogBinding.searchNewCommunityBtn.setOnClickListener {
-            searchCommunity()
+            val intent = Intent(context, Search::class.java)
+            intent.putExtra("searchInCategory", "communities")
+            startActivity(intent)
             dialogPlus.dismiss()
         }
 
@@ -161,15 +182,21 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
     }
 
     private fun setupRecyclerView() {
-
         binding.selectionRefreshLayout.isRefreshing = true
 
         //roles
         val roles = listOf("Admin", "Moderator", "Member")
 
-        //query firestore
-        val communityQuery = FirebaseUtil().retrieveAllCommunityCollection()
+        var communityQuery = FirebaseUtil().retrieveAllCommunityCollection()
+            .whereIn("communityMembers.${FirebaseUtil().currentUserUid()}", roles)
+
+        if (searchQuery.isNotEmpty()){
+            //query firestore
+            communityQuery = FirebaseUtil().retrieveAllCommunityCollection()
                 .whereIn("communityMembers.${FirebaseUtil().currentUserUid()}", roles)
+                .whereGreaterThanOrEqualTo("communityName", searchQuery)
+        }
+
 
         // Add a listener to handle success or failure of the query
         communityQuery.addSnapshotListener { _, e ->

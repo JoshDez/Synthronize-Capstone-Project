@@ -8,30 +8,56 @@
 
     <!-- Toolbar -->
 
-    <!-- Divider below Toolbar -->
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/divider1"
+    <LinearLayout
+        android:id="@+id/searchContainerLL"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/mainToolbar"
-        android:background="@color/light_teal"
-        app:dividerColor="@color/light_teal"
-        tools:ignore="NotSibling" />
+        android:layout_height="70dp"
+        android:background="@drawable/gradient_teal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/searchEdtTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_rounded_corners"
+            android:hint="@string/Search"
+            android:padding="10dp" />
+
+        <ImageButton
+            android:id="@+id/cancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginEnd="20dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/cancel_icon" />
+    </LinearLayout>
+
+
+
+    <!-- Divider below Toolbar -->
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/selectionRefreshLayout"
+        android:layout_below="@id/searchContainerLL"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!-- RecyclerView for Group Selection -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/groupSelectionRV"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/bottomNavigation"
-            android:layout_below="@id/divider1"
-            android:padding="8dp"
-            tools:listitem="@layout/item_community"
-            tools:ignore="NotSibling" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/groupSelectionRV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                tools:ignore="NotSibling" />
+
+        </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
