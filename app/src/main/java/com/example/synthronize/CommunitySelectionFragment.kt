@@ -42,6 +42,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
     private lateinit var communityAdapter: CommunityAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var context:Context
+
     private var searchQuery = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
