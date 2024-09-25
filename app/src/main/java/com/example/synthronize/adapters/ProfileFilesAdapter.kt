@@ -251,6 +251,7 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
 
         private fun downloadFileFromFirebase() {
             // Get the file's download URL
+            Toast.makeText(context, "Downloading File...", Toast.LENGTH_SHORT).show()
             FirebaseUtil().retrieveCommunityFileRef(fileModel.fileUrl).downloadUrl.addOnSuccessListener { uri ->
 
                 // Get the Downloads directory

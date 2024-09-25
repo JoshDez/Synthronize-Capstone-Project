@@ -124,7 +124,9 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
                         listener.onItemClick(model.userID, true)
                     }
                 } else {
-                    //display check box if user is not the current user
+                    binding.usernameTV.setOnClickListener{
+                        listener.onItemClick(model.userID)
+                    }
                     binding.userContainerRL.setOnClickListener{
                         listener.onItemClick(model.userID)
                     }

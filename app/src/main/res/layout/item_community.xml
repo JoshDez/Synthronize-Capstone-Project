@@ -30,6 +30,7 @@
             android:textStyle="bold" />
     </LinearLayout>
     <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         app:dividerColor="@color/gray"/>

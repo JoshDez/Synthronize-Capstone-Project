@@ -15,7 +15,9 @@ import com.example.synthronize.adapters.ProfileFilesAdapter
 import com.example.synthronize.databinding.ActivityOtherUserProfileBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.interfaces.OnNetworkRetryListener
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
@@ -28,13 +30,16 @@ import com.google.firebase.firestore.toObject
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
-class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener {
+class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener, OnItemClickListener {
     private lateinit var binding:ActivityOtherUserProfileBinding
     private lateinit var userModel: UserModel
     private lateinit var myUserModel: UserModel
     private lateinit var allFeedsAdapter:AllFeedsAdapter
     private lateinit var profileFilesAdapter: ProfileFilesAdapter
     private var userID = ""
+    //For OnItemClickListener
+    private var isFriendsList = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +55,6 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
 
         binding.postsRV.layoutManager = LinearLayoutManager(this)
         binding.filesRV.layoutManager = LinearLayoutManager(this)
-        binding.likesRV.layoutManager = LinearLayoutManager(this)
 
         binding.otherUserRefreshLayout.setOnRefreshListener(this)
 
@@ -154,7 +158,6 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                         binding.filesBtn.setOnClickListener {
                             navigate("files")
                         }
-
                         binding.messageUserBtn.setOnClickListener {
                             val intent = Intent(this, Chatroom::class.java)
                             intent.putExtra("chatroomName", userModel.fullName)
@@ -162,9 +165,22 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                             intent.putExtra("chatroomType", "direct_message")
                             startActivity(intent)
                         }
-
                         binding.kebabMenuBtn.setOnClickListener {
                             openMenuDialog()
+                        }
+                        binding.friendsContainer.setOnClickListener {
+                            isFriendsList = true
+                            ProfileUtil().openUserFriendsListDialog(this, userModel.userID, layoutInflater, this)
+                        }
+                        binding.communitiesContainer.setOnClickListener {
+                            isFriendsList = false
+                            ProfileUtil().openCommunityListDialog(this, userModel.userID, layoutInflater, this)
+                        }
+                        binding.postsContainer.setOnClickListener {
+                            ProfileUtil().openPostsDescriptionDialog(this, layoutInflater)
+                        }
+                        binding.filesContainer.setOnClickListener {
+                            ProfileUtil().openFilesDescriptionDialog(this, layoutInflater)
                         }
 
 
@@ -303,5 +319,20 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
 
     override fun retryNetwork() {
         onRefresh()
+    }
+
+    override fun onItemClick(id: String, isChecked: Boolean) {
+        if (isFriendsList){
+            val intent = Intent(this, OtherUserProfile::class.java)
+            intent.putExtra("userID", id)
+            startActivity(intent)
+        } else {
+            FirebaseUtil().retrieveCommunityDocument(id).get().addOnCompleteListener {
+                if (it.result.exists()){
+                    val communityModel = it.result.toObject(CommunityModel::class.java)!!
+                    DialogUtil().openCommunityPreviewDialog(this, layoutInflater, communityModel)
+                }
+            }
+        }
     }
 }

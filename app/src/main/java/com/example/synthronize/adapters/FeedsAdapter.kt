@@ -100,6 +100,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 bindComment()
                 bindSendPost()
                 bindContent()
+                updateFeedStatus()
             }
         }
 
@@ -206,8 +207,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
             //default
             feedBinding.loveBtn.setImageResource(R.drawable.baseline_favorite_border_24)
 
-            updateFeedStatus()
-
             for (user in postModel.loveList){
                 if (user == FirebaseUtil().currentUserUid()){
                     feedBinding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
@@ -222,7 +221,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                         .update("loveList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
                             feedBinding.loveBtn.setImageResource(R.drawable.baseline_favorite_border_24)
                             isLoved = false
-                            updateFeedStatus()
                         }
                 } else {
                     //adds love
@@ -230,7 +228,6 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                         .update("loveList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
                             feedBinding.loveBtn.setImageResource(R.drawable.baseline_favorite_24)
                             isLoved = true
-                            updateFeedStatus()
                             //sends notification
                             NotificationUtil().sendNotificationToUser(context, postModel.postId, postModel.ownerId, "Love",
                                 "${postModel.loveList.size + 1}","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))

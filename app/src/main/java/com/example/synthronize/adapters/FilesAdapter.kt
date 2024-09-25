@@ -249,6 +249,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
 
         private fun downloadFileFromFirebase() {
             // Get the file's download URL
+            Toast.makeText(context, "Downloading File...", Toast.LENGTH_SHORT).show()
             FirebaseUtil().retrieveCommunityFileRef(fileModel.fileUrl).downloadUrl.addOnSuccessListener { uri ->
 
                 // Get the Downloads directory

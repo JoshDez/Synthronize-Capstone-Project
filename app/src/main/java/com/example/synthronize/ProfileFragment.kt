@@ -20,24 +20,29 @@ import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.databinding.FragmentProfileBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.interfaces.OnNetworkRetryListener
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.example.synthronize.utils.ProfileUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
-class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
+class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment(), OnRefreshListener, OnNetworkRetryListener, OnItemClickListener {
 
     private lateinit var allFeedsAdapter: AllFeedsAdapter
     private lateinit var profileFilesAdapter: ProfileFilesAdapter
     private lateinit var binding: FragmentProfileBinding
     private lateinit var context: Context
     private lateinit var userId: String
+    //For OnItemClickListener
+    private var isFriendsList = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -164,6 +169,20 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 binding.filesBtn.setOnClickListener {
                     navigate("files")
                 }
+                binding.friendsContainer.setOnClickListener {
+                    isFriendsList = true
+                    ProfileUtil().openUserFriendsListDialog(context, userModel.userID, layoutInflater, this)
+                }
+                binding.communitiesContainer.setOnClickListener {
+                    isFriendsList = false
+                    ProfileUtil().openCommunityListDialog(context, userModel.userID, layoutInflater, this)
+                }
+                binding.postsContainer.setOnClickListener {
+                    ProfileUtil().openPostsDescriptionDialog(context, layoutInflater)
+                }
+                binding.filesContainer.setOnClickListener {
+                    ProfileUtil().openFilesDescriptionDialog(context, layoutInflater)
+                }
                 mainBinding.kebabMenuBtn.visibility = View.VISIBLE
                 mainBinding.kebabMenuBtn.setOnClickListener {
                     openMenuDialog()
@@ -262,5 +281,20 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
     override fun retryNetwork() {
         onRefresh()
+    }
+
+    override fun onItemClick(id: String, isChecked: Boolean) {
+        if (isFriendsList){
+            val intent = Intent(context, OtherUserProfile::class.java)
+            intent.putExtra("userID", id)
+            startActivity(intent)
+        } else {
+            FirebaseUtil().retrieveCommunityDocument(id).get().addOnCompleteListener {
+                if (it.result.exists()){
+                    val communityModel = it.result.toObject(CommunityModel::class.java)!!
+                    DialogUtil().openCommunityPreviewDialog(context, layoutInflater, communityModel)
+                }
+            }
+        }
     }
 }

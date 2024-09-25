@@ -135,6 +135,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
     }
     private fun downloadFileFromFirebase() {
         // Get the file's download URL
+        Toast.makeText(this, "Downloading File...", Toast.LENGTH_SHORT).show()
         FirebaseUtil().retrieveCommunityFileRef(fileModel.fileUrl).downloadUrl.addOnSuccessListener { uri ->
 
             // Get the Downloads directory

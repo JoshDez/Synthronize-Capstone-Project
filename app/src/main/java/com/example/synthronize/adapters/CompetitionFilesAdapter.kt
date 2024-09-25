@@ -7,6 +7,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
@@ -95,6 +96,7 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
 
         private fun downloadFileFromFirebase() {
             // Get the file's download URL
+            Toast.makeText(context, "Downloading File...", Toast.LENGTH_SHORT).show()
             FirebaseUtil().retrieveCommunityFileRef(fileModel.fileUrl).downloadUrl.addOnSuccessListener { uri ->
 
                 // Get the Downloads directory
