@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivityCreateCommunityBinding
+import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.ChatroomModel
@@ -248,13 +249,23 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun createCommunity(){
+        //loading
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        dialogLoadingBinding.messageTV.text = "Saving..."
+
+        loadingDialog.show()
+
         var communityModel = CommunityModel()
         selectedUsersList
         //delay before heading to the community tab
         var delay:Long = 0
-
-        //TODO: invite users in selectedUsersList to community
-
 
         FirebaseUtil().retrieveAllCommunityCollection().add(communityModel).addOnSuccessListener {
             //retrieve new communityId
@@ -319,10 +330,8 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
 
             //set data to firestore
             FirebaseUtil().retrieveCommunityDocument(communityId).set(communityModel).addOnSuccessListener {
-
                 //invites the selected users to community
                 inviteUsersToCommunity(communityId)
-
                 var chatroomModel = ChatroomModel()
                 FirebaseUtil().retrieveAllChatRoomReferences().add(chatroomModel).addOnSuccessListener {chatroom ->
                     //Creates General channel for Community Chat
@@ -337,11 +346,16 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                         communityId = communityId
                     )
                     FirebaseUtil().retrieveChatRoomReference(chatroom.id).set(chatroomModel).addOnSuccessListener {
+                        loadingDialog.dismiss()
                         AppUtil().headToMainActivity(this, "community", delay, communityId)
+                    }.addOnFailureListener { e ->
+                        Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+                        loadingDialog.dismiss()
                     }
                 }
-
-
+            }.addOnFailureListener {e ->
+                Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+                loadingDialog.dismiss()
             }
         }
     }

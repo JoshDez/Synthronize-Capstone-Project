@@ -16,6 +16,7 @@ import com.example.synthronize.R
 import com.example.synthronize.ViewFile
 import com.example.synthronize.databinding.ItemFileBinding
 import com.example.synthronize.model.CommentModel
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -77,6 +78,16 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
                 val user = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, fileModel.ownerId, binding.profileCIV)
                 binding.usernameTV.text = user.username
+            }
+
+            //SETUP WRAPPER FOR COMMUNITY
+            FirebaseUtil().retrieveCommunityDocument(fileModel.communityId).get().addOnSuccessListener {
+                val community = it.toObject(CommunityModel::class.java)!!
+                binding.wrapperDivider.visibility = View.VISIBLE
+                binding.communityWrapperLayout.visibility = View.VISIBLE
+                binding.wrapperName.text = community.communityName
+                AppUtil().setCommunityProfilePic(context, community.communityId, binding.wrapperCIV)
+                AppUtil().changeCommunityButtonStates(context, binding.communityActionBtn, community.communityId, true)
             }
 
             binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)

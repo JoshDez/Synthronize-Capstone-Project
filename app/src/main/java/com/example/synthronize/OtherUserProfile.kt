@@ -70,8 +70,8 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
         val selectedColor = ContextCompat.getColor(this, R.color.light_teal)
         binding.postsBtn.setTextColor(unselectedColor)
         binding.filesBtn.setTextColor(unselectedColor)
-        binding.postsRV.visibility = View.INVISIBLE
-        binding.filesRV.visibility = View.INVISIBLE
+        binding.postsRV.visibility = View.GONE
+        binding.filesRV.visibility = View.GONE
 
         if (tab == "posts"){
             binding.postsBtn.setTextColor(selectedColor)
@@ -87,7 +87,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
     }
 
     private fun setupFilesRV() {
-        ProfileUtil().getUserFiles(this, userID){
+        ProfileUtil().getUserFiles(this, userID, true){
             profileFilesAdapter = it
             binding.filesRV.layoutManager = LinearLayoutManager(this)
             binding.filesRV.adapter = profileFilesAdapter
@@ -95,7 +95,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
     }
 
     private fun setupPostsRV() {
-        ProfileUtil().getUserPosts(this, userID){
+        ProfileUtil().getUserPosts(this, userID, true){
             allFeedsAdapter = it
             binding.postsRV.layoutManager = LinearLayoutManager(this)
             binding.postsRV.adapter = allFeedsAdapter

@@ -368,7 +368,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="Posts"
+                            android:text="Posts (Public)"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:textColor="@color/light_teal"
                             android:textSize="16sp"
@@ -380,7 +380,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="Files"
+                            android:text="Files (Public)"
                             android:textAlignment="center"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:textColor="@color/light_teal"
@@ -398,29 +398,18 @@
                 </LinearLayout>
 
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/postsRV"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:visibility="gone" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/postsRV"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/filesRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/filesRV"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/likesRV"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
-                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

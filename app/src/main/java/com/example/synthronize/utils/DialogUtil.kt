@@ -248,6 +248,7 @@ class DialogUtil: OnItemClickListener {
                 .setContentHolder(ViewHolder(menuDialogBinding.root))
                 .setCancelable(true)
                 .setExpanded(false)
+                .setMargin(100,0,100,0)
                 .setBackgroundColorResId(R.color.transparent)
                 .setGravity(Gravity.CENTER)
                 .create()

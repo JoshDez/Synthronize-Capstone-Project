@@ -34,13 +34,18 @@ import com.orhanobut.dialogplus.ViewHolder
 
 class ProfileUtil {
 
-    fun getUserPosts(context: Context, userId: String, callback: (AllFeedsAdapter) -> Unit){
+    fun getUserPosts(context: Context, userId: String, forOtherUserProfile:Boolean = false, callback: (AllFeedsAdapter) -> Unit){
 
         val postsList:ArrayList<PostModel> = ArrayList()
 
-        FirebaseUtil().retrieveAllCommunityCollection()
-            .whereEqualTo("communityType", "Public")
-            .get().addOnSuccessListener { querySnapshot ->
+        var communityQuery:Query = FirebaseUtil().retrieveAllCommunityCollection()
+
+        if (forOtherUserProfile){
+            communityQuery = FirebaseUtil().retrieveAllCommunityCollection()
+                .whereEqualTo("communityType", "Public")
+        }
+
+        communityQuery.get().addOnSuccessListener { querySnapshot ->
                 var communitiesTraversed = 0
                 for (document in querySnapshot.documents) {
                     FirebaseUtil().retrieveAllCommunityCollection()
@@ -85,13 +90,18 @@ class ProfileUtil {
                 callback(AllFeedsAdapter(context, postsList, false))
             }
     }
-    fun getUserFiles(context: Context, userId: String, callback: (ProfileFilesAdapter) -> Unit){
+    fun getUserFiles(context: Context, userId: String, forOtherUserProfile:Boolean = false, callback: (ProfileFilesAdapter) -> Unit){
 
         val filesList:ArrayList<FileModel> = ArrayList()
 
-        FirebaseUtil().retrieveAllCommunityCollection()
-            .whereEqualTo("communityType", "Public")
-            .get().addOnSuccessListener { querySnapshot ->
+        var communityQuery:Query = FirebaseUtil().retrieveAllCommunityCollection()
+
+        if (forOtherUserProfile){
+            communityQuery = FirebaseUtil().retrieveAllCommunityCollection()
+                .whereEqualTo("communityType", "Public")
+        }
+
+        communityQuery.get().addOnSuccessListener { querySnapshot ->
                 var communitiesTraversed = 0
                 for (document in querySnapshot.documents) {
                     FirebaseUtil().retrieveAllCommunityCollection()

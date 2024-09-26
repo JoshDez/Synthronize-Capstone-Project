@@ -288,7 +288,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
         //Option 3
         menuBinding.option3.visibility = View.VISIBLE
         menuBinding.optiontitle3.text = "Search Users"
-        menuBinding.optionIcon3.setImageResource(R.drawable.baseline_logout_24)
+        menuBinding.optionIcon3.setImageResource(R.drawable.search_icon)
         menuBinding.optiontitle3.setOnClickListener {
             menuDialog.dismiss()
             val intent = Intent(context, Search::class.java)

@@ -183,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/selectedUsersTV"
@@ -228,39 +228,43 @@
     <!-- THIRD SECTION -->
     <ScrollView
         android:id="@+id/thirdSectionLayout"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavigation"
         android:layout_below="@id/mainToolbar"
-        android:layout_above="@id/bottomNavigation">
+        android:visibility="gone">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp"/>
+                android:layout_height="40dp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/set_community_profile_and_cover_photo"
                 android:textAlignment="center"
-                android:textSize="20dp"
                 android:textColor="@color/light_teal"
-                android:text="@string/set_community_profile_and_cover_photo"/>
+                android:textSize="20dp" />
+
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="60dp"/>
+                android:layout_height="40dp" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/communityProfileCIV"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
-                android:src="@color/light_teal"/>
+                android:src="@drawable/community_default_profile" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="60dp"/>
+                android:layout_height="60dp" />
 
             <TextView
                 android:id="@+id/nameTV"
@@ -268,11 +272,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:contentDescription="@string/community_name"
                 android:textAlignment="center"
-                android:textSize="20dp"
-                android:textStyle="bold"
                 android:textColor="@color/light_teal"
-                android:contentDescription="@string/community_name"/>
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
 
         </LinearLayout>
@@ -282,64 +286,72 @@
     <!-- Fourth SECTION -->
     <ScrollView
         android:id="@+id/fourthSectionLayout"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavigation"
         android:layout_below="@id/mainToolbar"
-        android:layout_above="@id/bottomNavigation">
+        android:visibility="visible">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp"/>
+                android:layout_height="20dp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Set Community Banner"
                 android:textAlignment="center"
-                android:textSize="20dp"
                 android:textColor="@color/light_teal"
-                android:text="Set Community Banner"/>
+                android:textSize="20dp" />
+
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="60dp"/>
+                android:layout_height="60dp" />
 
             <FrameLayout
-                android:layout_below="@id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="250dp">
+                android:layout_height="250dp"
+                android:layout_below="@id/divider">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <ImageView
                         android:id="@+id/communityBannerIV"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="180dp"
-                        android:src="@color/black"/>
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@color/black"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/baseline_image_24_white" />
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/communityProfileCIV2"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
-                        android:layout_marginStart="20dp"
-                        android:layout_centerInParent="true"
-                        android:layout_alignParentBottom="true"
                         android:layout_alignParentStart="true"
-                        android:src="@color/light_teal"/>
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
+                        android:src="@drawable/community_default_profile" />
                 </RelativeLayout>
             </FrameLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="60dp"/>
+                android:layout_height="60dp" />
 
             <TextView
                 android:id="@+id/nameTV2"
@@ -347,11 +359,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:contentDescription="@string/community_name"
                 android:textAlignment="center"
-                android:textSize="20dp"
-                android:textStyle="bold"
                 android:textColor="@color/light_teal"
-                android:contentDescription="@string/community_name"/>
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
 
         </LinearLayout>
