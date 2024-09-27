@@ -20,7 +20,8 @@ import com.orhanobut.dialogplus.ViewHolder
 
 class SearchCommunityAdapter(private val context: Context, options: FirestoreRecyclerOptions<CommunityModel>,
                              private var listener:OnItemClickListener, private var forProfileUtil:Boolean = false,
-                             private var dialogPlus: DialogPlus = DialogPlus.newDialog(context).setContentHolder(ViewHolder(R.layout.dialog_list)).create()):
+                             private var dialogPlus: DialogPlus = DialogPlus.newDialog(context).setContentHolder(ViewHolder(R.layout.dialog_list)).create(),
+                             private var removeDivider:Boolean = false):
     FirestoreRecyclerAdapter<CommunityModel, SearchCommunityAdapter.CommunityViewHolder>(options) {
     private var totalItems = 0
 
@@ -43,9 +44,8 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
         private lateinit var dialogBinding: DialogCommunityPreviewBinding
         private lateinit var communityModel: CommunityModel
         fun bind(model: CommunityModel){
-
-            //removes divider if its for profile util
-            if (forProfileUtil)
+            //removes divider
+            if (removeDivider)
                 binding.divider.visibility = View.INVISIBLE
 
             //Checks if user is not on community block list

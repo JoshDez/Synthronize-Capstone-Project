@@ -30,7 +30,8 @@ import com.google.firebase.firestore.FieldValue
 import kotlin.random.Random
 
 //FEEDS ADAPTER FOR OUTSIDE OF COMMUNITY FRAGMENT
-class AllFeedsAdapter(private val context: Context, private val feedList: ArrayList<PostModel>, private var isExploreTab:Boolean = true)
+class AllFeedsAdapter(private val context: Context, private val feedList: ArrayList<PostModel>,
+                      private var isExploreTab:Boolean = true, private var removeBackground:Boolean = false)
     :RecyclerView.Adapter<AllFeedsAdapter.ExploreViewHolder>() {
 
 
@@ -68,6 +69,10 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
         }
         
         private fun bindPost(model: PostModel){
+
+            if (removeBackground){
+                binding.parentLayout.setBackgroundResource(R.color.transparent)
+            }
 
             if (toBindSpecialHolder(10) && isExploreTab){
 

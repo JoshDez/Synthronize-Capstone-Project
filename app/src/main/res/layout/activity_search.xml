@@ -75,132 +75,145 @@
 
             <LinearLayout
                 android:id="@+id/usersLinearLayout"
-                android:visibility="gone"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:id="@+id/userHeaderLayout"
-                    android:background="@drawable/input_rounded_corners"
-                    android:backgroundTint="@color/dark_teal"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_marginBottom="10dp"
-                    android:layout_height="70dp">
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/input_rounded_corners"
+                    android:backgroundTint="@color/dark_teal">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="50dp"
                         android:text="@string/users"
                         android:textColor="@color/light_teal"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="50dp"/>
+                        android:textStyle="bold" />
+
                     <ImageView
                         android:id="@+id/userArrowIV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        app:tint="@color/light_teal"
+                        android:layout_marginEnd="20dp"
                         android:src="@drawable/baseline_keyboard_arrow_up_24"
-                        android:layout_marginEnd="20dp"/>
+                        app:tint="@color/light_teal" />
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/resultUsersRV"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_marginBottom="20dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/communitiesLinearLayout"
-                android:visibility="gone"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
                 <RelativeLayout
                     android:id="@+id/communityHeaderLayout"
-                    android:background="@drawable/input_rounded_corners"
-                    android:backgroundTint="@color/dark_teal"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp">
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/input_rounded_corners"
+                    android:backgroundTint="@color/dark_teal">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="50dp"
                         android:text="@string/communities"
                         android:textColor="@color/light_teal"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="50dp"/>
+                        android:textStyle="bold" />
+
                     <ImageView
                         android:id="@+id/communityArrowIV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        app:tint="@color/light_teal"
+                        android:layout_marginEnd="20dp"
                         android:src="@drawable/baseline_keyboard_arrow_up_24"
-                        android:layout_marginEnd="20dp"/>
+                        app:tint="@color/light_teal" />
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/resultCommunitiesRV"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_marginBottom="20dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/postsLinearLayout"
-                android:visibility="gone"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
                 <RelativeLayout
                     android:id="@+id/postsHeaderLayout"
-                    android:background="@drawable/input_rounded_corners"
-                    android:backgroundTint="@color/dark_teal"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp">
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/input_rounded_corners"
+                    android:backgroundTint="@color/dark_teal">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="50dp"
                         android:text="@string/posts"
                         android:textColor="@color/light_teal"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="50dp"/>
+                        android:textStyle="bold" />
+
                     <ImageView
                         android:id="@+id/postsArrowIV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        app:tint="@color/light_teal"
+                        android:layout_marginEnd="20dp"
                         android:src="@drawable/baseline_keyboard_arrow_up_24"
-                        android:layout_marginEnd="20dp"/>
+                        app:tint="@color/light_teal" />
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/resultsPostsRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_marginBottom="20dp" />
             </LinearLayout>
 
         </LinearLayout>

@@ -46,30 +46,44 @@ class Search : AppCompatActivity(), OnItemClickListener {
         }
 
         binding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(searchQuery: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            override fun afterTextChanged(p0: Editable?) {
+                val searchQuery = binding.searchEdtTxt.text.toString()
+
                 if (searchInCategory == "users"){
-                    searchUsers(searchQuery.toString())
+                    searchUsers(searchQuery)
                 } else if (searchInCategory == "communities"){
-                    searchCommunities(searchQuery.toString())
+                    searchCommunities(searchQuery)
                 } else if(searchInCategory == "feeds"){
-                    searchPosts(searchQuery.toString())
+                    searchPosts(searchQuery)
                 } else {
                     //search in all categories
-                    searchUsers(searchQuery.toString())
-                    searchCommunities(searchQuery.toString())
-                    searchPosts(searchQuery.toString())
+                    searchUsers(searchQuery)
+                    searchCommunities(searchQuery)
+                    searchPosts(searchQuery)
                 }
             }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(searchQuery: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
     }
 
     private fun searchUsers(searchQuery: String){
         binding.usersLinearLayout.visibility = View.INVISIBLE
 
-        val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
-            .whereGreaterThanOrEqualTo("fullName", searchQuery)
+        var myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+
+        if (searchQuery.isNotEmpty()){
+            if (searchQuery[0] == '@'){
+                //search user by username
+                myQuery = FirebaseUtil().allUsersCollectionReference()
+                    .whereGreaterThanOrEqualTo("username", searchQuery.removePrefix("@"))
+            } else {
+                //search user by full name
+                myQuery = FirebaseUtil().allUsersCollectionReference()
+                    .whereGreaterThanOrEqualTo("fullName", searchQuery)
+            }
+        }
 
         val options:FirestoreRecyclerOptions<UserModel> =
             FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
@@ -79,8 +93,6 @@ class Search : AppCompatActivity(), OnItemClickListener {
         searchUserAdapter = SearchUserAdapter(this, options, this)
         binding.resultUsersRV.adapter = searchUserAdapter
         searchUserAdapter.startListening()
-
-
 
         Handler().postDelayed({
             if (searchUserAdapter.getTotalItems() > 0 && searchQuery.isNotEmpty()){
@@ -100,7 +112,6 @@ class Search : AppCompatActivity(), OnItemClickListener {
                 binding.usersLinearLayout.visibility = View.GONE
             }
         }, 1000)
-
     }
 
     private fun searchCommunities(searchQuery: String){
@@ -144,15 +155,15 @@ class Search : AppCompatActivity(), OnItemClickListener {
         FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityType", "Public").get().addOnSuccessListener {it ->
             for (document in it.documents){
                 val id = document.get("communityId") as String
+
                 FirebaseUtil().retrieveCommunityFeedsCollection(id).whereGreaterThanOrEqualTo("caption", searchQuery).get().addOnSuccessListener {feeds ->
                     for (post in feeds.documents){
                         val postModel = post.toObject(PostModel::class.java)!!
                         feedList.add(postModel)
                     }
                     binding.resultsPostsRV.layoutManager = LinearLayoutManager(this)
-                    searchFeedAdapter = AllFeedsAdapter(this, feedList)
+                    searchFeedAdapter = AllFeedsAdapter(this, feedList, isExploreTab = false, removeBackground = true)
                     binding.resultsPostsRV.adapter = searchFeedAdapter
-
                     Handler().postDelayed({
                         if (searchFeedAdapter.itemCount > 0 && searchQuery.isNotEmpty()){
                             binding.postsLinearLayout.visibility = View.VISIBLE

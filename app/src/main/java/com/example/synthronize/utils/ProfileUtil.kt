@@ -329,7 +329,7 @@ class ProfileUtil {
                 FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(communityQuery, CommunityModel::class.java).build()
 
             communityRV.layoutManager = LinearLayoutManager(context)
-            val communityAdapter = SearchCommunityAdapter(context, options, listener, true, communityDialog)
+            val communityAdapter = SearchCommunityAdapter(context, options, listener, true, communityDialog, true)
             communityRV.adapter = communityAdapter
             communityAdapter.startListening()
 
@@ -344,7 +344,7 @@ class ProfileUtil {
                 FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(communityQuery, CommunityModel::class.java).build()
 
             communityRV.layoutManager = LinearLayoutManager(context)
-            val communityAdapter = SearchCommunityAdapter(context, options, listener, true, communityDialog)
+            val communityAdapter = SearchCommunityAdapter(context, options, listener, true, communityDialog, true)
             communityRV.adapter = communityAdapter
             communityAdapter.startListening()
         }
