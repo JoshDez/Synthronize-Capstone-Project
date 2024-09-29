@@ -3,13 +3,16 @@ package com.example.synthronize.adapters
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.OtherUserProfile
+import com.example.synthronize.R
 import com.example.synthronize.ViewCompetition
 import com.example.synthronize.ViewFile
 import com.example.synthronize.ViewPost
@@ -58,7 +61,7 @@ class NotificationsAdapter(private var context:Context,
             contentId = key
 
             FirebaseUtil().targetUserDetails(value[0]).get().addOnCompleteListener {
-                if (it.isSuccessful){
+                if (it.result.exists()){
                     val user = it.result.toObject(UserModel::class.java)!!
                     AppUtil().setUserProfilePic(context, user.userID, binding.profileCIV)
 
@@ -75,43 +78,52 @@ class NotificationsAdapter(private var context:Context,
                             //adds repeated action (number of people who did the same action to the content) to the notification message
                             binding.requestTV.text = binding.requestTV.text.toString() + "+ $repeatedAction others "
                         }
+
+                        //Bind action of the notification
+                        when(value[1]){
+                            "Love" -> {
+                                //adds action to the notification message
+                                binding.requestTV.text = binding.requestTV.text.toString() + "loved "
+                            }
+                            "Comment" -> {
+                                //adds action to the notification message
+                                binding.requestTV.text = binding.requestTV.text.toString() + "commented on "
+                            }
+                            "Join" -> {
+                                //adds action to the notification message
+                                binding.requestTV.text = binding.requestTV.text.toString() + "joined "
+                            }
+                            "Share" -> {
+                                //adds action to the notification message
+                                binding.requestTV.text = binding.requestTV.text.toString() + "shared "
+                            }
+                        }
+
+                        //Binds community if the content type is for community
+                        val communityContentTypes = listOf("Post", "Competition", "File")
+                        if (communityContentTypes.contains(value[3])){
+                            bindCommunity()
+                        }
+
+                        if (value[6] == "seen"){
+                            // Change text color
+                            val lessLightTeal = ContextCompat.getColor(context, R.color.less_saturated_light_teal)
+                            binding.requestTV.setTextColor(lessLightTeal)
+                            binding.timestampTV.setTextColor(lessLightTeal)
+                            // Change text style
+                            binding.requestTV.setTypeface(null, Typeface.NORMAL)
+                            binding.timestampTV.setTypeface(null, Typeface.NORMAL)
+                        }
                     } catch (e:Exception){
                         Log.d("error", e.message.toString())
                     }
-
-
-                    when(value[1]){
-                        "Love" -> {
-                            //adds action to the notification message
-                            binding.requestTV.text = binding.requestTV.text.toString() + "loved "
-                        }
-                        "Comment" -> {
-                            //adds action to the notification message
-                            binding.requestTV.text = binding.requestTV.text.toString() + "commented on "
-                        }
-                        "Join" -> {
-                            //adds action to the notification message
-                            binding.requestTV.text = binding.requestTV.text.toString() + "joined "
-                        }
-                        "Share" -> {
-                            //adds action to the notification message
-                            binding.requestTV.text = binding.requestTV.text.toString() + "shared "
-                        }
-                    }
-
-                    
-                    val communityContentTypes = listOf("Post", "Competition", "File")
-                    if (communityContentTypes.contains(value[3])){
-                        bindCommunity()
-                    }
-
                 }
             }
         }
 
         private fun bindCommunity() {
             FirebaseUtil().currentUserDetails().get().addOnCompleteListener {user ->
-                if (user.isSuccessful){
+                if (user.result.exists()){
                     val myModel = user.result.toObject(UserModel::class.java)!!
 
                     FirebaseUtil().retrieveCommunityDocument(value[4]).get().addOnCompleteListener {community ->
@@ -135,6 +147,7 @@ class NotificationsAdapter(private var context:Context,
                                     //adds content type to the notification message
                                     binding.requestTV.text = binding.requestTV.text.toString() + "your post in ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
+                                        changeNotificationStateToSeen()
                                         viewPost()
                                     }
                                 }
@@ -142,6 +155,7 @@ class NotificationsAdapter(private var context:Context,
                                     //adds content type to the notification message
                                     binding.requestTV.text = binding.requestTV.text.toString() + "your file in ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
+                                        changeNotificationStateToSeen()
                                         headToViewFile()
                                     }
                                 }
@@ -149,6 +163,7 @@ class NotificationsAdapter(private var context:Context,
                                     //adds content type to the notification message
                                     binding.requestTV.text = binding.requestTV.text.toString() + "your competition in ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
+                                        changeNotificationStateToSeen()
                                         headToCompetition()
                                     }
                                 }
@@ -157,6 +172,15 @@ class NotificationsAdapter(private var context:Context,
 
                     }
                 }
+            }
+        }
+
+        private fun changeNotificationStateToSeen(){
+            val mapUpdate = hashMapOf<String, Any>(
+                "notifications.$contentId" to listOf(value[0], value[1], value[2], value[3], value[4], value[5], "seen")
+            )
+            FirebaseUtil().targetUserDetails(FirebaseUtil().currentUserUid()).update(mapUpdate).addOnSuccessListener {
+                listener.onChangeRequests("notifications")
             }
         }
 

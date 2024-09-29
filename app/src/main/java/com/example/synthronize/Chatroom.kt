@@ -22,6 +22,7 @@ import com.example.synthronize.model.ProductModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import java.lang.Exception
 
 class Chatroom : AppCompatActivity() {
@@ -279,29 +280,61 @@ class Chatroom : AppCompatActivity() {
             senderID =  FirebaseUtil().currentUserUid(), timestamp =  Timestamp.now()
         )
 
-        chatroomModel.lastMessageUserId = FirebaseUtil().currentUserUid()
-        chatroomModel.lastMsgTimestamp = Timestamp.now()
+        FirebaseUtil().retrieveChatRoomReference(chatroomModel.chatroomId).get().addOnCompleteListener {
+            if (it.result.exists()){
+                //refreshes new chatroom model
+                val chatroomModel = it.result.toObject(ChatroomModel::class.java)!!
 
-        if (message.isEmpty() && postId.isNotEmpty() && postId != "null"){
-            //"sent a post" as the last message
-            chatroomModel.lastMessage = "Sent a post"
-        } else if (message.isEmpty() && productId.isNotEmpty() && productId != "null"){
-            //"sent a post" as the last message
-            chatroomModel.lastMessage = "Sent a product"
-        } else {
-            //send the actual message
-            chatroomModel.lastMessage = message
+                chatroomModel.lastMessageUserId = FirebaseUtil().currentUserUid()
+                chatroomModel.lastMsgTimestamp = Timestamp.now()
+                chatroomModel.usersSeen = listOf(FirebaseUtil().currentUserUid())
+
+                if (message.isEmpty() && postId.isNotEmpty() && postId != "null"){
+                    //"sent a post" as the last message
+                    chatroomModel.lastMessage = "Sent a post"
+                } else if (message.isEmpty() && productId.isNotEmpty() && productId != "null"){
+                    //"sent a post" as the last message
+                    chatroomModel.lastMessage = "Sent a product"
+                } else {
+                    //send the actual message
+                    chatroomModel.lastMessage = message
+                }
+
+                //update lastMessageUserID and lastMsgTimestamp
+                FirebaseUtil().retrieveChatRoomReference(chatroomId).set(chatroomModel)
+
+                //add message to chatroom
+                FirebaseUtil().retrieveChatsFromChatroom(chatroomId).add(messageModel).addOnSuccessListener {
+
+                    //send push notifications
+                    val receiverIdList:ArrayList<String> = arrayListOf()
+                    for (user in chatroomModel.userIdList){
+                        if (!AppUtil().isIdOnList(chatroomModel.usersMute, user) && user != FirebaseUtil().currentUserUid()){
+                            receiverIdList.add(user)
+                        }
+                    }
+                    FirebaseUtil().currentUserDetails().get().addOnCompleteListener {currentUser ->
+                        if (currentUser.result.exists()){
+                            val currentUser = currentUser.result.toObject(UserModel::class.java)!!
+                            if(chatroomType == "direct_message") {
+                                //changes chatroom name to sender username before sending notification
+                                NotificationUtil().sendPushNotificationsForChat(this, receiverIdList, chatroomType, chatroomId, currentUser.username,
+                                    currentUser.username, FirebaseUtil().currentUserUid(), message, communityId)
+                            } else {
+                                NotificationUtil().sendPushNotificationsForChat(this, receiverIdList, chatroomType, chatroomId, chatroomName,
+                                    currentUser.username, receiverUid, message, communityId)
+                            }
+                        }
+                    }
+
+                }
+
+                Handler().postDelayed({
+                    recyclerView.smoothScrollToPosition(messageAdapter.getMessageCount())
+                }, 1000)
+            }
         }
 
-        //update lastMessageUserID and lastMsgTimestamp
-        FirebaseUtil().retrieveChatRoomReference(chatroomId).set(chatroomModel)
-
-        //add message to chatroom
-        FirebaseUtil().retrieveChatsFromChatroom(chatroomId).add(messageModel)
-
-        Handler().postDelayed({
-            recyclerView.smoothScrollToPosition(messageAdapter.getMessageCount())
-        }, 1000)
 
     }
 

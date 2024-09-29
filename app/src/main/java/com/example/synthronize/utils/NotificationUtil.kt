@@ -1,8 +1,10 @@
 package com.example.synthronize.utils
 
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import android.util.Log
+import com.example.synthronize.Chatroom
 import com.example.synthronize.model.UserModel
 import com.google.auth.oauth2.ServiceAccountCredentials
 import okhttp3.MediaType
@@ -24,7 +26,7 @@ class NotificationUtil {
                     //key: contentId  value: List{ "userId"(user who did the action), "action"(comment or love), "repeatedAction"(how many who did the action),
                     // "contentType"(type of content), "communityId"(communityId in which the content belongs to), "timestamp"(timestamp in string form when action executed) }
                     val mapUpdate = hashMapOf<String, Any>(
-                        "notifications.$contentId" to listOf(FirebaseUtil().currentUserUid(), action, repeatedAction, contentType, communityId, timestamp)
+                        "notifications.$contentId" to listOf(FirebaseUtil().currentUserUid(), action, repeatedAction, contentType, communityId, timestamp, "not_seen")
                     )
                     FirebaseUtil().targetUserDetails(contentOwnerId).update(mapUpdate).addOnSuccessListener {
                         FirebaseUtil().targetUserDetails(contentOwnerId).get().addOnCompleteListener {user ->
@@ -38,6 +40,81 @@ class NotificationUtil {
                 }
             }
         }
+    }
+
+    fun sendPushNotificationsForChat(context: Context, userIdList: List<String>, chatroomType:String, chatroomId:String = "", chatroomName:String = "",
+                                             senderName:String = "", receiverId:String = "", message:String = "", communityId: String = ""){
+        for (user in userIdList){
+            FirebaseUtil().targetUserDetails(user).get().addOnCompleteListener {
+                if (it.result.exists()){
+                    val userModel = it.result.toObject(UserModel::class.java)!!
+                    var jsonObject = ""
+
+                    when(chatroomType){
+                        //COMMUNITY CHAT
+                        "community_chat" -> {
+                            jsonObject = """
+                                {
+                                    "message": {
+                                        "token": "${userModel.fcmToken}",
+                                        "notification": {
+                                            "title": "$chatroomName",
+                                            "body": "$senderName: $message"
+                                        },
+                                        "data": {
+                                            "communityId": "$communityId",
+                                            "chatroomType": "$chatroomType",
+                                            "chatroomId": "$chatroomId",
+                                            "chatroomName": "$chatroomName"
+                                        }
+                                    }
+                                }
+                            """.trimIndent()
+                        }
+                        //GROUP CHAT
+                        "group_chat" -> {
+                            jsonObject = """
+                                {
+                                    "message": {
+                                        "token": "${userModel.fcmToken}",
+                                        "notification": {
+                                            "title": "$chatroomName",
+                                            "body": "$senderName: $message"
+                                        },
+                                        "data": {
+                                            "chatroomId": "$chatroomId",
+                                            "chatroomType": "$chatroomType"
+                                        }
+                                    }
+                                }
+                            """.trimIndent()
+                        }
+                        //DIRECT MESSAGE
+                        "direct_message" -> {
+                            jsonObject = """
+                                {
+                                    "message": {
+                                        "token": "${userModel.fcmToken}",
+                                        "notification": {
+                                            "title": "$chatroomName!",
+                                            "body": "$message"
+                                        },
+                                        "data": {
+                                            "chatroomName": "$chatroomName",
+                                            "chatroomType": "$chatroomType",
+                                            "userID": "$receiverId"
+                                        }
+                                    }
+                                }
+                            """.trimIndent()
+                        }
+                    }
+                    callApi(context, jsonObject)
+                }
+            }
+        }
+
+
     }
 
     private fun sendPushNotifications(context: Context, communityId:String = "", action: String = "", contentId:String = "", contentType:String = "", fcmToken:String = ""){

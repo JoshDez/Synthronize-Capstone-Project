@@ -178,9 +178,10 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
         //Refreshes adapter
         if (type == "community_invitations"){
             setupRVForCommunityInvitations()
-        } else if (type == "notifications"){
-            //TODO to add other types of notifications
+        } else if (type == "friend_request"){
             setupRVForFriendRequests()
+        } else if (type == "notifications"){
+            setupNotifications()
         }
     }
 

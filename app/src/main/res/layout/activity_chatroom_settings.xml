@@ -188,6 +188,17 @@
                         android:visibility="gone" />
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/muteUnMuteBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/dark_teal"
+                        android:text="Mute"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/leaveConversationBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

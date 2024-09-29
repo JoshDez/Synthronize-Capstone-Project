@@ -134,7 +134,7 @@ class RequestsAdapter(private var friendRequests:List<String> = listOf(),
         private fun removeFriendRequest(uid: String){
             FirebaseUtil().currentUserDetails().update("friendRequests", FieldValue.arrayRemove(uid)).addOnSuccessListener {
                 Log.d(TAG, "request removed")
-                listener.onChangeRequests("notifications")
+                listener.onChangeRequests("friend_request")
             }.addOnFailureListener {
                 Log.d(TAG, "error in removing friend request")
             }

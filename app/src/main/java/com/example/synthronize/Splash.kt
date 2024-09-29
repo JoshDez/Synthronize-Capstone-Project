@@ -16,6 +16,10 @@ class Splash : AppCompatActivity() {
     private var communityId = ""
     private var contentId = ""
     private var contentType = ""
+    private var chatroomType = ""
+    private var chatroomName = ""
+    private var chatroomId = ""
+    private var userID = ""
     private var isUserAdmin = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +31,11 @@ class Splash : AppCompatActivity() {
             communityId = intent.getStringExtra("communityId").toString()
             contentId = intent.getStringExtra("contentId").toString()
             contentType = intent.getStringExtra("contentType").toString()
+
+            chatroomType = intent.getStringExtra("chatroomType").toString()
+            chatroomName = intent.getStringExtra("chatroomName").toString()
+            chatroomId = intent.getStringExtra("chatroomId").toString()
+            userID = intent.getStringExtra("userID").toString()
 
             val communityContentTypes = listOf("Post", "Competition", "File")
             if (communityContentTypes.contains(contentType)){
@@ -77,6 +86,40 @@ class Splash : AppCompatActivity() {
                         headToLogin()
                     }
                 }
+            } else if (chatroomType.isNotEmpty() && chatroomType != "null") {
+                //CHAT NOTIFICATIONS
+
+                //head to main activity first
+                headToMainActivity()
+
+                //head to Chatroom
+                when (chatroomType){
+
+                    "community_chat" -> {
+                        val intent = Intent(this, Chatroom::class.java)
+                        intent.putExtra("chatroomName", chatroomName)
+                        intent.putExtra("chatroomId", chatroomId)
+                        intent.putExtra("chatroomType", chatroomType)
+                        intent.putExtra("communityId", communityId)
+                        startActivity(intent)
+                    }
+                    "group_chat" -> {
+                        val intent = Intent(this, Chatroom::class.java)
+                        intent.putExtra("chatroomId", chatroomId)
+                        intent.putExtra("chatroomType", chatroomType)
+                        startActivity(intent)
+                    }
+                    "direct_message" -> {
+                        val intent = Intent(this, Chatroom::class.java)
+                        intent.putExtra("chatroomName", chatroomName)
+                        intent.putExtra("userID", userID)
+                        intent.putExtra("chatroomType", chatroomType)
+                        startActivity(intent)
+                    }
+                }
+
+
+
             } else {
                 //NOTIFICATIONS OUTSIDE COMMUNITY
                 //TODO

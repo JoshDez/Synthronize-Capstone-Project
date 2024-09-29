@@ -2,13 +2,16 @@ package com.example.synthronize.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.example.synthronize.Chatroom
+import com.example.synthronize.R
 import com.example.synthronize.databinding.ItemChatroomBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.ChatroomModel
@@ -17,6 +20,7 @@ import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.toObject
 import java.text.SimpleDateFormat
 //CHATROOMS
@@ -41,6 +45,18 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
 
         fun bind(model: ChatroomModel){
             chatroomModel = model
+
+            if (AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid())){
+                // Change text color
+                val lessLightTeal = ContextCompat.getColor(context, R.color.less_saturated_light_teal)
+                binding.chatroomNameTV.setTextColor(lessLightTeal)
+                binding.lastUserMessageTV.setTextColor(lessLightTeal)
+                binding.lastTimestampTV.setTextColor(lessLightTeal)
+                // Change text style
+                binding.chatroomNameTV.setTypeface(null, Typeface.NORMAL)
+                binding.lastUserMessageTV.setTypeface(null, Typeface.NORMAL)
+                binding.lastTimestampTV.setTypeface(null, Typeface.NORMAL)
+            }
 
             if (chatroomModel.chatroomType == "direct_message"){
                 //if the user is id
@@ -72,6 +88,7 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                     binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
 
                 binding.chatroomLayout.setOnClickListener {
+                    seenMessage()
                     val intent = Intent(context, Chatroom::class.java)
                     intent.putExtra("chatroomName", chatroomModel.chatroomName)
                     intent.putExtra("chatroomId", chatroomModel.chatroomId)
@@ -102,6 +119,7 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                     binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
 
                  binding.chatroomLayout.setOnClickListener {
+                     seenMessage()
                      val intent = Intent(context, Chatroom::class.java)
                      intent.putExtra("chatroomId", chatroomModel.chatroomId)
                      intent.putExtra("chatroomType", chatroomModel.chatroomType)
@@ -128,6 +146,7 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                         binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
 
                     binding.chatroomLayout.setOnClickListener {
+                        seenMessage()
                         val intent = Intent(context, Chatroom::class.java)
                         intent.putExtra("chatroomName", userModel.fullName)
                         intent.putExtra("userID", uid)
@@ -137,6 +156,11 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                         context.startActivity(intent)
                     }
                 }
+            }
+        }
+        private fun seenMessage(){
+            if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid())){
+                FirebaseUtil().retrieveChatRoomReference(chatroomModel.chatroomId).update("usersSeen", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
             }
         }
     }

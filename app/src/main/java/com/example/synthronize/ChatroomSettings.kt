@@ -210,6 +210,25 @@ class ChatroomSettings : AppCompatActivity(), OnItemClickListener, OnRefreshList
                 showAdminButtons()
             }
         }
+
+
+        binding.muteUnMuteBtn.visibility = View.VISIBLE
+        if (AppUtil().isIdOnList(chatroomModel.usersMute, FirebaseUtil().currentUserUid())){
+            binding.muteUnMuteBtn.text = "Unmute Chat"
+            binding.muteUnMuteBtn.setOnClickListener {
+                FirebaseUtil().retrieveChatRoomReference(chatroomModel.chatroomId).update("usersMute", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                    onRefresh()
+                }
+            }
+        } else {
+            binding.muteUnMuteBtn.text = "Mute Chat"
+            binding.muteUnMuteBtn.setOnClickListener {
+                FirebaseUtil().retrieveChatRoomReference(chatroomModel.chatroomId).update("usersMute", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                    onRefresh()
+                }
+            }
+        }
+
     }
 
     private fun showAdminButtons(){
