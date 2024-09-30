@@ -120,4 +120,11 @@ class DateAndTimeUtil{
         return Timestamp(date)
     }
 
+    fun formatTimestampToDateTime(timestamp: Timestamp?): String {
+        val dateFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val date = timestamp?.toDate() ?: Date()
+        return "${dateFormat.format(date)} ${timeFormat.format(date)}"
+    }
+
 }

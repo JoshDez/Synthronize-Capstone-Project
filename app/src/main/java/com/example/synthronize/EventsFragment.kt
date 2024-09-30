@@ -17,11 +17,13 @@ import com.example.synthronize.adapters.MarketAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentEventsBinding
+import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.EventModel
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -31,8 +33,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class EventsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
-    // TODO: Rename and change types of parameters
+class EventsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment(), OnRefreshListener, OnNetworkRetryListener, OnItemClickListener {
     private lateinit var binding: FragmentEventsBinding
     private lateinit var context: Context
     private lateinit var eventsAdapter: EventsAdapter
@@ -83,18 +84,6 @@ class EventsFragment(private val mainBinding: FragmentCommunityBinding, private 
 
     }
 
-    //TODO to remove
-    fun convertDateToTimestamp(dateString: String): Timestamp {
-        // Define the date format
-        val dateFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
-
-        // Parse the date string to a Date object
-        val date: Date = dateFormat.parse(dateString)
-
-        // Convert the Date object to Firebase Timestamp
-        return Timestamp(date)
-    }
-
     private fun isUserAdmin(callback: (Boolean) -> Unit){
         FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
             val model = it.toObject(CommunityModel::class.java)!!
@@ -130,11 +119,16 @@ class EventsFragment(private val mainBinding: FragmentCommunityBinding, private 
             FirestoreRecyclerOptions.Builder<EventModel>().setQuery(myQuery, EventModel::class.java).build()
 
         binding.eventsRV.layoutManager = LinearLayoutManager(context)
-        eventsAdapter = EventsAdapter(context, options)
+        eventsAdapter = EventsAdapter(context, options, this)
         binding.eventsRV.adapter = eventsAdapter
         eventsAdapter.startListening()
     }
 
+    override fun onItemClick(id: String, isChecked: Boolean) {
+        val intent = Intent(context, OtherUserProfile::class.java)
+        intent.putExtra("userID", id)
+        startActivity(intent)
+    }
     override fun onRefresh() {
         Handler().postDelayed({
             setupEventsRV()

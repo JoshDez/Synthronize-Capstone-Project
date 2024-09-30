@@ -8,7 +8,7 @@ class EventModel (
     val eventDesc:String = "",
     val eventLocation:String = "",
     val eventOwnerId:String = "",
-    val eventImageList: List<String> = listOf(),
+    val eventImageName: String = "",
     val eventParticipants:List<String> = listOf(),
     val eventDate:Timestamp = Timestamp.now(),
     val communityId:String = "",

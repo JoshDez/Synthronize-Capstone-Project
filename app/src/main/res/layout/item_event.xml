@@ -129,6 +129,32 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/baseline_time_24"
+                app:tint="@color/light_teal"/>
+
+            <TextView
+                android:id="@+id/eventTimeTV"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:contentDescription="@string/community_name"
+                android:padding="5dp"
+                android:textColor="@color/light_teal"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <RelativeLayout
             android:orientation="horizontal"
             android:layout_marginBottom="10dp"
@@ -149,11 +175,11 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/baseline_time_24"
+                    android:src="@drawable/community_selected"
                     app:tint="@color/light_teal"/>
 
                 <TextView
-                    android:id="@+id/eventTimeTV"
+                    android:id="@+id/participantsCountTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"

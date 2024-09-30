@@ -17,6 +17,7 @@ import androidx.core.util.TypedValueCompat
 import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreateProductBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil

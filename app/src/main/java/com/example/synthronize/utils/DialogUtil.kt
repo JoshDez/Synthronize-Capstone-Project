@@ -386,9 +386,9 @@ class DialogUtil: OnItemClickListener {
                 intent.putExtra("communityId", communityId)
                 context.startActivity(intent)
             }
-            "Events" -> {
+            "Event" -> {
                 val intent = Intent(context, CreateEvent::class.java)
-                intent.putExtra("postId", contentId)
+                intent.putExtra("eventId", contentId)
                 intent.putExtra("communityId", communityId)
                 context.startActivity(intent)
             }
@@ -497,12 +497,12 @@ class DialogUtil: OnItemClickListener {
                     FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).delete()
                 }
             }
-            "Events" -> {
+            "Event" -> {
                 FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(contentId).get().addOnSuccessListener {
-                    val postModel = it.toObject(EventModel::class.java)!!
+                    val eventModel = it.toObject(EventModel::class.java)!!
                     //Deletes media
-                    deleteMediaOrFile(postModel.eventImageList)
-                    //Deletes Post
+                    deleteMediaOrFile(listOf(eventModel.eventName))
+                    //Deletes Event
                     FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(contentId).delete()
                 }
             }
