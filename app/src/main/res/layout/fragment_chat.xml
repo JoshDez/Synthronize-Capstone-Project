@@ -17,7 +17,7 @@
         android:orientation="horizontal"
         android:background="@drawable/gradient_teal"
         android:layout_width="match_parent"
-        android:layout_height="65dp">
+        android:layout_height="60dp">
 
         <LinearLayout
             android:id="@+id/inboxBtn"
@@ -29,8 +29,8 @@
 
             <ImageView
                 android:id="@+id/inboxIconIV"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/inbox_not_selected"
                 app:tint="@color/light_teal"/>
 
@@ -54,8 +54,8 @@
 
             <ImageView
                 android:id="@+id/communityChatsIV"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/community_not_selected"
                 app:tint="@color/light_teal"/>
 
@@ -79,8 +79,8 @@
 
             <ImageView
                 android:id="@+id/friendsIV"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/friends_not_selected"
                 app:tint="@color/light_teal"/>
 

@@ -18,7 +18,7 @@
         android:orientation="horizontal"
         android:background="@drawable/gradient_teal"
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="60dp">
 
         <LinearLayout
             android:id="@+id/feedsBtn"
@@ -30,8 +30,8 @@
 
             <ImageView
                 android:id="@+id/feedsIconIV"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 app:tint="@color/light_teal"
                 android:src="@drawable/feeds_not_selected"/>
 
@@ -55,8 +55,8 @@
 
             <ImageView
                 android:id="@+id/eventsIconIV"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 app:tint="@color/light_teal"
                 android:src="@drawable/events_not_selected"/>
 
@@ -80,8 +80,8 @@
 
             <ImageView
                 android:id="@+id/forumsIconIV"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 app:tint="@color/light_teal"
                 android:src="@drawable/forums_not_selected"/>
 
@@ -104,8 +104,8 @@
 
             <ImageView
                 android:id="@+id/marketIconIV"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 app:tint="@color/light_teal"
                 android:src="@drawable/market_not_selected"/>
 
@@ -128,8 +128,8 @@
 
             <ImageView
                 android:id="@+id/activitiesIconIV"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 app:tint="@color/light_teal"
                 android:src="@drawable/activities_not_selected"/>
 

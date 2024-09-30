@@ -45,7 +45,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginStart="10dp"
-                android:textSize="22dp"
+                android:textSize="20dp"
                 android:textColor="@color/light_teal"
                 android:contentDescription="@string/toolbar_title"/>
         </LinearLayout>
@@ -124,8 +124,8 @@
         android:layout_alignParentBottom="true">
         <ImageButton
             android:id="@+id/exploreBtn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_toLeftOf="@id/updatesBtn"
             android:layout_marginEnd="20dp"
             android:layout_centerInParent="true"
@@ -133,8 +133,8 @@
             android:background="@drawable/explore_not_selected"/>
         <ImageButton
             android:id="@+id/updatesBtn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="20dp"
             android:layout_toLeftOf="@id/communitiesBtn"
             android:layout_centerInParent="true"
@@ -142,15 +142,15 @@
             android:background="@drawable/notifications_not_selected"/>
         <ImageButton
             android:id="@+id/communitiesBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_centerInParent="true"
             android:backgroundTint="@color/light_teal"
             android:background="@drawable/community_not_selected"/>
         <ImageButton
             android:id="@+id/chatBtn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="20dp"
             android:layout_toRightOf="@id/communitiesBtn"
             android:layout_centerInParent="true"
@@ -158,8 +158,8 @@
             android:background="@drawable/chat_not_selected"/>
         <ImageButton
             android:id="@+id/profileBtn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_toRightOf="@id/chatBtn"
             android:layout_marginStart="20dp"
             android:layout_centerInParent="true"

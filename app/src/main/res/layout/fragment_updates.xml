@@ -13,7 +13,7 @@
     android:background="@drawable/gradient_teal"
     android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="65dp">
+    android:layout_height="60dp">
 
     <LinearLayout
         android:id="@+id/notificationsBtn"
@@ -25,8 +25,8 @@
 
         <ImageView
             android:id="@+id/notificationsIconIV"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/notifications_not_selected"
             app:tint="@color/light_teal"/>
 
@@ -50,8 +50,8 @@
 
         <ImageView
             android:id="@+id/communityInviteIconIV"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/community_invitations_not_selected"
             app:tint="@color/light_teal"/>
 
@@ -75,8 +75,8 @@
 
         <ImageView
             android:id="@+id/friendRequestIconIV"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/friend_requests_not_selected"
             app:tint="@color/light_teal"/>
 
