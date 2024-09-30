@@ -10,8 +10,10 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.CreateCompetition
+import com.example.synthronize.CreateEvent
 import com.example.synthronize.CreatePost
 import com.example.synthronize.CreateProduct
+import com.example.synthronize.CreateThread
 import com.example.synthronize.CreateUploadFile
 import com.example.synthronize.R
 import com.example.synthronize.adapters.ChatroomAdapter
@@ -24,7 +26,9 @@ import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.CompetitionModel
+import com.example.synthronize.model.EventModel
 import com.example.synthronize.model.FileModel
+import com.example.synthronize.model.ForumsModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.model.ReportModel
@@ -376,6 +380,18 @@ class DialogUtil: OnItemClickListener {
                 intent.putExtra("communityId", communityId)
                 context.startActivity(intent)
             }
+            "Forums" -> {
+                val intent = Intent(context, CreateThread::class.java)
+                intent.putExtra("postId", contentId)
+                intent.putExtra("communityId", communityId)
+                context.startActivity(intent)
+            }
+            "Events" -> {
+                val intent = Intent(context, CreateEvent::class.java)
+                intent.putExtra("postId", contentId)
+                intent.putExtra("communityId", communityId)
+                context.startActivity(intent)
+            }
         }
     }
 
@@ -470,6 +486,24 @@ class DialogUtil: OnItemClickListener {
                         //Deletes File from firebase storage
                         deleteMediaOrFile(listOf(fileModel.fileUrl))
                     }
+                }
+            }
+            "Forums" -> {
+                FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).get().addOnSuccessListener {
+                    val postModel = it.toObject(ForumsModel::class.java)!!
+                    //Deletes media
+                    deleteMediaOrFile(postModel.contentList)
+                    //Deletes Post
+                    FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).delete()
+                }
+            }
+            "Events" -> {
+                FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(contentId).get().addOnSuccessListener {
+                    val postModel = it.toObject(EventModel::class.java)!!
+                    //Deletes media
+                    deleteMediaOrFile(postModel.eventImageList)
+                    //Deletes Post
+                    FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(contentId).delete()
                 }
             }
         }

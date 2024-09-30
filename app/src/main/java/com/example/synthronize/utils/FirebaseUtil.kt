@@ -156,6 +156,9 @@ class FirebaseUtil {
     fun retrieveCommunityForumsCollection(communityId: String):CollectionReference{
         return retrieveCommunityDocument(communityId).collection("forums")
     }
+    fun retrieveCommunityForumsCommentCollection(communityId: String, postId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("forums").document(postId).collection("comments")
+    }
     fun retrieveCommunityMarketCollection(communityId: String):CollectionReference{
         return retrieveCommunityDocument(communityId).collection("market")
     }

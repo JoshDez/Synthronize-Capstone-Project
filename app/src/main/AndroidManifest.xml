@@ -30,6 +30,9 @@
             android:name=".ViewCompetition"
             android:exported="false" />
         <activity
+            android:name=".ViewThread"
+            android:exported="false" />
+        <activity
             android:name=".CreateEvent"
             android:exported="false" />
         <activity

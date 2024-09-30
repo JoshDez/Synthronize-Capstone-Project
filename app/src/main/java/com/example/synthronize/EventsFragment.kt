@@ -1,6 +1,7 @@
 package com.example.synthronize
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -66,31 +67,12 @@ class EventsFragment(private val mainBinding: FragmentCommunityBinding, private 
 
                 isUserAdmin{isAdmin ->
                     if (isAdmin){
-                        binding.addFab.visibility = View.VISIBLE
-                        binding.addFab.setOnClickListener {
-                            eventsAdapter.stopListening()
-                            var eventModel = EventModel()
-                            FirebaseUtil().retrieveCommunityEventsCollection(communityId).add(eventModel).addOnSuccessListener {
-                                eventModel = EventModel(
-                                    it.id,
-                                    "Meet and Greet",
-                                    "All students from CICS can participate in this meet and greet",
-                                    "U-Hall",
-                                    FirebaseUtil().currentUserUid(),
-                                    listOf(),
-                                    listOf(),
-                                    convertDateToTimestamp("August 14, 2024"),
-                                    communityId,
-                                    Timestamp.now()
-
-
-                                )
-                                FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(eventModel.eventId).set(eventModel).addOnSuccessListener {
-                                    Toast.makeText(context, "Product is successfully uploaded", Toast.LENGTH_SHORT).show()
-                                    onRefresh()
-                                }
-                            }
+                        binding.createEventsFab.setOnClickListener{
+                            val intent = Intent(context, CreateEvent::class.java)
+                            intent.putExtra("communityId", communityId)
+                            context.startActivity(intent)
                         }
+
                     }
                 }
 
