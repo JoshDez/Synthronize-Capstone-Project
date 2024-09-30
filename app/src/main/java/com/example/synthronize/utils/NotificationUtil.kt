@@ -24,7 +24,8 @@ class NotificationUtil {
             FirebaseUtil().targetUserDetails(contentOwnerId).get().addOnSuccessListener {
                 if (it.exists()){
                     //key: contentId  value: List{ "userId"(user who did the action), "action"(comment or love), "repeatedAction"(how many who did the action),
-                    // "contentType"(type of content), "communityId"(communityId in which the content belongs to), "timestamp"(timestamp in string form when action executed) }
+                    // "contentType"(type of content), "communityId"(communityId in which the content belongs to), "timestamp"(timestamp in string form when action executed)
+                    // , "not_seen or seen" (Notification status if its already seen)}
                     val mapUpdate = hashMapOf<String, Any>(
                         "notifications.$contentId" to listOf(FirebaseUtil().currentUserUid(), action, repeatedAction, contentType, communityId, timestamp, "not_seen")
                     )
@@ -40,6 +41,40 @@ class NotificationUtil {
                 }
             }
         }
+    }
+
+    fun sendPushNotificationsForRequestsAndInvitations(context: Context, userID:String, action: String, communityName:String = ""){
+        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {currentUser ->
+            if (currentUser.result.exists()){
+                FirebaseUtil().targetUserDetails(userID).get().addOnCompleteListener {targetUser ->
+                    if (targetUser.result.exists()){
+                        val currentUserModel = currentUser.result.toObject(UserModel::class.java)!!
+                        val targetUserModel = targetUser.result.toObject(UserModel::class.java)!!
+                        var body = ""
+
+                        if (action == "Community Invitation"){
+                            body = "${currentUserModel.username} invited you to join $communityName community"
+                        } else if (action == "Friend Request") {
+                            body = "${currentUserModel.username} sent you a friend request"
+                        }
+
+                        val jsonObject = """
+                                {
+                                    "message": {
+                                        "token": "${targetUserModel.fcmToken}",
+                                        "notification": {
+                                            "title": "New $action!",
+                                            "body": "$body"
+                                        }
+                                    }
+                                }
+                        """.trimIndent()
+                        callApi(context, jsonObject)
+                    }
+                }
+            }
+        }
+
     }
 
     fun sendPushNotificationsForChat(context: Context, userIdList: List<String>, chatroomType:String, chatroomId:String = "", chatroomName:String = "",
@@ -96,7 +131,7 @@ class NotificationUtil {
                                     "message": {
                                         "token": "${userModel.fcmToken}",
                                         "notification": {
-                                            "title": "$chatroomName!",
+                                            "title": "$chatroomName",
                                             "body": "$message"
                                         },
                                         "data": {

@@ -30,6 +30,7 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
@@ -367,6 +368,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                 "communityInvitations.${FirebaseUtil().currentUserUid()}" to communityId
             )
             FirebaseUtil().targetUserDetails(user).update(updates)
+            NotificationUtil().sendPushNotificationsForRequestsAndInvitations(this, user, "Community Invitation", communityName)
         }
     }
 

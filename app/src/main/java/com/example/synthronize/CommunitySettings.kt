@@ -25,6 +25,7 @@ import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
@@ -379,6 +380,7 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
                 "communityInvitations.${FirebaseUtil().currentUserUid()}" to communityId
             )
             FirebaseUtil().targetUserDetails(user).update(updates)
+            NotificationUtil().sendPushNotificationsForRequestsAndInvitations(this, user, "Community Invitation", communityModel.communityName)
         }
     }
 

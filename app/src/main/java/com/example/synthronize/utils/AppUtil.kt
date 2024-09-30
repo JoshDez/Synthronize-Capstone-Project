@@ -254,7 +254,7 @@ class AppUtil {
 
     //Friend request button
     //TODO change  material button to image button
-    fun changeFriendsButtonState(friendButton: MaterialButton, userModel:UserModel){
+    fun changeFriendsButtonState(context:Context, friendButton: MaterialButton, userModel:UserModel){
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
             val myUserModel = it.toObject(UserModel::class.java)!!
 
@@ -264,7 +264,7 @@ class AppUtil {
                 friendButton.setOnClickListener {
                     userModel.friendsList = userModel.friendsList.filterNot { it == FirebaseUtil().currentUserUid() }
                     FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                        changeFriendsButtonState(friendButton, userModel)
+                        changeFriendsButtonState(context, friendButton, userModel)
                     }
                 }
 
@@ -273,7 +273,7 @@ class AppUtil {
                 friendButton.setOnClickListener {
                     userModel.friendRequests = userModel.friendRequests.filterNot { it == FirebaseUtil().currentUserUid() }
                     FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                        changeFriendsButtonState(friendButton, userModel)
+                        changeFriendsButtonState(context, friendButton, userModel)
                     }
                 }
             } else if (AppUtil().isIdOnList(myUserModel.friendRequests, userModel.userID)){
@@ -287,7 +287,8 @@ class AppUtil {
                 friendButton.setOnClickListener {
                     userModel.friendRequests = userModel.friendRequests.plus(FirebaseUtil().currentUserUid())
                     FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                        changeFriendsButtonState(friendButton, userModel)
+                        changeFriendsButtonState(context, friendButton, userModel)
+                        NotificationUtil().sendPushNotificationsForRequestsAndInvitations(context, userModel.userID, "Friend Request")
                     }
                 }
             }

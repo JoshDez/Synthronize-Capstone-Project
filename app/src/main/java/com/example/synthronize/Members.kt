@@ -109,7 +109,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 }
 
 
-                AppUtil().changeFriendsButtonState(dialogPlusBinding.friendBtn, userModel)
+                AppUtil().changeFriendsButtonState(this, dialogPlusBinding.friendBtn, userModel)
 
                 showReportButton(id, dialogPlusBinding)
 

@@ -187,7 +187,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                         setupPostsRV()
                         setupFilesRV()
 
-                        AppUtil().changeFriendsButtonState(binding.friendBtn, userModel)
+                        AppUtil().changeFriendsButtonState(this, binding.friendBtn, userModel)
                     } else {
                         //displays profile not available message if user blocked you
                         binding.kebabMenuBtn.visibility = View.GONE

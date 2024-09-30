@@ -45,7 +45,7 @@ class FriendSuggestionAdapter(private val context: Context, private val uidList:
 
                 if (!myUserModel.friendsList.contains(userModel.userID) && !myUserModel.blockList.contains(userModel.userID)){
                     binding.actionBtn.visibility = View.VISIBLE
-                    AppUtil().changeFriendsButtonState(binding.actionBtn, userModel)
+                    AppUtil().changeFriendsButtonState(context, binding.actionBtn, userModel)
                 }
             }
 

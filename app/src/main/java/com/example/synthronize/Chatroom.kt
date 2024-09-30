@@ -70,31 +70,6 @@ class Chatroom : AppCompatActivity() {
             onBackPressed()
         }
 
-        binding.sendMsgBtn.setOnClickListener {
-            val message = binding.chatBoxEdtTxt.text.toString()
-            if (AppUtil().containsBadWord(message)){
-                Toast.makeText(this, "Your message contains sensitive words", Toast.LENGTH_SHORT).show()
-            } else {
-                if (message.isNotEmpty()){
-                    sendMessage(message)
-                    binding.chatBoxEdtTxt.setText("")
-                    binding.postLayout.visibility = View.GONE
-                    postId = ""
-                    communityIdOfPost = ""
-                } else if (postId.isNotEmpty() || postId != "null"){
-                    sendMessage("")
-                    binding.postLayout.visibility = View.GONE
-                    postId = ""
-                    communityIdOfPost = ""
-                } else if (productId.isNotEmpty() || productId != "null"){
-                    sendMessage("")
-                    binding.postLayout.visibility = View.GONE
-                    productId = ""
-                    communityIdOfPost = ""
-                }
-            }
-        }
-
         getChatroomIdForDM()
         createOrRetrieveChatroomModel()
         bindPostOrProductToBeSent()
@@ -122,7 +97,6 @@ class Chatroom : AppCompatActivity() {
                         AppUtil().setUserProfilePic(this, userModel.userID, binding.postOwnerProfileCIV)
                         binding.postOwnerUsernameTV.text = userModel.username
                         binding.postCaptionTV.text = postModel.caption
-
                         binding.cancelPostBtn.setOnClickListener {
                             postId = ""
                             communityIdOfPost = ""
@@ -229,17 +203,41 @@ class Chatroom : AppCompatActivity() {
                 AppUtil().setCommunityProfilePic(this, communityId, binding.chatroomCircleIV)
             }
             "group_chat" -> {
-                if (chatroomModel.chatroomProfileUrl.isNotEmpty()){
+                if (chatroomModel.chatroomProfileUrl.isNotEmpty())
                     AppUtil().setGroupChatProfilePic(this, chatroomModel.chatroomProfileUrl, binding.chatroomCircleIV)
-                }
-                binding.chatRoomNameTV.text = chatroomModel.chatroomName
+                chatroomName = chatroomModel.chatroomName
+                binding.chatRoomNameTV.text = chatroomName
             }
         }
-        bindChatroomSettings()
+        bindChatroomButtons()
         setupChatRV()
     }
 
-    private fun bindChatroomSettings(){
+    private fun bindChatroomButtons(){
+        binding.sendMsgBtn.setOnClickListener {
+            val message = binding.chatBoxEdtTxt.text.toString()
+            if (AppUtil().containsBadWord(message)){
+                Toast.makeText(this, "Your message contains sensitive words", Toast.LENGTH_SHORT).show()
+            } else {
+                if (message.isNotEmpty()){
+                    sendMessage(message)
+                    binding.chatBoxEdtTxt.setText("")
+                    binding.postLayout.visibility = View.GONE
+                    postId = ""
+                    communityIdOfPost = ""
+                } else if (postId.isNotEmpty() || postId != "null"){
+                    sendMessage("")
+                    binding.postLayout.visibility = View.GONE
+                    postId = ""
+                    communityIdOfPost = ""
+                } else if (productId.isNotEmpty() || productId != "null"){
+                    sendMessage("")
+                    binding.postLayout.visibility = View.GONE
+                    productId = ""
+                    communityIdOfPost = ""
+                }
+            }
+        }
         binding.kebabMenuBtn.setOnClickListener {
             val intent = Intent(this, ChatroomSettings::class.java)
             intent.putExtra("communityId", communityId)
