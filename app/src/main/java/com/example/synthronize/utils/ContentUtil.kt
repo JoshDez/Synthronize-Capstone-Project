@@ -15,7 +15,7 @@ import androidx.core.util.TypedValueCompat
 import com.example.synthronize.R
 import com.example.synthronize.ViewMedia
 import com.example.synthronize.model.CommunityModel
-import com.example.synthronize.model.ForumsModel
+import com.example.synthronize.model.ForumModel
 import com.example.synthronize.model.UserModel
 
 class ContentUtil {
@@ -154,7 +154,7 @@ class ContentUtil {
         }
     }
 
-    fun verifyThreadAvailability(postModel: ForumsModel, callback: (Boolean) -> Unit){
+    fun verifyThreadAvailability(postModel: ForumModel, callback: (Boolean) -> Unit){
         FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {user ->
             val userModel = user.toObject(UserModel::class.java)!!
 

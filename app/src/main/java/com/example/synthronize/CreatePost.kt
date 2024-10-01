@@ -131,6 +131,11 @@ class CreatePost : AppCompatActivity() {
                     imagePickerLauncher.launch(it)
                 }
         }
+
+        if (postId.isNotEmpty() && postId != "null"){
+            binding.toolbarTitleTV.text = "Edit Post"
+        }
+
         binding.addVideoBtn.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.setType("video/*")

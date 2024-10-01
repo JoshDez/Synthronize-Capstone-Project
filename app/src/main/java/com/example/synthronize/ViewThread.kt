@@ -1,31 +1,38 @@
 package com.example.synthronize
 
-import android.net.Uri
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.ThreadAdapter
 import com.example.synthronize.databinding.ActivityViewThreadBinding
-import com.example.synthronize.model.ForumsModel
+import com.example.synthronize.interfaces.OnNetworkRetryListener
+import com.example.synthronize.model.ForumModel
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.ThreadModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
+import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 
-class ViewThread : AppCompatActivity() {
+class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
     private lateinit var binding: ActivityViewThreadBinding
     private lateinit var threadAdapter: ThreadAdapter
-    private lateinit var postModel: ForumsModel
+    private lateinit var forumsModel: ForumModel
     private lateinit var communityId: String
-    private lateinit var postId: String
-    private lateinit var uriHashMap: HashMap<String, Uri>
-    private var canPost: Boolean = true
+    private lateinit var forumId: String
+    private var isDownvoted:Boolean = false
+    private var isUpvoted:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +40,10 @@ class ViewThread : AppCompatActivity() {
         setContentView(binding.root)
 
         communityId = intent.getStringExtra("communityId").toString()
-        postId = intent.getStringExtra("postId").toString()
+        forumId = intent.getStringExtra("forumId").toString()
+
+        binding.viewThreadRefreshLayout.setOnRefreshListener(this)
+        NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root, this)
 
         getForumsModel()
 
@@ -43,17 +53,19 @@ class ViewThread : AppCompatActivity() {
     }
 
     private fun getForumsModel() {
-        FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(postId).get()
-            .addOnSuccessListener {
-                postModel = it.toObject(ForumsModel::class.java)!!
+        binding.viewThreadRefreshLayout.isRefreshing = true
 
-                ContentUtil().verifyThreadAvailability(postModel) { isAvailable ->
+        FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(forumId).get()
+            .addOnSuccessListener {
+                forumsModel = it.toObject(ForumModel::class.java)!!
+
+                ContentUtil().verifyThreadAvailability(forumsModel) { isAvailable ->
                     if (isAvailable) {
                         binding.forumTimestampTV.text =
-                            DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
-                        binding.captionEdtTxt.setText(postModel.caption)
+                            DateAndTimeUtil().getTimeAgo(forumsModel.createdTimestamp)
+                        binding.captionEdtTxt.setText(forumsModel.caption)
 
-                        FirebaseUtil().targetUserDetails(postModel.ownerId).get()
+                        FirebaseUtil().targetUserDetails(forumsModel.ownerId).get()
                             .addOnSuccessListener { result ->
                                 val user = result.toObject(UserModel::class.java)!!
                                 binding.ownerUsernameTV.text = user.username
@@ -64,21 +76,49 @@ class ViewThread : AppCompatActivity() {
                                 )
                             }
 
-                        if (postModel.contentList.isNotEmpty())
-                            bindContent(postModel.contentList)
-                        bindComments()
+                        binding.kebabMenuBtn.setOnClickListener {
+                            DialogUtil().openMenuDialog(this, layoutInflater, "Forum",
+                                forumsModel.forumId, forumsModel.ownerId, forumsModel.communityId){closeCurrentActivity ->
+                                if (closeCurrentActivity){
+                                    Handler().postDelayed({
+                                        onBackPressed()
+                                    }, 2000)
+                                }
+                            }
+                        }
 
+                        binding.profileCIV.setOnClickListener {
+                            headToUserProfile()
+                        }
+
+                        binding.ownerUsernameTV.setOnClickListener {
+                            headToUserProfile()
+                        }
+
+                        if (forumsModel.contentList.isNotEmpty())
+                            bindContent(forumsModel.contentList)
+                        
+                        bindComments()
+                        bindUpvote()
+                        bindDownvote()
                     } else {
                         hideContent()
                     }
-
+                    binding.viewThreadRefreshLayout.isRefreshing = false
                 }
             }
     }
 
+    private fun headToUserProfile() {
+        if (forumsModel.ownerId != FirebaseUtil().currentUserUid()){
+            val intent = Intent(this, OtherUserProfile::class.java)
+            intent.putExtra("userID", forumsModel.ownerId)
+            startActivity(intent)
+        }
+    }
     private fun bindComments() {
         val query: Query = FirebaseUtil().retrieveCommunityForumsCollection(communityId)
-            .document(postId)
+            .document(forumId)
             .collection("comments")
             .orderBy("upvoteList", Query.Direction.DESCENDING) // Sort by upvotes first
             .orderBy("downvoteList", Query.Direction.ASCENDING) // Sort by downvotes second
@@ -89,7 +129,7 @@ class ViewThread : AppCompatActivity() {
                 .build()
 
         binding.commentsRV.layoutManager = LinearLayoutManager(this)
-        threadAdapter = ThreadAdapter(this, options, postId, communityId)
+        threadAdapter = ThreadAdapter(this, options, forumId, communityId)
         binding.commentsRV.adapter = threadAdapter
         threadAdapter.startListening()
 
@@ -98,14 +138,14 @@ class ViewThread : AppCompatActivity() {
             if (comment.isNotEmpty()) {
                 // Generate a new threadId
                 val newThreadRef = FirebaseUtil().retrieveCommunityForumsCollection(communityId)
-                    .document(postId)
+                    .document(forumId)
                     .collection("comments")
                     .document() // This creates a new document reference with an auto-generated ID
 
                 val threadId = newThreadRef.id // Get the auto-generated ID
 
                 // Create the comment model with the generated threadId
-                val commentModel = ThreadModel(
+                val threadModel = ThreadModel(
                     threadId = threadId,
                     commentOwnerId = FirebaseUtil().currentUserUid(),
                     comment = comment,
@@ -113,7 +153,7 @@ class ViewThread : AppCompatActivity() {
                 )
 
                 // Add the comment to the collection with the generated threadId
-                newThreadRef.set(commentModel).addOnCompleteListener {
+                newThreadRef.set(threadModel).addOnCompleteListener {
                     if (it.isSuccessful) {
                         binding.threadEdtTxt.setText("")
                         bindComments() // Refresh the comments
@@ -130,11 +170,134 @@ class ViewThread : AppCompatActivity() {
             if (temp[1] == "Image") {
                 binding.contentLayout.addView(ContentUtil().getImageView(this, content))
                 binding.contentLayout.addView(ContentUtil().createSpaceView(this))
-            } else if (temp[1] == "Video") {
-                binding.contentLayout.addView(ContentUtil().getVideoThumbnail(this, content))
-                binding.contentLayout.addView(ContentUtil().createSpaceView(this))
             }
         }
+    }
+
+
+    private fun bindUpvote() {
+        // Default
+        binding.upBtn.setImageResource(R.drawable.upbtn)
+
+        // Update initial feed status
+        updateFeedStatus()
+
+        // Check if current user has upvoted
+        for (user in forumsModel.upvoteList) {
+            if (user == FirebaseUtil().currentUserUid()) {
+                binding.upBtn.setImageResource(R.drawable.upbtn)
+                isUpvoted = true
+            }
+        }
+
+        binding.upBtn.setOnClickListener {
+            if (isUpvoted) {
+                // Remove upvote
+                FirebaseUtil().retrieveCommunityForumsCollection(
+                    forumsModel.communityId
+                )
+                    .document(forumsModel.forumId)
+                    .update("upvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
+                    .addOnSuccessListener {
+                        binding.upBtn.setImageResource(R.drawable.upbtn)
+                        isUpvoted = false
+                        updateFeedStatus()
+                    }
+            } else {
+                // Add upvote
+                FirebaseUtil().retrieveCommunityForumsCollection(
+                    forumsModel.communityId,
+                )
+                    .document(forumsModel.forumId)
+                    .update("upvoteList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
+                    .addOnSuccessListener {
+                        binding.upBtn.setImageResource(R.drawable.upbtn)
+                        isUpvoted = true
+                        // If previously downvoted, remove downvote
+                        if (isDownvoted) {
+                            FirebaseUtil().retrieveCommunityForumsCollection(
+                                forumsModel.communityId
+                            )
+                                .document(forumsModel.forumId)
+                                .update("downvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
+                                .addOnSuccessListener {
+                                    isDownvoted = false
+                                }
+                        }
+                        updateFeedStatus()
+                    }
+            }
+        }
+    }
+
+    private fun bindDownvote() {
+        // Default
+        binding.downBtn.setImageResource(R.drawable.downbtn)
+
+        // Update initial feed status
+        updateFeedStatus()
+
+        // Check if current user has downvoted
+        for (user in forumsModel.downvoteList) {
+            if (user == FirebaseUtil().currentUserUid()) {
+                binding.downBtn.setImageResource(R.drawable.downbtn)
+                isDownvoted = true
+            }
+        }
+
+        binding.downBtn.setOnClickListener {
+            if (isDownvoted) {
+                // Remove downvote
+                FirebaseUtil().retrieveCommunityForumsCollection(
+                    forumsModel.communityId
+                )
+                    .document(forumsModel.forumId)
+                    .update("downvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
+                    .addOnSuccessListener {
+                        binding.downBtn.setImageResource(R.drawable.downbtn)
+                        isDownvoted = false
+                        updateFeedStatus()
+                    }
+            } else {
+                // Add downvote
+                FirebaseUtil().retrieveCommunityForumsCollection(
+                    forumsModel.communityId
+                )
+                    .document(forumsModel.forumId)
+                    .update("downvoteList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
+                    .addOnSuccessListener {
+                        binding.downBtn.setImageResource(R.drawable.downbtn)
+                        isDownvoted = true
+                        // If previously upvoted, remove upvote
+                        if (isUpvoted) {
+                            FirebaseUtil().retrieveCommunityForumsCollection(
+                                forumsModel.communityId
+                            )
+                                .document(forumsModel.forumId)
+                                .update("upvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
+                                .addOnSuccessListener {
+                                    isUpvoted = false
+                                }
+                        }
+                        updateFeedStatus()
+                    }
+            }
+        }
+    }
+
+    private fun updateFeedStatus() {
+        // Update UI with vote counts
+        FirebaseUtil().retrieveCommunityForumsCollection(forumsModel.communityId)
+            .document(forumsModel.forumId).get().addOnSuccessListener {
+                val tempForumModel = it.toObject(ForumModel::class.java)!!
+                binding.upvoteCountTV.text = tempForumModel.upvoteList.size.toString()
+                binding.downvoteCountTV.text = tempForumModel.downvoteList.size.toString()
+            }
+            .addOnFailureListener {
+                //if Offline
+                binding.upvoteCountTV.text = forumsModel.upvoteList.size.toString()
+                binding.downvoteCountTV.text = forumsModel.downvoteList.size.toString()
+            }
     }
 
     private fun hideContent() {
@@ -160,6 +323,16 @@ class ViewThread : AppCompatActivity() {
         super.onStop()
         if (::threadAdapter.isInitialized)
             threadAdapter.stopListening()
+    }
+
+    override fun onRefresh() {
+        Handler().postDelayed({
+            getForumsModel()
+        }, 1000)
+    }
+
+    override fun retryNetwork() {
+        onRefresh()
     }
 
 }

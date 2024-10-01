@@ -2,7 +2,6 @@ package com.example.synthronize.utils
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +27,7 @@ import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.EventModel
 import com.example.synthronize.model.FileModel
-import com.example.synthronize.model.ForumsModel
+import com.example.synthronize.model.ForumModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.model.ReportModel
@@ -380,9 +379,9 @@ class DialogUtil: OnItemClickListener {
                 intent.putExtra("communityId", communityId)
                 context.startActivity(intent)
             }
-            "Forums" -> {
+            "Forum" -> {
                 val intent = Intent(context, CreateThread::class.java)
-                intent.putExtra("postId", contentId)
+                intent.putExtra("forumId", contentId)
                 intent.putExtra("communityId", communityId)
                 context.startActivity(intent)
             }
@@ -488,11 +487,11 @@ class DialogUtil: OnItemClickListener {
                     }
                 }
             }
-            "Forums" -> {
+            "Forum" -> {
                 FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).get().addOnSuccessListener {
-                    val postModel = it.toObject(ForumsModel::class.java)!!
+                    val forumModel = it.toObject(ForumModel::class.java)!!
                     //Deletes media
-                    deleteMediaOrFile(postModel.contentList)
+                    deleteMediaOrFile(forumModel.contentList)
                     //Deletes Post
                     FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).delete()
                 }

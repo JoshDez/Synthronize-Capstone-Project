@@ -225,6 +225,7 @@ class CreateEvent : AppCompatActivity() {
                     eventDate = timestamp,
                     eventImageName = imageName,
                     eventLocation = eventLocation,
+                    eventParticipants = existingEventModel.eventParticipants,
                     communityId = communityId,
                     eventOwnerId = FirebaseUtil().currentUserUid(),
                     createdTimestamp = Timestamp.now()

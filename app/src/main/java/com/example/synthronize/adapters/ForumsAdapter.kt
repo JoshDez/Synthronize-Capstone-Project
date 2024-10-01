@@ -2,8 +2,6 @@ package com.example.synthronize.adapters
 
 import android.content.Context
 import android.content.Intent
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +13,7 @@ import com.example.synthronize.R
 import com.example.synthronize.ViewThread
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.ItemForumPostBinding
-import com.example.synthronize.model.CommentModel
-import com.example.synthronize.model.ForumsModel
-import com.example.synthronize.model.ThreadModel
+import com.example.synthronize.model.ForumModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
@@ -25,19 +21,13 @@ import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
 
 class ForumsAdapter(
     private val mainBinding: FragmentCommunityBinding,
     private val context: Context,
-    options: FirestoreRecyclerOptions<ForumsModel>,
-    private val sortByLikes: Boolean = true // true for sorting by likes, false for sorting by latest post
-) : FirestoreRecyclerAdapter<ForumsModel, ForumsAdapter.ForumsViewHolder>(options) {
+    options: FirestoreRecyclerOptions<ForumModel>
+) : FirestoreRecyclerAdapter<ForumModel, ForumsAdapter.ForumsViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForumsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -45,7 +35,7 @@ class ForumsAdapter(
         return ForumsViewHolder(mainBinding, forumsBinding, context)
     }
 
-    override fun onBindViewHolder(holder: ForumsViewHolder, position: Int, model: ForumsModel) {
+    override fun onBindViewHolder(holder: ForumsViewHolder, position: Int, model: ForumModel) {
         holder.bind(model)
     }
 
@@ -60,8 +50,8 @@ class ForumsAdapter(
     }
 
     // Sort the items by upvotes and then by downvotes
-    override fun getItem(position: Int): ForumsModel {
-        val sortedList = snapshots.sortedWith(compareByDescending<ForumsModel> { it.upvoteList.size }
+    override fun getItem(position: Int): ForumModel {
+        val sortedList = snapshots.sortedWith(compareByDescending<ForumModel> { it.upvoteList.size }
             .thenBy { it.downvoteList.size })
         return sortedList[position]
     }
@@ -73,12 +63,12 @@ class ForumsAdapter(
         private val context: Context
     ) : RecyclerView.ViewHolder(forumsBinding.root) {
 
-        private lateinit var forumsModel: ForumsModel
+        private lateinit var forumsModel: ForumModel
         private lateinit var viewPageAdapter: ViewPageAdapter
         private var isUpvoted = false
         private var isDownvoted = false
 
-        fun bind(model: ForumsModel) {
+        fun bind(model: ForumModel) {
             this.forumsModel = model
 
             // SETUP FEED
@@ -100,22 +90,14 @@ class ForumsAdapter(
                 }
                 val inflater = LayoutInflater.from(context)
                 forumsBinding.menuBtn.setOnClickListener {
-                 DialogUtil().openMenuDialog(context, inflater, "Forums", forumsModel.postId, forumsModel.ownerId, forumsModel.communityId){}
+                 DialogUtil().openMenuDialog(context, inflater, "Forum", forumsModel.forumId, forumsModel.ownerId, forumsModel.communityId){}
 
                 }
                 bindUpvote()
                 bindDownvote()
-                bindComment()
-                bindRepost()
                 bindContent()
             }
         }
-
-
-
-
-
-
 
         private fun bindContent() {
             if (forumsModel.contentList.isNotEmpty()) {
@@ -136,59 +118,6 @@ class ForumsAdapter(
                 forumsBinding.viewPager2.visibility = View.GONE
                 forumsBinding.circleIndicator3.visibility = View.GONE
             }
-        }
-
-        private fun bindRepost() {
-            // TODO Not yet implemented
-        }
-
-        private fun bindComment() {
-
-            forumsBinding.commentEdtTxt.addTextChangedListener(object: TextWatcher {
-                override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    val comment = forumsBinding.commentEdtTxt.text.toString()
-                    if (comment.isNotEmpty()){
-                        forumsBinding.upBtn.visibility = View.GONE
-                        forumsBinding.commentLayout.visibility = View.GONE
-                        forumsBinding.sendBtn.visibility = View.VISIBLE
-                        forumsBinding.repostBtn.visibility = View.GONE
-                    } else {
-                        forumsBinding.upBtn.visibility = View.VISIBLE
-                        forumsBinding.commentLayout.visibility = View.VISIBLE
-                        forumsBinding.sendBtn.visibility = View.GONE
-                        forumsBinding.repostBtn.visibility = View.VISIBLE
-                    }
-                }
-            })
-
-            forumsBinding.sendBtn.setOnClickListener {
-                val comment = forumsBinding.commentEdtTxt.text.toString()
-                if (comment.isNotEmpty()){
-                    val commentModel = ThreadModel(
-                        commentOwnerId = FirebaseUtil().currentUserUid(),
-                        comment = comment,
-                        commentTimestamp = Timestamp.now()
-                    )
-                    FirebaseUtil().retrieveCommunityFeedsCollection(forumsModel.communityId).document(forumsModel.postId).collection("comments").add(commentModel).addOnCompleteListener {
-                        if (it.isSuccessful){
-                            forumsBinding.commentEdtTxt.setText("")
-                            updateFeedStatus()
-                            Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
-
-            //TODO Not yet implemented
-        }
-
-
-        // FOR VOTING
-        private fun bindVote() {
-            bindUpvote()
-            bindDownvote()
         }
 
         private fun bindUpvote() {
@@ -212,7 +141,7 @@ class ForumsAdapter(
                     FirebaseUtil().retrieveCommunityForumsCollection(
                         forumsModel.communityId
                     )
-                        .document(forumsModel.postId)
+                        .document(forumsModel.forumId)
                         .update("upvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                         .addOnSuccessListener {
                             forumsBinding.upBtn.setImageResource(R.drawable.upbtn)
@@ -224,7 +153,7 @@ class ForumsAdapter(
                     FirebaseUtil().retrieveCommunityForumsCollection(
                         forumsModel.communityId,
                     )
-                        .document(forumsModel.postId)
+                        .document(forumsModel.forumId)
                         .update("upvoteList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
                         .addOnSuccessListener {
                             forumsBinding.upBtn.setImageResource(R.drawable.upbtn)
@@ -234,7 +163,7 @@ class ForumsAdapter(
                                 FirebaseUtil().retrieveCommunityForumsCollection(
                                     forumsModel.communityId
                                 )
-                                    .document(forumsModel.postId)
+                                    .document(forumsModel.forumId)
                                     .update("downvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                                     .addOnSuccessListener {
                                         isDownvoted = false
@@ -267,7 +196,7 @@ class ForumsAdapter(
                     FirebaseUtil().retrieveCommunityForumsCollection(
                         forumsModel.communityId
                     )
-                        .document(forumsModel.postId)
+                        .document(forumsModel.forumId)
                         .update("downvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                         .addOnSuccessListener {
                             forumsBinding.downBtn.setImageResource(R.drawable.downbtn)
@@ -279,7 +208,7 @@ class ForumsAdapter(
                     FirebaseUtil().retrieveCommunityForumsCollection(
                         forumsModel.communityId
                     )
-                        .document(forumsModel.postId)
+                        .document(forumsModel.forumId)
                         .update("downvoteList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
                         .addOnSuccessListener {
                             forumsBinding.downBtn.setImageResource(R.drawable.downbtn)
@@ -289,7 +218,7 @@ class ForumsAdapter(
                                 FirebaseUtil().retrieveCommunityForumsCollection(
                                     forumsModel.communityId
                                 )
-                                    .document(forumsModel.postId)
+                                    .document(forumsModel.forumId)
                                     .update("upvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                                     .addOnSuccessListener {
                                         isUpvoted = false
@@ -302,16 +231,12 @@ class ForumsAdapter(
         }
 
         private fun updateFeedStatus() {
-            // Determine whether to move the thread up or down based on the logic
-            val totalVotes = forumsModel.upvoteList.size + forumsModel.downvoteList.size
-            val upvotePercentage = if (totalVotes != 0) (forumsModel.upvoteList.size.toDouble() / totalVotes.toDouble()) * 100 else 0.0
-            val downvotePercentage = if (totalVotes != 0) (forumsModel.downvoteList.size.toDouble() / totalVotes.toDouble()) * 100 else 0.0
             // Update UI with vote counts
             forumsBinding.upvoteCountTV.text = forumsModel.upvoteList.size.toString()
             forumsBinding.downvoteCountTV.text = forumsModel.downvoteList.size.toString()
             FirebaseUtil().retrieveCommunityForumsCollection(
                 forumsModel.communityId
-            ).document(forumsModel.postId)
+            ).document(forumsModel.forumId)
                 .collection("comments").get().addOnSuccessListener {
 
                     forumsBinding.commentsCountTV.text = it.size().toString()
@@ -322,20 +247,14 @@ class ForumsAdapter(
 
         private fun headToUserProfile() {
             val intent = Intent(context, OtherUserProfile::class.java)
-            intent.putExtra("userId", forumsModel.ownerId)
+            intent.putExtra("userId", forumsModel.forumId)
             context.startActivity(intent)
         }
 
         private fun viewThread(){
             val intent = Intent(context, ViewThread::class.java)
             intent.putExtra("communityId", forumsModel.communityId )
-            intent.putExtra("postId", forumsModel.postId)
-            context.startActivity(intent)
-        }
-
-        private fun passThread(){
-            val intent = Intent(context, ThreadAdapter::class.java)
-            intent.putExtra("communityId", forumsModel.communityId )
+            intent.putExtra("forumId", forumsModel.forumId)
             context.startActivity(intent)
         }
     }

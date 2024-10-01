@@ -109,6 +109,10 @@ class CreateProduct : AppCompatActivity() {
         binding.backBtn.setOnClickListener {
             this.finish()
         }
+
+        if (productId.isNotEmpty() && productId != "null"){
+            binding.toolbarTitleTV.text = "Edit Product"
+        }
     }
     private fun getFileUriFromFirebase(filename: String) {
         // Create a storage reference from the Firebase Storage instance

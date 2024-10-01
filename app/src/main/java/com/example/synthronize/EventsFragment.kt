@@ -101,7 +101,7 @@ class EventsFragment(private val mainBinding: FragmentCommunityBinding, private 
         binding.eventsRefreshLayout.isRefreshing = true
 
         val myQuery: Query = FirebaseUtil().retrieveCommunityEventsCollection(communityId)
-            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+            .orderBy("eventDate", Query.Direction.DESCENDING)
 
         // Add a listener to handle success or failure of the query
         myQuery.addSnapshotListener { _, e ->

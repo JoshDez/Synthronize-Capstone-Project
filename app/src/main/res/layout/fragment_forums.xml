@@ -4,15 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ForumsFragment">
+    tools:context=".FeedsFragment">
 
-    <!-- RecyclerView to display forum threads -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/threadsRV"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/forumsRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
-    <!-- FloatingActionButton to add a new thread -->
+        <!-- TODO: Update blank fragment layout -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/threadsRV"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addThreadFab"
         android:layout_width="wrap_content"

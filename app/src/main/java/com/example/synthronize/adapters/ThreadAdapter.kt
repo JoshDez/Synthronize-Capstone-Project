@@ -1,11 +1,13 @@
 package com.example.synthronize.adapters
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.R
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.databinding.ItemThreadCommentBinding
 import com.example.synthronize.model.ThreadModel
 import com.example.synthronize.model.UserModel
@@ -15,18 +17,20 @@ import com.example.synthronize.utils.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class ThreadAdapter(
     private val context: Context,
     options: FirestoreRecyclerOptions<ThreadModel>,
-    private val postId: String,
+    private val forumId: String,
     private val communityId: String
 ) : FirestoreRecyclerAdapter<ThreadModel, ThreadAdapter.ThreadViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemThreadCommentBinding.inflate(inflater, parent, false)
-        return ThreadViewHolder(binding, context, postId, communityId, ::updateFeedStatus)
+        return ThreadViewHolder(binding, context, forumId, communityId, inflater,::updateFeedStatus)
     }
 
     override fun onBindViewHolder(holder: ThreadViewHolder, position: Int, model: ThreadModel) {
@@ -36,15 +40,14 @@ class ThreadAdapter(
     // Function to refresh the feed inside the adapter
     private fun updateFeedStatus() {
         notifyDataSetChanged()  // Refresh the adapter's data
-        Toast.makeText(context,"Updated lol", Toast.LENGTH_SHORT).show()
-
     }
 
     class ThreadViewHolder(
         private val binding: ItemThreadCommentBinding,
         private val context: Context,
-        private val postId: String,
+        private val forumId: String,
         private val communityId: String,
+        private val inflater: LayoutInflater,
         private val updateFeedStatus: () -> Unit  // Callback to refresh feed
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -75,11 +78,20 @@ class ThreadAdapter(
             binding.downBtn.setOnClickListener {
                 handleDownvote()
             }
+
+
+
+            binding.mainLayout.setOnLongClickListener {
+                if (threadModel.commentOwnerId == FirebaseUtil().currentUserUid()){
+                    showWarningDialog(inflater)
+                }
+                true
+            }
         }
 
         private fun handleUpvote() {
             val currentUserUid = FirebaseUtil().currentUserUid()
-            val docRef = FirebaseUtil().retrieveCommunityForumsCommentCollection(communityId, postId).document(threadModel.threadId)
+            val docRef = FirebaseUtil().retrieveCommunityForumsCommentCollection(communityId, forumId).document(threadModel.threadId)
             val updates = mutableMapOf<String, Any>()
 
             if (isUpvoted) {
@@ -110,7 +122,7 @@ class ThreadAdapter(
 
         private fun handleDownvote() {
             val currentUserUid = FirebaseUtil().currentUserUid()
-            val docRef = FirebaseUtil().retrieveCommunityForumsCommentCollection(communityId, postId).document(threadModel.threadId)
+            val docRef = FirebaseUtil().retrieveCommunityForumsCommentCollection(communityId, forumId).document(threadModel.threadId)
             val updates = mutableMapOf<String, Any>()
 
             if (isDownvoted) {
@@ -143,21 +155,54 @@ class ThreadAdapter(
         private fun updateVoteButtons() {
             val currentUserUid = FirebaseUtil().currentUserUid()
 
-            isUpvoted = threadModel.upvoteList.contains(currentUserUid)
-            isDownvoted = threadModel.downvoteList.contains(currentUserUid)
+            FirebaseUtil().retrieveCommunityForumsCommentCollection(communityId, forumId).document(threadModel.threadId).get().addOnCompleteListener {
+                if (it.result.exists()){
+                    val threadModel = it.result.toObject(ThreadModel::class.java)!!
 
-            // Update button resources based on vote state
-            binding.upBtn.setImageResource(if (isUpvoted) R.drawable.upbtn else R.drawable.upbtn)
-            binding.downBtn.setImageResource(if (isDownvoted) R.drawable.downbtn else R.drawable.downbtn)
+                    isUpvoted = threadModel.upvoteList.contains(currentUserUid)
+                    isDownvoted = threadModel.downvoteList.contains(currentUserUid)
 
-            // Update vote counts
-            binding.upvoteCountTV.text = threadModel.upvoteList.size.toString()
-            binding.downvoteCountTV.text = threadModel.downvoteList.size.toString()
-            Toast.makeText(context,"Updated lol 2", Toast.LENGTH_SHORT).show()
+                    // Update button resources based on vote state
+                    binding.upBtn.setImageResource(if (isUpvoted) R.drawable.upbtn else R.drawable.upbtn)
+                    binding.downBtn.setImageResource(if (isDownvoted) R.drawable.downbtn else R.drawable.downbtn)
+
+                    // Update vote counts
+                    binding.upvoteCountTV.text = threadModel.upvoteList.size.toString()
+                    binding.downvoteCountTV.text = threadModel.downvoteList.size.toString()
+                }
+            }
         }
 
 
+        private fun showWarningDialog(inflater:LayoutInflater) {
+            val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
+            val warningDialog = DialogPlus.newDialog(context)
+                .setContentHolder(ViewHolder(warningDialogBinding.root))
+                .setBackgroundColorResId(R.color.transparent)
+                .setGravity(Gravity.CENTER)
+                .setCancelable(true)
+                .create()
+
+            warningDialogBinding.titleTV.text = "Delete Comment?"
+            warningDialogBinding.messageTV.text = "Do you want to permanently delete your comment?"
+
+            warningDialogBinding.yesBtn.setOnClickListener {
+                if (threadModel.threadId.isNotEmpty()){
+                    FirebaseUtil().retrieveCommunityForumsCommentCollection(communityId, forumId).document(threadModel.threadId).delete()
+                }
+                warningDialog.dismiss()
+            }
+            warningDialogBinding.NoBtn.setOnClickListener {
+                warningDialog.dismiss()
+            }
+
+            warningDialog.show()
+        }
+
     }
+
+
+
     override fun onDataChanged() {
         super.onDataChanged()
         // Notify the RecyclerView when the data changes

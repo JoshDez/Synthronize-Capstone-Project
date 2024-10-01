@@ -1,15 +1,16 @@
 package com.example.synthronize
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
+import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,49 +18,51 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.TypedValueCompat
 import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreateThreadBinding
-import com.example.synthronize.model.ForumsModel
+import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
+import com.example.synthronize.model.ForumModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 import java.util.UUID
 
 class CreateThread : AppCompatActivity() {
     private lateinit var binding:ActivityCreateThreadBinding
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
-
     private lateinit var selectedImageUri: Uri
-    private lateinit var selectedVideoUri: Uri
     private lateinit var uriHashMap: HashMap<String, Uri>
     private lateinit var communityId:String
-    private lateinit var forumsModel: ForumsModel
-    private lateinit var postId:String
+    private lateinit var forumId:String
+    private lateinit var existingForumsModel: ForumModel
     private var contentList:ArrayList<String> = ArrayList()
-    private var canPost:Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ActivityCreateThreadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         communityId = intent.getStringExtra("communityId").toString()
-        postId=intent.getStringExtra("postId").toString()
+        forumId = intent.getStringExtra("forumId").toString()
 
-        if (postId == "null" || postId.isEmpty()){
-            //For New Post
+
+        if (forumId == "null" || forumId.isEmpty()){
+            //For New Thread
             bindButtons()
             AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.profileCIV)
+
         } else {
             //For Existing Post to edit
-            FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(postId).get().addOnSuccessListener {
-                forumsModel = it.toObject(ForumsModel::class.java)!!
-                binding.captionEdtTxt.setText(forumsModel.caption)
-                communityId = forumsModel.communityId
-                AppUtil().setUserProfilePic(this, forumsModel.ownerId, binding.profileCIV)
-                if (forumsModel.contentList.isNotEmpty()){
-                    for (filename in forumsModel.contentList){
-                        contentList = ArrayList(forumsModel.contentList)
+            FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(forumId).get().addOnSuccessListener {
+                existingForumsModel = it.toObject(ForumModel::class.java)!!
+                binding.captionEdtTxt.setText(existingForumsModel.caption)
+                communityId = existingForumsModel.communityId
+                AppUtil().setUserProfilePic(this, existingForumsModel.ownerId, binding.profileCIV)
+                if (existingForumsModel.contentList.isNotEmpty()){
+                    for (filename in existingForumsModel.contentList){
+                        contentList = ArrayList(existingForumsModel.contentList)
                         getFileUriFromFirebase(filename)
                     }
                     bindButtons()
@@ -70,11 +73,7 @@ class CreateThread : AppCompatActivity() {
             }
         }
 
-
-
-
-
-        //Launcher for user profile pic and user cover pic
+        //Launcher for user content image
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             //Image is selected
             if (result.resultCode == Activity.RESULT_OK){
@@ -86,63 +85,21 @@ class CreateThread : AppCompatActivity() {
                 }
             }
         }
-
-        //BIND DIALOG
-        binding.addImageBtn.setOnClickListener {
-            ImagePicker.with(this).cropSquare().compress(512)
-                .maxResultSize(512, 512)
-                .createIntent {
-                    imagePickerLauncher.launch(it)
-                }
-        }
-        binding.backBtn.setOnClickListener {
-            //TODO dialog message
-            this.finish()
-        }
-        binding.postBtn.setOnClickListener {
-            if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
-                addPost(){isUploaded ->
-                    if (isUploaded)
-                        Handler().postDelayed({
-                            this.finish()
-                        }, 2000)
-                    else
-                        Toast.makeText(this, "Error occured while uploading", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        AppUtil().setUserProfilePic(this, FirebaseUtil().currentUserUid(), binding.profileCIV)
     }
-
 
     private fun bindButtons(){
-        if (postId == "null" || postId.isEmpty()){
+
+        if (forumId == "null" || forumId.isEmpty()){
             binding.postBtn.text = "Post"
-            binding.postBtn.setOnClickListener {
-                if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
-                    addPost(){isUploaded ->
-                        if (isUploaded)
-                            Handler().postDelayed({
-                                this.finish()
-                            }, 2000)
-                        else
-                            Toast.makeText(this, "Error occurred while uploading", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
         } else {
             binding.postBtn.text = "Save"
-            binding.postBtn.setOnClickListener {
-                if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
-                    addPost(){isUploaded ->
-                        if (isUploaded)
-                            Handler().postDelayed({
-                                this.finish()
-                            }, 2000)
-                        else
-                            Toast.makeText(this, "Error occurred while saving", Toast.LENGTH_SHORT).show()
-                    }
-                }
+        }
+
+        binding.postBtn.setOnClickListener {
+            if (binding.captionEdtTxt.text.toString().isNotEmpty() || ::uriHashMap.isInitialized){
+                addThread()
+            } else {
+                Toast.makeText(this, "Please write your topic", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -154,123 +111,22 @@ class CreateThread : AppCompatActivity() {
                 }
         }
 
+        if (forumId.isNotEmpty() && forumId != "null"){
+            binding.toolbarTitleTV.text = "Edit Thread"
+        }
+
         binding.backBtn.setOnClickListener {
-            //TODO dialog message
-            this.finish()
+            onBackPressed()
         }
     }
-
-
-    private fun uploadVideo(filename: String, selectedVideoUri: Uri, progressBar: ProgressBar){
-        canPost = false
-        FirebaseUtil().retrieveCommunityContentVideoRef(filename).putFile(selectedVideoUri).addOnSuccessListener {
-            Toast.makeText(this, "Video Uploaded Successfully", Toast.LENGTH_SHORT).show()
-            contentList.add(filename)
-            canPost = true
-        }.addOnFailureListener {
-            Toast.makeText(this, "Failed To Upload Video", Toast.LENGTH_SHORT).show()
-        }.addOnProgressListener {
-            progressBar.max = Math.toIntExact(it.totalByteCount)
-            progressBar.progress = Math.toIntExact(it.bytesTransferred)
-        }
-    }
-
-
-
-    private fun addVideo(selectedVideo: Uri, existingFilename: String = "") {
-        //TODO
-        //creates video id
-        val userId = FirebaseUtil().currentUserUid()
-        var filename = existingFilename
-
-        if (filename.isEmpty()){
-            filename = "$userId-Video-${UUID.randomUUID()}"
-        }
-
-        //Creates linear layout for image
-        val verticalLayout = LinearLayout(this)
-        verticalLayout.orientation = LinearLayout.VERTICAL
-        val linearParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        verticalLayout.layoutParams = linearParams
-
-        //creates thumbnail
-        val postVideo = ImageView(this)
-        val imageDpToPx = TypedValueCompat.dpToPx(400F, resources.displayMetrics)
-        val imageParams = LinearLayout.LayoutParams(imageDpToPx.toInt(), imageDpToPx.toInt())
-        postVideo.layoutParams = imageParams
-
-        //make the thumbnail clickable
-        postVideo.setOnClickListener {
-            val intent = Intent(this, ViewMedia::class.java).apply {
-                putExtra("type", "Image")
-                putExtra("VIDEO_URI", selectedVideo)
-            }
-            startActivity(intent)
-        }
-
-
-        //inserts selected image to Image View
-        Glide.with(this).load(selectedVideo)
-            .into(postVideo)
-        verticalLayout.addView(postVideo)
-
-        // Adds the ProgressBar
-        val progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
-            isIndeterminate = true
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            visibility = View.VISIBLE // Show the progress bar initially
-        }
-        verticalLayout.addView(progressBar)
-
-        //adds image to uri hashmap
-        addUriToHashMap(filename, selectedVideoUri)
-
-        if (existingFilename.isEmpty()){
-            //immediately uploads video to the firebase storage
-            uploadVideo(filename, selectedVideo, progressBar)
-        }
-
-        //creates cancel button
-        val cancelBtn = ImageButton(this)
-        cancelBtn.setImageResource(R.drawable.cancel_icon)
-        cancelBtn.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-        cancelBtn.setOnClickListener {
-            binding.mainPostLayout.removeView(verticalLayout)
-            //removes image
-            removeUriFromHashMap(filename)
-        }
-        val cancelBtnParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        cancelBtn.layoutParams = cancelBtnParams
-        verticalLayout.addView(cancelBtn)
-
-        //adds the views to the main layout
-        binding.mainPostLayout.addView(verticalLayout)
-    }
-
 
     private fun getFileUriFromFirebase(filename: String) {
         // Create a storage reference from the Firebase Storage instance
         val fileType = filename.split('-')[1]
-        if (fileType == "Video"){
-            FirebaseUtil().retrieveCommunityContentVideoRef(filename).downloadUrl.addOnSuccessListener {
-                selectedVideoUri = it
-                addVideo(selectedVideoUri, filename)
-            }.addOnFailureListener {
-                Toast.makeText(this, "An error has occurred while downloading, please try again", Toast.LENGTH_SHORT).show()
-            }
-        } else if (fileType == "Image"){
+        if (fileType == "Image"){
             FirebaseUtil().retrieveCommunityContentImageRef(filename).downloadUrl.addOnSuccessListener {
                 selectedImageUri = it
-                addImage(selectedImageUri)
+                addImage(selectedImageUri, filename)
             }.addOnFailureListener {
                 Toast.makeText(this, "An error has occurred while downloading, please try again", Toast.LENGTH_SHORT).show()
             }
@@ -278,13 +134,14 @@ class CreateThread : AppCompatActivity() {
     }
 
 
-
-
-    private fun addImage(selectedImage: Uri){
-        //creates image id
+    private fun addImage(selectedImage:Uri, existingFilename: String = ""){
+        //creates image filename
         val userId = FirebaseUtil().currentUserUid()
-        val timestamp = Timestamp.now()
-        val imageId = "$userId-Image-$timestamp"
+        var fileName = existingFilename
+
+        if (fileName.isEmpty()){
+            fileName = "$userId-Image-${UUID.randomUUID()}"
+        }
 
         //Creates linear layout for image
         val verticalLayout = LinearLayout(this)
@@ -293,6 +150,9 @@ class CreateThread : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
+
+        // Set inner gravity to center
+        verticalLayout.gravity = Gravity.CENTER
         verticalLayout.layoutParams = linearParams
 
         //creates image view
@@ -301,13 +161,22 @@ class CreateThread : AppCompatActivity() {
         val imageParams = LinearLayout.LayoutParams(imageDpToPx.toInt(), imageDpToPx.toInt())
         postImage.layoutParams = imageParams
 
+        //make the thumbnail clickable
+        postImage.setOnClickListener {
+            val intent = Intent(this, ViewMedia::class.java).apply {
+                putExtra("type", "Image")
+                putExtra("IMAGE_URI", selectedImage)
+            }
+            startActivity(intent)
+        }
+
         //inserts selected image to Image View
         Glide.with(this).load(selectedImage)
             .into(postImage)
         verticalLayout.addView(postImage)
 
         //adds image to uri hashmap
-        addUriToHashMap(imageId, selectedImageUri)
+        addUriToHashMap(fileName, selectedImageUri)
 
         //creates cancel button
         val cancelBtn = ImageButton(this)
@@ -316,7 +185,7 @@ class CreateThread : AppCompatActivity() {
         cancelBtn.setOnClickListener {
             binding.mainPostLayout.removeView(verticalLayout)
             //removes image
-            removeUriFromHashMap(imageId)
+            removeUriFromHashMap(fileName)
         }
         val cancelBtnParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -331,71 +200,185 @@ class CreateThread : AppCompatActivity() {
 
     private fun removeUriFromHashMap(contentId:String){
         uriHashMap.remove(contentId)
+        if (contentList.isNotEmpty()){
+            contentList.remove(contentId)
+        }
     }
 
-    private fun addUriToHashMap(imageId:String, uri: Uri){
+    private fun addUriToHashMap(contentId:String, uri: Uri){
         if (!::uriHashMap.isInitialized)
             uriHashMap = HashMap()
-        uriHashMap[imageId] = uri
+        uriHashMap[contentId] = uri
     }
-
-    private fun addPost(callback: (Boolean) -> Unit){
+    private fun addThread(){
+        val tempModel = ForumModel()
         val caption = binding.captionEdtTxt.text.toString()
-        var delay: Long = 1000
+        var delay:Long = 1000
 
-        // Check if we're editing or creating a new post
-        if (postId == "null" || postId.isEmpty()) {
-            // Creating a new post
-            FirebaseUtil().retrieveCommunityForumsCollection(communityId).add(ForumsModel()).addOnSuccessListener {
-                postId = it.id // Get the new post ID
+        if (caption.isEmpty()){
+            Toast.makeText(this, "Please write your topic", Toast.LENGTH_SHORT).show()
+        } else if (AppUtil().containsBadWord(caption)){
+            Toast.makeText(this, "Caption contains sensitive words", Toast.LENGTH_SHORT).show()
+        } else if (forumId == "null" || forumId.isEmpty()){
+            //Upload new forum
+            FirebaseUtil().retrieveCommunityForumsCollection(communityId).add(tempModel).addOnSuccessListener {
+                if (::uriHashMap.isInitialized){
+                    for (data in uriHashMap){
+                        //uploads image to the firebase storage
+                        val key = data.key.split('-')
+                        if (key[1] == "Image") {
+                            FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
+                            contentList.add(data.key)
+                            delay += 100
+                        }
 
-                // Continue with adding media content and updating the post
-                uploadMediaAndSavePost(it.id, caption, callback, delay)
+                    }
+                }
+
+                //get new id from firestore and store it in feedId of the ForumModel
+                val forumModel = ForumModel(
+                    forumId = it.id,
+                    ownerId = FirebaseUtil().currentUserUid(),
+                    caption = caption,
+                    createdTimestamp = Timestamp.now(),
+                    communityId = communityId,
+                    contentList = contentList
+                )
+                //uploads new forumModel to firebase
+                uploadToFirebase(forumModel.forumId, forumModel, "Your post is uploaded successfully!", delay)
+
             }.addOnFailureListener {
-                callback(false)
+                Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
             }
+
+
         } else {
-            // Editing an existing post
-            FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(postId).get().addOnSuccessListener {
-                uploadMediaAndSavePost(postId, caption, callback, delay)
-            }.addOnFailureListener {
-                callback(false)
+            //Saving edited form
+            if (::uriHashMap.isInitialized){
+                for (data in uriHashMap){
+                    //data key is imageFileName and value is uri or actual image
+                    //uploads image to the firebase storage
+                    val key = data.key.split('-')
+                    if (key[1] == "Image") {
+                        FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
+                        if (!contentList.contains(data.key)){
+                            contentList.add(data.key)
+                            delay += 100
+                        }
+                    }
+                }
             }
+
+            //Edit forum
+            val forumModel = ForumModel(
+                forumId = forumId,
+                caption = caption,
+                contentList = contentList,
+                communityId = communityId,
+                ownerId = existingForumsModel.ownerId,
+                createdTimestamp = existingForumsModel.createdTimestamp,
+                upvoteList = existingForumsModel.upvoteList,
+                downvoteList = existingForumsModel.downvoteList,
+            )
+
+            //uploads new postModel to firebase
+            uploadToFirebase(forumId, forumModel, "Your post is saved successfully!", delay)
+
         }
     }
 
-    private fun uploadMediaAndSavePost(postId: String, caption: String, callback: (Boolean) -> Unit, delay: Long) {
-        val contentList: ArrayList<String> = ArrayList()
 
-        if (::uriHashMap.isInitialized) {
-            for (data in uriHashMap) {
-                // Upload media files to Firebase storage
-                FirebaseUtil().retrieveCommunityContentImageRef(data.key).putFile(data.value)
-                contentList.add(data.key)
-            }
+    private fun uploadToFirebase(forumId:String, forumModel: ForumModel, toastMsg:String, postDelay:Long){
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        if (this.forumId.isNotEmpty() && this.forumId != "null"){
+            dialogLoadingBinding.messageTV.text = "Saving..."
+        } else {
+            dialogLoadingBinding.messageTV.text = "Uploading..."
         }
 
-        val threadModel = ForumsModel(
-            postId = postId,
-            ownerId = FirebaseUtil().currentUserUid(),
-            caption = caption,
-            createdTimestamp = Timestamp.now(),
-            communityId = communityId,
-            contentList = contentList
-        )
+        loadingDialog.show()
 
-        // Use set() to update the post instead of add()
-        FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(postId).set(threadModel).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
+        FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(forumId).set(forumModel).addOnCompleteListener {
+            if (it.isSuccessful){
+                Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
+                if (this.forumId.isNotEmpty() && this.forumId != "null"){
+                    deleteFilesFromFirebaseStorage()
+                }
                 Handler().postDelayed({
-                    Toast.makeText(this, "Your post is uploaded/updated successfully!", Toast.LENGTH_SHORT).show()
-                    callback(true)
-                }, delay)
+                    loadingDialog.dismiss()
+                    this.finish()
+                }, postDelay)
             } else {
-                Toast.makeText(this, "Error occurred while updating the post!", Toast.LENGTH_SHORT).show()
-                callback(false)
+                Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()
+                loadingDialog.dismiss()
+                this.finish()
+
             }
         }
     }
 
+
+    private fun deleteFilesFromFirebaseStorage(){
+        //deletes files that are no longer included in content list while editing
+        for (filename in existingForumsModel.contentList){
+            val fileType = filename.split('-')[1]
+            if (!contentList.contains(filename)){
+                if (fileType == "Image"){
+                    FirebaseUtil().retrieveCommunityContentImageRef(filename).delete()
+                }
+            }
+        }
+
+    }
+
+
+
+
+    override fun onBackPressed() {
+        if (isModified()){
+            //hides keyboard
+            hideKeyboard()
+            //Dialog for saving user profile
+            val dialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+            val dialogPlus = DialogPlus.newDialog(this)
+                .setContentHolder(ViewHolder(dialogBinding.root))
+                .setGravity(Gravity.CENTER)
+                .setBackgroundColorResId(R.color.transparent)
+                .setCancelable(true)
+                .create()
+
+            dialogBinding.titleTV.text = "Warning"
+            dialogBinding.messageTV.text = "Do you want to exit without saving?"
+
+            dialogBinding.yesBtn.setOnClickListener {
+                dialogPlus.dismiss()
+                super.onBackPressed()
+            }
+            dialogBinding.NoBtn.setOnClickListener {
+                dialogPlus.dismiss()
+            }
+
+            dialogPlus.show()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+
+    private fun isModified(): Boolean {
+        return binding.captionEdtTxt.text.toString().isNotEmpty() ||
+                ::selectedImageUri.isInitialized
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.backBtn.windowToken, 0)
+    }
 }
