@@ -50,16 +50,165 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_below="@+id/divider"
-        android:background="@color/white"
+        android:background="@color/dark_teal"
         android:layout_height="match_parent">
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="vertical">
+            <!-- Introduction Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="Welcome to Synthronize, a social media and collaborative Android application developed exclusively for the College of Informatics and Computer Studies (CICS) community. This platform is designed to enhance interaction, promote community building, and support collaborative learning among CICS students. In addition, Synthronize provides access to academic resources like lecture notes and study guides to streamline the learning process. By using Synthronize, you trust us with your information. This Data Privacy Agreement outlines how we collect, use, protect, and manage your personal data in compliance with relevant data protection laws and regulations. We are committed to safeguarding your privacy and ensuring a secure digital environment."
+                android:textSize="14sp"
+                android:paddingBottom="16dp"/>
 
+            <!-- Data Collection Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="1. Data Collection"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="We collect various types of information to enhance the user experience and improve the services we offer. This includes personal information, which consists of your full name for user identification and community interaction, your email address for account creation, login, and password recovery, and profile information that you provide, such as profile photos and educational background, which facilitates networking and collaboration. Additionally, we gather usage data that includes activity information related to your posts, comments, messages, and participation in collaborative features. We also collect interaction data, which encompasses information about your connections, the communities you participate in, and the academic resources you access or share. Moreover, device information is collected, such as device identifiers, operating system details, and app usage statistics to enhance performance and troubleshoot issues. Academic content, including uploaded resources like lecture notes, study guides, and other academic materials provided by users, is also collected."
+                android:textSize="14sp"
+                android:paddingBottom="16dp"/>
 
+            <!-- Data Use Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="2. Data Use"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="Synthronize uses the collected data for various purposes. This includes account management, which allows us to create and manage your account, enabling you to log in and customize your experience. We facilitate community building by promoting communication, collaboration, and sharing of academic resources among CICS students. We also focus on platform improvements by analyzing user engagement to enhance app functionality. Notifications will be sent to keep you updated on community activities, resources, and feature enhancements. Lastly, we prioritize security and compliance to protect user data and ensure adherence to relevant legal requirements."
+                android:textSize="14sp"
+                android:paddingBottom="16dp"/>
+
+            <!-- Data Sharing and Disclosure Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="3. Data Sharing and Disclosure"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="We do not sell or rent your personal data to third parties. However, we may share your information under specific conditions. We will share your information if you provide explicit consent. Furthermore, we may share your information with third-party service providers who assist in the operation and improvement of Synthronize; these providers are contractually obligated to protect your data and only use it for the purpose of providing their services. Additionally, we may disclose personal information when required to do so by law or to protect the security and rights of Synthronize users."
+                android:textSize="14sp"
+                android:paddingBottom="16dp"/>
+
+            <!-- Data Storage and Security Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="4. Data Storage and Security"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="We take the security of your data seriously. Synthronize employs industry-standard encryption protocols to protect your personal information from unauthorized access, disclosure, or destruction. All data transferred between users and our servers is encrypted using secure SSL/TLS protocols. Only authorized personnel have access to user data for necessary business purposes, ensuring stringent access controls are in place. We also conduct regular security audits to ensure that all security measures are up to date and effective."
+                android:textSize="14sp"
+                android:paddingBottom="16dp"/>
+
+            <!-- User Rights Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="5. User Rights"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="As a user of Synthronize, you have several rights regarding your personal information. You have the right to access, allowing you to request a copy of the personal data we hold about you. You can correct any inaccuracies in your personal information through the right to rectification. Additionally, you have the right to deletion, enabling you to request the deletion of your account and all associated data from Synthronize. You can request that we limit how your data is used, which is known as the right to restrict processing. Furthermore, you can request that we transfer your personal data to another service, referred to as the right to portability. Lastly, you have the right to withdraw consent for any data processing based on your prior consent."
+                android:textSize="14sp"
+                android:paddingBottom="16dp"/>
+
+            <!-- Third-Party Links Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="6. Third-Party Links"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="Synthronize may contain links to third-party websites or services that are not controlled or operated by us. We are not responsible for the privacy practices or content of those third-party services, and we recommend that you review their privacy policies before providing any personal information."
+                android:textSize="14sp"
+                android:paddingBottom="16dp"/>
+
+            <!-- Changes to Privacy Agreement Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="7. Changes to this Privacy Agreement"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="We may update this Data Privacy Agreement from time to time to reflect changes in legal requirements or our data practices. We will notify you of any significant updates through the app or via email."
+                android:textSize="14sp"
+                android:paddingBottom="16dp"/>
+
+            <!-- Contact Information Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="8. Contact Information"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="If you have any questions or concerns about this Data Privacy Agreement or how your data is handled, please contact us at SynthronizeOfficial@gmail.com. Our address is the College of Informatics and Computer Studies (CICS), New Era University, 9 Central Ave, Quezon City, 1107 Metro Manila. By using Synthronize, you acknowledge that you have read and understood this Data Privacy Agreement and consent to the collection and processing of your personal data as described above."
+                android:textSize="14sp"
+                android:paddingBottom="16dp"/>
         </LinearLayout>
     </ScrollView>
 

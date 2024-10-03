@@ -3,6 +3,7 @@ package com.example.synthronize
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Html
 import android.view.Gravity
 import android.widget.Toast
 import com.google.firebase.Timestamp
@@ -101,7 +102,6 @@ class SignUp : AppCompatActivity() {
             .setContentHolder(ViewHolder(dialogPrivacyPolicyBinding.root))
             .setCancelable(true)
             .setExpanded(false)
-            .setGravity(Gravity.BOTTOM)
             .create()
 
         dialogPrivacyPolicyBinding.backBtn.setOnClickListener {

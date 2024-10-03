@@ -83,9 +83,12 @@ class ForumsAdapter(
                     headToUserProfile()
                 }
                 forumsBinding.descriptionTV.setOnClickListener {
-                    Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
+                    viewThread()
                 }
                 forumsBinding.commentBtn.setOnClickListener {
+                    viewThread()
+                }
+                forumsBinding.mainLayout.setOnClickListener {
                     viewThread()
                 }
                 val inflater = LayoutInflater.from(context)
