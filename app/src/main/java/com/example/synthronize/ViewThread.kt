@@ -20,6 +20,7 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
@@ -157,6 +158,13 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
                     if (it.isSuccessful) {
                         binding.threadEdtTxt.setText("")
                         bindComments() // Refresh the comments
+                        FirebaseUtil().retrieveCommunityForumsCollection(communityId)
+                            .document(forumId)
+                            .collection("comments").get().addOnSuccessListener {comments ->
+                                NotificationUtil().sendNotificationToUser(this, forumsModel.forumId, forumsModel.ownerId, "Comment",
+                                    "${comments.size() + 1}","Forum", forumsModel.communityId, DateAndTimeUtil().timestampToString(
+                                        Timestamp.now()))
+                        }
                     }
                 }
             }
@@ -222,9 +230,13 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
                                 .update("downvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                                 .addOnSuccessListener {
                                     isDownvoted = false
+                                    updateFeedStatus()
                                 }
                         }
                         updateFeedStatus()
+                        NotificationUtil().sendNotificationToUser(this, forumsModel.forumId, forumsModel.ownerId, "Upvote",
+                            "${forumsModel.upvoteList.size + 1}","Forum", forumsModel.communityId, DateAndTimeUtil().timestampToString(
+                                Timestamp.now()))
                     }
             }
         }
@@ -277,9 +289,13 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
                                 .update("upvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                                 .addOnSuccessListener {
                                     isUpvoted = false
+                                    updateFeedStatus()
                                 }
                         }
                         updateFeedStatus()
+                        NotificationUtil().sendNotificationToUser(this, forumsModel.forumId, forumsModel.ownerId, "Downvote",
+                            "${forumsModel.downvoteList.size + 1}","Forum", forumsModel.communityId, DateAndTimeUtil().timestampToString(
+                                Timestamp.now()))
                     }
             }
         }

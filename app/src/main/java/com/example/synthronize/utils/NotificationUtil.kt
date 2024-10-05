@@ -33,7 +33,6 @@ class NotificationUtil {
                         FirebaseUtil().targetUserDetails(contentOwnerId).get().addOnCompleteListener {user ->
                             if (user.result.exists()){
                                 val userModel = user.result.toObject(UserModel::class.java)!!
-                                //TODO to add is current user admin?
                                 sendPushNotifications(context, communityId, action, contentId, contentType, userModel.fcmToken)
                             }
                         }
@@ -173,9 +172,21 @@ class NotificationUtil {
                             //adds action to the notification message
                             body = "${userModel.username} joined your ${contentType.lowercase()}"
                         }
+                        "Participant" -> {
+                            //adds action to the notification message
+                            body = "${userModel.username} joined your ${contentType.lowercase()}"
+                        }
                         "Share" -> {
                             //adds action to the notification message
                             body = "${userModel.username} shared your ${contentType.lowercase()}"
+                        }
+                        "Downvote" -> {
+                            //adds action to the notification message
+                            body = "${userModel.username} downvoted your ${contentType.lowercase()}"
+                        }
+                        "Upvote" -> {
+                            //adds action to the notification message
+                            body = "${userModel.username} upvoted your ${contentType.lowercase()}"
                         }
                     }
                     //create json

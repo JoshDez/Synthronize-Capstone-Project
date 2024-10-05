@@ -29,6 +29,7 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
@@ -71,6 +72,9 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
         binding.viewCompetitionRefresh.setOnRefreshListener(this)
 
+        //check for internet
+        NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root, this)
+
         binding.backBtn.setOnClickListener {
             onBackPressed()
         }
@@ -97,8 +101,10 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                         resultType = competitionModel.results.keys.toList()[0]
                         selectedUserList = ArrayList(competitionModel.results.getValue(resultType))
 
-                        FirebaseUtil().targetUserDetails(competitionModel.ownerId).get().addOnSuccessListener {
-                            binding.hostNameTV.text = "created by ${it.getString("fullName")}"
+                        FirebaseUtil().targetUserDetails(competitionModel.ownerId).get().addOnCompleteListener {user ->
+                            if (user.result.exists()){
+                                binding.hostNameTV.text = "created by ${user.result.getString("fullName")}"
+                            }
                         }
 
                         DateAndTimeUtil().isTimestampDue(competitionModel.deadline){ isDue,daysLeft ->
@@ -190,6 +196,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
         }
     }
+
 
     private fun hideContent(){
         binding.scrollViewLayout.visibility = View.GONE

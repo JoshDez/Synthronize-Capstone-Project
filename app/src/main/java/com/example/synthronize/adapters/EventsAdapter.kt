@@ -1,6 +1,7 @@
 package com.example.synthronize.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -10,14 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.synthronize.R
+import com.example.synthronize.ViewEvent
 import com.example.synthronize.databinding.DialogListBinding
 import com.example.synthronize.databinding.ItemEventBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.EventModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
@@ -73,6 +77,12 @@ class EventsAdapter(
             binding.participantsCountTV.setOnClickListener {
                 openParticipantsListDialog(inflater)
             }
+            binding.mainLayout.setOnClickListener {
+                val intent = Intent(context, ViewEvent::class.java)
+                intent.putExtra("communityId", eventModel.communityId)
+                intent.putExtra("eventId", eventModel.eventId)
+                context.startActivity(intent)
+            }
 
             // Load event image if available
             if (eventModel.eventImageName.isNotEmpty()) {
@@ -112,6 +122,9 @@ class EventsAdapter(
                                     .update("eventParticipants", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
                                     .addOnSuccessListener {
                                         bindParticipateButton()
+                                        NotificationUtil().sendNotificationToUser(context, tempModel.eventId, tempModel.eventOwnerId, "Participant",
+                                            "${tempModel.eventParticipants.size + 1}","Event", tempModel.communityId, DateAndTimeUtil().timestampToString(
+                                                Timestamp.now()))
                                     }
                             }
                         }
@@ -119,7 +132,6 @@ class EventsAdapter(
             } else {
                 binding.participateBtn.visibility = View.GONE
             }
-
         }
 
 

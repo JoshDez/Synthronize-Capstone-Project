@@ -14,8 +14,10 @@ import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
@@ -111,6 +113,9 @@ class ThreadAdapter(
                     isDownvoted = false
                 }
                 isUpvoted = true
+                NotificationUtil().sendNotificationToUser(context, forumId, threadModel.commentOwnerId, "Upvote",
+                    "${threadModel.upvoteList.size + 1}","Thread", communityId, DateAndTimeUtil().timestampToString(
+                        Timestamp.now()))
                 updateVoteButtons()
             }
 
@@ -144,6 +149,9 @@ class ThreadAdapter(
                 }
                 isDownvoted = true
                 updateFeedStatus
+                NotificationUtil().sendNotificationToUser(context, forumId, threadModel.commentOwnerId, "Downvote",
+                    "${threadModel.downvoteList.size + 1}","Thread", communityId, DateAndTimeUtil().timestampToString(
+                        Timestamp.now()))
             }
 
             docRef.update(updates).addOnSuccessListener {

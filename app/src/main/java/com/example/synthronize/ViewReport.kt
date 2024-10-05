@@ -11,7 +11,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.synthronize.databinding.ActivityViewReportBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.CompetitionModel
+import com.example.synthronize.model.EventModel
 import com.example.synthronize.model.FileModel
+import com.example.synthronize.model.ForumModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.model.ReportModel
@@ -50,7 +52,8 @@ class ViewReport : AppCompatActivity() {
                     "Post" -> bindPostPreview()
                     "Community" -> bindCommunityPreview()
                     "User" -> bindUserPreview()
-                    //TODO with forums etc
+                    "Event" -> bindEventPreview()
+                    "Forum" -> bindForumPreview()
                     "Product" -> bindProductPreview()
                     "File" -> bindFilePreview()
                     "Competition" -> bindCompetitionPreview()
@@ -119,6 +122,73 @@ class ViewReport : AppCompatActivity() {
         }
     }
 
+    private fun bindForumPreview() {
+        FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(reportModel.reportedId).get().addOnCompleteListener { forum ->
+            if (forum.result.exists()) {
+                val forumModel = forum.result.toObject(ForumModel::class.java)!!
+
+                binding.imageWithCaptionLayout.visibility = View.VISIBLE
+                FirebaseUtil().targetUserDetails(forumModel.ownerId).get().addOnCompleteListener {user ->
+                    if (user.isSuccessful){
+                        val reportedUser = user.result.toObject(UserModel::class.java)!!
+                        AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
+                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
+                        binding.reportedUserFullnameTV.text = reportedUser.fullName
+                        binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(forumModel.createdTimestamp)
+                    }
+                }
+                if (forumModel.contentList.isNotEmpty()){
+                    ContentUtil().setImageContent(this, forumModel.contentList[0], binding.contentIV)
+                } else {
+                    binding.contentIV.visibility = View.GONE
+                }
+                binding.contentCaptionTV.text = forumModel.caption
+
+                binding.imageWithCaptionLayout.setOnClickListener {
+                    val intent = Intent(this, ViewThread::class.java)
+                    intent.putExtra("communityId", communityId )
+                    intent.putExtra("forumId", forumModel.forumId)
+                    startActivity(intent)
+                }
+
+            }
+        }
+    }
+
+    private fun bindEventPreview() {
+        FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(reportModel.reportedId).get().addOnCompleteListener { event ->
+            if (event.result.exists()) {
+                val eventModel = event.result.toObject(EventModel::class.java)!!
+
+                binding.imageWithCaptionLayout.visibility = View.VISIBLE
+                FirebaseUtil().targetUserDetails(eventModel.eventOwnerId).get().addOnCompleteListener {user ->
+                    if (user.isSuccessful){
+                        val reportedUser = user.result.toObject(UserModel::class.java)!!
+                        AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
+                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
+                        binding.reportedUserFullnameTV.text = reportedUser.fullName
+                        binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(eventModel.createdTimestamp)
+                    }
+                }
+
+                if (eventModel.eventImageName.isNotEmpty()){
+                    ContentUtil().setImageContent(this, eventModel.eventImageName, binding.contentIV)
+                } else {
+                    binding.contentIV.visibility = View.GONE
+                }
+
+                binding.contentCaptionTV.text = eventModel.eventName
+
+                binding.imageWithCaptionLayout.setOnClickListener {
+                    val intent = Intent(this, ViewEvent::class.java)
+                    intent.putExtra("communityId", communityId)
+                    intent.putExtra("eventId", eventModel.eventId)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
     private fun bindFilePreview(){
         FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(reportModel.reportedId).get().addOnCompleteListener {file ->
             if (file.result.exists() && file.isSuccessful){
@@ -149,7 +219,16 @@ class ViewReport : AppCompatActivity() {
                 binding.contentCaptionTV.text = fileModel.fileName
 
                 binding.imageWithCaptionLayout.setOnClickListener {
-                    //TODO NEED VIEW FILE
+                    val intent = Intent(this, ViewFile::class.java)
+                    intent.putExtra("communityId", communityId)
+                    intent.putExtra("fileId", fileModel.fileId)
+                    if (fileModel.forCompetition){
+                        intent.putExtra("contentType", "File Submission")
+                    } else {
+                        intent.putExtra("contentType", "File")
+                    }
+                    startActivity(intent)
+
                 }
             }
         }

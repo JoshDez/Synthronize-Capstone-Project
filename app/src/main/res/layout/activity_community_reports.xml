@@ -49,83 +49,100 @@
         android:layout_below="@id/mainToolbar"
         app:dividerColor="@color/light_teal" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:id="@+id/navigationLayout"
+    <HorizontalScrollView
+        android:id="@+id/navScrollView"
         android:layout_below="@id/divider"
-        android:gravity="center"
-        android:layout_height="50dp"
-        android:background="@drawable/gradient_teal"
-        android:orientation="horizontal"
-        android:visibility="visible">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/feedsBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="Feeds"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:textColor="@color/light_teal"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:id="@+id/navigationLayout"
+            android:layout_width="620dp"
+            android:layout_height="60dp"
+            android:layout_below="@id/divider"
+            android:background="@drawable/gradient_teal"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
-        <TextView
-            android:id="@+id/forumsBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="Forums"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:textColor="@color/light_teal"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            <Button
+                android:id="@+id/feedsBtn"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="15dp"
+                android:text="Feeds"
+                android:textAlignment="center"
+                android:textColor="@color/light_teal"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/marketBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="Market"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:textColor="@color/light_teal"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            <Button
+                android:id="@+id/eventsBtn"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="15dp"
+                android:text="Events"
+                android:textAlignment="center"
+                android:textColor="@color/light_teal"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/competitionsBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="Competitions"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:textColor="@color/light_teal"
-            android:textSize="13sp"
-            android:textStyle="bold" />
+            <Button
+                android:id="@+id/forumsBtn"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="15dp"
+                android:text="Forums"
+                android:textAlignment="center"
+                android:textColor="@color/light_teal"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/filesBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="Files"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:textColor="@color/light_teal"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/marketBtn"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="15dp"
+                android:text="Market"
+                android:textAlignment="center"
+                android:textColor="@color/light_teal"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/competitionsBtn"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="15dp"
+                android:text="Competitions"
+                android:textAlignment="center"
+                android:textColor="@color/light_teal"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/filesBtn"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="15dp"
+                android:text="Files"
+                android:textAlignment="center"
+                android:textColor="@color/light_teal"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/navigationLayout"
+        android:layout_below="@id/navScrollView"
         app:dividerColor="@color/light_teal" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

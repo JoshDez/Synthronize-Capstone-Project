@@ -52,6 +52,9 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
             binding.feedsBtn.setOnClickListener {
                 navigate("feeds")
             }
+            binding.eventsBtn.setOnClickListener {
+                navigate("events")
+            }
             binding.forumsBtn.setOnClickListener {
                 navigate("forums")
             }
@@ -76,6 +79,7 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
         val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_teal)
         val selectedColor = ContextCompat.getColor(this, R.color.light_teal)
         binding.feedsBtn.setTextColor(unselectedColor)
+        binding.eventsBtn.setTextColor(unselectedColor)
         binding.forumsBtn.setTextColor(unselectedColor)
         binding.marketBtn.setTextColor(unselectedColor)
         binding.competitionsBtn.setTextColor(unselectedColor)
@@ -87,7 +91,12 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
             binding.feedsBtn.setTextColor(selectedColor)
             currentTab = "feeds"
 
-        } else if (tab == "forums") {
+        } else if (tab == "events") {
+            setupCommunityReport("Event")
+            binding.eventsBtn.setTextColor(selectedColor)
+            currentTab = "events"
+
+        }  else if (tab == "forums") {
             setupCommunityReport("Forum")
             binding.forumsBtn.setTextColor(selectedColor)
             currentTab = "forums"

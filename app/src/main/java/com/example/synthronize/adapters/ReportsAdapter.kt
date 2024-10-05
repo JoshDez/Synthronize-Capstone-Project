@@ -47,6 +47,7 @@ class ReportsAdapter(private val context: Context, options: FirestoreRecyclerOpt
 
                 when(reportModel.reportType){
                     "Forum" -> binding.reasonTV.text = "Reported a forum as ${reportModel.reason}"
+                    "Event" -> binding.reasonTV.text = "Reported a event as ${reportModel.reason}"
                     "Post" ->  binding.reasonTV.text = "Reported a post as ${reportModel.reason}"
                     "Product" -> binding.reasonTV.text = "Reported a product as ${reportModel.reason}"
                     "File" ->  binding.reasonTV.text = "Reported a file as ${reportModel.reason}"

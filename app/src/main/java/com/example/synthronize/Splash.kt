@@ -38,7 +38,7 @@ class Splash : AppCompatActivity() {
                 chatroomId = intent.getStringExtra("chatroomId").toString()
                 userID = intent.getStringExtra("userID").toString()
 
-                val communityContentTypes = listOf("Post", "Competition", "File")
+                val communityContentTypes = listOf("Post", "Competition", "File", "Forum", "Thread", "Event")
                 if (communityContentTypes.contains(contentType)){
                     //NOTIFICATIONS INSIDE COMMUNITY
                     FirebaseUtil().currentUserDetails().get().addOnCompleteListener {user ->
@@ -72,6 +72,15 @@ class Splash : AppCompatActivity() {
                                         }
                                         "Competition" -> {
                                             viewCompetition()
+                                        }
+                                        "Forum" -> {
+                                            viewThread()
+                                        }
+                                        "Thread" -> {
+                                            viewThread()
+                                        }
+                                        "Event" -> {
+                                            viewEvent()
                                         }
                                     }
                                 } else {
@@ -134,6 +143,13 @@ class Splash : AppCompatActivity() {
         }
     }
 
+    private fun viewEvent() {
+        val intent = Intent(this, ViewEvent::class.java)
+        intent.putExtra("communityId", communityId)
+        intent.putExtra("eventId", contentId)
+        startActivity(intent)
+    }
+
     private fun headToMainActivity(){
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
@@ -171,4 +187,12 @@ class Splash : AppCompatActivity() {
         intent.putExtra("isUserAdmin", isUserAdmin)
         startActivity(intent)
     }
+
+    private fun viewThread() {
+        val intent = Intent(this, ViewThread::class.java)
+        intent.putExtra("communityId", communityId )
+        intent.putExtra("forumId", contentId)
+        startActivity(intent)
+    }
+
 }

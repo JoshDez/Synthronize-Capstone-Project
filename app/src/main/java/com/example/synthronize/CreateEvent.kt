@@ -117,7 +117,7 @@ class CreateEvent : AppCompatActivity() {
         }
         binding.eventsCoverIV.setOnClickListener {
             ImagePicker.with(this)
-                .crop(25f, 10f)
+                .crop(30f, 10f)
                 .compress(1080)
                 .createIntent {
                     imagePickerLauncher.launch(it)

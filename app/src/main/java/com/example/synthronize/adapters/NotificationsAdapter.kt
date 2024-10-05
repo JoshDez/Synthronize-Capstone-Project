@@ -16,6 +16,7 @@ import com.example.synthronize.R
 import com.example.synthronize.ViewCompetition
 import com.example.synthronize.ViewFile
 import com.example.synthronize.ViewPost
+import com.example.synthronize.ViewThread
 import com.example.synthronize.databinding.ItemRequestBinding
 import com.example.synthronize.interfaces.NotificationOnDataChange
 import com.example.synthronize.model.CommunityModel
@@ -93,9 +94,21 @@ class NotificationsAdapter(private var context:Context,
                                 //adds action to the notification message
                                 binding.requestTV.text = binding.requestTV.text.toString() + "joined "
                             }
+                            "Participant" -> {
+                                //adds action to the notification message
+                                binding.requestTV.text = binding.requestTV.text.toString() + "participated "
+                            }
                             "Share" -> {
                                 //adds action to the notification message
                                 binding.requestTV.text = binding.requestTV.text.toString() + "shared "
+                            }
+                            "Downvote" -> {
+                                //adds action to the notification message
+                                binding.requestTV.text = binding.requestTV.text.toString() + "downvoted "
+                            }
+                            "Upvote" -> {
+                                //adds action to the notification message
+                                binding.requestTV.text = binding.requestTV.text.toString() + "upvoted "
                             }
                         }
 
@@ -167,6 +180,30 @@ class NotificationsAdapter(private var context:Context,
                                         headToCompetition()
                                     }
                                 }
+                                "Forum" -> {
+                                    //adds content type to the notification message
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "your thread in ${communityModel.communityName} "
+                                    binding.requestContainerLayout.setOnClickListener {
+                                        changeNotificationStateToSeen()
+                                        viewThread()
+                                    }
+                                }
+                                "Thread" -> {
+                                    //adds content type to the notification message
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "your thread comment in ${communityModel.communityName} "
+                                    binding.requestContainerLayout.setOnClickListener {
+                                        changeNotificationStateToSeen()
+                                        viewThread()
+                                    }
+                                }
+                                "Event" -> {
+                                    //adds content type to the notification message
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "your event in ${communityModel.communityName} "
+                                    binding.requestContainerLayout.setOnClickListener {
+                                        changeNotificationStateToSeen()
+                                        viewThread()
+                                    }
+                                }
                             }
                         }
 
@@ -205,6 +242,13 @@ class NotificationsAdapter(private var context:Context,
             intent.putExtra("communityId", value[4])
             intent.putExtra("competitionId", contentId)
             intent.putExtra("isUserAdmin", isUserAdmin)
+            context.startActivity(intent)
+        }
+
+        private fun viewThread() {
+            val intent = Intent(context, ViewThread::class.java)
+            intent.putExtra("communityId", value[4])
+            intent.putExtra("forumId", contentId)
             context.startActivity(intent)
         }
 

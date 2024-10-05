@@ -19,8 +19,10 @@ import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 
 class ForumsAdapter(
@@ -128,7 +130,7 @@ class ForumsAdapter(
             forumsBinding.upBtn.setImageResource(R.drawable.upbtn)
 
             // Update initial feed status
-            updateFeedStatus()
+            updateThreadStatus()
 
             // Check if current user has upvoted
             for (user in forumsModel.upvoteList) {
@@ -149,7 +151,7 @@ class ForumsAdapter(
                         .addOnSuccessListener {
                             forumsBinding.upBtn.setImageResource(R.drawable.upbtn)
                             isUpvoted = false
-                            updateFeedStatus()
+                            updateThreadStatus()
                         }
                 } else {
                     // Add upvote
@@ -170,9 +172,13 @@ class ForumsAdapter(
                                     .update("downvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                                     .addOnSuccessListener {
                                         isDownvoted = false
+                                        updateThreadStatus()
                                     }
                             }
-                            updateFeedStatus()
+                            updateThreadStatus()
+                            NotificationUtil().sendNotificationToUser(context, forumsModel.forumId, forumsModel.ownerId, "Upvote",
+                                "${forumsModel.upvoteList.size + 1}","Forum", forumsModel.communityId, DateAndTimeUtil().timestampToString(
+                                    Timestamp.now()))
                         }
                 }
             }
@@ -183,7 +189,7 @@ class ForumsAdapter(
             forumsBinding.downBtn.setImageResource(R.drawable.downbtn)
 
             // Update initial feed status
-            updateFeedStatus()
+            updateThreadStatus()
 
             // Check if current user has downvoted
             for (user in forumsModel.downvoteList) {
@@ -204,7 +210,7 @@ class ForumsAdapter(
                         .addOnSuccessListener {
                             forumsBinding.downBtn.setImageResource(R.drawable.downbtn)
                             isDownvoted = false
-                            updateFeedStatus()
+                            updateThreadStatus()
                         }
                 } else {
                     // Add downvote
@@ -225,15 +231,19 @@ class ForumsAdapter(
                                     .update("upvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                                     .addOnSuccessListener {
                                         isUpvoted = false
+                                        updateThreadStatus()
                                     }
                             }
-                            updateFeedStatus()
+                            updateThreadStatus()
+                            NotificationUtil().sendNotificationToUser(context, forumsModel.forumId, forumsModel.ownerId, "Downvote",
+                                "${forumsModel.downvoteList.size + 1}","Forum", forumsModel.communityId, DateAndTimeUtil().timestampToString(
+                                    Timestamp.now()))
                         }
                 }
             }
         }
 
-        private fun updateFeedStatus() {
+        private fun updateThreadStatus() {
             // Update UI with vote counts
             forumsBinding.upvoteCountTV.text = forumsModel.upvoteList.size.toString()
             forumsBinding.downvoteCountTV.text = forumsModel.downvoteList.size.toString()

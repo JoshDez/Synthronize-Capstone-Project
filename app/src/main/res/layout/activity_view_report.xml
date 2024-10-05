@@ -123,19 +123,18 @@
             <!-- FOR USER AND COMMUNITY PROFILE -->
             <LinearLayout
                 android:id="@+id/profileCommunityLayout"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:padding="10dp"
                 android:layout_marginTop="20dp"
                 android:background="@color/dark_teal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <FrameLayout
-                    android:layout_below="@id/divider"
                     android:layout_width="match_parent"
-                    android:layout_height="280dp">
+                    android:layout_height="280dp"
+                    android:layout_below="@id/divider">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -145,7 +144,7 @@
                             android:id="@+id/bannerCoverIV"
                             android:layout_width="match_parent"
                             android:layout_height="180dp"
-                            android:src="@color/black"/>
+                            android:src="@color/black" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -159,94 +158,99 @@
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:layout_marginBottom="20dp"
-                            android:src="@color/light_teal"/>
+                            android:src="@color/light_teal" />
                     </RelativeLayout>
                 </FrameLayout>
+
                 <TextView
                     android:id="@+id/communityProfileNameTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="#00FFFFFF"
-                    android:drawableTint="#00FFFFFF"
                     android:contentDescription="@string/user_description"
+                    android:drawableTint="#00FFFFFF"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/communityProfileUserNameTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="#00FFFFFF"
-                    android:drawableTint="#00FFFFFF"
                     android:contentDescription="@string/user_description"
+                    android:drawableTint="#00FFFFFF"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
                     android:textSize="15sp" />
+
                 <TextView
                     android:id="@+id/communityProfileDescriptionTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="#00FFFFFF"
-                    android:drawableTint="#00FFFFFF"
                     android:contentDescription="@string/user_description"
+                    android:drawableTint="#00FFFFFF"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
                     android:textSize="15sp" />
 
 
                 <RelativeLayout
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="15dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
 
                     <LinearLayout
                         android:id="@+id/createdLayout"
-                        android:orientation="horizontal"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/buttonContainerLayout">
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_toLeftOf="@+id/buttonContainerLayout"
+                        android:orientation="horizontal">
+
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/baseline_calendar_month_24"
-                            app:tint="@color/light_teal"/>
+                            app:tint="@color/light_teal" />
+
                         <TextView
                             android:id="@+id/createdDateOrBirthdateTV"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:backgroundTint="#00FFFFFF"
-                            android:drawableTint="#00FFFFFF"
                             android:contentDescription="Created: December 19, 2002"
+                            android:drawableTint="#00FFFFFF"
                             android:textColor="@color/light_teal"
                             android:textSize="15sp" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:id="@+id/buttonContainerLayout"
-                        android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true">
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:orientation="vertical">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/communityActionBtn"
-                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="communityActionButton"/>
+                            android:contentDescription="communityActionButton"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
