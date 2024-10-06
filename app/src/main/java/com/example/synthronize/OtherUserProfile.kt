@@ -118,7 +118,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                 if (otherUser.isSuccessful && otherUser.result.exists()){
                     userModel = otherUser.result.toObject(UserModel::class.java)!!
 
-                    if (!AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid())){
+                    if (!AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) && !userModel.userAccess.containsKey("Disabled")){
                         //displays the profile
                         AppUtil().showMoreAndLessWords(userModel.description, binding.userDescriptionTV, 50)
                         binding.userNameTV.text = "@${userModel.username}"

@@ -31,6 +31,7 @@ import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.example.synthronize.utils.ProfileUtil
+import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -227,12 +228,23 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
         //Option 3
         menuBinding.option3.visibility = View.VISIBLE
-        menuBinding.optiontitle3.text = "Log out"
-        menuBinding.optionIcon3.setImageResource(R.drawable.baseline_logout_24)
+        menuBinding.optiontitle3.text = "Deactivate Account"
+        menuBinding.optionIcon3.setImageResource(R.drawable.block_user_icon)
         menuBinding.optiontitle3.setOnClickListener {
             menuDialog.dismiss()
             Handler().postDelayed({
-                openWarningDialog()
+                deactivateWarningDialog()
+            }, 500)
+        }
+
+        //Option 4
+        menuBinding.option4.visibility = View.VISIBLE
+        menuBinding.optiontitle4.text = "Log out"
+        menuBinding.optionIcon4.setImageResource(R.drawable.baseline_logout_24)
+        menuBinding.optiontitle4.setOnClickListener {
+            menuDialog.dismiss()
+            Handler().postDelayed({
+                logoutWarningDialog()
             }, 500)
         }
 
@@ -244,7 +256,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         startActivity(intent)
     }
 
-    private fun openWarningDialog(){
+    private fun logoutWarningDialog(){
         val warningDialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
         val warningDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(warningDialogBinding.root))
@@ -258,6 +270,35 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
         warningDialogBinding.yesBtn.setOnClickListener {
             FirebaseUtil().logoutUser(context)
+        }
+        warningDialogBinding.NoBtn.setOnClickListener {
+            warningDialog.dismiss()
+        }
+
+        warningDialog.show()
+    }
+
+    private fun deactivateWarningDialog(){
+        val warningDialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+        val warningDialog = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(warningDialogBinding.root))
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .setCancelable(true)
+            .create()
+
+        warningDialogBinding.titleTV.text = "Deactivate Account"
+        warningDialogBinding.messageTV.text = "Do you want to deactivate your account? (You can reactivate your account by signing in)"
+
+        warningDialogBinding.yesBtn.setOnClickListener {
+            val updates = mapOf(
+                "userAccess.Disabled" to "",
+                "userAccess.Enabled" to FieldValue.delete()
+            )
+            FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
+                //logout user
+                FirebaseUtil().logoutUser(context)
+            }
         }
         warningDialogBinding.NoBtn.setOnClickListener {
             warningDialog.dismiss()

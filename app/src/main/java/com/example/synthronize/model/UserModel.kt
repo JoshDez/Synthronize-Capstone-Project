@@ -33,4 +33,6 @@ data class UserModel(
     var notifications:Map<String, List<String>> = HashMap(),
     //fcm token for receiving notifications
     var fcmToken:String = "",
+    //userAccess if user is allowed to use the app
+    var userAccess:Map<String, String> = hashMapOf("Enabled" to "")
 )

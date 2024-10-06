@@ -129,7 +129,8 @@ class ContentUtil {
 
                 //if the user is not banned from community and not blocked by the post owner
                 if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid()) &&
-                    !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid())){
+                    !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) &&
+                    !userModel.userAccess.containsKey("Disabled")){
 
                     if (communityModel.communityType == "Private"){
                         //post is from private community
@@ -163,7 +164,8 @@ class ContentUtil {
 
                 //if the user is not banned from community and not blocked by the post owner
                 if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid()) &&
-                    !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid())){
+                    !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) &&
+                    !userModel.userAccess.containsKey("Disabled")){
 
                     if (communityModel.communityType == "Private"){
                         //post is from private community
