@@ -12,10 +12,15 @@ import com.example.synthronize.databinding.ActivityLoginBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.UserModel
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class Login : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -90,7 +95,7 @@ class Login : AppCompatActivity() {
                             if (userModel.userAccess.containsKey("Disabled")){
                                 if(userModel.userAccess["Disabled"].toString().isNotEmpty()){
                                     val date = userModel.userAccess["Disabled"]
-                                    openWarningDialog("Banned Account", "Your account has been banned until $date")
+                                    openWarningDialog("Banned Account", "Your account has been banned until", userModel.userAccess.getValue("Disabled"))
                                 } else {
                                     openWarningDialog("Deactivated Account", "Your account is currently deactivated, do you want to activate it?")
                                 }
@@ -104,9 +109,6 @@ class Login : AppCompatActivity() {
                             }
                         }
                     }
-
-
-
                 } else {
                     Toast.makeText(this, "Your email is not yet verified", Toast.LENGTH_SHORT).show()
                 }
@@ -117,7 +119,7 @@ class Login : AppCompatActivity() {
             }
         }
     }
-    private fun openWarningDialog(title:String, message:String){
+    private fun openWarningDialog(title:String, message:String, accessUserDate:String = ""){
         val warningBinding = DialogWarningMessageBinding.inflate(layoutInflater)
         val warningDialog = DialogPlus.newDialog(this)
             .setContentHolder(ViewHolder(warningBinding.root))
@@ -130,21 +132,41 @@ class Login : AppCompatActivity() {
         warningBinding.messageTV.text = message
 
         if (title != "Deactivated Account"){
+            //For banned account
             warningBinding.NoBtn.visibility = View.GONE
             warningBinding.yesBtn.visibility = View.GONE
+
+            // Define the format in which the date is stored in birthdayEdtTxt
+            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+
+            try {
+                //add date to the message
+                warningBinding.messageTV.text = "$message ${DateAndTimeUtil().formatDateFromMMDDYYYY(accessUserDate)}"
+
+                // Parse the date string into a Date object
+                val date = dateFormat.parse(accessUserDate)
+
+                // Convert the Date object into Firebase Timestamp
+                if (date != null) {
+                    val timestamp = Timestamp(date)
+                    if (Timestamp.now() > timestamp){
+                        warningDialog.dismiss()
+                        enableUserAccess()
+                    }
+                }
+
+            } catch (e: ParseException) {
+                //if parsing error occurs
+                e.printStackTrace()
+                warningDialog.dismiss()
+                enableUserAccess()
+            }
+
         } else {
+            //For deactivated account
             warningBinding.yesBtn.setOnClickListener {
                 warningDialog.dismiss()
-                val updates = mapOf(
-                    "userAccess.Disabled" to FieldValue.delete(),
-                    "userAccess.Enabled" to ""
-                )
-                FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
-                    //head to main activity
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    this.finish()
-                }
+                enableUserAccess()
             }
             warningBinding.NoBtn.setOnClickListener {
                 warningDialog.dismiss()
@@ -152,5 +174,19 @@ class Login : AppCompatActivity() {
         }
 
         warningDialog.show()
+    }
+
+    private fun enableUserAccess(){
+        val updates = mapOf(
+            "userAccess.Disabled" to FieldValue.delete(),
+            "userAccess.Enabled" to ""
+        )
+        FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
+            Toast.makeText(this, "User account has been activated", Toast.LENGTH_SHORT).show()
+            //head to main activity
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            this.finish()
+        }
     }
 }

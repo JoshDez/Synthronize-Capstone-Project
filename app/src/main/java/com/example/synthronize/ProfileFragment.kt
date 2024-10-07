@@ -4,13 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.provider.ContactsContract.Profile
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
@@ -23,7 +21,6 @@ import com.example.synthronize.databinding.FragmentProfileBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.CommunityModel
-import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
@@ -130,7 +127,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 AppUtil().showMoreAndLessWords(userModel.description, binding.userDescriptionTV, 50)
                 if (userModel.birthday.isNotEmpty()){
                     binding.birthdayLayout.visibility = View.VISIBLE
-                    binding.birthdayTV.text = DateAndTimeUtil().formatBirthDate(userModel.birthday)
+                    binding.birthdayTV.text = DateAndTimeUtil().formatDateFromMMDDYYYY(userModel.birthday)
                 }
 
                 //binds userProfilePic

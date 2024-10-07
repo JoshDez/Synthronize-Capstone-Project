@@ -65,8 +65,8 @@ class DateAndTimeUtil{
         return date?.let { Timestamp(it) }!!
     }
 
-    fun formatBirthDate(inputDate: String): String {
-        val inputFormat = SimpleDateFormat("M/d/yy", Locale.US)
+    fun formatDateFromMMDDYYYY(inputDate: String): String {
+        val inputFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
         val outputFormat = SimpleDateFormat("MMMM d, yyyy", Locale.US)
         val date = inputFormat.parse(inputDate)
         return outputFormat.format(date)

@@ -26,7 +26,6 @@ import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.example.synthronize.utils.ProfileUtil
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.toObject
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -126,7 +125,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
 
                         if (userModel.birthday.isNotEmpty()){
                             binding.birthdayLayout.visibility = View.VISIBLE
-                            binding.birthdayTV.text =  DateAndTimeUtil().formatBirthDate(userModel.birthday)
+                            binding.birthdayTV.text =  DateAndTimeUtil().formatDateFromMMDDYYYY(userModel.birthday)
                         }
 
                         AppUtil().setUserProfilePic(this, userID, binding.userProfileCIV)
