@@ -5,13 +5,16 @@ import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -23,10 +26,12 @@ import com.bumptech.glide.request.RequestOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.example.synthronize.databinding.ActivityEditProfileBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.GlideApp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
@@ -147,52 +152,73 @@ class EditProfile : AppCompatActivity() {
             var delay:Long = 0
             //set new user profile pic
             if (::selectedProfilePicUri.isInitialized){
-
-                var imageUrl = "${FirebaseUtil().currentUserUid()}-${Timestamp.now()}"
-
-                //delete the image from firebase storage
-                FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
-                    var user = it.toObject(UserModel::class.java)!!
-                    if (user.userMedia.containsKey("profile_photo")){
-                        FirebaseUtil().retrieveUserProfilePicRef(user.userMedia["profile_photo"]!!).delete()
+                if (userModel.userMedia.containsKey("profile_photo") && selectedProfilePicUri == Uri.EMPTY){
+                    //Remove Photo
+                    FirebaseUtil().retrieveUserProfilePicRef(userModel.userMedia.getValue("profile_photo")).delete().addOnCompleteListener {
+                        val updates = hashMapOf<String, Any>(
+                            "userMedia.profile_photo" to FieldValue.delete()
+                        )
+                        FirebaseUtil().currentUserDetails().update(updates)
                     }
+                } else if (selectedProfilePicUri != Uri.EMPTY) {
+                    //Change photo
+                    var imageUrl = "${FirebaseUtil().currentUserUid()}-${Timestamp.now()}"
+
+                    //delete the image from firebase storage
+                    FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+                        var user = it.toObject(UserModel::class.java)!!
+                        if (user.userMedia.containsKey("profile_photo")){
+                            FirebaseUtil().retrieveUserProfilePicRef(user.userMedia["profile_photo"]!!).delete()
+                        }
+                    }
+                    //upload the image to firestore
+                    FirebaseUtil().retrieveUserProfilePicRef(imageUrl).putFile(selectedProfilePicUri).addOnSuccessListener {
+                        val updates = hashMapOf<String, Any>(
+                            "userMedia.profile_photo" to imageUrl
+                        )
+                        FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "Image uploaded successfully")
+                        }
+                    }
+                    //adds a second to give time for the firebase to upload
+                    delay += 3000
                 }
 
-                //upload the image to firestore
-                FirebaseUtil().retrieveUserProfilePicRef(imageUrl).putFile(selectedProfilePicUri).addOnSuccessListener {
-                    val updates = hashMapOf<String, Any>(
-                        "userMedia.profile_photo" to imageUrl
-                    )
-                    FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
-                        Log.d(ContentValues.TAG, "Image uploaded successfully")
-                    }
-                }
-                //adds a second to give time for the firebase to upload
-                delay += 3000
             }
             //set new user cover pic
             if (::selectedProfileCoverPicUri.isInitialized){
-                var imageUrl = "${FirebaseUtil().currentUserUid()}-${Timestamp.now()}"
 
-                //delete the cover image from firebase storage
-                FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
-                    var user = it.toObject(UserModel::class.java)!!
-                    if (user.userMedia.containsKey("profile_cover_photo")){
-                        FirebaseUtil().retrieveUserCoverPicRef(user.userMedia["profile_cover_photo"]!!).delete()
+                if(userModel.userMedia.containsKey("profile_cover_photo") && selectedProfileCoverPicUri == Uri.EMPTY){
+                    //Remove Photo
+                    FirebaseUtil().retrieveUserCoverPicRef(userModel.userMedia.getValue("profile_cover_photo")).delete().addOnCompleteListener {
+                        val updates = hashMapOf<String, Any>(
+                            "userMedia.profile_cover_photo" to FieldValue.delete()
+                        )
+                        FirebaseUtil().currentUserDetails().update(updates)
                     }
-                }
 
-                //upload the image to firestore
-                FirebaseUtil().retrieveUserCoverPicRef(imageUrl).putFile(selectedProfileCoverPicUri).addOnSuccessListener {
-                    val updates = hashMapOf<String, Any>(
-                        "userMedia.profile_cover_photo" to imageUrl
-                    )
-                    FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
-                        Log.d(ContentValues.TAG, "Cover Image uploaded successfully")
+                } else if (selectedProfileCoverPicUri != Uri.EMPTY) {
+                    var imageUrl = "${FirebaseUtil().currentUserUid()}-${Timestamp.now()}"
+                    //delete the cover image from firebase storage
+                    FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
+                        var user = it.toObject(UserModel::class.java)!!
+                        if (user.userMedia.containsKey("profile_cover_photo")){
+                            FirebaseUtil().retrieveUserCoverPicRef(user.userMedia["profile_cover_photo"]!!).delete()
+                        }
                     }
+
+                    //upload the image to firestore
+                    FirebaseUtil().retrieveUserCoverPicRef(imageUrl).putFile(selectedProfileCoverPicUri).addOnSuccessListener {
+                        val updates = hashMapOf<String, Any>(
+                            "userMedia.profile_cover_photo" to imageUrl
+                        )
+                        FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "Cover Image uploaded successfully")
+                        }
+                    }
+                    //adds a second to give time for the firebase to upload
+                    delay += 3000
                 }
-                //adds a second to give time for the firebase to upload
-                delay += 3000
             }
 
             //set new user model
@@ -246,9 +272,7 @@ class EditProfile : AppCompatActivity() {
         }
 
         binding.saveBtn.setOnClickListener {
-            //TODO: Loading start to be implemented
             if (isModified())
-
                 validateUserProfileDetails()
             else
                 this.finish()
@@ -256,21 +280,20 @@ class EditProfile : AppCompatActivity() {
 
         binding.userProfileCIV.setOnClickListener {
             isProfilePic = true
-            ImagePicker.with(this).cropSquare().compress(512)
-                .maxResultSize(512, 512)
-                .createIntent {
-                    imagePickerLauncher.launch(it)
-                }
+            if (userModel.userMedia.containsKey("profile_photo")){
+                openImageMenuDialog()
+            } else {
+                launchImagePicker()
+            }
         }
 
         binding.userCoverIV.setOnClickListener {
             isProfilePic = false
-            ImagePicker.with(this)
-                .crop(25f, 10f)
-                .compress(1080)
-                .createIntent {
-                    imagePickerLauncher.launch(it)
-                }
+            if (userModel.userMedia.containsKey("profile_cover_photo")){
+                openImageMenuDialog()
+            } else {
+                launchImagePicker()
+            }
         }
         binding.birthdayEdtTxt.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -286,6 +309,50 @@ class EditProfile : AppCompatActivity() {
             }, calYear, calMonth, calDay).show()
         }
     }
+
+    private fun openImageMenuDialog() {
+        val menuBinding = DialogMenuBinding.inflate(layoutInflater)
+        val menuDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(menuBinding.root))
+            .setMargin(50,0,50,0)
+            .setBackgroundColorResId(R.color.transparent)
+            .setCancelable(true)
+            .setGravity(Gravity.BOTTOM)
+            .create()
+
+
+        menuBinding.option1.visibility = View.VISIBLE
+        menuBinding.optionIcon1.setImageResource(R.drawable.baseline_edit_24)
+        menuBinding.optiontitle1.text = "Change Photo"
+        menuBinding.optiontitle1.setOnClickListener {
+            menuDialog.dismiss()
+            launchImagePicker()
+        }
+
+
+        menuBinding.option2.visibility = View.VISIBLE
+        menuBinding.optionIcon2.setImageResource(R.drawable.baseline_delete_24)
+        menuBinding.optiontitle2.text = "Delete Photo"
+        menuBinding.optiontitle2.setOnClickListener {
+            menuDialog.dismiss()
+            if (isProfilePic){
+                selectedProfilePicUri = Uri.EMPTY
+                Glide.with(this)
+                    .load(R.drawable.user_default_profile)
+                    .into(binding.userProfileCIV)
+            } else {
+                selectedProfileCoverPicUri = Uri.EMPTY
+                Glide.with(this)
+                    .load(R.drawable.baseline_image_24)
+                    .into(binding.userCoverIV)
+                binding.userCoverIV.setBackgroundColor(Color.BLACK)
+            }
+        }
+
+        menuDialog.show()
+
+    }
+
     private fun bindUsernameEdtTxtTextWatcher(currentUsername: String){
 
         binding.usernameEdtTxt.addTextChangedListener( object: TextWatcher {
@@ -335,6 +402,23 @@ class EditProfile : AppCompatActivity() {
             }else {
                 callback(false)
             }
+        }
+    }
+
+    private fun launchImagePicker(){
+        if(isProfilePic){
+            ImagePicker.with(this).cropSquare().compress(512)
+                .maxResultSize(512, 512)
+                .createIntent {
+                    imagePickerLauncher.launch(it)
+                }
+        } else {
+            ImagePicker.with(this)
+                .crop(25f, 10f)
+                .compress(1080)
+                .createIntent {
+                    imagePickerLauncher.launch(it)
+                }
         }
     }
 

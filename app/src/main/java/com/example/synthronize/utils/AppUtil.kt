@@ -88,7 +88,7 @@ class AppUtil {
                     GlideApp.with(context)
                         //storage reference
                         .load(FirebaseUtil().retrieveUserCoverPicRef(imageUrl))
-                        .error(R.drawable.profile_not_selected)
+                        .error(R.drawable.baseline_image_24)
                         //image view
                         .into(cover)
                 }
