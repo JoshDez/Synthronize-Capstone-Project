@@ -4,12 +4,14 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -20,12 +22,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.example.synthronize.databinding.ActivityEditCommunityBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -149,52 +153,73 @@ class EditCommunity : AppCompatActivity() {
             var delay:Long = 0
             //set new user profile pic
             if (::selectedCommunityProfileUri.isInitialized){
-
-                var imageUrl = "${communityId}-${Timestamp.now()}"
-
-                //delete the image from firebase storage
-                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-                    var commmunity = it.toObject(CommunityModel::class.java)!!
-                    if (commmunity.communityMedia.containsKey("community_photo")){
-                        FirebaseUtil().retrieveCommunityProfilePicRef(commmunity.communityMedia["community_photo"]!!).delete()
+                if (communityModel.communityMedia.containsKey("community_photo") && selectedCommunityProfileUri == Uri.EMPTY){
+                    //Remove Photo
+                    FirebaseUtil().retrieveCommunityProfilePicRef(communityModel.communityMedia.getValue("community_photo")).delete().addOnCompleteListener {
+                        val updates = hashMapOf<String, Any>(
+                            "communityMedia.community_photo" to FieldValue.delete()
+                        )
+                        FirebaseUtil().retrieveCommunityDocument(communityModel.communityId).update(updates)
                     }
+                } else if (selectedCommunityProfileUri != Uri.EMPTY) {
+                    //Change Photo
+                    var imageUrl = "${communityId}-${Timestamp.now()}"
+
+                    //delete the image from firebase storage
+                    FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                        var commmunity = it.toObject(CommunityModel::class.java)!!
+                        if (commmunity.communityMedia.containsKey("community_photo")){
+                            FirebaseUtil().retrieveCommunityProfilePicRef(commmunity.communityMedia["community_photo"]!!).delete()
+                        }
+                    }
+
+                    //upload the image to firestore
+                    FirebaseUtil().retrieveCommunityProfilePicRef(imageUrl).putFile(selectedCommunityProfileUri).addOnSuccessListener {
+                        val updates = hashMapOf<String, Any>(
+                            "communityMedia.community_photo" to imageUrl
+                        )
+                        FirebaseUtil().retrieveCommunityDocument(communityId).update(updates).addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "Image uploaded successfully")
+                        }
+                    }
+                    //adds a second to give time for the firebase to upload
+                    delay += 3000
                 }
 
-                //upload the image to firestore
-                FirebaseUtil().retrieveCommunityProfilePicRef(imageUrl).putFile(selectedCommunityProfileUri).addOnSuccessListener {
-                    val updates = hashMapOf<String, Any>(
-                        "communityMedia.community_photo" to imageUrl
-                    )
-                    FirebaseUtil().retrieveCommunityDocument(communityId).update(updates).addOnSuccessListener {
-                        Log.d(ContentValues.TAG, "Image uploaded successfully")
-                    }
-                }
-                //adds a second to give time for the firebase to upload
-                delay += 3000
             }
             //set new user cover pic
             if (::selectedBannerPicUri.isInitialized){
 
-                var imageUrl = "${communityId}-${Timestamp.now()}"
-
-                //delete the image from firebase storage
-                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-                    var commmunity = it.toObject(CommunityModel::class.java)!!
-                    if (commmunity.communityMedia.containsKey("community_banner_photo")){
-                        FirebaseUtil().retrieveCommunityBannerPicRef(commmunity.communityMedia["community_banner_photo"]!!).delete()
+                if (communityModel.communityMedia.containsKey("community_banner_photo") && selectedBannerPicUri == Uri.EMPTY){
+                    //Remove Photo
+                    FirebaseUtil().retrieveCommunityBannerPicRef(communityModel.communityMedia.getValue("community_banner_photo")).delete().addOnCompleteListener {
+                        val updates = hashMapOf<String, Any>(
+                            "communityMedia.community_banner_photo" to FieldValue.delete()
+                        )
+                        FirebaseUtil().retrieveCommunityDocument(communityModel.communityId).update(updates)
                     }
-                }
+                } else if (selectedBannerPicUri != Uri.EMPTY){
+                    var imageUrl = "${communityId}-${Timestamp.now()}"
 
-                //upload the image to firestore
-                FirebaseUtil().retrieveCommunityBannerPicRef(imageUrl).putFile(selectedBannerPicUri).addOnSuccessListener {
-                    val updates = hashMapOf<String, Any>(
-                        "communityMedia.community_banner_photo" to imageUrl
-                    )
-                    FirebaseUtil().retrieveCommunityDocument(communityId).update(updates).addOnSuccessListener {
-                        Log.d(ContentValues.TAG, "Image uploaded successfully")
+                    //delete the image from firebase storage
+                    FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                        var commmunity = it.toObject(CommunityModel::class.java)!!
+                        if (commmunity.communityMedia.containsKey("community_banner_photo")){
+                            FirebaseUtil().retrieveCommunityBannerPicRef(commmunity.communityMedia["community_banner_photo"]!!).delete()
+                        }
                     }
+
+                    //upload the image to firestore
+                    FirebaseUtil().retrieveCommunityBannerPicRef(imageUrl).putFile(selectedBannerPicUri).addOnSuccessListener {
+                        val updates = hashMapOf<String, Any>(
+                            "communityMedia.community_banner_photo" to imageUrl
+                        )
+                        FirebaseUtil().retrieveCommunityDocument(communityId).update(updates).addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "Image uploaded successfully")
+                        }
+                    }
+                    delay += 3000
                 }
-                delay += 3000
             }
 
             //set new user model
@@ -248,7 +273,6 @@ class EditCommunity : AppCompatActivity() {
         }
 
         binding.saveBtn.setOnClickListener {
-            //TODO: Loading start to be implemented
             if (isModified())
                 validateCommunityDetails()
             else
@@ -257,21 +281,20 @@ class EditCommunity : AppCompatActivity() {
 
         binding.communityProfileCIV.setOnClickListener {
             isProfilePic = true
-            ImagePicker.with(this).cropSquare().compress(512)
-                .maxResultSize(512, 512)
-                .createIntent {
-                    imagePickerLauncher.launch(it)
-                }
+            if (communityModel.communityMedia.containsKey("community_photo")){
+                openImageMenuDialog()
+            } else {
+                launchImagePicker()
+            }
         }
 
         binding.communityBannerIV.setOnClickListener {
             isProfilePic = false
-            ImagePicker.with(this)
-                .crop(25f, 10f)
-                .compress(1080)
-                .createIntent {
-                    imagePickerLauncher.launch(it)
-                }
+            if (communityModel.communityMedia.containsKey("community_banner_photo")){
+                openImageMenuDialog()
+            } else {
+                launchImagePicker()
+            }
         }
 
         binding.publicRB.setOnClickListener {
@@ -318,6 +341,62 @@ class EditCommunity : AppCompatActivity() {
         })
     }
 
+    private fun openImageMenuDialog() {
+        val menuBinding = DialogMenuBinding.inflate(layoutInflater)
+        val menuDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(menuBinding.root))
+            .setMargin(50,0,50,0)
+            .setBackgroundColorResId(R.color.transparent)
+            .setCancelable(true)
+            .setGravity(Gravity.BOTTOM)
+            .create()
+
+
+        menuBinding.option1.visibility = View.VISIBLE
+        menuBinding.optionIcon1.setImageResource(R.drawable.baseline_edit_24)
+        menuBinding.optiontitle1.text = "Change Photo"
+        menuBinding.optiontitle1.setOnClickListener {
+            menuDialog.dismiss()
+            launchImagePicker()
+        }
+
+
+        menuBinding.option2.visibility = View.VISIBLE
+        menuBinding.optionIcon2.setImageResource(R.drawable.baseline_delete_24)
+        menuBinding.optiontitle2.text = "Delete Photo"
+        menuBinding.optiontitle2.setOnClickListener {
+            menuDialog.dismiss()
+            if (isProfilePic){
+                selectedCommunityProfileUri = Uri.EMPTY
+                Glide.with(this)
+                    .load(R.drawable.community_default_profile)
+                    .into(binding.communityProfileCIV)
+            } else {
+                selectedBannerPicUri = Uri.EMPTY
+                Glide.with(this)
+                    .load(R.drawable.baseline_image_24)
+                    .into(binding.communityBannerIV)
+                binding.communityBannerIV.setBackgroundColor(Color.BLACK)
+            }
+        }
+        menuDialog.show()
+    }
+    private fun launchImagePicker(){
+        if(isProfilePic){
+            ImagePicker.with(this).cropSquare().compress(512)
+                .maxResultSize(512, 512)
+                .createIntent {
+                    imagePickerLauncher.launch(it)
+                }
+        } else {
+            ImagePicker.with(this)
+                .crop(25f, 10f)
+                .compress(1080)
+                .createIntent {
+                    imagePickerLauncher.launch(it)
+                }
+        }
+    }
     private fun isCommunityNameNotAvailable(communityName: String, callback: (Boolean) -> Unit) {
         FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityName", communityName).get().addOnCompleteListener{
             if (it.isSuccessful){
