@@ -7,8 +7,37 @@
     android:layout_height="match_parent"
     tools:context=".MarketFragment">
 
+    <LinearLayout
+        android:id="@+id/searchContainerLL"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/gradient_teal"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/searchEdtTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_rounded_corners"
+            android:hint="@string/Search"
+            android:padding="10dp" />
+
+        <ImageButton
+            android:id="@+id/cancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/cancel_icon" />
+    </LinearLayout>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/marketRefreshLayout"
+        android:layout_below="@id/searchContainerLL"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

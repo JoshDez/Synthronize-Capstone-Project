@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.EventsAdapter
 import com.example.synthronize.adapters.MarketAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
+import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentEventsBinding
 import com.example.synthronize.interfaces.OnItemClickListener
@@ -29,11 +32,12 @@ import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
+import com.orhanobut.dialogplus.DialogPlus
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class EventsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment(), OnRefreshListener, OnNetworkRetryListener, OnItemClickListener {
+class EventsFragment(private val mainBinding: FragmentCommunityBinding, private val menuDialog: DialogPlus, private val menuBinding: DialogMenuBinding, private val communityId:String) : Fragment(), OnRefreshListener, OnNetworkRetryListener, OnItemClickListener {
     private lateinit var binding: FragmentEventsBinding
     private lateinit var context: Context
     private lateinit var eventsAdapter: EventsAdapter
@@ -64,24 +68,74 @@ class EventsFragment(private val mainBinding: FragmentCommunityBinding, private 
 
                 binding.eventsRefreshLayout.setOnRefreshListener(this)
 
+                //Search button from community fragment
+                menuBinding.optiontitle1.setOnClickListener {
+                    menuDialog.dismiss()
+                    binding.searchContainerLL.visibility = View.VISIBLE
+                }
+                binding.cancelBtn.setOnClickListener {
+                    binding.searchEdtTxt.setText("")
+                    binding.searchContainerLL.visibility = View.GONE
+                }
+                binding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable?) {
+                        val searchQuery = binding.searchEdtTxt.text.toString()
+                        searchEventsRV(searchQuery)
+                    }
+                })
+
                 setupEventsRV()
 
                 isUserAdmin{isAdmin ->
                     if (isAdmin){
+                        binding.createEventsFab.visibility = View.VISIBLE
                         binding.createEventsFab.setOnClickListener{
                             val intent = Intent(context, CreateEvent::class.java)
                             intent.putExtra("communityId", communityId)
                             context.startActivity(intent)
                         }
-
+                    } else {
+                        binding.createEventsFab.visibility = View.GONE
                     }
                 }
-
-
-
             }
         }
 
+    }
+
+    private fun searchEventsRV(searchQuery: String) {
+        if (searchQuery.isNotEmpty()){
+            binding.eventsRefreshLayout.isRefreshing = true
+
+            val myQuery: Query = FirebaseUtil().retrieveCommunityEventsCollection(communityId)
+                .whereGreaterThanOrEqualTo("eventName", searchQuery)
+                .whereLessThanOrEqualTo("eventName", searchQuery+"\uf8ff")
+
+
+            // Add a listener to handle success or failure of the query
+            myQuery.addSnapshotListener { _, e ->
+                if (e != null) {
+                    // Handle the error here (e.g., log the error or show a message to the user)
+                    Log.e("Firestore Error", "Error while fetching data", e)
+                    return@addSnapshotListener
+                } else {
+                    binding.eventsRefreshLayout.isRefreshing = false
+                }
+            }
+
+            //set options for firebase ui
+            val options: FirestoreRecyclerOptions<EventModel> =
+                FirestoreRecyclerOptions.Builder<EventModel>().setQuery(myQuery, EventModel::class.java).build()
+
+            binding.eventsRV.layoutManager = LinearLayoutManager(context)
+            eventsAdapter = EventsAdapter(context, options, this)
+            binding.eventsRV.adapter = eventsAdapter
+            eventsAdapter.startListening()
+        } else {
+            setupEventsRV()
+        }
     }
 
     private fun isUserAdmin(callback: (Boolean) -> Unit){
@@ -131,6 +185,8 @@ class EventsFragment(private val mainBinding: FragmentCommunityBinding, private 
     }
     override fun onRefresh() {
         Handler().postDelayed({
+            binding.searchEdtTxt.setText("")
+            binding.searchContainerLL.visibility = View.GONE
             setupEventsRV()
         }, 1000)
     }

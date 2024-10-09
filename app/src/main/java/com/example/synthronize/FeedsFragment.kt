@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.FeedsAdapter
+import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.FragmentFeedsBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
@@ -22,8 +25,9 @@ import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
+import com.orhanobut.dialogplus.DialogPlus
 
-class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
+class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private val menuDialog:DialogPlus, private val menuBinding: DialogMenuBinding, private val communityId:String) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
 
     private lateinit var binding: FragmentFeedsBinding
     private lateinit var context: Context
@@ -92,6 +96,54 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
             intent.putExtra("communityId", communityId)
             context.startActivity(intent)
         }
+        //Search button from community fragment
+        menuBinding.optiontitle1.setOnClickListener {
+            menuDialog.dismiss()
+            binding.searchContainerLL.visibility = View.VISIBLE
+        }
+        binding.cancelBtn.setOnClickListener {
+            binding.searchEdtTxt.setText("")
+            binding.searchContainerLL.visibility = View.GONE
+        }
+        binding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val searchQuery = binding.searchEdtTxt.text.toString()
+                searchFeedsRV(searchQuery)
+            }
+        })
+    }
+    private fun searchFeedsRV(searchQuery:String){
+        if (searchQuery.isNotEmpty()){
+            binding.feedsRefreshLayout.isRefreshing = true
+
+            val myQuery:Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId)
+                .whereGreaterThanOrEqualTo("caption", searchQuery)
+                .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+
+            // Add a listener to handle success or failure of the query
+            myQuery.addSnapshotListener { _, e ->
+                if (e != null) {
+                    // Handle the error here (e.g., log the error or show a message to the user)
+                    Log.e("Firestore Error", "Error while fetching data", e)
+                    return@addSnapshotListener
+                } else {
+                    binding.feedsRefreshLayout.isRefreshing = false
+                }
+            }
+            //set options for firebase ui
+            val options: FirestoreRecyclerOptions<PostModel> =
+                FirestoreRecyclerOptions.Builder<PostModel>().setQuery(myQuery, PostModel::class.java).build()
+
+            recyclerView = binding.feedsRV
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            feedsAdapter = FeedsAdapter(mainBinding, context, options)
+            recyclerView.adapter = feedsAdapter
+            feedsAdapter.startListening()
+        } else {
+            setRecyclerView()
+        }
     }
     override fun onStart() {
         super.onStart()
@@ -117,6 +169,8 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
     override fun onRefresh() {
         binding.feedsRefreshLayout.isRefreshing = true
         Handler().postDelayed({
+            binding.searchEdtTxt.setText("")
+            binding.searchContainerLL.visibility = View.GONE
             setRecyclerView()
         }, 1000)
     }

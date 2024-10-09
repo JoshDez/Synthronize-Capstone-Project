@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.CompetitionsAdapter
 import com.example.synthronize.adapters.FeedsAdapter
 import com.example.synthronize.adapters.FilesAdapter
+import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.FragmentActivitiesBinding
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
@@ -31,8 +34,9 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
+import com.orhanobut.dialogplus.DialogPlus
 
-class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, private val communityId:String, private val isUserAdmin:Boolean) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
+class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, private val menuDialog: DialogPlus, private val menuBinding: DialogMenuBinding, private val communityId:String, private val isUserAdmin:Boolean) : Fragment(), OnRefreshListener, OnNetworkRetryListener {
 
     private lateinit var binding: FragmentActivitiesBinding
     private lateinit var context: Context
@@ -75,10 +79,48 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
                 binding.sharedFilesBtn.setOnClickListener {
                     navigate("shared_files")
                 }
+
+
+                //Search button from community fragment
+                menuBinding.optiontitle1.setOnClickListener {
+                    menuDialog.dismiss()
+                    binding.searchContainerLL.visibility = View.VISIBLE
+                }
+                binding.cancelBtn.setOnClickListener {
+                    binding.searchEdtTxt.setText("")
+                    binding.searchContainerLL.visibility = View.GONE
+                }
+                binding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable?) {
+                        val searchQuery = binding.searchEdtTxt.text.toString()
+                        searchActivitiesRV(searchQuery)
+                    }
+                })
             }
         }
 
     }
+
+    private fun searchActivitiesRV(searchQuery: String) {
+        if (searchQuery.isNotEmpty()){
+            when(currentTab){
+                "competitions" -> {
+                    setupCompetitionsRV(searchQuery)
+                }
+                "resources" -> {
+                    setupResourcesRV(searchQuery)
+                }
+                "shared_files" -> {
+                    setupSharedFilesRV(searchQuery)
+                }
+            }
+        } else {
+            navigate(currentTab)
+        }
+    }
+
 
     private fun navigate(tab: String, toRefresh:Boolean = false) {
         val unselectedColor = ContextCompat.getColor(context, R.color.less_saturated_light_teal)
@@ -170,11 +212,19 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         }
     }
 
-    private fun setupCompetitionsRV(){
+    private fun setupCompetitionsRV(searchQuery: String = ""){
        binding.activitiesRefreshLayout.isRefreshing = true
 
-        val myQuery: Query = FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId)
+        var myQuery:Query
+
+        if (searchQuery.isNotEmpty()){
+            myQuery = FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId)
+                .whereGreaterThanOrEqualTo("competitionName", searchQuery)
+                .whereLessThanOrEqualTo("competitionName", searchQuery+"\uf8ff")
+        } else {
+            myQuery = FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId)
             .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+        }
 
         // Add a listener to handle success or failure of the query
         myQuery.addSnapshotListener { _, e ->
@@ -197,13 +247,21 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         competitionsAdapter.startListening()
     }
 
-    private fun setupResourcesRV(){
+    private fun setupResourcesRV(searchQuery: String = ""){
         binding.activitiesRefreshLayout.isRefreshing = true
 
-        val myQuery: Query = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
-            .whereEqualTo("forCompetition", false)
-            .whereEqualTo("shareFile", false)
-            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+        var myQuery: Query
+
+        if (searchQuery.isNotEmpty()){
+            myQuery = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+                .whereGreaterThanOrEqualTo("caption", searchQuery)
+                .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+        } else {
+            myQuery = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+                .whereEqualTo("forCompetition", false)
+                .whereEqualTo("shareFile", false)
+                .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+        }
 
         // Add a listener to handle success or failure of the query
         myQuery.addSnapshotListener { _, e ->
@@ -226,13 +284,20 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         resourcesAdapter.startListening()
     }
 
-    private fun setupSharedFilesRV(){
+    private fun setupSharedFilesRV(searchQuery: String = ""){
         binding.activitiesRefreshLayout.isRefreshing = true
+        var myQuery: Query
 
-        val myQuery: Query = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
-            .whereEqualTo("forCompetition", false)
-            .whereEqualTo("shareFile", true)
-            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+        if (searchQuery.isNotEmpty()){
+            myQuery =  FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+                .whereGreaterThanOrEqualTo("caption", searchQuery)
+                .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+        } else {
+            myQuery = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+                .whereEqualTo("forCompetition", false)
+                .whereEqualTo("shareFile", true)
+                .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+        }
 
         // Add a listener to handle success or failure of the query
         myQuery.addSnapshotListener { _, e ->
@@ -297,6 +362,8 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
 
     override fun onRefresh() {
         Handler().postDelayed({
+            binding.searchEdtTxt.setText("")
+            binding.searchContainerLL.visibility = View.GONE
             navigate(currentTab, true)
         }, 1000)
     }

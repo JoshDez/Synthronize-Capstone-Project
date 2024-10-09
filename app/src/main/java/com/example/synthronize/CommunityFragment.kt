@@ -36,6 +36,8 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     private lateinit var binding: FragmentCommunityBinding
     private lateinit var communityModel: CommunityModel
     private lateinit var context: Context
+    private lateinit var menuBinding: DialogMenuBinding
+    private lateinit var menuDialog:DialogPlus
 
     //for community text channels
     private lateinit var chatroomAdapter:ChatroomAdapter
@@ -85,16 +87,16 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
     private fun setupCommunityFragment(){
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
             val myModel = it.toObject(UserModel::class.java)!!
-
             //reset main toolbar
             AppUtil().resetMainToolbar(mainBinding)
             //bind community
             assignUserRole(myModel)
             bindCommunityDetails()
             bindButtons()
+            initializeMenuDialog()
             //Set Feeds fragment as default fragment
             selectNavigation("feeds")
-            replaceFragment(FeedsFragment(binding, communityId))
+            replaceFragment(FeedsFragment(binding, menuDialog, menuBinding , communityId))
         }
     }
 
@@ -137,27 +139,27 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         //bind buttons
         binding.feedsBtn.setOnClickListener {
             //TODO: changes to buttons
-            replaceFragment(FeedsFragment(binding, communityId))
+            replaceFragment(FeedsFragment(binding, menuDialog, menuBinding, communityId))
             selectNavigation("feeds")
         }
         binding.eventsBtn.setOnClickListener {
             //TODO: changes to buttons
-            replaceFragment(EventsFragment(binding, communityId))
+            replaceFragment(EventsFragment(binding, menuDialog, menuBinding, communityId))
             selectNavigation("events")
         }
         binding.forumsBtn.setOnClickListener {
             //TODO: changes to buttons
-            replaceFragment(ForumsFragment(binding, communityId))
+            replaceFragment(ForumsFragment(binding, menuDialog, menuBinding, communityId))
             selectNavigation("forums")
         }
         binding.marketBtn.setOnClickListener {
             //TODO: changes to buttons
-            replaceFragment(MarketFragment(binding, communityId))
+            replaceFragment(MarketFragment(binding, menuDialog, menuBinding, communityId))
             selectNavigation("market")
         }
         binding.activitiesBtn.setOnClickListener {
             //TODO: changes to buttons
-            replaceFragment(ActivitiesFragment(binding, communityId, isUserAdmin))
+            replaceFragment(ActivitiesFragment(binding, menuDialog, menuBinding, communityId, isUserAdmin))
             selectNavigation("activities")
         }
 
@@ -170,9 +172,10 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         }
     }
 
-    private fun openCommunityMenuDialog(){
-        val menuBinding = DialogMenuBinding.inflate(layoutInflater)
-        val menuDialog = DialogPlus.newDialog(context)
+    private fun initializeMenuDialog(){
+        //initialize menu dialog for fragments
+        menuBinding = DialogMenuBinding.inflate(layoutInflater)
+        menuDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(menuBinding.root))
             .setMargin(50,0,50,0)
             .setBackgroundColorResId(R.color.transparent)
@@ -184,10 +187,9 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         //Option 1: Search in Community
         menuBinding.option1.visibility = View.VISIBLE
         menuBinding.optionIcon1.setImageResource(R.drawable.search_icon)
-        menuBinding.optiontitle1.text = "Search In Community"
+        menuBinding.optiontitle1.text = "Search In Current Tab"
         menuBinding.optiontitle1.setOnClickListener {
             menuDialog.dismiss()
-            Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show()
         }
 
         //Option 2: Community Text Channels
@@ -226,9 +228,10 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             startActivity(intent)
         }
         menuBinding.option4.visibility = View.VISIBLE
+    }
 
+    private fun openCommunityMenuDialog(){
         menuDialog.show()
-
     }
 
     private fun openTextChannelsDialog() {
