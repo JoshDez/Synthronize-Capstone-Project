@@ -2,6 +2,7 @@ package com.example.synthronize
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -19,6 +20,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivityChatroomSettingsBinding
+import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogSelectUserBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnItemClickListener
@@ -274,11 +277,11 @@ class ChatroomSettings : AppCompatActivity(), OnItemClickListener, OnRefreshList
             binding.chatroomCIV.visibility = View.GONE
             binding.editChatroomCIV.visibility = View.VISIBLE
             binding.editChatroomCIV.setOnClickListener {
-                ImagePicker.with(this).cropSquare().compress(512)
-                    .maxResultSize(512, 512)
-                    .createIntent {
-                        imagePickerLauncher.launch(it)
-                    }
+                if (chatroomModel.chatroomProfileUrl.isNotEmpty()){
+                    openImageMenuDialog()
+                } else {
+                    launchImagePicker()
+                }
             }
         }
 
@@ -294,6 +297,19 @@ class ChatroomSettings : AppCompatActivity(), OnItemClickListener, OnRefreshList
         }
 
         binding.saveBtn.setOnClickListener {
+
+            val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+            val loadingDialog = DialogPlus.newDialog(this)
+                .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+                .setCancelable(false)
+                .setBackgroundColorResId(R.color.transparent)
+                .setGravity(Gravity.CENTER)
+                .create()
+
+            dialogLoadingBinding.messageTV.text = "Saving..."
+
+            loadingDialog.show()
+
             val name = binding.chatroomNameEdtTxt.text.toString()
             if (name.length < 3){
                 Toast.makeText(this, "Chatroom name should at least have 3 or more characters", Toast.LENGTH_SHORT).show()
@@ -306,25 +322,78 @@ class ChatroomSettings : AppCompatActivity(), OnItemClickListener, OnRefreshList
                         chatroomName = name
                     }
                 }
-                //updates profile
+                //updates chatroom profile
                 if (::selectedImage.isInitialized){
                     var imageUrl = chatroomModel.chatroomProfileUrl
-                    if (imageUrl.isNotEmpty() && imageUrl != "null"){
-                        //deletes current profile
-                        FirebaseUtil().retrieveGroupChatProfileRef(imageUrl).delete()
-                    }
-                    //uploads profile picture
-                    imageUrl = "${chatroomModel.chatroomId}-${Timestamp.now()}"
-                    FirebaseUtil().retrieveGroupChatProfileRef(imageUrl).putFile(selectedImage).addOnSuccessListener {
-                        FirebaseUtil().retrieveChatRoomReference(chatroomId).update("chatroomProfileUrl", imageUrl)
+                    if (imageUrl.isNotEmpty() && imageUrl != "null" && selectedImage == Uri.EMPTY){
+                        //Removes Photo
+                        FirebaseUtil().retrieveGroupChatProfileRef(imageUrl).delete().addOnSuccessListener {
+                            FirebaseUtil().retrieveChatRoomReference(chatroomId).update("chatroomProfileUrl", "")
+                        }
+                    } else if (selectedImage != Uri.EMPTY){
+                        //Changes Photo
+                        if (imageUrl.isNotEmpty() && imageUrl != "null"){
+                            //deletes current profile
+                            FirebaseUtil().retrieveGroupChatProfileRef(imageUrl).delete()
+                        }
+                        //uploads profile picture
+                        imageUrl = "${chatroomModel.chatroomId}-${Timestamp.now()}"
+                        FirebaseUtil().retrieveGroupChatProfileRef(imageUrl).putFile(selectedImage).addOnSuccessListener {
+                            FirebaseUtil().retrieveChatRoomReference(chatroomId).update("chatroomProfileUrl", imageUrl)
+                        }
                     }
                 }
                 Handler().postDelayed({
+                    loadingDialog.dismiss()
                     onBackPressed()
                 }, 2000)
             }
 
         }
+    }
+
+
+    private fun openImageMenuDialog() {
+        val menuBinding = DialogMenuBinding.inflate(layoutInflater)
+        val menuDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(menuBinding.root))
+            .setMargin(50,0,50,0)
+            .setBackgroundColorResId(R.color.transparent)
+            .setCancelable(true)
+            .setGravity(Gravity.BOTTOM)
+            .create()
+
+
+        menuBinding.option1.visibility = View.VISIBLE
+        menuBinding.optionIcon1.setImageResource(R.drawable.baseline_edit_24)
+        menuBinding.optiontitle1.text = "Change Photo"
+        menuBinding.optiontitle1.setOnClickListener {
+            menuDialog.dismiss()
+            launchImagePicker()
+        }
+
+
+        menuBinding.option2.visibility = View.VISIBLE
+        menuBinding.optionIcon2.setImageResource(R.drawable.baseline_delete_24)
+        menuBinding.optiontitle2.text = "Delete Photo"
+        menuBinding.optiontitle2.setOnClickListener {
+            menuDialog.dismiss()
+            selectedImage = Uri.EMPTY
+            Glide.with(this)
+                .load(R.drawable.community_default_profile)
+                .into(binding.editChatroomCIV)
+        }
+        menuDialog.show()
+
+    }
+
+
+    private fun launchImagePicker() {
+        ImagePicker.with(this).cropSquare().compress(512)
+            .maxResultSize(512, 512)
+            .createIntent {
+                imagePickerLauncher.launch(it)
+            }
     }
 
 

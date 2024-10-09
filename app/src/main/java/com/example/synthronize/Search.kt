@@ -78,10 +78,12 @@ class Search : AppCompatActivity(), OnItemClickListener {
                 //search user by username
                 myQuery = FirebaseUtil().allUsersCollectionReference()
                     .whereGreaterThanOrEqualTo("username", searchQuery.removePrefix("@"))
+                    .whereLessThanOrEqualTo("username", searchQuery.removePrefix("@")+"\uf8ff")
             } else {
                 //search user by full name
                 myQuery = FirebaseUtil().allUsersCollectionReference()
                     .whereGreaterThanOrEqualTo("fullName", searchQuery)
+                    .whereLessThanOrEqualTo("fullName", searchQuery+"\uf8ff")
             }
         }
 
@@ -119,6 +121,7 @@ class Search : AppCompatActivity(), OnItemClickListener {
 
         val myQuery:Query = FirebaseUtil().retrieveAllCommunityCollection()
             .whereGreaterThanOrEqualTo("communityName", searchQuery)
+            .whereLessThanOrEqualTo("communityName", searchQuery+"\uf8ff")
 
         val options:FirestoreRecyclerOptions<CommunityModel> =
             FirestoreRecyclerOptions.Builder<CommunityModel>().setQuery(myQuery, CommunityModel::class.java).build()
@@ -156,7 +159,9 @@ class Search : AppCompatActivity(), OnItemClickListener {
             for (document in it.documents){
                 val id = document.get("communityId") as String
 
-                FirebaseUtil().retrieveCommunityFeedsCollection(id).whereGreaterThanOrEqualTo("caption", searchQuery).get().addOnSuccessListener {feeds ->
+                FirebaseUtil().retrieveCommunityFeedsCollection(id)
+                    .whereGreaterThanOrEqualTo("caption", searchQuery)
+                    .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff").get().addOnSuccessListener {feeds ->
                     for (post in feeds.documents){
                         val postModel = post.toObject(PostModel::class.java)!!
                         feedList.add(postModel)
