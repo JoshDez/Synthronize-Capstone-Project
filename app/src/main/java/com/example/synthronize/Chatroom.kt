@@ -3,7 +3,6 @@ package com.example.synthronize
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -39,6 +38,7 @@ class Chatroom : AppCompatActivity() {
     private var postId = ""
     private var productId = ""
     private var communityIdOfPost = ""
+    private var isSeen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -255,19 +255,21 @@ class Chatroom : AppCompatActivity() {
             val myQuery: Query = FirebaseUtil().retrieveChatsFromChatroom(chatroomId)
                 .orderBy("timestamp", Query.Direction.ASCENDING)
 
+
             val options: FirestoreRecyclerOptions<MessageModel> =
                 FirestoreRecyclerOptions.Builder<MessageModel>().setQuery(myQuery, MessageModel::class.java).build()
 
             recyclerView = binding.chatRV
             linearLayoutManager = LinearLayoutManager(this)
             recyclerView.layoutManager = linearLayoutManager
-            messageAdapter = MessageAdapter(this, options)
+            messageAdapter = MessageAdapter(this, options, chatroomId)
             recyclerView.adapter = messageAdapter
             messageAdapter.startListening()
 
-            Handler().postDelayed({
-                recyclerView.smoothScrollToPosition(messageAdapter.getMessageCount())
-            }, 1000)
+            FirebaseUtil().retrieveChatsFromChatroom(chatroomId).orderBy("timestamp", Query.Direction.ASCENDING).get().addOnCompleteListener{
+                val items = it.result.size()
+                recyclerView.smoothScrollToPosition(items)
+            }
         }
     }
 
@@ -327,9 +329,12 @@ class Chatroom : AppCompatActivity() {
 
                 }
 
-                Handler().postDelayed({
-                    recyclerView.smoothScrollToPosition(messageAdapter.getMessageCount())
-                }, 1000)
+                FirebaseUtil().retrieveChatsFromChatroom(chatroomId).orderBy("timestamp", Query.Direction.ASCENDING).get().addOnCompleteListener{ messages ->
+                    val items = messages.result.size()
+                    recyclerView.smoothScrollToPosition(items)
+                }
+
+                messageAdapter.notifyDataSetChanged()
             }
         }
 

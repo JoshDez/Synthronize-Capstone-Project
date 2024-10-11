@@ -11,6 +11,7 @@ import com.example.synthronize.ViewProduct
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.example.synthronize.databinding.ItemMessageBinding
+import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.MessageModel
 import com.example.synthronize.model.PostModel
@@ -18,12 +19,14 @@ import com.example.synthronize.model.ProductModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FieldValue
 
-class MessageAdapter(private val context: Context, options: FirestoreRecyclerOptions<MessageModel>):
+class MessageAdapter(private val context: Context, options: FirestoreRecyclerOptions<MessageModel>, private val chatroomId:String):
     FirestoreRecyclerAdapter<MessageModel, MessageAdapter.MessageViewHolder>(options) {
 
-    private var itemCount:Int = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemMessageBinding.inflate(inflater, parent, false)
@@ -32,31 +35,62 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int, model: MessageModel) {
         holder.bind(model)
-        itemCount += 1
     }
 
-    fun getMessageCount(): Int{
-        return itemCount
+    override fun onDataChanged() {
+        super.onDataChanged()
+        FirebaseUtil().retrieveChatRoomReference(chatroomId).update("usersSeen", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
     }
 
-    class MessageViewHolder(private val binding: ItemMessageBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
+    inner class MessageViewHolder(private val binding: ItemMessageBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){
+
+        private var timestampVisible = false
         fun bind(model: MessageModel){
 
             //bind user's message
             if (model.senderID == FirebaseUtil().currentUserUid()){
                 //If user is the sender (YOU)
-                binding.recieverLayout.visibility = View.GONE
+                binding.receiverLayout.visibility = View.GONE
                 binding.senderLayout.visibility = View.VISIBLE
                 binding.senderMsgTV.visibility = View.VISIBLE
                 binding.senderMsgTV.text = model.message
+                binding.senderTimestamp.text = DateAndTimeUtil().formatTimestampToDateTime(model.timestamp)
                 bindPostMessage(model, true)
                 bindProductMessage(model, true)
+
+                binding.senderMsgTV.setOnClickListener {
+                    if (timestampVisible){
+                        binding.senderTimestamp.visibility = View.GONE
+                        timestampVisible = false
+                    } else {
+                        binding.senderTimestamp.visibility = View.VISIBLE
+                        timestampVisible = true
+                    }
+                }
+
+
+                FirebaseUtil().retrieveChatRoomReference(chatroomId).get().addOnCompleteListener {
+                    if (it.result.exists()){
+                        val chatroomModel = it.result.toObject(ChatroomModel::class.java)!!
+                        FirebaseUtil().retrieveChatsFromChatroom(chatroomId).get().addOnCompleteListener {messages ->
+                            val messagesCount = messages.result.size()
+                            if ( chatroomModel.usersSeen.size > 1 && position == messagesCount-1){
+                                binding.seenIV.visibility = View.VISIBLE
+                            } else {
+                                binding.seenIV.visibility = View.GONE
+                            }
+                        }
+                    }
+                }
+                
+                
             } else {
                 //If user is the receiver
                 binding.senderLayout.visibility = View.GONE
-                binding.recieverLayout.visibility = View.VISIBLE
-                binding.recieverMsgTV.visibility = View.VISIBLE
-                binding.recieverMsgTV.text = model.message
+                binding.receiverLayout.visibility = View.VISIBLE
+                binding.receiverMsgTV.visibility = View.VISIBLE
+                binding.receiverMsgTV.text = model.message
+                binding.receiverTimestamp.text = DateAndTimeUtil().formatTimestampToDateTime(model.timestamp)
                 bindPostMessage(model, false)
                 bindProductMessage(model, false)
                 //retrieve sender user data
@@ -67,8 +101,17 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
                         AppUtil().setUserProfilePic(context, userModel.userID, binding.userProfileCIV)
                     }
                 }
-            }
 
+                binding.receiverMsgTV.setOnClickListener {
+                    if (timestampVisible){
+                        binding.receiverTimestamp.visibility = View.GONE
+                        timestampVisible = false
+                    } else {
+                        binding.receiverTimestamp.visibility = View.VISIBLE
+                        timestampVisible = true
+                    }
+                }
+            }
         }
         private fun bindPostMessage(model: MessageModel, isSender:Boolean){
             if (model.postID.isNotEmpty() && model.postID != "null" &&

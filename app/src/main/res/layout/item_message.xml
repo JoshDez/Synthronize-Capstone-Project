@@ -4,11 +4,12 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
+    android:layout_marginBottom="10dp"
     android:paddingBottom="7dp"
     android:paddingTop="7dp">
 
     <RelativeLayout
-        android:id="@+id/recieverLayout"
+        android:id="@+id/receiverLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -29,74 +30,95 @@
             android:textColor="@color/light_teal"/>
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/input_rounded_corners"
-            android:padding="10dp"
             android:layout_toRightOf="@id/userProfileCIV"
-            android:layout_marginStart="8dp"
             android:layout_below="@id/userNameTV"
-            android:backgroundTint="@color/teal2"
-            android:layout_marginEnd="120dp">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/postLayout"
-                android:visibility="gone"
-                android:padding="5dp"
-                android:background="@color/dark_teal"
+                android:id="@+id/receiverMsgContainer"
                 android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/input_rounded_corners"
+                android:padding="10dp"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/teal2"
+                android:layout_marginEnd="120dp">
+
                 <LinearLayout
-                    android:id="@+id/postOwnerProfileLayout"
-                    android:orientation="horizontal"
+                    android:id="@+id/postLayout"
+                    android:visibility="gone"
+                    android:padding="5dp"
+                    android:background="@color/dark_teal"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/postOwnerProfileLayout"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/postOwnerProfileCIV"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/user_default_profile"/>
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/postOwnerProfileCIV"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/user_default_profile"/>
 
+                        <TextView
+                            android:id="@+id/postOwnerUsernameTV"
+                            android:layout_marginStart="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/light_teal"
+                            android:contentDescription="@string/username"/>
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/postThumbnail"
+                        android:layout_width="180dp"
+                        android:layout_height="180dp"
+                        android:orientation="vertical"
+                        android:visibility="gone" />
                     <TextView
-                        android:id="@+id/postOwnerUsernameTV"
+                        android:id="@+id/postCaptionTV"
                         android:layout_marginStart="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textColor="@color/light_teal"
-                        android:contentDescription="@string/username"/>
-
+                        android:contentDescription="@string/posts"/>
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/postThumbnail"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:orientation="vertical"
-                    android:visibility="gone" />
+
                 <TextView
-                    android:id="@+id/postCaptionTV"
-                    android:layout_marginStart="5dp"
+                    android:id="@+id/receiverMsgTV"
+                    android:clickable="true"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoLink="web"
+                    android:textColorLink="@color/light_blue"
+                    android:contentDescription="@string/Chats"
                     android:textColor="@color/light_teal"
-                    android:contentDescription="@string/posts"/>
+                    android:textSize="17sp"/>
             </LinearLayout>
 
-
             <TextView
-                android:id="@+id/recieverMsgTV"
-                android:visibility="gone"
-                android:layout_width="match_parent"
+                android:id="@+id/receiverTimestamp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:autoLink="web"
                 android:textColorLink="@color/light_blue"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="10dp"
+                android:visibility="gone"
                 android:contentDescription="@string/Chats"
-                android:textColor="@color/light_teal"
-                android:textSize="17sp"/>
+                android:textColor="@color/light_gray"
+                android:textSize="12sp"/>
         </LinearLayout>
+
     </RelativeLayout>
 
 
@@ -106,74 +128,115 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/input_rounded_corners"
-            android:padding="10dp"
-            android:backgroundTint="@color/light_teal"
-            android:layout_marginTop="21dp"
-            android:layout_marginStart="120dp">
+            android:gravity="end"
+            android:orientation="vertical">
+
 
             <LinearLayout
-                android:id="@+id/postLayout2"
-                android:visibility="gone"
-                android:padding="5dp"
+                android:id="@+id/senderMsgContainer"
                 android:orientation="vertical"
-                android:background="@color/teal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/input_rounded_corners"
+                android:padding="10dp"
+                android:backgroundTint="@color/light_teal"
+                android:layout_marginTop="21dp"
+                android:layout_marginStart="120dp">
 
                 <LinearLayout
-                    android:id="@+id/postOwnerProfileLayout2"
-                    android:orientation="horizontal"
+                    android:id="@+id/postLayout2"
+                    android:visibility="gone"
+                    android:padding="5dp"
+                    android:orientation="vertical"
+                    android:background="@color/teal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/postOwnerProfileCIV2"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/user_default_profile"/>
+                    <LinearLayout
+                        android:id="@+id/postOwnerProfileLayout2"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/postOwnerProfileCIV2"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/user_default_profile"/>
+
+                        <TextView
+                            android:id="@+id/postOwnerUsernameTV2"
+                            android:layout_marginStart="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/darker_teal"
+                            android:contentDescription="@string/username"/>
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/postThumbnailIV2"
+                        android:layout_width="180dp"
+                        android:layout_height="180dp"
+                        android:orientation="vertical"
+                        android:visibility="gone" />
                     <TextView
-                        android:id="@+id/postOwnerUsernameTV2"
+                        android:id="@+id/postCaptionTV2"
                         android:layout_marginStart="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textColor="@color/darker_teal"
-                        android:contentDescription="@string/username"/>
-
+                        android:contentDescription="@string/posts"/>
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/postThumbnailIV2"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:orientation="vertical"
-                    android:visibility="gone" />
                 <TextView
-                    android:id="@+id/postCaptionTV2"
-                    android:layout_marginStart="5dp"
+                    android:id="@+id/senderMsgTV"
+                    android:visibility="gone"
+                    android:clickable="true"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/Chats"
+                    android:autoLink="web"
+                    android:textColorLink="@color/light_blue"
                     android:textColor="@color/darker_teal"
-                    android:contentDescription="@string/posts"/>
+                    android:textSize="17sp"
+                    android:text=""/>
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/senderMsgTV"
-                android:visibility="gone"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/Chats"
-                android:autoLink="web"
-                android:textColorLink="@color/light_blue"
-                android:textColor="@color/darker_teal"
-                android:textSize="17sp"
-                android:text=""/>
+                android:orientation="horizontal"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/senderTimestamp"
+                    android:layout_width="wrap_content"
+                    android:layout_below="@id/senderMsgContainer"
+                    android:layout_toLeftOf="@id/seenIV"
+                    android:layout_height="wrap_content"
+                    android:textColorLink="@color/light_blue"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/Chats"
+                    android:textColor="@color/light_gray"
+                    android:textSize="12sp"/>
+
+                <ImageView
+                    android:id="@+id/seenIV"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:visibility="gone"
+                    android:layout_below="@id/senderMsgContainer"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="12dp"
+                    android:src="@drawable/check_icon"/>
+            </LinearLayout>
+
         </LinearLayout>
+
     </RelativeLayout>
 
 
