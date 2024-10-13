@@ -104,6 +104,13 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
                     fileModel.ownerId, fileModel.communityId){}
             }
 
+            binding.communityWrapperLayout.setOnClickListener {
+                FirebaseUtil().retrieveCommunityDocument(fileModel.communityId).get().addOnSuccessListener {result ->
+                    val community = result.toObject(CommunityModel::class.java)!!
+                    DialogUtil().openCommunityPreviewDialog(context, inflater, community)
+                }
+            }
+
             binding.profileCIV.setOnClickListener {
                 headToUserProfile()
             }

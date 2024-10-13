@@ -298,16 +298,13 @@
                             android:id="@+id/birthdayLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:layout_toLeftOf="@id/messageUserBtn"
                             android:orientation="horizontal"
                             android:visibility="invisible">
 
                             <ImageView
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:src="@drawable/baseline_calendar_month_24"
+                                android:src="@drawable/birthday_icon"
                                 app:tint="@color/light_teal" />
 
                             <TextView
@@ -321,9 +318,37 @@
                                 android:drawableTint="#00FFFFFF"
                                 android:text="Birthday: December 19, 2002"
                                 android:textColor="@color/light_teal"
-                                android:textSize="14sp" />
-
+                                android:textSize="15sp" />
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/userRoleLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/birthdayLayout"
+                            android:orientation="horizontal"
+                            android:visibility="invisible">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/user_role"
+                                app:tint="@color/light_teal" />
+
+                            <TextView
+                                android:id="@+id/userRoleTV"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginBottom="10dp"
+                                android:backgroundTint="#00FFFFFF"
+                                android:contentDescription="@string/user_description"
+                                android:drawableTint="#00FFFFFF"
+                                android:text="Role"
+                                android:textColor="@color/light_teal"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+
 
                         <ImageButton
                             android:id="@+id/messageUserBtn"
@@ -351,8 +376,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_below="@id/mainToolbar"
-                        android:background="@color/light_teal"
-                        app:dividerColor="@color/light_teal" />
+                        android:background="@color/teal2"
+                        app:dividerColor="@color/teal2" />
 
 
                     <LinearLayout
@@ -394,7 +419,37 @@
                         android:layout_height="2dp"
                         android:layout_below="@id/mainToolbar"
                         android:background="@color/light_teal"
-                        app:dividerColor="@color/light_teal" />
+                        app:dividerColor="@color/teal2" />
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:id="@+id/searchContainerLL"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/gradient_teal"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/searchEdtTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/input_rounded_corners"
+                        android:hint="@string/Search"
+                        android:padding="10dp" />
+
+                    <ImageButton
+                        android:id="@+id/cancelBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="10dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/cancel_icon" />
                 </LinearLayout>
 
 

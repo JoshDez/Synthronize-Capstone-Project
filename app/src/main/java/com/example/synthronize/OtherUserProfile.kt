@@ -3,6 +3,8 @@ package com.example.synthronize
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
@@ -38,6 +40,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
     private var userID = ""
     //For OnItemClickListener
     private var isFriendsList = false
+    private var currentTab = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,26 +78,28 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
         if (tab == "posts"){
             binding.postsBtn.setTextColor(selectedColor)
             binding.postsRV.visibility = View.VISIBLE
+            currentTab = "posts"
             if (toRefresh)
                 setupPostsRV()
         }else if (tab == "files"){
             binding.filesBtn.setTextColor(selectedColor)
             binding.filesRV.visibility = View.VISIBLE
+            currentTab = "files"
             if (toRefresh)
                 setupFilesRV()
         }
     }
 
-    private fun setupFilesRV() {
-        ProfileUtil().getUserFiles(this, userID, true){
+    private fun setupFilesRV(searchQuery:String = "") {
+        ProfileUtil().getUserFiles(this, userID, searchQuery, true){
             profileFilesAdapter = it
             binding.filesRV.layoutManager = LinearLayoutManager(this)
             binding.filesRV.adapter = profileFilesAdapter
         }
     }
 
-    private fun setupPostsRV() {
-        ProfileUtil().getUserPosts(this, userID, true){
+    private fun setupPostsRV(searchQuery:String = "") {
+        ProfileUtil().getUserPosts(this, userID, searchQuery, true){
             allFeedsAdapter = it
             binding.postsRV.layoutManager = LinearLayoutManager(this)
             binding.postsRV.adapter = allFeedsAdapter
@@ -126,6 +131,10 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                         if (userModel.birthday.isNotEmpty()){
                             binding.birthdayLayout.visibility = View.VISIBLE
                             binding.birthdayTV.text =  DateAndTimeUtil().formatDateFromMMDDYYYY(userModel.birthday)
+                        }
+                        if (userModel.userType.isNotEmpty()){
+                            binding.userRoleLayout.visibility = View.VISIBLE
+                            binding.userRoleTV.text = userModel.userType
                         }
 
                         AppUtil().setUserProfilePic(this, userID, binding.userProfileCIV)
@@ -182,6 +191,22 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                             ProfileUtil().openFilesDescriptionDialog(this, layoutInflater)
                         }
 
+                        binding.cancelBtn.setOnClickListener {
+                            binding.searchEdtTxt.setText("")
+                            binding.searchContainerLL.visibility = View.GONE
+                        }
+                        binding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
+                            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                            override fun afterTextChanged(s: Editable?) {
+                                val searchQuery = binding.searchEdtTxt.text.toString()
+                                if (currentTab == "files"){
+                                    setupFilesRV(searchQuery)
+                                } else if (currentTab == "posts"){
+                                    setupPostsRV(searchQuery)
+                                }
+                            }
+                        })
 
                         setupPostsRV()
                         setupFilesRV()
@@ -212,11 +237,10 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
         //Option 1
         menuBinding.option1.visibility = View.VISIBLE
         menuBinding.optiontitle1.text = "Search"
-        menuBinding.optionIcon1.setImageResource(R.drawable.gear_icon)
+        menuBinding.optionIcon1.setImageResource(R.drawable.search_icon)
         menuBinding.optiontitle1.setOnClickListener {
-            val intent = Intent(this, Search::class.java)
-            //TODO to implement search user
-            startActivity(intent)
+            menuDialog.dismiss()
+            binding.searchContainerLL.visibility = View.VISIBLE
         }
 
         //Option 2

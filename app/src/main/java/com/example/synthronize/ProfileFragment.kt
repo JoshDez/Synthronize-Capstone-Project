@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -41,6 +43,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     private lateinit var userId: String
     //For OnItemClickListener
     private var isFriendsList = false
+    private var currentTab = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,26 +87,28 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         if (tab == "posts"){
             binding.postsBtn.setTextColor(selectedColor)
             binding.postsRV.visibility = View.VISIBLE
+            currentTab = "posts"
             if (toRefresh)
                 setupPostsRV()
         }else if (tab == "files"){
             binding.filesBtn.setTextColor(selectedColor)
             binding.filesRV.visibility = View.VISIBLE
+            currentTab = "files"
             if (toRefresh)
                 setupFilesRV()
         }
     }
 
-    private fun setupPostsRV(){
-        ProfileUtil().getUserPosts(context, userId){
+    private fun setupPostsRV(searchQuery: String = ""){
+        ProfileUtil().getUserPosts(context, userId, searchQuery){
             allFeedsAdapter = it
             binding.postsRV.layoutManager = LinearLayoutManager(context)
             binding.postsRV.adapter = allFeedsAdapter
         }
     }
 
-    private fun setupFilesRV() {
-        ProfileUtil().getUserFiles(context, userId){
+    private fun setupFilesRV(searchQuery: String = "") {
+        ProfileUtil().getUserFiles(context, userId, searchQuery){
             profileFilesAdapter = it
             binding.filesRV.layoutManager = LinearLayoutManager(context)
             binding.filesRV.adapter = profileFilesAdapter
@@ -129,6 +134,11 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                     binding.birthdayLayout.visibility = View.VISIBLE
                     binding.birthdayTV.text = DateAndTimeUtil().formatDateFromMMDDYYYY(userModel.birthday)
                 }
+                if (userModel.userType.isNotEmpty()){
+                    binding.userRoleLayout.visibility = View.VISIBLE
+                    binding.userRoleTV.text = userModel.userType
+                }
+
 
                 //binds userProfilePic
                 AppUtil().setUserProfilePic(context, userId, binding.userProfileCIV)
@@ -181,6 +191,25 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 binding.filesContainer.setOnClickListener {
                     ProfileUtil().openFilesDescriptionDialog(context, layoutInflater)
                 }
+
+
+                binding.cancelBtn.setOnClickListener {
+                    binding.searchEdtTxt.setText("")
+                    binding.searchContainerLL.visibility = View.GONE
+                }
+                binding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable?) {
+                        val searchQuery = binding.searchEdtTxt.text.toString()
+                        if (currentTab == "files"){
+                            setupFilesRV(searchQuery)
+                        } else if (currentTab == "posts"){
+                            setupPostsRV(searchQuery)
+                        }
+                    }
+                })
+
                 mainBinding.kebabMenuBtn.visibility = View.VISIBLE
                 mainBinding.kebabMenuBtn.setOnClickListener {
                     openMenuDialog()
@@ -206,32 +235,32 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
         //Option 1
         menuBinding.option1.visibility = View.VISIBLE
-        menuBinding.optiontitle1.text = "Settings"
-        menuBinding.optionIcon1.setImageResource(R.drawable.gear_icon)
+        menuBinding.optiontitle1.text = "Search"
+        menuBinding.optionIcon1.setImageResource(R.drawable.search_icon)
         menuBinding.optiontitle1.setOnClickListener {
-            headToSettings()
+            menuDialog.dismiss()
+            binding.searchContainerLL.visibility = View.VISIBLE
         }
 
 
-
-        //Option 2
+        //Option 1
         menuBinding.option2.visibility = View.VISIBLE
-        menuBinding.optiontitle2.text = "Edit Profile"
-        menuBinding.optionIcon2.setImageResource(R.drawable.baseline_edit_24)
+        menuBinding.optiontitle2.text = "Settings"
+        menuBinding.optionIcon2.setImageResource(R.drawable.gear_icon)
         menuBinding.optiontitle2.setOnClickListener {
-            headToEditProfile()
+            headToSettings()
             menuDialog.dismiss()
         }
+
+
 
         //Option 3
         menuBinding.option3.visibility = View.VISIBLE
-        menuBinding.optiontitle3.text = "Deactivate Account"
-        menuBinding.optionIcon3.setImageResource(R.drawable.block_user_icon)
+        menuBinding.optiontitle3.text = "Edit Profile"
+        menuBinding.optionIcon3.setImageResource(R.drawable.baseline_edit_24)
         menuBinding.optiontitle3.setOnClickListener {
+            headToEditProfile()
             menuDialog.dismiss()
-            Handler().postDelayed({
-                deactivateWarningDialog()
-            }, 500)
         }
 
         //Option 4

@@ -34,7 +34,7 @@ import com.orhanobut.dialogplus.ViewHolder
 
 class ProfileUtil {
 
-    fun getUserPosts(context: Context, userId: String, forOtherUserProfile:Boolean = false, callback: (AllFeedsAdapter) -> Unit){
+    fun getUserPosts(context: Context, userId: String, searchQuery: String = "", forOtherUserProfile:Boolean = false, callback: (AllFeedsAdapter) -> Unit){
 
         val postsList:ArrayList<PostModel> = ArrayList()
 
@@ -48,11 +48,23 @@ class ProfileUtil {
         communityQuery.get().addOnSuccessListener { querySnapshot ->
                 var communitiesTraversed = 0
                 for (document in querySnapshot.documents) {
-                    FirebaseUtil().retrieveAllCommunityCollection()
-                        .document(document.id) // Access each post within a community
-                        .collection("feeds")
-                        .whereEqualTo("ownerId", userId)
-                        .get()
+                    var postsQuery:Query
+
+                    if (searchQuery.isNotEmpty()){
+                        postsQuery = FirebaseUtil().retrieveAllCommunityCollection()
+                            .document(document.id) // Access each post within a community
+                            .collection("feeds")
+                            .whereEqualTo("ownerId", userId)
+                            .whereGreaterThanOrEqualTo("caption", searchQuery)
+                            .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+                    } else {
+                        postsQuery = FirebaseUtil().retrieveAllCommunityCollection()
+                            .document(document.id) // Access each post within a community
+                            .collection("feeds")
+                            .whereEqualTo("ownerId", userId)
+                    }
+
+                    postsQuery.get()
                         .addOnSuccessListener { feedsSnapshot ->
                             var postsAdded = 0
                             feedsSnapshot.size()
@@ -90,7 +102,7 @@ class ProfileUtil {
                 callback(AllFeedsAdapter(context, postsList, false))
             }
     }
-    fun getUserFiles(context: Context, userId: String, forOtherUserProfile:Boolean = false, callback: (ProfileFilesAdapter) -> Unit){
+    fun getUserFiles(context: Context, userId: String, searchQuery: String = "", forOtherUserProfile:Boolean = false, callback: (ProfileFilesAdapter) -> Unit){
 
         val filesList:ArrayList<FileModel> = ArrayList()
 
@@ -104,12 +116,25 @@ class ProfileUtil {
         communityQuery.get().addOnSuccessListener { querySnapshot ->
                 var communitiesTraversed = 0
                 for (document in querySnapshot.documents) {
-                    FirebaseUtil().retrieveAllCommunityCollection()
-                        .document(document.id) // Access each post within a community
-                        .collection("files")
-                        .whereEqualTo("ownerId", userId)
-                        .whereEqualTo("forCompetition", false)
-                        .get()
+                    var filesQuery:Query
+
+                    if (searchQuery.isNotEmpty()){
+                        filesQuery =  FirebaseUtil().retrieveAllCommunityCollection()
+                            .document(document.id) // Access each file within a community
+                            .collection("files")
+                            .whereEqualTo("ownerId", userId)
+                            .whereEqualTo("forCompetition", false)
+                            .whereGreaterThanOrEqualTo("caption", searchQuery)
+                            .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+                    } else {
+                        filesQuery =  FirebaseUtil().retrieveAllCommunityCollection()
+                            .document(document.id) // Access each file within a community
+                            .collection("files")
+                            .whereEqualTo("ownerId", userId)
+                            .whereEqualTo("forCompetition", false)
+                    }
+
+                    filesQuery.get()
                         .addOnSuccessListener { feedsSnapshot ->
                             var filesAdded = 0
                             feedsSnapshot.size()
