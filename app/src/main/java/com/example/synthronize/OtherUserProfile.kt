@@ -125,9 +125,11 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                     if (!AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) && !userModel.userAccess.containsKey("Disabled")){
                         //displays the profile
                         AppUtil().showMoreAndLessWords(userModel.description, binding.userDescriptionTV, 50)
-                        binding.userNameTV.text = "@${userModel.username}"
                         binding.userDisplayNameTV.text = userModel.fullName
 
+                        if (userModel.username.isNotEmpty()){
+                            binding.userNameTV.text = "@${userModel.username}"
+                        }
                         if (userModel.birthday.isNotEmpty()){
                             binding.birthdayLayout.visibility = View.VISIBLE
                             binding.birthdayTV.text =  DateAndTimeUtil().formatDateFromMMDDYYYY(userModel.birthday)

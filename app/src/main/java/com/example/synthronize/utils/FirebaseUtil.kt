@@ -43,6 +43,9 @@ class FirebaseUtil {
     fun allUsersCollectionReference(): CollectionReference {
         return FirebaseFirestore.getInstance().collection("users")
     }
+    fun retrieveAllUserTypeRequests(): CollectionReference {
+        return FirebaseFirestore.getInstance().collection("account_type_requests")
+    }
 
 
     //For Chat Function
