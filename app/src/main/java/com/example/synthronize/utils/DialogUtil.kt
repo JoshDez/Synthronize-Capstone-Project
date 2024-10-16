@@ -2,12 +2,15 @@ package com.example.synthronize.utils
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.CreateCompetition
 import com.example.synthronize.CreateEvent
 import com.example.synthronize.CreatePost
@@ -16,8 +19,10 @@ import com.example.synthronize.CreateThread
 import com.example.synthronize.CreateUploadFile
 import com.example.synthronize.R
 import com.example.synthronize.adapters.ChatroomAdapter
+import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.DialogForwardContentBinding
+import com.example.synthronize.databinding.DialogListBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogReportBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
@@ -244,104 +249,115 @@ class DialogUtil: OnItemClickListener {
     fun openMenuDialog(context:Context, inflater: LayoutInflater, contentType:String, contentId:String, contentOwnerId:String,
                        communityId:String, extraId:String = "", closeCurrentActivity: (Boolean) -> Unit){
 
-        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-            val communityModel = it.toObject(CommunityModel::class.java)!!
-            val menuDialogBinding = DialogMenuBinding.inflate(inflater)
-            val menuDialog = DialogPlus.newDialog(context)
-                .setContentHolder(ViewHolder(menuDialogBinding.root))
-                .setCancelable(true)
-                .setExpanded(false)
-                .setMargin(100,0,100,0)
-                .setBackgroundColorResId(R.color.transparent)
-                .setGravity(Gravity.CENTER)
-                .create()
+        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {currentUser ->
+            if (currentUser.result.exists()){
+                val userModel = currentUser.result.toObject(UserModel::class.java)!!
 
-            if (contentOwnerId == FirebaseUtil().currentUserUid() ||
-                AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), FirebaseUtil().currentUserUid())){
-                //displays delete post option if the user is the owner or admin of the community
-                menuDialogBinding.option1.visibility = View.VISIBLE
-                menuDialogBinding.optiontitle1.text = "Delete $contentType"
-                menuDialogBinding.optiontitle1.setOnClickListener {
-                    menuDialog.dismiss()
-                    Handler().postDelayed({
-                        val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
-                        val warningDialog = DialogPlus.newDialog(context)
-                            .setContentHolder(ViewHolder(warningDialogBinding.root))
-                            .setCancelable(true)
-                            .setBackgroundColorResId(R.color.transparent)
-                            .setGravity(Gravity.CENTER)
-                            .create()
+                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                    val communityModel = it.toObject(CommunityModel::class.java)!!
+                    val menuDialogBinding = DialogMenuBinding.inflate(inflater)
+                    val menuDialog = DialogPlus.newDialog(context)
+                        .setContentHolder(ViewHolder(menuDialogBinding.root))
+                        .setCancelable(true)
+                        .setExpanded(false)
+                        .setMargin(100,0,100,0)
+                        .setBackgroundColorResId(R.color.transparent)
+                        .setGravity(Gravity.CENTER)
+                        .create()
 
-                        warningDialogBinding.titleTV.text = "Delete $contentType"
-                        warningDialogBinding.messageTV.text = "Do you want to delete this ${contentType.lowercase()}?"
-                        warningDialogBinding.yesBtn.setOnClickListener {
-                            deleteContent(contentType, contentId, communityId, extraId)
-                            warningDialog.dismiss()
-                            closeCurrentActivity(true)
+                    if (contentOwnerId == FirebaseUtil().currentUserUid() ||
+                        AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), FirebaseUtil().currentUserUid()) ||
+                        userModel.userType == "AppAdmin"){
+
+                        //displays delete post option if the user is the owner or admin of the community
+                        menuDialogBinding.option1.visibility = View.VISIBLE
+                        menuDialogBinding.optiontitle1.text = "Delete $contentType"
+                        menuDialogBinding.optiontitle1.setOnClickListener {
+                            menuDialog.dismiss()
+                            Handler().postDelayed({
+                                val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
+                                val warningDialog = DialogPlus.newDialog(context)
+                                    .setContentHolder(ViewHolder(warningDialogBinding.root))
+                                    .setCancelable(true)
+                                    .setBackgroundColorResId(R.color.transparent)
+                                    .setGravity(Gravity.CENTER)
+                                    .create()
+
+                                warningDialogBinding.titleTV.text = "Delete $contentType"
+                                warningDialogBinding.messageTV.text = "Do you want to delete this ${contentType.lowercase()}?"
+                                warningDialogBinding.yesBtn.setOnClickListener {
+                                    deleteContent(contentType, contentId, communityId, extraId)
+                                    warningDialog.dismiss()
+                                    closeCurrentActivity(true)
+                                }
+                                warningDialogBinding.NoBtn.setOnClickListener {
+                                    warningDialog.dismiss()
+                                    closeCurrentActivity(false)
+                                }
+
+                                warningDialog.show()
+
+                            }, 500)
                         }
-                        warningDialogBinding.NoBtn.setOnClickListener {
-                            warningDialog.dismiss()
+                    } else if (AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), FirebaseUtil().currentUserUid())){
+                        //displays delete post option if the user is the owner or admin of the community
+                        menuDialogBinding.option1.visibility = View.VISIBLE
+                        menuDialogBinding.optiontitle1.text = "Delete $contentType"
+                        menuDialogBinding.optiontitle1.setOnClickListener {
+                            menuDialog.dismiss()
+                            Handler().postDelayed({
+                                val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
+                                val warningDialog = DialogPlus.newDialog(context)
+                                    .setContentHolder(ViewHolder(warningDialogBinding.root))
+                                    .setCancelable(true)
+                                    .setBackgroundColorResId(R.color.transparent)
+                                    .setGravity(Gravity.CENTER)
+                                    .create()
+
+                                warningDialogBinding.titleTV.text = "Delete $contentType"
+                                warningDialogBinding.messageTV.text = "Do you want to delete this ${contentType.lowercase()}?"
+                                warningDialogBinding.yesBtn.setOnClickListener {
+                                    deleteContent(contentType, contentId, communityId, extraId)
+                                    warningDialog.dismiss()
+                                    closeCurrentActivity(true)
+                                }
+                                warningDialogBinding.NoBtn.setOnClickListener {
+                                    warningDialog.dismiss()
+                                    closeCurrentActivity(false)
+                                }
+
+                                warningDialog.show()
+
+                            }, 500)
+                        }
+                    } else {
+                        menuDialogBinding.option1.visibility = View.VISIBLE
+                        menuDialogBinding.optiontitle1.text = "Report $contentType"
+                        menuDialogBinding.optiontitle1.setOnClickListener {
                             closeCurrentActivity(false)
+                            menuDialog.dismiss()
+                            Handler().postDelayed({
+                                DialogUtil().openReportDialog(context, inflater, contentType, contentId, communityId)
+                            }, 500)
                         }
+                    }
 
-                        warningDialog.show()
-
-                    }, 500)
-                }
-
-                //displays edit post option if the user is the owner or admin of the community
-                menuDialogBinding.option2.visibility = View.VISIBLE
-                menuDialogBinding.optiontitle2.text = "Edit $contentType"
-                menuDialogBinding.optiontitle2.setOnClickListener {
-                    menuDialog.dismiss()
-                    closeCurrentActivity(true)
-                    Handler().postDelayed({
-                        editContent(context, contentType, contentId, communityId, extraId)
-                    }, 500)
-                }
-            } else if (AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), FirebaseUtil().currentUserUid())){
-                //displays delete post option if the user is the owner or admin of the community
-                menuDialogBinding.option1.visibility = View.VISIBLE
-                menuDialogBinding.optiontitle1.text = "Delete $contentType"
-                menuDialogBinding.optiontitle1.setOnClickListener {
-                    menuDialog.dismiss()
-                    Handler().postDelayed({
-                        val warningDialogBinding = DialogWarningMessageBinding.inflate(inflater)
-                        val warningDialog = DialogPlus.newDialog(context)
-                            .setContentHolder(ViewHolder(warningDialogBinding.root))
-                            .setCancelable(true)
-                            .setBackgroundColorResId(R.color.transparent)
-                            .setGravity(Gravity.CENTER)
-                            .create()
-
-                        warningDialogBinding.titleTV.text = "Delete $contentType"
-                        warningDialogBinding.messageTV.text = "Do you want to delete this ${contentType.lowercase()}?"
-                        warningDialogBinding.yesBtn.setOnClickListener {
-                            deleteContent(contentType, contentId, communityId, extraId)
-                            warningDialog.dismiss()
+                    if (contentOwnerId == FirebaseUtil().currentUserUid()){
+                        //displays edit post option if the user is the owner
+                        menuDialogBinding.option2.visibility = View.VISIBLE
+                        menuDialogBinding.optiontitle2.text = "Edit $contentType"
+                        menuDialogBinding.optiontitle2.setOnClickListener {
+                            menuDialog.dismiss()
                             closeCurrentActivity(true)
+                            Handler().postDelayed({
+                                editContent(context, contentType, contentId, communityId, extraId)
+                            }, 500)
                         }
-                        warningDialogBinding.NoBtn.setOnClickListener {
-                            warningDialog.dismiss()
-                            closeCurrentActivity(false)
-                        }
+                    }
 
-                        warningDialog.show()
-
-                    }, 500)
-                }
-            } else {
-                menuDialogBinding.option1.visibility = View.VISIBLE
-                menuDialogBinding.optiontitle1.text = "Report $contentType"
-                menuDialogBinding.optiontitle1.setOnClickListener {
-                    closeCurrentActivity(false)
-                    menuDialog.dismiss()
-                    Handler().postDelayed({
-                        DialogUtil().openReportDialog(context, inflater, contentType, contentId, communityId)
-                    }, 500)
+                    menuDialog.show()
                 }
             }
-            menuDialog.show()
         }
     }
 
@@ -546,9 +562,6 @@ class DialogUtil: OnItemClickListener {
         dialogPlusBinding.communityNameTV.text = communityModel.communityName
         AppUtil().showMoreAndLessWords(communityModel.communityDescription, dialogPlusBinding.communityDescriptionTV, 50)
         dialogPlusBinding.totalMembersCountTV.text = "${communityModel.communityMembers.size}"
-        getFriendsJoinedCount(communityModel.communityMembers.keys.toList()){count->
-            dialogPlusBinding.friendsJoinedCountTV.text = count.toString()
-        }
         dialogPlusBinding.createdDateTV.text =  DateAndTimeUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)
         AppUtil().setCommunityProfilePic(context, communityModel.communityId, dialogPlusBinding.communityProfileCIV)
         AppUtil().setCommunityBannerPic(context, communityModel.communityId, dialogPlusBinding.communityBannerIV)
@@ -557,22 +570,6 @@ class DialogUtil: OnItemClickListener {
         Handler().postDelayed({
             dialogPlus.show()
         }, 500)
-    }
-
-    private fun getFriendsJoinedCount(membersList: List<String>, callback: (Int) -> Unit) {
-        var count = 0
-        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
-            val userModel = it.toObject(UserModel::class.java)!!
-            for (friend in userModel.friendsList){
-                if (AppUtil().isIdOnList(membersList, friend)){
-                    count += 1
-                }
-            }
-            callback(count)
-        }.addOnFailureListener {
-            callback(count)
-        }
-
     }
 
     override fun onItemClick(id: String, isChecked: Boolean) {}

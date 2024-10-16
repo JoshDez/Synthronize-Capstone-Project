@@ -484,7 +484,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     }
 
     private fun generateRandomCode(): String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9') + listOf('_', '-', '@', '#', '$', '%', '^', '&')
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
         return (1..10)
             .map { allowedChars.random() }
             .joinToString("")

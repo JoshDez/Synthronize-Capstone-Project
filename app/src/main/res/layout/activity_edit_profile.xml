@@ -60,7 +60,7 @@
             <FrameLayout
                 android:layout_below="@id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="250dp">
+                android:layout_height="220dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                     <ImageView
                         android:id="@+id/userCoverIV"
                         android:layout_width="match_parent"
-                        android:layout_height="170dp"
+                        android:layout_height="160dp"
                         android:src="@color/black"/>
                 </RelativeLayout>
 
@@ -79,8 +79,10 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/userProfileCIV"
-                        android:layout_width="130dp"
-                        android:layout_height="130dp"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        app:civ_border_width="2dp"
+                        app:civ_border_color="@color/white"
                         android:layout_centerInParent="true"
                         android:layout_alignParentBottom="true"
                         android:src="@drawable/user_default_profile"/>

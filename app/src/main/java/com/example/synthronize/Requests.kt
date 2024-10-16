@@ -24,8 +24,6 @@ class Requests : AppCompatActivity(), OnItemClickListener {
         binding = ActivityRequestsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //TODO other uses for this request activity is to be implemented
-
         binding.toolbarTitleTV.text = "Join Requests"
 
         binding.backBtn.setOnClickListener {
@@ -66,8 +64,11 @@ class Requests : AppCompatActivity(), OnItemClickListener {
     override fun onItemClick(id: String, isChecked: Boolean) {
         //Accepts or Rejects user
         if (isChecked){
+            val updatedMap = hashMapOf<String, Any>(
+                "communityMembers.$id" to "Member"
+            )
             //accepts user
-            FirebaseUtil().retrieveCommunityDocument(communityId).update("communityMembers", FieldValue.arrayUnion(id)).addOnSuccessListener {
+            FirebaseUtil().retrieveCommunityDocument(communityId).update(updatedMap).addOnSuccessListener {
                 FirebaseUtil().retrieveCommunityDocument(communityId).update("joinRequestList", FieldValue.arrayRemove(id)).addOnSuccessListener {
                     Toast.makeText(this, "User Accepted", Toast.LENGTH_SHORT).show()
 

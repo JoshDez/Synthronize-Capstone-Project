@@ -11,7 +11,7 @@
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/dark_teal"
+        android:background="@color/darker_teal"
         android:padding="10dp">
 
         <ImageButton
@@ -28,10 +28,10 @@
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider1"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:layout_below="@id/headerLayout"
         android:background="@color/light_teal"
-        app:dividerColor="@color/teal2" />
+        app:dividerColor="@color/light_teal" />
 
     <ScrollView
         android:layout_width="match_parent"

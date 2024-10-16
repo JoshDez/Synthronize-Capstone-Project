@@ -121,72 +121,80 @@ class ContentUtil {
 
     //checks the post availability
     fun verifyCommunityContentAvailability(ownerId:String, communityId:String, callback: (Boolean) -> Unit){
-        FirebaseUtil().targetUserDetails(ownerId).get().addOnSuccessListener {user ->
-            val userModel = user.toObject(UserModel::class.java)!!
+        if (ownerId.isEmpty() || communityId.isEmpty()){
+            callback(false)
+        } else {
+            FirebaseUtil().targetUserDetails(ownerId).get().addOnSuccessListener {user ->
+                val userModel = user.toObject(UserModel::class.java)!!
 
-            FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community ->
-                val communityModel = community.toObject(CommunityModel::class.java)!!
+                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community ->
+                    val communityModel = community.toObject(CommunityModel::class.java)!!
 
-                //if the user is not banned from community and not blocked by the post owner
-                if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid()) &&
-                    !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) &&
-                    !userModel.userAccess.containsKey("Disabled")){
+                    //if the user is not banned from community and not blocked by the post owner
+                    if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid()) &&
+                        !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) &&
+                        !userModel.userAccess.containsKey("Disabled")){
 
-                    if (communityModel.communityType == "Private"){
-                        //post is from private community
-                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys.toList(), FirebaseUtil().currentUserUid())){
-                            //The user belongs to the private community
-                            callback(true)
+                        if (communityModel.communityType == "Private"){
+                            //post is from private community
+                            if (AppUtil().isIdOnList(communityModel.communityMembers.keys.toList(), FirebaseUtil().currentUserUid())){
+                                //The user belongs to the private community
+                                callback(true)
+                            } else {
+                                callback(false)
+                            }
                         } else {
-                            callback(false)
+                            //post is from public community
+                            callback(true)
                         }
                     } else {
-                        //post is from public community
-                        callback(true)
+                        callback(false)
                     }
-                } else {
+                }.addOnFailureListener {
                     callback(false)
                 }
             }.addOnFailureListener {
                 callback(false)
             }
-        }.addOnFailureListener {
-            callback(false)
         }
     }
 
-    fun verifyThreadAvailability(postModel: ForumModel, callback: (Boolean) -> Unit){
-        FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {user ->
-            val userModel = user.toObject(UserModel::class.java)!!
+    fun verifyThreadAvailability(forumModel: ForumModel, callback: (Boolean) -> Unit){
+        if (forumModel.ownerId.isEmpty() || forumModel.communityId.isEmpty()){
+            callback(false)
+        } else {
+            FirebaseUtil().targetUserDetails(forumModel.ownerId).get().addOnSuccessListener {user ->
+                val userModel = user.toObject(UserModel::class.java)!!
 
-            FirebaseUtil().retrieveCommunityDocument(postModel.communityId).get().addOnSuccessListener {community ->
-                val communityModel = community.toObject(CommunityModel::class.java)!!
+                FirebaseUtil().retrieveCommunityDocument(forumModel.communityId).get().addOnSuccessListener {community ->
+                    val communityModel = community.toObject(CommunityModel::class.java)!!
 
-                //if the user is not banned from community and not blocked by the post owner
-                if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid()) &&
-                    !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) &&
-                    !userModel.userAccess.containsKey("Disabled")){
+                    //if the user is not banned from community and not blocked by the post owner
+                    if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid()) &&
+                        !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) &&
+                        !userModel.userAccess.containsKey("Disabled")){
 
-                    if (communityModel.communityType == "Private"){
-                        //post is from private community
-                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys.toList(), FirebaseUtil().currentUserUid())){
-                            //The user belongs to the private community
-                            callback(true)
+                        if (communityModel.communityType == "Private"){
+                            //post is from private community
+                            if (AppUtil().isIdOnList(communityModel.communityMembers.keys.toList(), FirebaseUtil().currentUserUid())){
+                                //The user belongs to the private community
+                                callback(true)
+                            } else {
+                                callback(false)
+                            }
                         } else {
-                            callback(false)
+                            //post is from public community
+                            callback(true)
                         }
                     } else {
-                        //post is from public community
-                        callback(true)
+                        callback(false)
                     }
-                } else {
+                }.addOnFailureListener {
                     callback(false)
                 }
             }.addOnFailureListener {
                 callback(false)
             }
-        }.addOnFailureListener {
-            callback(false)
         }
     }
 

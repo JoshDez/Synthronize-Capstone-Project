@@ -29,14 +29,16 @@
                     <ImageView
                         android:id="@+id/communityBannerIV"
                         android:layout_width="match_parent"
-                        android:layout_height="180dp"
+                        android:layout_height="160dp"
                         android:src="@color/black" />
 
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/communityProfileCIV"
-                        android:layout_width="130dp"
-                        android:layout_height="130dp"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        app:civ_border_width="2dp"
+                        app:civ_border_color="@color/white"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="20dp"
@@ -68,38 +70,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp">
 
-                <LinearLayout
-                    android:id="@+id/friendsJoinedContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="20dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/friendsJoinedCountTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textColor="@color/light_teal"
-                        android:textStyle="bold"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/friendsJoinedTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Friends Joined"
-                        android:textAlignment="center"
-                        android:textColor="@color/light_teal"
-                        android:textSize="14sp" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/totalMembersContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -128,13 +104,15 @@
                 android:id="@+id/communityDescriptionTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="#00FFFFFF"
                 android:contentDescription="@string/user_description"
                 android:drawableTint="#00FFFFFF"
+                android:autoLink="web"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="15sp" />
+                android:textSize="12sp" />
 
 
             <RelativeLayout
