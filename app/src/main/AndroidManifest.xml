@@ -27,6 +27,9 @@
             android:name=".CommunityRules"
             android:exported="false" />
         <activity
+            android:name=".AccountManagement"
+            android:exported="false" />
+        <activity
             android:name=".ViewFile"
             android:exported="false" />
         <activity

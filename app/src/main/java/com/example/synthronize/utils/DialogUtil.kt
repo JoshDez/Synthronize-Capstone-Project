@@ -30,6 +30,10 @@ import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.CompetitionModel
+import com.example.synthronize.model.DeletedEventsModel
+import com.example.synthronize.model.DeletedForumsModel
+import com.example.synthronize.model.DeletedPostModel
+import com.example.synthronize.model.DeletedProductModel
 import com.example.synthronize.model.EventModel
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.ForumModel
@@ -413,12 +417,27 @@ class DialogUtil: OnItemClickListener {
     private fun deleteContent(contentType:String, contentId:String, communityId:String, extraId: String = ""){
         when(contentType){
             "Post" -> {
-                FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(contentId).get().addOnSuccessListener {
-                    val postModel = it.toObject(PostModel::class.java)!!
-                    //Deletes media
-                    deleteMediaOrFile(postModel.contentList)
-                    //Deletes Post
-                    FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(contentId).delete()
+                FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(contentId).get().addOnSuccessListener { documentSnapshot ->
+                    val postModel = documentSnapshot.toObject(PostModel::class.java)!!
+
+                    // Create a new instance of DeletedPostModel
+                    val deletedPostModel = DeletedPostModel(
+                        postId = postModel.postId,
+                        communityId = postModel.communityId,
+                        ownerId = postModel.ownerId,
+                        sendPostList = postModel.sendPostList,
+                        loveList = postModel.loveList,
+                        contentList = postModel.contentList,
+                        caption = postModel.caption,
+                        createdTimestamp = postModel.createdTimestamp,
+                        archivedTimestamp = Timestamp.now() // set the current timestamp for archival
+                    )
+
+                    // Archive the post to the "deleted posts" collection
+                    FirebaseUtil().retrieveDeletedPostsCollection(communityId).document(contentId).set(deletedPostModel).addOnSuccessListener {
+                        // Deletes the original post after archiving
+                        FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(contentId).delete()
+                    }
                 }
             }
             "Competition" -> {
@@ -460,12 +479,28 @@ class DialogUtil: OnItemClickListener {
                 }
             }
             "Product" -> {
-                FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(contentId).get().addOnSuccessListener {
-                    val productModel = it.toObject(ProductModel::class.java)!!
-                    //Deletes File from firebase storage
-                    deleteMediaOrFile(productModel.imageList)
-                    //Deletes file model from firestore database
-                    FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(contentId).delete()
+                FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(contentId).get().addOnSuccessListener { documentSnapshot ->
+                    val productModel = documentSnapshot.toObject(ProductModel::class.java)!!
+
+                    // Create a new instance of DeletedProductModel
+                    val deletedProductModel = DeletedProductModel(
+                        productId = productModel.productId,
+                        productName = productModel.productName,
+                        productDesc = productModel.productDesc,
+                        communityId = productModel.communityId,
+                        price = productModel.price,
+                        imageList = productModel.imageList,
+                        available = productModel.available,
+                        ownerId = productModel.ownerId,
+                        createdTimestamp = productModel.createdTimestamp,
+                        archivedTimestamp = Timestamp.now() // set the current timestamp for archival
+                    )
+
+                    // Archive the product to the "deleted Products" collection
+                    FirebaseUtil().retrieveDeletedProductsCollection(communityId).document(contentId).set(deletedProductModel).addOnSuccessListener {
+                        // Deletes the original product after archiving
+                        FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(contentId).delete()
+                    }
                 }
             }
             "File" -> {
@@ -504,21 +539,53 @@ class DialogUtil: OnItemClickListener {
                 }
             }
             "Forum" -> {
-                FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).get().addOnSuccessListener {
-                    val forumModel = it.toObject(ForumModel::class.java)!!
-                    //Deletes media
-                    deleteMediaOrFile(forumModel.contentList)
-                    //Deletes Post
-                    FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).delete()
+                FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).get().addOnSuccessListener { documentSnapshot ->
+                    val forumModel = documentSnapshot.toObject(ForumModel::class.java)!!
+
+                    // Create a new instance of DeletedForumsModel
+                    val deletedForumsModel = DeletedForumsModel(
+                        forumId = forumModel.forumId,
+                        communityId = forumModel.communityId,
+                        ownerId = forumModel.ownerId,
+                        upvoteList = forumModel.upvoteList,
+                        downvoteList = forumModel.downvoteList,
+                        contentList = forumModel.contentList,
+                        caption = forumModel.caption,
+                        createdTimestamp = forumModel.createdTimestamp,
+                        archivedTimestamp = Timestamp.now() // set the current timestamp for archival
+                    )
+
+                    // Archive the forum to the "deleted Forums" collection
+                    FirebaseUtil().retrieveDeletedForumsCollection(communityId).document(contentId).set(deletedForumsModel).addOnSuccessListener {
+                        // Deletes the original forum after archiving
+                        FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).delete()
+                    }
                 }
             }
             "Event" -> {
-                FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(contentId).get().addOnSuccessListener {
-                    val eventModel = it.toObject(EventModel::class.java)!!
-                    //Deletes media
-                    deleteMediaOrFile(listOf(eventModel.eventName))
-                    //Deletes Event
-                    FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(contentId).delete()
+                FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(contentId).get().addOnSuccessListener { documentSnapshot ->
+                    val eventModel = documentSnapshot.toObject(EventModel::class.java)!!
+
+                    // Create a new instance of DeletedEventModel
+                    val deletedEventModel = DeletedEventsModel(
+                        eventId = eventModel.eventId,
+                        eventName = eventModel.eventName,
+                        eventDesc = eventModel.eventDesc,
+                        eventLocation = eventModel.eventLocation,
+                        eventOwnerId = eventModel.eventOwnerId,
+                        eventImageName = eventModel.eventImageName,
+                        eventParticipants = eventModel.eventParticipants,
+                        eventDate = eventModel.eventDate,
+                        communityId = eventModel.communityId,
+                        createdTimestamp = eventModel.createdTimestamp,
+                        archivedTimestamp = Timestamp.now() // set the current timestamp for archival
+                    )
+
+                    // Archive the event to the "deleted Events" collection
+                    FirebaseUtil().retrieveDeletedEventsCollection(communityId).document(contentId).set(deletedEventModel).addOnSuccessListener {
+                        // Deletes the original event after archiving
+                        FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(contentId).delete()
+                    }
                 }
             }
         }

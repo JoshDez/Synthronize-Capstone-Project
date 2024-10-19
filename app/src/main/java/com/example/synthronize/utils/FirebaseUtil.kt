@@ -194,4 +194,20 @@ class FirebaseUtil {
             callback(false)
         }
     }
+
+    fun retrieveDeletedPostsCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("deleted post")
+    }
+
+    fun retrieveDeletedEventsCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection(" deleted events")
+    }
+
+    fun retrieveDeletedForumsCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("deleted forums")
+    }
+
+    fun retrieveDeletedProductsCollection(communityId: String):CollectionReference{
+        return retrieveCommunityDocument(communityId).collection("deleted products")
+    }
 }

@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/darker_teal"
-    tools:context=".AppSettings">
-
+    tools:context=".AccountManagement">
 
     <RelativeLayout
         android:id="@+id/mainToolbar"
@@ -37,7 +36,7 @@
                 android:layout_marginStart="10dp"
                 android:textSize="25dp"
                 android:textColor="@color/light_teal"
-                android:text="Settings"/>
+                android:text="Account Management"/>
         </LinearLayout>
 
     </RelativeLayout>
@@ -56,7 +55,7 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/reportsFiledBtn"
+            android:id="@+id/changePasswordBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -65,12 +64,12 @@
             android:backgroundTint="@color/dark_teal"
             android:gravity="start"
             android:padding="20dp"
-            android:text="Reports Filed"
+            android:text="Change Password"
             android:textColor="@color/light_teal"
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/accounts"
+            android:id="@+id/deactivateAccountBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -79,37 +78,10 @@
             android:backgroundTint="@color/dark_teal"
             android:gravity="start"
             android:padding="20dp"
-            android:text="Account Management"
+            android:text="Deactivate Account"
             android:textColor="@color/light_teal"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/privacy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/dark_teal"
-            android:gravity="start"
-            android:padding="20dp"
-            android:text="Privacy Policy"
-            android:textColor="@color/light_teal"
-            android:textSize="20sp" />
-
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/dark_teal"
-            android:gravity="start"
-            android:padding="20dp"
-            android:text="Log Out"
-            android:textColor="@color/light_teal"
-            android:textSize="20sp" />
     </LinearLayout>
 
 </RelativeLayout>
