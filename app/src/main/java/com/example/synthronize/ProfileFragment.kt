@@ -79,20 +79,25 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     private fun navigate(tab: String, toRefresh:Boolean = false) {
         val unselectedColor = ContextCompat.getColor(context, R.color.less_saturated_light_teal)
         val selectedColor = ContextCompat.getColor(context, R.color.light_teal)
+
         binding.postsBtn.setTextColor(unselectedColor)
+        binding.postsBtn.textSize = 14f
         binding.filesBtn.setTextColor(unselectedColor)
+        binding.filesBtn.textSize = 14f
         binding.postsRV.visibility = View.GONE
         binding.filesRV.visibility = View.GONE
 
         if (tab == "posts"){
             binding.postsBtn.setTextColor(selectedColor)
             binding.postsRV.visibility = View.VISIBLE
+            binding.postsBtn.textSize = 16f
             currentTab = "posts"
             if (toRefresh)
                 setupPostsRV()
         }else if (tab == "files"){
             binding.filesBtn.setTextColor(selectedColor)
             binding.filesRV.visibility = View.VISIBLE
+            binding.filesBtn.textSize = 16f
             currentTab = "files"
             if (toRefresh)
                 setupFilesRV()

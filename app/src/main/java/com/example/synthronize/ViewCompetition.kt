@@ -213,18 +213,23 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
         binding.submissionsRV.visibility = View.GONE
         binding.resultsRV.visibility = View.GONE
         binding.instructionsBtn.setTextColor(unselectedColor)
+        binding.instructionsBtn.textSize = 13f
         binding.submissionsBtn.setTextColor(unselectedColor)
+        binding.submissionsBtn.textSize = 13f
         binding.resultBtn.setTextColor(unselectedColor)
+        binding.resultBtn.textSize = 13f
 
         if (tab == "instructions"){
             binding.instructionsRV.visibility = View.VISIBLE
             binding.instructionsBtn.setTextColor(selectedColor)
+            binding.instructionsBtn.textSize = 14f
             currentTab = "instructions"
             if (!::instructionsAdapter.isInitialized)
                 setupInstructions(competitionModel.instruction)
         } else if (tab == "submissions") {
             binding.submissionsRV.visibility = View.VISIBLE
             binding.submissionsBtn.setTextColor(selectedColor)
+            binding.submissionsBtn.textSize = 14f
             currentTab = "submissions"
             if (!::submissionsAdapter.isInitialized)
                 setupSubmissions(competitionModel.contestants)
@@ -232,6 +237,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             binding.resultsTypeTV.visibility = View.VISIBLE
             binding.resultsRV.visibility = View.VISIBLE
             binding.resultBtn.setTextColor(selectedColor)
+            binding.resultBtn.textSize = 14f
             currentTab = "results"
             if (!::submissionsAdapter.isInitialized)
                 setupResults()

@@ -2,6 +2,8 @@ package com.example.synthronize
 
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -10,12 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.ReportsAdapter
 import com.example.synthronize.databinding.ActivityCommunityReportsBinding
+import com.example.synthronize.databinding.DialogListBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.ReportModel
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 //Reports activity for admin and moderator within a community and users outside the community
 class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
@@ -41,14 +46,10 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
         if (isPersonalReport){
             //Personal reports made by a member of the community
             binding.toolbarTitleTV.text = "Reports Filed"
-            binding.navigationLayout.visibility = View.GONE
-            binding.divider2.visibility = View.GONE
+            binding.communityButtons.visibility = View.GONE
             navigate("personal")
 
         } else {
-            //For Moderator And Admin
-            navigate("feeds")
-
             binding.feedsBtn.setOnClickListener {
                 navigate("feeds")
             }
@@ -73,57 +74,60 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
             onBackPressed()
         }
     }
+    
 
 
     private fun navigate(tab:String){
-        val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_teal)
-        val selectedColor = ContextCompat.getColor(this, R.color.light_teal)
-        binding.feedsBtn.setTextColor(unselectedColor)
-        binding.eventsBtn.setTextColor(unselectedColor)
-        binding.forumsBtn.setTextColor(unselectedColor)
-        binding.marketBtn.setTextColor(unselectedColor)
-        binding.competitionsBtn.setTextColor(unselectedColor)
-        binding.filesBtn.setTextColor(unselectedColor)
-
-
+        binding.reportsRV.visibility = View.GONE
         if (tab == "feeds"){
-            setupCommunityReport("Post")
-            binding.feedsBtn.setTextColor(selectedColor)
+            openListDialog("Post")
             currentTab = "feeds"
 
         } else if (tab == "events") {
-            setupCommunityReport("Event")
-            binding.eventsBtn.setTextColor(selectedColor)
+            openListDialog("Event")
             currentTab = "events"
 
         }  else if (tab == "forums") {
-            setupCommunityReport("Forum")
-            binding.forumsBtn.setTextColor(selectedColor)
+            openListDialog("Forum")
             currentTab = "forums"
 
         } else if (tab == "market") {
-            setupCommunityReport("Product")
-            binding.marketBtn.setTextColor(selectedColor)
+            openListDialog("Product")
             currentTab = "market"
 
         } else if (tab == "competitions") {
-            setupCommunityReport("Competition")
-            binding.competitionsBtn.setTextColor(selectedColor)
+            openListDialog("Competition")
             currentTab = "competitions"
 
         }  else if (tab == "files") {
-            setupCommunityReport("File")
-            binding.filesBtn.setTextColor(selectedColor)
+            openListDialog("File")
             currentTab = "files"
 
         } else if (tab == "personal") {
+            binding.reportsRV.visibility = View.VISIBLE
             setupPersonalReport()
             currentTab = "personal"
         }
     }
 
-    private fun setupCommunityReport(reportType:String){
-        binding.reportsRefreshLayout.isRefreshing = true
+    private fun openListDialog(reportType:String){
+        
+        val reportsBinding = DialogListBinding.inflate(layoutInflater)
+        val reportsDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(reportsBinding.root))
+            .create()
+
+        reportsBinding.searchContainerLL.visibility = View.GONE
+        reportsBinding.toolbarTitleTV.text = "${reportType}s"
+
+
+
+        reportsBinding.backBtn.setOnClickListener {
+            reportsDialog.dismiss()
+            if (::reportsAdapter.isInitialized)
+                reportsAdapter.stopListening()
+        }
+        
         val query = FirebaseUtil().retrieveCommunityReportsCollection(communityId)
             .whereEqualTo("reportType", reportType)
             .whereEqualTo("reviewed", false)
@@ -144,10 +148,12 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
         val options: FirestoreRecyclerOptions<ReportModel> =
             FirestoreRecyclerOptions.Builder<ReportModel>().setQuery(query, ReportModel::class.java).build()
 
-        binding.reportsRV.layoutManager = LinearLayoutManager(this)
+        reportsBinding.listRV.layoutManager = LinearLayoutManager(this)
         reportsAdapter = ReportsAdapter(this, options, false, communityId)
-        binding.reportsRV.adapter = reportsAdapter
+        reportsBinding.listRV.adapter = reportsAdapter
         reportsAdapter.startListening()
+
+        reportsDialog.show()
 
     }
 
@@ -187,6 +193,17 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
             val query = FirebaseUtil().retrieveCommunityReportsCollection(communityId)
                 .whereEqualTo("ownerId", FirebaseUtil().currentUserUid())
                 .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+            // Add a listener to handle success or failure of the query
+            query.addSnapshotListener { _, e ->
+                if (e != null) {
+                    // Handle the error here (e.g., log the error or show a message to the user)
+                    Log.e("Firestore Error", "Error while fetching data", e)
+                    return@addSnapshotListener
+                } else {
+                    binding.reportsRefreshLayout.isRefreshing = false
+                }
+            }
 
             val options: FirestoreRecyclerOptions<ReportModel> =
                 FirestoreRecyclerOptions.Builder<ReportModel>().setQuery(query, ReportModel::class.java).build()

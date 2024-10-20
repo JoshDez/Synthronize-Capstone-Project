@@ -135,89 +135,95 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <com.google.android.material.divider.MaterialDivider
-                        android:id="@+id/divider3"
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_below="@id/mainToolbar"
-                        android:background="@color/light_teal"
-                        app:dividerColor="@color/light_teal" />
 
-
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/addMembersBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/dark_teal"
                         android:text="Add Members"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/dark_teal"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/viewMembersBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/dark_teal"
                         android:text="View Members"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/dark_teal"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/viewProfileBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/dark_teal"
                         android:text="View Profile"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/dark_teal"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/editChatroomDetailsBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/dark_teal"
                         android:text="Edit Chatroom Details"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/dark_teal"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/muteUnMuteBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/dark_teal"
                         android:text="Mute"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/dark_teal"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/leaveConversationBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/darkish_red"
                         android:text="Leave Conversation"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/darkish_red"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/deleteTextChannelBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/darkish_red"
                         android:text="Delete Text Channel"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/darkish_red"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:visibility="gone" />

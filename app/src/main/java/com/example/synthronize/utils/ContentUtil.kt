@@ -1,5 +1,6 @@
 package com.example.synthronize.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -21,7 +22,6 @@ import com.example.synthronize.model.UserModel
 class ContentUtil {
     //FOR FEED
     fun getImageView(context: Context, filename:String): ImageView{
-
         //creates image view
         val imageView = ImageView(context)
         val imageDpToPx = TypedValueCompat.dpToPx(400F, context.resources.displayMetrics)
@@ -94,19 +94,23 @@ class ContentUtil {
         var postContentType = splitFileName[1]
 
         if (postContentType == "Image"){
-            GlideApp.with(context)
-                //storage reference
-                .load(FirebaseUtil().retrieveCommunityContentImageRef(filename))
-                .error(R.drawable.baseline_image_24)
-                //image view
-                .into(imageView)
+            if (context != null && context is Activity && !context.isFinishing && !context.isDestroyed){
+                GlideApp.with(context)
+                    //storage reference
+                    .load(FirebaseUtil().retrieveCommunityContentImageRef(filename))
+                    .error(R.drawable.baseline_image_24)
+                    //image view
+                    .into(imageView)
+            }
         } else if (postContentType == "Video"){
-            GlideApp.with(context)
-                //storage reference
-                .load(FirebaseUtil().retrieveCommunityContentVideoRef(filename))
-                .error(R.drawable.baseline_image_24)
-                //image view
-                .into(imageView)
+            if (context != null && context is Activity && !context.isFinishing && !context.isDestroyed){
+                GlideApp.with(context)
+                    //storage reference
+                    .load(FirebaseUtil().retrieveCommunityContentVideoRef(filename))
+                    .error(R.drawable.baseline_image_24)
+                    //image view
+                    .into(imageView)
+            }
         }
 
     }

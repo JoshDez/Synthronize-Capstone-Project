@@ -29,7 +29,7 @@
                     <ImageView
                         android:id="@+id/communityBannerIV"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp"
+                        android:layout_height="170dp"
                         android:src="@color/black" />
 
 

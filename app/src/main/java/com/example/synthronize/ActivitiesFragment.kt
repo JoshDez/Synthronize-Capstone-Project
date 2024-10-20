@@ -126,8 +126,11 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         val unselectedColor = ContextCompat.getColor(context, R.color.less_saturated_light_teal)
         val selectedColor = ContextCompat.getColor(context, R.color.light_teal)
         binding.competitionBtn.setTextColor(unselectedColor)
+        binding.competitionBtn.textSize = 13f
         binding.resourcesBtn.setTextColor(unselectedColor)
+        binding.resourcesBtn.textSize = 13f
         binding.sharedFilesBtn.setTextColor(unselectedColor)
+        binding.sharedFilesBtn.textSize = 13f
         binding.competitionsRV.visibility = View.GONE
         binding.resourcesRV.visibility = View.GONE
         binding.sharedFilesRV.visibility = View.GONE
@@ -138,6 +141,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             binding.competitionBtn.setTextColor(selectedColor)
             binding.addFab.visibility = View.GONE
             binding.competitionsRV.visibility = View.VISIBLE
+            binding.competitionBtn.textSize = 14f
 
             if (toRefresh || !::competitionsAdapter.isInitialized)
                 setupCompetitionsRV()
@@ -157,6 +161,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             binding.resourcesBtn.setTextColor(selectedColor)
             binding.addFab.visibility = View.GONE
             binding.resourcesRV.visibility = View.VISIBLE
+            binding.resourcesBtn.textSize = 14f
 
             if (toRefresh || !::resourcesAdapter.isInitialized)
                 setupResourcesRV()
@@ -178,6 +183,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             binding.sharedFilesBtn.setTextColor(selectedColor)
             binding.addFab.visibility = View.VISIBLE
             binding.sharedFilesRV.visibility = View.VISIBLE
+            binding.sharedFilesBtn.textSize = 14f
 
             if (toRefresh || !::sharedFilesAdapter.isInitialized)
                 setupSharedFilesRV()

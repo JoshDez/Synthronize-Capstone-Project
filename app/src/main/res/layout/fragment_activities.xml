@@ -58,7 +58,7 @@
         android:layout_height="1dp"
         android:layout_below="@id/upperNavLayout"
         android:background="@color/light_teal"
-        app:dividerColor="@color/light_teal" />
+        app:dividerColor="@color/teal2" />
 
 
 

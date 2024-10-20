@@ -73,6 +73,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 val dialogPlus = DialogPlus.newDialog(this)
                     .setContentHolder(ViewHolder(dialogPlusBinding.root))
                     .setInAnimation(androidx.appcompat.R.anim.abc_fade_in)
+                    .setBackgroundColorResId(R.color.transparent)
                     .setCancelable(true)
                     .setGravity(Gravity.CENTER)
                     .create()
@@ -82,7 +83,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 dialogPlusBinding.userDisplayNameTV.text = userModel.fullName
                 if (userModel.username.isNotEmpty()){
                     dialogPlusBinding.userNameTV.visibility = View.VISIBLE
-                    dialogPlusBinding.userNameTV.text = userModel.username
+                    dialogPlusBinding.userNameTV.text = "@${userModel.username}"
                 }
 
                 //view profile button

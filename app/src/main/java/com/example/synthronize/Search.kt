@@ -128,7 +128,7 @@ class Search : AppCompatActivity(), OnItemClickListener {
 
         //set up community recycler view
         binding.resultCommunitiesRV.layoutManager = LinearLayoutManager(this)
-        searchCommunityAdapter = SearchCommunityAdapter(this, options, this)
+        searchCommunityAdapter = SearchCommunityAdapter(this, options, this, removeDivider = true)
         binding.resultCommunitiesRV.adapter = searchCommunityAdapter
         searchCommunityAdapter.startListening()
 

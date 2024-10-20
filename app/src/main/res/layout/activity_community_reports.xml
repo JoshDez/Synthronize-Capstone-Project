@@ -49,110 +49,116 @@
         android:layout_below="@id/mainToolbar"
         app:dividerColor="@color/light_teal" />
 
-    <HorizontalScrollView
-        android:id="@+id/navScrollView"
+    <LinearLayout
+        android:id="@+id/communityButtons"
         android:layout_below="@id/divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/navigationLayout"
-            android:layout_width="620dp"
-            android:layout_height="60dp"
-            android:layout_below="@id/divider"
-            android:background="@drawable/gradient_teal"
-            android:orientation="horizontal"
-            android:visibility="visible">
 
-            <Button
-                android:id="@+id/feedsBtn"
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="15dp"
-                android:text="Feeds"
-                android:textAlignment="center"
-                android:textColor="@color/light_teal"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/feedsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/dark_teal"
+            android:gravity="start"
+            android:padding="20dp"
+            android:paddingStart="50dp"
+            android:text="Feeds"
+            android:textColor="@color/light_teal"
+            android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/eventsBtn"
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="15dp"
-                android:text="Events"
-                android:textAlignment="center"
-                android:textColor="@color/light_teal"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/eventsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/dark_teal"
+            android:gravity="start"
+            android:padding="20dp"
+            android:paddingStart="50dp"
+            android:text="Events"
+            android:textColor="@color/light_teal"
+            android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/forumsBtn"
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="15dp"
-                android:text="Forums"
-                android:textAlignment="center"
-                android:textColor="@color/light_teal"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/forumsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/dark_teal"
+            android:gravity="start"
+            android:padding="20dp"
+            android:paddingStart="50dp"
+            android:text="Forums"
+            android:textColor="@color/light_teal"
+            android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/marketBtn"
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="15dp"
-                android:text="Market"
-                android:textAlignment="center"
-                android:textColor="@color/light_teal"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/marketBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/dark_teal"
+            android:gravity="start"
+            android:padding="20dp"
+            android:paddingStart="50dp"
+            android:text="Market"
+            android:textColor="@color/light_teal"
+            android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/competitionsBtn"
-                android:layout_width="120dp"
-                android:layout_height="60dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="15dp"
-                android:text="Competitions"
-                android:textAlignment="center"
-                android:textColor="@color/light_teal"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/competitionsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/dark_teal"
+            android:gravity="start"
+            android:padding="20dp"
+            android:paddingStart="50dp"
+            android:text="Competitions"
+            android:textColor="@color/light_teal"
+            android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/filesBtn"
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="15dp"
-                android:text="Files"
-                android:textAlignment="center"
-                android:textColor="@color/light_teal"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </HorizontalScrollView>
+        <Button
+            android:id="@+id/filesBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/dark_teal"
+            android:gravity="start"
+            android:padding="20dp"
+            android:paddingStart="50dp"
+            android:text="Files"
+            android:textColor="@color/light_teal"
+            android:textSize="16sp" />
 
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/navScrollView"
-        app:dividerColor="@color/light_teal" />
+    </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/reportsRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/divider2">
+        android:layout_below="@id/communityButtons">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reportsRV"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

@@ -57,6 +57,7 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
 
         if (isUserAdmin){
             binding.navigationLayout.visibility = View.VISIBLE
+            binding.divider2.visibility = View.VISIBLE
         }
 
         binding.backBtn.setOnClickListener {
@@ -77,16 +78,20 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
         val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_teal)
         val selectedColor = ContextCompat.getColor(this, R.color.light_teal)
         binding.generalBtn.setTextColor(unselectedColor)
+        binding.generalBtn.textSize = 14f
         binding.adminBtn.setTextColor(unselectedColor)
+        binding.adminBtn.textSize = 14f
         binding.generalLayout.visibility = View.GONE
         binding.adminLayout.visibility = View.GONE
 
         if (tab == "general"){
             setupGeneralLayout()
             binding.generalBtn.setTextColor(selectedColor)
+            binding.generalBtn.textSize = 16f
         }else if (tab == "admin") {
             setupAdminLayout()
             binding.adminBtn.setTextColor(selectedColor)
+            binding.adminBtn.textSize = 16f
         }
     }
 
