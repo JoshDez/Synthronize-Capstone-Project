@@ -63,7 +63,7 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
                 if (data != null && data.data != null){
                     val tempModel = instructionMap.getValue(selectedKey)
                     tempModel.imageUri = data.data!!
-                    tempModel.imageName = "${FirebaseUtil().currentUserUid()}-ImageInstruction-${generateRandomKey()}"
+                    tempModel.imageName = "${communityId}-ImageInstruction-${generateRandomKey()}"
                     tempModel.instruction = selectedInstruction
                     instructionMap[selectedKey] = tempModel
                     setupInstructionsRV()

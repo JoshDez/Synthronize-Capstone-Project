@@ -126,11 +126,10 @@ class CreateProduct : AppCompatActivity() {
 
     private fun addImage(selectedImage: Uri, existingFilename: String = ""){
         //creates image filename
-        val userId = FirebaseUtil().currentUserUid()
         var fileName = existingFilename
 
         if (fileName.isEmpty()){
-            fileName = "$userId-Image-${UUID.randomUUID()}"
+            fileName = "$communityId-Image-${UUID.randomUUID()}"
         }
 
         //Creates linear layout for image

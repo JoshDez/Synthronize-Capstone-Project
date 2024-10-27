@@ -196,11 +196,10 @@ class CreatePost : AppCompatActivity() {
 
     private fun addVideo(selectedVideo: Uri, existingFilename: String = "") {
         //creates video id
-        val userId = FirebaseUtil().currentUserUid()
         var filename = existingFilename
 
         if (filename.isEmpty()){
-            filename = "$userId-Video-${UUID.randomUUID()}"
+            filename = "$communityId-Video-${UUID.randomUUID()}"
         }
 
         //Creates linear layout for Video
@@ -279,11 +278,10 @@ class CreatePost : AppCompatActivity() {
 
     private fun addImage(selectedImage:Uri, existingFilename: String = ""){
         //creates image filename
-        val userId = FirebaseUtil().currentUserUid()
         var fileName = existingFilename
 
         if (fileName.isEmpty()){
-            fileName = "$userId-Image-${UUID.randomUUID()}"
+            fileName = "$communityId-Image-${UUID.randomUUID()}"
         }
 
         //Creates linear layout for image
