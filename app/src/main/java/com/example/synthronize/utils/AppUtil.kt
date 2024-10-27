@@ -265,7 +265,6 @@ class AppUtil {
     //BUTTON STATES
 
     //Friend request button
-    //TODO change  material button to image button
     fun changeFriendsButtonState(context:Context, friendButton: MaterialButton, userModel:UserModel){
         FirebaseUtil().currentUserDetails().get().addOnSuccessListener {
             val myUserModel = it.toObject(UserModel::class.java)!!
@@ -307,7 +306,6 @@ class AppUtil {
         }
     }
 
-    //TODO change  material button to image button
     fun changeCommunityButtonStates(context:Context, communityButton: MaterialButton, communityId: String, isOnPost:Boolean = false){
         communityButton.visibility = View.GONE
 

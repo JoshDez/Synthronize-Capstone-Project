@@ -23,6 +23,7 @@ class FirebaseUtil {
         FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(context, Login::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intent)
         }
     }
@@ -195,19 +196,24 @@ class FirebaseUtil {
         }
     }
 
+    //Archive
+    private fun retrieveArchiveCollection():CollectionReference{
+        return FirebaseFirestore.getInstance().collection("archive")
+    }
+
     fun retrieveDeletedPostsCollection(communityId: String):CollectionReference{
-        return retrieveCommunityDocument(communityId).collection("deleted post")
+        return retrieveArchiveCollection().document(communityId).collection("archived_posts")
     }
 
     fun retrieveDeletedEventsCollection(communityId: String):CollectionReference{
-        return retrieveCommunityDocument(communityId).collection(" deleted events")
+        return retrieveArchiveCollection().document(communityId).collection("archived_events")
     }
 
     fun retrieveDeletedForumsCollection(communityId: String):CollectionReference{
-        return retrieveCommunityDocument(communityId).collection("deleted forums")
+        return retrieveArchiveCollection().document(communityId).collection("archived_forums")
     }
 
     fun retrieveDeletedProductsCollection(communityId: String):CollectionReference{
-        return retrieveCommunityDocument(communityId).collection("deleted products")
+        return retrieveArchiveCollection().document(communityId).collection("archived_products")
     }
 }

@@ -25,6 +25,7 @@ import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.EventModel
 import com.example.synthronize.model.ProductModel
+import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -139,15 +140,19 @@ class EventsFragment(private val mainBinding: FragmentCommunityBinding, private 
     }
 
     private fun isUserAdmin(callback: (Boolean) -> Unit){
-        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
-            val model = it.toObject(CommunityModel::class.java)!!
-            if (AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(model.communityMembers, "Admin"), FirebaseUtil().currentUserUid())){
-                callback(true)
-            } else {
+        FirebaseUtil().currentUserDetails().get().addOnSuccessListener {currentUser ->
+            val userModel = currentUser.toObject(UserModel::class.java)!!
+            FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
+                val model = it.toObject(CommunityModel::class.java)!!
+                if (AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(model.communityMembers, "Admin"), FirebaseUtil().currentUserUid()) ||
+                    userModel.userType == "AppAdmin"){
+                    callback(true)
+                } else {
+                    callback(false)
+                }
+            }.addOnFailureListener {
                 callback(false)
             }
-        }.addOnFailureListener {
-            callback(false)
         }
     }
 

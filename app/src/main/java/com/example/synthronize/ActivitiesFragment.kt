@@ -203,7 +203,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             val userModel = it.toObject(UserModel::class.java)!!
             FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community ->
                 val communityModel = community.toObject(CommunityModel::class.java)!!
-                if (userModel.userType == "Teacher"){
+                if (userModel.userType == "Teacher" || userModel.userType == "AppAdmin"){
                     isAllowed = true
                 }
                 if (AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), userModel.userID)){

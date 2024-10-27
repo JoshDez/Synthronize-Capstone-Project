@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivityCommunitySettingsBinding
+import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogSelectUserBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnItemClickListener
@@ -23,6 +24,7 @@ import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.DeleteCommunity
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NotificationUtil
@@ -145,17 +147,32 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
             warningBinding.messageTV.text = "Do you want to permanently delete this community?"
             warningBinding.yesBtn.setOnClickListener {
                 warningDialog.dismiss()
-                FirebaseUtil().retrieveCommunityDocument(communityModel.communityId).delete().addOnSuccessListener {
-                    Toast.makeText(this, "The community is deleted", Toast.LENGTH_SHORT).show()
-                    deleteAllCommunityChannels()
-                    AppUtil().headToMainActivity(this)
-                }
+                Handler().postDelayed({
+                    deleteCommunity()
+                }, 600)
             }
             warningBinding.NoBtn.setOnClickListener {
                 warningDialog.dismiss()
             }
             warningDialog.show()
         }
+    }
+
+    private fun deleteCommunity() {
+        //loading
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        dialogLoadingBinding.messageTV.text = "Deleting..."
+
+        loadingDialog.show()
+
+        DeleteCommunity().startCommunityDeleteProcess(this, communityModel.communityId, loadingDialog)
     }
 
     private fun setupGeneralLayout() {
@@ -366,17 +383,6 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
             dialogPlusBinding.searchedUsersRV.adapter = searchUserAdapter
             searchUserAdapter.startListening()
         }
-    }
-
-
-    private fun deleteAllCommunityChannels(){
-        FirebaseUtil().retrieveAllChatRoomReferences()
-            .whereEqualTo("communityId", communityModel.communityId).get().addOnSuccessListener {channels ->
-                for (channel in channels.documents){
-                    val chatModel = channel.toObject(ChatroomModel::class.java)!!
-                    FirebaseUtil().retrieveChatRoomReference(chatModel.chatroomId).delete()
-                }
-            }
     }
 
     private fun inviteUsersToCommunity(communityId: String) {
