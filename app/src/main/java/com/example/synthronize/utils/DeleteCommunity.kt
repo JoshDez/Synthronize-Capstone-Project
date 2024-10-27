@@ -5,6 +5,7 @@ import android.widget.Toast
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.FileModel
+import com.google.android.exoplayer2.util.Log
 import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.dialogplus.DialogPlus
 
@@ -66,6 +67,7 @@ class DeleteCommunity {
     private fun onFileDeletionSuccess(totalDeletes: Int, itemCount: Int, folder: String) {
         if (totalDeletes == itemCount) {
             dialog.dismiss()
+            Log.d("Deletion Success", "$folder files deleted successfully.")
             checkOverallDeletion()
         }
     }
@@ -73,6 +75,7 @@ class DeleteCommunity {
     private fun onFileDeletionFailure(failedDeletes: Int, totalDeletes: Int, itemCount: Int, folder: String) {
         if (failedDeletes + totalDeletes == itemCount) {
             dialog.dismiss()
+            Log.d("Deletion Failed", "Failed to delete some files in $folder.")
             checkOverallDeletion()
         }
     }
