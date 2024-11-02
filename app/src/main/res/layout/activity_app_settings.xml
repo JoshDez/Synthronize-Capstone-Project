@@ -104,11 +104,11 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/dark_teal"
+            android:backgroundTint="@color/desaturated_red"
             android:gravity="start"
             android:padding="20dp"
             android:text="Log Out"
-            android:textColor="@color/light_teal"
+            android:textColor="@color/white"
             android:textSize="20sp" />
     </LinearLayout>
 

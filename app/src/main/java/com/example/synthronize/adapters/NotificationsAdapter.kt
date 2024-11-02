@@ -140,7 +140,7 @@ class NotificationsAdapter(private var context:Context,
                     val myModel = user.result.toObject(UserModel::class.java)!!
 
                     FirebaseUtil().retrieveCommunityDocument(value[4]).get().addOnCompleteListener {community ->
-                        if (community.isSuccessful){
+                        if (community.result.exists()){
                             val communityModel = community.result.toObject(CommunityModel::class.java)!!
 
                             //assign current user role
@@ -205,6 +205,9 @@ class NotificationsAdapter(private var context:Context,
                                     }
                                 }
                             }
+                        } else {
+                            //deletes notification
+                            deleteNotification()
                         }
 
                     }
@@ -215,6 +218,15 @@ class NotificationsAdapter(private var context:Context,
         private fun changeNotificationStateToSeen(){
             val mapUpdate = hashMapOf<String, Any>(
                 "notifications.$contentId" to listOf(value[0], value[1], value[2], value[3], value[4], value[5], "seen")
+            )
+            FirebaseUtil().targetUserDetails(FirebaseUtil().currentUserUid()).update(mapUpdate).addOnSuccessListener {
+                listener.onChangeRequests("notifications")
+            }
+        }
+
+        private fun deleteNotification(){
+            val mapUpdate = hashMapOf<String, Any>(
+                "notifications.$contentId" to FieldValue.delete()
             )
             FirebaseUtil().targetUserDetails(FirebaseUtil().currentUserUid()).update(mapUpdate).addOnSuccessListener {
                 listener.onChangeRequests("notifications")

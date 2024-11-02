@@ -104,6 +104,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"/>
 
+
+            <TextView
+                android:id="@+id/warningTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_teal"
+                android:text="The file should not exceed 10 MB"/>
+
             <RelativeLayout
                 android:id="@+id/fileLayout"
                 android:layout_width="match_parent"

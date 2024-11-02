@@ -244,7 +244,7 @@ class CreateThread : AppCompatActivity() {
                     contentList = contentList
                 )
                 //uploads new forumModel to firebase
-                uploadToFirebase(forumModel.forumId, forumModel, "Your post is uploaded successfully!", delay)
+                uploadToFirebase(forumModel.forumId, forumModel, "Your thread is uploaded successfully!", delay)
 
             }.addOnFailureListener {
                 Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show()

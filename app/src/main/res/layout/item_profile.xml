@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/userMainLayout"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -25,15 +26,16 @@
             android:id="@+id/userCircleImageView"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@id/userPositionTV"
             android:src="@drawable/user_default_profile"/>
         <TextView
             android:id="@+id/userFullNameTV"
             android:layout_width="wrap_content"
+            android:layout_toLeftOf="@id/buttonLayout"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:layout_alignParentEnd="true"
             android:textSize="20dp"
             android:contentDescription="@string/full_name"
             android:textColor="@color/light_teal"
@@ -43,65 +45,63 @@
             android:id="@+id/usernameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/buttonLayout"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
             android:layout_below="@id/userFullNameTV"
-            android:layout_alignParentEnd="true"
             android:textSize="16dp"
             android:contentDescription="@string/username"
             android:textColor="@color/light_teal"
             android:layout_toRightOf="@id/userCircleImageView"/>
+
+        <LinearLayout
+            android:id="@+id/buttonLayout"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/selectUserCB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:buttonTint="@color/light_teal" />
+
+            <ImageButton
+                android:id="@+id/rejectBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/cancel_icon"
+                android:visibility="gone"
+                app:tint="@color/red" />
+
+
+            <ImageButton
+                android:id="@+id/acceptBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/check_icon"
+                android:visibility="gone"
+                app:tint="@color/light_teal" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/unbanBtn"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="Unban"
+                app:backgroundTint="@color/teal2"/>
+
+
+        </LinearLayout>
+
     </RelativeLayout>
 
-
-    <LinearLayout
-        android:id="@+id/buttonLayout"
-        android:orientation="horizontal"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <CheckBox
-            android:id="@+id/selectUserCB"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:buttonTint="@color/light_teal"/>
-
-        <ImageButton
-            android:id="@+id/rejectBtn"
-            android:visibility="gone"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/cancel_icon"
-            app:tint="@color/red"/>
-
-
-        <ImageButton
-            android:id="@+id/acceptBtn"
-            android:visibility="gone"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/check_icon"
-            app:tint="@color/light_teal"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/unbanBtn"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="Unban"
-            app:backgroundTint="@color/teal2"/>
-
-
-    </LinearLayout>
-
-
-
-</RelativeLayout>
+</LinearLayout>

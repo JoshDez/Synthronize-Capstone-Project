@@ -293,6 +293,12 @@ class CreateUploadFile : AppCompatActivity() {
         if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
             val fileUri = data.data
             if (fileUri != null) {
+                val fileSize = getFileSize(this, fileUri)
+                val maxFileSizeMB = 10
+                if (fileSize > maxFileSizeMB * 1024 * 1024) { // Convert MB to bytes
+                    Toast.makeText(this, "File size exceeds 10 MB limit", Toast.LENGTH_SHORT).show()
+                    return
+                }
                 val fileName = getFileName(this, fileUri)
                 if (fileName != null){
                     val extension = fileName.split('.').last()
@@ -306,8 +312,20 @@ class CreateUploadFile : AppCompatActivity() {
         }
     }
 
+    private fun getFileSize(context: Context, uri: Uri): Long {
+        var fileSize: Long = 0
+        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                fileSize = it.getLong(it.getColumnIndexOrThrow(OpenableColumns.SIZE))
+            }
+        }
+        return fileSize
+    }
+
     private fun displayFile(fileName:String, fileUri: Uri) {
         binding.bottomToolbar.visibility = View.INVISIBLE
+        binding.warningTV.visibility = View.INVISIBLE
         binding.divider2.visibility = View.INVISIBLE
         binding.fileLayout.visibility = View.VISIBLE
         binding.fileNameTV.text = fileName
@@ -318,6 +336,7 @@ class CreateUploadFile : AppCompatActivity() {
         binding.removeFileBtn.setOnClickListener{
             binding.divider2.visibility = View.VISIBLE
             binding.bottomToolbar.visibility = View.VISIBLE
+            binding.warningTV.visibility = View.VISIBLE
             binding.fileLayout.visibility = View.GONE
             binding.fileNameTV.text = ""
             fileUrl = ""

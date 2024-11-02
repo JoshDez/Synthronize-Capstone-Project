@@ -80,43 +80,51 @@ class RequestsAdapter(private var friendRequests:List<String> = listOf(),
             }
         }
         fun bindCommunityInvitations(key:String, communityInvitations: Map<String, String>){
-            FirebaseUtil().targetUserDetails(key).get().addOnSuccessListener {
-                val host = it.toObject(UserModel::class.java)!!
-                val communityId = communityInvitations.getValue(key)
-                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {result ->
-                    val community = result.toObject(CommunityModel::class.java)!!
-                    itemRequestBinding.requestTV.text = "${host.fullName} has invited you to join ${community.communityName} community"
-                    AppUtil().setCommunityProfilePic(itemRequestBinding.root.context, community.communityId , itemRequestBinding.profileCIV)
-                    itemRequestBinding.acceptBtn.visibility = View.VISIBLE
-                    itemRequestBinding.acceptBtn.setOnClickListener {
-                        FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
-                            if (isSuccessful){
-                                FirebaseUtil().addUserToAllCommunityChannels(communityId, FirebaseUtil().currentUserUid()){
-                                    removeCommunityInvitation(key)
-                                    Toast.makeText(itemRequestBinding.root.context, "Invitation Accepted", Toast.LENGTH_SHORT).show()
+            FirebaseUtil().targetUserDetails(key).get().addOnCompleteListener {
+                if (it.result.exists()){
+                    val host = it.result.toObject(UserModel::class.java)!!
+                    val communityId = communityInvitations.getValue(key)
+                    FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {community ->
+                        if (community.result.exists()){
+                            val communityModel = community.result.toObject(CommunityModel::class.java)!!
+                            itemRequestBinding.requestTV.text = "${host.fullName} has invited you to join ${communityModel.communityName} community"
+                            AppUtil().setCommunityProfilePic(itemRequestBinding.root.context, communityModel.communityId , itemRequestBinding.profileCIV)
+                            itemRequestBinding.acceptBtn.visibility = View.VISIBLE
+                            itemRequestBinding.acceptBtn.setOnClickListener {
+                                FirebaseUtil().addUserToCommunity(communityId){isSuccessful ->
+                                    if (isSuccessful){
+                                        FirebaseUtil().addUserToAllCommunityChannels(communityId, FirebaseUtil().currentUserUid()){
+                                            removeCommunityInvitation(key)
+                                            Toast.makeText(itemRequestBinding.root.context, "Invitation Accepted", Toast.LENGTH_SHORT).show()
+                                        }
+                                    } else {
+                                        Toast.makeText(itemRequestBinding.root.context, "An error has occurred", Toast.LENGTH_SHORT).show()
+                                    }
+
                                 }
-                            } else {
-                                Toast.makeText(itemRequestBinding.root.context, "An error has occurred", Toast.LENGTH_SHORT).show()
                             }
+                            itemRequestBinding.rejectBtn.visibility = View.VISIBLE
+                            itemRequestBinding.rejectBtn.setOnClickListener {
+                                removeCommunityInvitation(key)
+                                Toast.makeText(itemRequestBinding.root.context, "Invitation Declined", Toast.LENGTH_SHORT).show()
 
+                            }
+                            itemRequestBinding.requestTV.setOnClickListener {
+                                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {result ->
+                                    val tempModel = result.toObject(CommunityModel::class.java)!!
+                                    DialogUtil().openCommunityPreviewDialog(itemRequestBinding.root.context, inflater, tempModel)
+                                }
+                            }
+                        } else {
+                            //removes request
+                            removeCommunityInvitation(key)
                         }
                     }
-                    itemRequestBinding.rejectBtn.visibility = View.VISIBLE
-                    itemRequestBinding.rejectBtn.setOnClickListener {
-                        removeCommunityInvitation(key)
-                        Toast.makeText(itemRequestBinding.root.context, "Invitation Declined", Toast.LENGTH_SHORT).show()
-
-                    }
-                    itemRequestBinding.requestTV.setOnClickListener {
-                        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {result ->
-                            val communityModel = result.toObject(CommunityModel::class.java)!!
-                            DialogUtil().openCommunityPreviewDialog(itemRequestBinding.root.context, inflater, communityModel)
-                        }
-
-                    }
+                } else {
+                    //removes request
+                    removeCommunityInvitation(key)
                 }
-            }.addOnFailureListener {
-                //
+
             }
         }
         private fun removeCommunityInvitation(key: String){
