@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darker_teal"
+    tools:context=".Search">
+
+    <RelativeLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/dark_teal"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/downBtn"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/baseline_keyboard_arrow_down_24"
+            app:tint="@color/light_teal" />
+    </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/headerLayout"
+        android:background="@color/light_teal"
+        app:dividerColor="@color/teal2" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Feedback"
+                android:textStyle="bold"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="40dp"
+                android:textSize="22sp"
+                android:textAlignment="center"
+                android:textColor="@color/light_teal"/>
+
+            <!-- For Reporting Within Community -->
+            <LinearLayout
+                android:id="@+id/communityContentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Option -->
+                <LinearLayout
+                    android:id="@+id/bugsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="visible">
+
+                    <RadioButton
+                        android:id="@+id/bugsRB"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="RadioButton"
+                        app:buttonTint="@color/light_teal" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="Bugs"
+                        android:textColor="@color/light_teal"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+
+                <!-- Option -->
+                <LinearLayout
+                    android:id="@+id/glitchesLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="visible">
+
+                    <RadioButton
+                        android:id="@+id/glitchesRB"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="RadioButton"
+                        app:buttonTint="@color/light_teal" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="Glitches"
+                        android:textColor="@color/light_teal"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+
+                <!-- Option -->
+                <LinearLayout
+                    android:id="@+id/errorsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="visible">
+
+                    <RadioButton
+                        android:id="@+id/errorsRB"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="RadioButton"
+                        app:buttonTint="@color/light_teal" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="Errors"
+                        android:textColor="@color/light_teal"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+
+                <!-- Option -->
+                <LinearLayout
+                    android:id="@+id/othersLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <RadioButton
+                        android:id="@+id/othersRB"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="RadioButton"
+                        app:buttonTint="@color/light_teal" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="Others"
+                        android:textColor="@color/light_teal"
+                        android:textSize="20sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Other Option -->
+
+            <!-- Other Edit Text -->
+            <EditText
+                android:id="@+id/reasonEdtTxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/input_rounded_corners"
+                android:hint="Write your reason..."
+                android:padding="8dp"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/submitBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="Submit"
+                android:textSize="20sp"
+                android:backgroundTint="@color/teal"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

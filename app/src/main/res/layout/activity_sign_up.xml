@@ -43,6 +43,7 @@
                 android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:paddingStart="12dp"
                 android:text="Student"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp"
@@ -50,11 +51,12 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="35dp" />
+                android:layout_height="25dp" />
 
             <RadioButton
                 android:id="@+id/teacherRB"
                 android:layout_width="320dp"
+                android:paddingStart="12dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Teacher/Professor"
@@ -64,7 +66,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="35dp" />
+                android:layout_height="25dp" />
 
             <RadioButton
                 android:id="@+id/appAdminRB"
@@ -72,6 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="App Administrator"
+                android:paddingStart="12dp"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp"
                 app:buttonTint="@color/light_teal" />
@@ -95,7 +98,7 @@
                 android:layout_width="320dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="34dp"
                 android:backgroundTint="@color/teal"
                 android:text="Next"
                 android:textAlignment="center"

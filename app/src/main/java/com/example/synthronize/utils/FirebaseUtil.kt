@@ -142,6 +142,9 @@ class FirebaseUtil {
     fun retrieveReportsCollection():CollectionReference{
         return FirebaseFirestore.getInstance().collection("reports")
     }
+    fun retrieveFeedbacksCollection():CollectionReference{
+        return FirebaseFirestore.getInstance().collection("feedbacks")
+    }
     fun retrieveAllCommunityCollection():CollectionReference{
         return FirebaseFirestore.getInstance().collection("communities")
     }

@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/gray2"
-    android:padding="8dp"
+    android:padding="6dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -278,7 +278,8 @@
                 android:layout_weight="10"
                 android:layout_width="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_height="45dp"
+                android:layout_height="43dp"
+                android:textSize="13dp"
                 android:background="@drawable/input_rounded_corners"
                 android:hint="Write your comment"/>
 

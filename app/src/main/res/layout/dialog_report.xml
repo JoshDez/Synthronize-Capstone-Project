@@ -337,15 +337,15 @@
             </LinearLayout>
 
                 <!-- Other Edit Text -->
-                <EditText
-                    android:id="@+id/otherEdtTxt"
-                    android:visibility="gone"
-                    android:layout_marginTop="10dp"
-                    android:padding="8dp"
-                    android:hint="Specify your reason..."
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@color/white"/>
+            <EditText
+                android:id="@+id/otherEdtTxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_rounded_corners"
+                android:hint="Specify your reason..."
+                android:padding="8dp"
+                android:visibility="gone" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/submitBtn"
@@ -354,8 +354,8 @@
                     android:layout_marginTop="20dp"
                     android:text="Submit"
                     android:textSize="20sp"
-                    android:textColor="@color/light_teal"
-                    app:backgroundTint="@color/teal2"/>
+                    android:backgroundTint="@color/teal"
+                    android:textColor="@color/white"/>
 
         </LinearLayout>
     </ScrollView>

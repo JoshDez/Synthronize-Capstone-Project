@@ -98,6 +98,9 @@ class SignUp : AppCompatActivity() {
             } else if(email.isEmpty()) {
                 Toast.makeText(this, "Please enter your Email", Toast.LENGTH_SHORT).show()
                 loadingDialog.dismiss()
+            } else if(!email.endsWith("@neu.edu.ph")) {
+                Toast.makeText(this, "Please enter your institutional email", Toast.LENGTH_SHORT).show()
+                loadingDialog.dismiss()
             } else if(pass.isEmpty()) {
                 Toast.makeText(this, "Please enter your Password", Toast.LENGTH_SHORT).show()
                 loadingDialog.dismiss()
