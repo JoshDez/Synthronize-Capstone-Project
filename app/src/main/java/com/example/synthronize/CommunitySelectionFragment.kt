@@ -70,6 +70,8 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
             //checks if context is initialized
             if (::context.isInitialized){
 
+                AppUtil().logoutIfAccDisabled(context)
+
                 // Initialize RecyclerView and adapter
                 recyclerView = binding.groupSelectionRV
                 recyclerView.layoutManager = LinearLayoutManager(context)

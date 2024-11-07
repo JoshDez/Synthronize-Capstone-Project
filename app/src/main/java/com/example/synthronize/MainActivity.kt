@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        AppUtil().logoutIfAccDisabled(this)
         onStartFragment()
         getFCMToken()
 

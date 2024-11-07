@@ -88,6 +88,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
 
                 //check for internet
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
+                AppUtil().logoutIfAccDisabled(context)
 
                 //reset main toolbar
                 AppUtil().resetMainToolbar(mainBinding)

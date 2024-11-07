@@ -55,6 +55,7 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
 
                 //check for internet
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
+                AppUtil().logoutIfAccDisabled(context)
 
                 //bind refresh layout
                 binding.notificationsRefreshLayout.setOnRefreshListener(this)

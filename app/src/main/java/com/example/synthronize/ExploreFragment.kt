@@ -47,6 +47,7 @@ class ExploreFragment(private val mainBinding:ActivityMainBinding) : Fragment(),
             if (::context.isInitialized){
                 //check for internet
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
+                AppUtil().logoutIfAccDisabled(context)
                 //reset main toolbar
                 AppUtil().resetMainToolbar(mainBinding)
                 binding.exploreRefreshLayout.setOnRefreshListener(this)

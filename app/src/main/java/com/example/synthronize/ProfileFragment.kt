@@ -70,6 +70,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             if (::context.isInitialized){
                 //check for internet
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
+                AppUtil().logoutIfAccDisabled(context)
                 bindUserDetails()
                 binding.profileRefreshLayout.setOnRefreshListener(this)
             }

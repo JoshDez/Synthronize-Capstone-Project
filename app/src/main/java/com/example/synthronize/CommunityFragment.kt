@@ -67,6 +67,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
                 //check for internet
                 NetworkUtil(context).checkNetworkAndShowSnackbar(mainBinding.root, this)
                 communityFragmentWrapper()
+                AppUtil().logoutIfAccDisabled(context)
             }
         }
     }

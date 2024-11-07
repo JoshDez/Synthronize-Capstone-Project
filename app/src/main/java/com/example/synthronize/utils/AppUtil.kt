@@ -445,4 +445,15 @@ class AppUtil {
 
         return false
     }
+
+    fun logoutIfAccDisabled(context:Context){
+        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
+            if (it.result.exists()){
+                val userModel = it.result.toObject(UserModel::class.java)!!
+                if (userModel.userAccess.containsKey("Disabled")){
+                    FirebaseUtil().logoutUser(context)
+                }
+            }
+        }
+    }
 }
