@@ -4,6 +4,7 @@ import UserLastSeenUpdater
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
@@ -25,6 +26,7 @@ import java.util.Locale
 class Login : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private var isPasswordVisible = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -45,6 +47,23 @@ class Login : AppCompatActivity() {
                 signInUser(email, pass)
             }
         }
+
+        binding.pwVisibilityBtn.setOnClickListener {
+            if (isPasswordVisible) {
+                // Hide password
+                binding.passwordEdtTxt.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                binding.pwVisibilityBtn.setImageResource(R.drawable.baseline_visibility_off_24)
+            } else {
+                // Show password
+                binding.passwordEdtTxt.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.pwVisibilityBtn.setImageResource(R.drawable.baseline_visibility_24)
+            }
+            isPasswordVisible = !isPasswordVisible
+
+            // Move cursor to the end of the text
+            binding.passwordEdtTxt.setSelection(binding.passwordEdtTxt.text.length)
+        }
+
 
         binding.resetPassTV.setOnClickListener{
             val email = binding.emailEdtTxt.text.toString()
