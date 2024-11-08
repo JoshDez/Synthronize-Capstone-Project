@@ -301,12 +301,19 @@ class EditProfile : AppCompatActivity() {
             val calMonth = calendar.get(Calendar.MONTH)
             val calDay = calendar.get(Calendar.DAY_OF_MONTH)
 
-            DatePickerDialog(this, DatePickerDialog.OnDateSetListener{_,
-                selectedYear, selectedMonth, selectedDay ->
+            val datePickerDialog = DatePickerDialog(
+                this,
+                android.R.style.Theme_Holo_Light_Dialog_MinWidth, // Use spinner style for easier date modification
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    binding.birthdayEdtTxt.setText("${selectedMonth + 1}/$selectedDay/$selectedYear")
+                },
+                calYear,
+                calMonth,
+                calDay
+            )
 
-                binding.birthdayEdtTxt.setText("${selectedMonth + 1}/$selectedDay/$selectedYear")
-
-            }, calYear, calMonth, calDay).show()
+            datePickerDialog.window?.setBackgroundDrawableResource(android.R.color.transparent) // Optional: makes background transparent
+            datePickerDialog.show()
         }
     }
 

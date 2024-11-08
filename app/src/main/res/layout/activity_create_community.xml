@@ -50,48 +50,52 @@
     <!-- FIRST SECTION -->
     <ScrollView
         android:id="@+id/firstSectionLayout"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavigation"
         android:layout_below="@id/mainToolbar"
-        android:layout_above="@id/bottomNavigation">
+        android:visibility="gone">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="50dp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                android:text="@string/community_name"
                 android:textColor="@color/light_teal"
-                android:textSize="15sp"
-                android:text="@string/community_name"/>
+                android:textSize="15sp" />
+
             <EditText
                 android:id="@+id/communityNameEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:backgroundTint="@color/light_teal"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/light_teal"
+                android:contentDescription="@string/community_name"
                 android:paddingStart="10dp"
                 android:textColor="@color/light_teal"
-                android:contentDescription="@string/community_name"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="40dp"/>
+                android:layout_height="40dp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                android:text="@string/community_description"
                 android:textColor="@color/light_teal"
-                android:textSize="15sp"
-                android:text="@string/community_description"/>
+                android:textSize="15sp" />
 
             <EditText
                 android:id="@+id/communityDescEdtTxt"
@@ -108,34 +112,34 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="35dp"/>
+                android:layout_height="35dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:layout_marginStart="20dp"
+                android:text="@string/community_type"
+                android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="20sp"
-                android:text="@string/community_type"/>
+                android:textSize="20sp" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="35dp"/>
+                android:layout_height="35dp" />
 
             <RadioButton
                 android:id="@+id/publicRB"
-                android:layout_marginStart="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:text="PUBLIC  (Anyone can join)"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp"
-                app:buttonTint = "@color/light_teal"/>
+                app:buttonTint="@color/light_teal" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="35dp"/>
+                android:layout_height="35dp" />
 
             <RadioButton
                 android:id="@+id/privateRB"
@@ -145,7 +149,7 @@
                 android:text="PRIVATE  (Requires permission to join)"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp"
-                app:buttonTint = "@color/light_teal"/>
+                app:buttonTint="@color/light_teal" />
 
         </LinearLayout>
     </ScrollView>
@@ -261,7 +265,6 @@
                 android:layout_height="160dp"
                 android:layout_gravity="center"
                 android:src="@drawable/community_default_profile"
-                app:civ_border_color="@color/white"
                 app:civ_border_width="2dp" />
 
             <Space
@@ -347,8 +350,8 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="20dp"
                         android:src="@drawable/community_default_profile"
-                        app:civ_border_color="@color/white"
-                        app:civ_border_width="2dp" />
+                        app:civ_border_color="@color/darker_teal"
+                        app:civ_border_width="3dp" />
                 </RelativeLayout>
             </FrameLayout>
 

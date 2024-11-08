@@ -79,10 +79,10 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/communityProfileCIV"
-                        android:layout_width="110dp"
-                        android:layout_height="110dp"
-                        app:civ_border_width="2dp"
-                        app:civ_border_color="@color/white"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        app:civ_border_color="@color/darker_teal"
+                        app:civ_border_width="3dp"
                         android:layout_centerInParent="true"
                         android:layout_alignParentBottom="true"
                         android:src="@drawable/community_default_profile"/>
