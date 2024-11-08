@@ -206,7 +206,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/light_teal"
-                android:text="If you have any questions or concerns about this Data Privacy Agreement or how your data is handled, please contact us at SynthronizeOfficial@gmail.com. Our address is the College of Informatics and Computer Studies (CICS), New Era University, 9 Central Ave, Quezon City, 1107 Metro Manila. By using Synthronize, you acknowledge that you have read and understood this Data Privacy Agreement and consent to the collection and processing of your personal data as described above."
+                android:text="If you have any questions or concerns about this Data Privacy Agreement or how your data is handled, please contact us at    'synthronizeofficial@gmail.com'.    Our address is the College of Informatics and Computer Studies (CICS), New Era University, 9 Central Ave, Quezon City, 1107 Metro Manila. By using Synthronize, you acknowledge that you have read and understood this Data Privacy Agreement and consent to the collection and processing of your personal data as described above."
                 android:textSize="14sp"
                 android:paddingBottom="16dp"/>
         </LinearLayout>
