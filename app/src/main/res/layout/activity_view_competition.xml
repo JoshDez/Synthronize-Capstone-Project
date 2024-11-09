@@ -103,6 +103,9 @@
                     android:contentDescription="@string/community_name"
                     android:gravity="center_vertical"
                     android:padding="5dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:singleLine="true"
                     android:textColor="@color/light_teal"
                     android:textSize="16dp" />
 

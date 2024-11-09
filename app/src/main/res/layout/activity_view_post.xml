@@ -98,6 +98,9 @@
                     <TextView
                         android:id="@+id/ownerUsernameTV"
                         android:layout_width="match_parent"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:singleLine="true"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/profileCIV"
                         android:paddingStart="10dp"

@@ -35,9 +35,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/actionBtn"
-            android:visibility="gone"
+            android:text="Add Friend"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             app:backgroundTint="@color/teal"
             android:contentDescription="actionButton"/>

@@ -37,6 +37,9 @@
                 <TextView
                     android:id="@+id/eventNameTV"
                     android:layout_width="match_parent"
+                    android:layout_marginTop="3dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:layout_height="40dp"
                     android:contentDescription="@string/username"
                     android:textColor="@color/light_teal"
