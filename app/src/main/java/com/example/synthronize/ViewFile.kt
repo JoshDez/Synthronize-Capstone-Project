@@ -38,6 +38,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
     private lateinit var communityId:String
     private lateinit var fileId:String
     private lateinit var contentType:String
+    private lateinit var competitionId:String
     private var isLoved:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +48,9 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
 
         communityId = intent.getStringExtra("communityId").toString()
         contentType = intent.getStringExtra("contentType").toString()
+        competitionId = intent.getStringExtra("competitionId").toString()
         fileId = intent.getStringExtra("fileId").toString()
+
 
         binding.viewFileRefreshLayout.setOnRefreshListener(this)
         NetworkUtil(this).checkNetworkAndShowSnackbar(binding.root, this)
@@ -79,7 +82,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
 
                         binding.kebabMenuBtn.setOnClickListener {
                             DialogUtil().openMenuDialog(this, layoutInflater, contentType,
-                                fileModel.fileId, fileModel.ownerId, fileModel.communityId){closeCurrentActivity ->
+                                fileModel.fileId, fileModel.ownerId, fileModel.communityId, extraId = competitionId){closeCurrentActivity ->
                                 if (closeCurrentActivity){
                                     Handler().postDelayed({
                                         onBackPressed()
@@ -105,6 +108,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
                             binding.commentsRV.visibility = View.GONE
                             binding.loveLayout.visibility = View.GONE
                             binding.commentsTV.visibility = View.GONE
+                            binding.captionEdtTxt.visibility = View.INVISIBLE
                             binding.divider2.visibility = View.GONE
                             binding.divider3.visibility = View.GONE
                             binding.divider4.visibility = View.GONE

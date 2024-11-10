@@ -158,6 +158,7 @@ class NotificationUtil {
                 val userModel = it.result.toObject(UserModel::class.java)!!
                 try {
                     var body = ""
+
                     //create message for the body
                     when(action){
                         "Love" -> {
@@ -171,6 +172,10 @@ class NotificationUtil {
                         "Join" -> {
                             //adds action to the notification message
                             body = "${userModel.username} joined your ${contentType.lowercase()}"
+                        }
+                        "Winners" -> {
+                            //adds action to the notification message
+                            body = "${userModel.username} announced the winners of the competition you participated in."
                         }
                         "Participant" -> {
                             //adds action to the notification message

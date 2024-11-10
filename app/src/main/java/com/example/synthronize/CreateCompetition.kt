@@ -239,7 +239,6 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
                         deadline = DateAndTimeUtil().convertDateToTimestamp(deadline),
                         createdTimestamp = Timestamp.now()
                     )
-
                     uploadToFirebase(it.id, competitionModel, "The competition has been uploaded")
                 }
             } else {
@@ -254,6 +253,7 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
                     communityId = communityId,
                     results = existingCompetitionModel.results,
                     deadline = DateAndTimeUtil().convertDateToTimestamp(deadline),
+                    contestants = existingCompetitionModel.contestants,
                     createdTimestamp = existingCompetitionModel.createdTimestamp
                 )
 

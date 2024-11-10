@@ -141,6 +141,7 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
             intent.putExtra("communityId", fileModel.communityId)
             intent.putExtra("fileId", fileModel.fileId)
             intent.putExtra("contentType", "File Submission")
+            intent.putExtra("competitionId", competitionId)
             context.startActivity(intent)
         }
 

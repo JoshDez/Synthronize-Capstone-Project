@@ -291,7 +291,7 @@
                 android:contentDescription="@string/community_name"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="Top 10"
+                android:text="Top Winners"
                 android:textColor="@color/light_teal"
                 android:textSize="14sp"
                 android:textStyle="bold"

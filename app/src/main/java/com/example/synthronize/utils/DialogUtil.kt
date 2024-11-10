@@ -535,6 +535,7 @@ class DialogUtil: OnItemClickListener {
 
                         //Deletes File from firebase storage
                         deleteMediaOrFile(listOf(fileModel.fileUrl))
+                        FirebaseUtil().retrieveCommunityFilesCollection(communityId).document(contentId).delete()
                     }
                 }
             }

@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -94,6 +95,10 @@ class NotificationsAdapter(private var context:Context,
                                 //adds action to the notification message
                                 binding.requestTV.text = binding.requestTV.text.toString() + "joined "
                             }
+                            "Winners" -> {
+                                //adds action to the notification message
+                                binding.requestTV.text = binding.requestTV.text.toString() + "announced the winners "
+                            }
                             "Participant" -> {
                                 //adds action to the notification message
                                 binding.requestTV.text = binding.requestTV.text.toString() + "participated "
@@ -113,7 +118,7 @@ class NotificationsAdapter(private var context:Context,
                         }
 
                         //Binds community if the content type is for community
-                        val communityContentTypes = listOf("Post", "Competition", "File")
+                        val communityContentTypes = listOf("Post", "Competition", "Competition Winners", "File")
                         if (communityContentTypes.contains(value[3])){
                             bindCommunity()
                         }
@@ -158,48 +163,70 @@ class NotificationsAdapter(private var context:Context,
                             when(value[3]){
                                 "Post" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your post in ${communityModel.communityName} "
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "your post at ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
+                                        //head to main activity first
+                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
                                         changeNotificationStateToSeen()
                                         viewPost()
                                     }
                                 }
                                 "File" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your file in ${communityModel.communityName} "
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "your file at ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
+                                        //head to main activity first
+                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
                                         changeNotificationStateToSeen()
                                         headToViewFile()
                                     }
                                 }
                                 "Competition" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your competition in ${communityModel.communityName} "
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "your competition at ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
+                                        //head to main activity first
+                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        changeNotificationStateToSeen()
+                                        headToCompetition()
+                                    }
+                                }
+                                "Competition Winners" -> {
+                                    //adds content type to the notification message
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "of the competition at ${communityModel.communityName} "
+                                    binding.requestContainerLayout.setOnClickListener {
+                                        //head to main activity first
+                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
                                         changeNotificationStateToSeen()
                                         headToCompetition()
                                     }
                                 }
                                 "Forum" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your thread in ${communityModel.communityName} "
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "your thread at ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
+                                        //head to main activity first
+                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
                                         changeNotificationStateToSeen()
                                         viewThread()
                                     }
                                 }
                                 "Thread" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your thread comment in ${communityModel.communityName} "
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "your thread comment at ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
+                                        //head to main activity first
+                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
                                         changeNotificationStateToSeen()
                                         viewThread()
                                     }
                                 }
                                 "Event" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your event in ${communityModel.communityName} "
+                                    binding.requestTV.text = binding.requestTV.text.toString() + "your event at ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
+                                        //head to main activity first
+                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
                                         changeNotificationStateToSeen()
                                         viewThread()
                                     }
@@ -234,34 +261,42 @@ class NotificationsAdapter(private var context:Context,
         }
 
         private fun viewPost(){
-            val intent = Intent(context, ViewPost::class.java)
-            intent.putExtra("communityId", value[4])
-            intent.putExtra("postId", contentId)
-            context.startActivity(intent)
+            Handler().postDelayed({
+                val intent = Intent(context, ViewPost::class.java)
+                intent.putExtra("communityId", value[4])
+                intent.putExtra("postId", contentId)
+                context.startActivity(intent)
+            }, 500)
         }
 
 
         private fun headToViewFile(){
-            val intent = Intent(context, ViewFile::class.java)
-            intent.putExtra("communityId", value[4])
-            intent.putExtra("fileId", contentId)
-            intent.putExtra("contentType", "File")
-            context.startActivity(intent)
+            Handler().postDelayed({
+                val intent = Intent(context, ViewFile::class.java)
+                intent.putExtra("communityId", value[4])
+                intent.putExtra("fileId", contentId)
+                intent.putExtra("contentType", "File")
+                context.startActivity(intent)
+            }, 500)
         }
 
         private fun headToCompetition(){
-            val intent = Intent(context, ViewCompetition::class.java)
-            intent.putExtra("communityId", value[4])
-            intent.putExtra("competitionId", contentId)
-            intent.putExtra("isUserAdmin", isUserAdmin)
-            context.startActivity(intent)
+            Handler().postDelayed({
+                val intent = Intent(context, ViewCompetition::class.java)
+                intent.putExtra("communityId", value[4])
+                intent.putExtra("competitionId", contentId)
+                intent.putExtra("isUserAdmin", isUserAdmin)
+                context.startActivity(intent)
+            }, 500)
         }
 
         private fun viewThread() {
-            val intent = Intent(context, ViewThread::class.java)
-            intent.putExtra("communityId", value[4])
-            intent.putExtra("forumId", contentId)
-            context.startActivity(intent)
+            Handler().postDelayed({
+                val intent = Intent(context, ViewThread::class.java)
+                intent.putExtra("communityId", value[4])
+                intent.putExtra("forumId", contentId)
+                context.startActivity(intent)
+            }, 500)
         }
 
     }

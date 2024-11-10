@@ -56,6 +56,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
     private var resultType = ""
     private var isUserAdmin = false
     private var isCompetitionDue = false
+    private var refreshAdapters = false
     private var selectedUserList:ArrayList<String> = arrayListOf()
     private var submittedContestants:ArrayList<String> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,8 +157,8 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                             }
                         } else {
                             if (!isCompetitionDue){
-                                binding.actionBtn.visibility = View.VISIBLE
                                 if (competitionModel.contestants.getValue(FirebaseUtil().currentUserUid()).isEmpty()){
+                                    binding.actionBtn.visibility = View.VISIBLE
                                     binding.actionBtn.text = "Submit File"
                                     binding.actionBtn.setOnClickListener {
                                         val intent = Intent(this, CreateUploadFile::class.java)
@@ -167,7 +168,23 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                                         startActivity(intent)
                                     }
                                 } else {
-                                    binding.actionBtn.visibility = View.GONE
+                                    val fileUrl = competitionModel.contestants.getValue(FirebaseUtil().currentUserUid())
+                                    FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+                                        .whereIn("fileUrl", listOf(fileUrl)).get().addOnSuccessListener {
+                                            binding.actionBtn.visibility = View.VISIBLE
+                                            binding.actionBtn.text = "View Submission"
+                                            for (document in it.documents){
+                                                binding.actionBtn.setOnClickListener{
+                                                    val fileModel = document.toObject(FileModel::class.java)!!
+                                                    val intent = Intent(this, ViewFile::class.java)
+                                                    intent.putExtra("communityId", fileModel.communityId)
+                                                    intent.putExtra("fileId", fileModel.fileId)
+                                                    intent.putExtra("contentType", "File Submission")
+                                                    intent.putExtra("competitionId", competitionId)
+                                                    startActivity(intent)
+                                                }
+                                            }
+                                        }
                                 }
                             }
                         }
@@ -182,6 +199,13 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                                     }, 2000)
                                 }
                             }
+                        }
+
+                        //displays result type
+                        if (resultType == "All"){
+                            binding.resultsTypeTV.text = "Winners"
+                        } else {
+                            binding.resultsTypeTV.text = "Top ${resultType.split('/').last()} winners"
                         }
 
                         binding.viewCompetitionRefresh.isRefreshing = false
@@ -224,35 +248,35 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             binding.instructionsBtn.setTextColor(selectedColor)
             binding.instructionsBtn.textSize = 14f
             currentTab = "instructions"
-            if (!::instructionsAdapter.isInitialized)
+            if (!::instructionsAdapter.isInitialized || refreshAdapters){
                 setupInstructions(competitionModel.instruction)
+                refreshAdapters = false
+            }
         } else if (tab == "submissions") {
             binding.submissionsRV.visibility = View.VISIBLE
             binding.submissionsBtn.setTextColor(selectedColor)
             binding.submissionsBtn.textSize = 14f
             currentTab = "submissions"
-            if (!::submissionsAdapter.isInitialized)
+            if (!::submissionsAdapter.isInitialized || refreshAdapters){
                 setupSubmissions(competitionModel.contestants)
+                refreshAdapters = false
+            }
         } else if (tab == "results") {
             binding.resultsTypeTV.visibility = View.VISIBLE
             binding.resultsRV.visibility = View.VISIBLE
             binding.resultBtn.setTextColor(selectedColor)
             binding.resultBtn.textSize = 14f
             currentTab = "results"
-            if (!::submissionsAdapter.isInitialized)
+            if (!::submissionsAdapter.isInitialized || refreshAdapters){
                 setupResults()
+                refreshAdapters = false
+            }
         }
     }
 
     private fun setupResults() {
         binding.viewCompetitionRefresh.isRefreshing = true
 
-        //displays result type
-        if (resultType == "All"){
-            binding.resultsTypeTV.text = "Winners"
-        } else {
-            binding.resultsTypeTV.text = "Top ${resultType.split('/').last()} winners"
-        }
         //setup rv
         if (selectedUserList.isNotEmpty()){
             val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
@@ -367,6 +391,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                 .update(FieldPath.of("results", resultType), selectedUserList)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Successfully saved results", Toast.LENGTH_SHORT).show()
+                    notifyContestants()
                     dialogPlus.dismiss()
                 }
         }
@@ -374,6 +399,16 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
         Handler().postDelayed({
             dialogPlus.show()
         }, 500)
+    }
+
+    private fun notifyContestants() {
+        val contestants = competitionModel.contestants.keys.toList()
+        for (contestant in contestants){
+            //sends notification
+            NotificationUtil().sendNotificationToUser(this, competitionModel.competitionId, contestant, "Winners",
+                "0","Competition Winners", competitionModel.communityId, DateAndTimeUtil().timestampToString(
+                    Timestamp.now()))
+        }
     }
 
 
@@ -473,6 +508,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
     override fun onRefresh() {
         binding.viewCompetitionRefresh.isRefreshing = true
         Handler().postDelayed({
+            refreshAdapters = true
             bindCompetition()
         },1000)
     }
@@ -494,6 +530,11 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             setupSelectedUsersRV()
             searchUsers()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onRefresh()
     }
 
     //Unnecessary methods (needed for the instruction adapter to work)

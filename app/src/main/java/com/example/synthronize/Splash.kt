@@ -8,6 +8,7 @@ import android.os.Handler
 import com.example.synthronize.databinding.ActivitySplashBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
+import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.firestore.toObject
 
@@ -38,7 +39,7 @@ class Splash : AppCompatActivity() {
                 chatroomId = intent.getStringExtra("chatroomId").toString()
                 userID = intent.getStringExtra("userID").toString()
 
-                val communityContentTypes = listOf("Post", "Competition", "File", "Forum", "Thread", "Event")
+                val communityContentTypes = listOf("Post", "Competition", "Competition Winners", "File", "Forum", "Thread", "Event")
                 if (communityContentTypes.contains(contentType)){
                     //NOTIFICATIONS INSIDE COMMUNITY
                     FirebaseUtil().currentUserDetails().get().addOnCompleteListener {user ->
@@ -60,29 +61,35 @@ class Splash : AppCompatActivity() {
                                     }
 
                                     //head to main activity first
-                                    headToMainActivity()
+                                    AppUtil().headToMainActivity(this, "community", 0, communityId)
 
-                                    //then to the content
-                                    when(contentType){
-                                        "Post" -> {
-                                            viewPost()
+                                    Handler().postDelayed({
+                                        //then to the content
+                                        when(contentType){
+                                            "Post" -> {
+                                                viewPost()
+                                            }
+                                            "File" -> {
+                                                viewFile()
+                                            }
+                                            "Competition" -> {
+                                                viewCompetition()
+                                            }
+                                            "Competition Winners" -> {
+                                                viewCompetition()
+                                            }
+                                            "Forum" -> {
+                                                viewThread()
+                                            }
+                                            "Thread" -> {
+                                                viewThread()
+                                            }
+                                            "Event" -> {
+                                                viewEvent()
+                                            }
                                         }
-                                        "File" -> {
-                                            viewFile()
-                                        }
-                                        "Competition" -> {
-                                            viewCompetition()
-                                        }
-                                        "Forum" -> {
-                                            viewThread()
-                                        }
-                                        "Thread" -> {
-                                            viewThread()
-                                        }
-                                        "Event" -> {
-                                            viewEvent()
-                                        }
-                                    }
+                                    }, 500)
+
                                 } else {
                                     //if community didn't exist
                                     headToMainActivity()
