@@ -251,7 +251,7 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
                     ownerId = FirebaseUtil().currentUserUid(),
                     instruction = getInstructions(),
                     communityId = communityId,
-                    results = existingCompetitionModel.results,
+                    results = hashMapOf(resultType to listOf()),
                     deadline = DateAndTimeUtil().convertDateToTimestamp(deadline),
                     contestants = existingCompetitionModel.contestants,
                     createdTimestamp = existingCompetitionModel.createdTimestamp
