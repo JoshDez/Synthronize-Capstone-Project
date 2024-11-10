@@ -231,14 +231,14 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/userProfileCIV"
-                        android:layout_width="110dp"
-                        android:layout_height="110dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_alignParentBottom="true"
                         android:layout_centerInParent="true"
                         android:layout_marginStart="20dp"
                         android:src="@drawable/community_default_profile"
-                        app:civ_border_color="@color/white"
-                        app:civ_border_width="2dp" />
+                        app:civ_border_color="@color/darker_teal"
+                        app:civ_border_width="3dp" />
                 </RelativeLayout>
             </FrameLayout>
 
@@ -273,11 +273,45 @@
                 android:textSize="15sp"
                 android:visibility="gone" />
 
+
+
+            <LinearLayout
+                android:id="@+id/createdLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="20dp"
+                android:layout_toLeftOf="@+id/buttonContainerLayout"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/baseline_calendar_month_24"
+                    app:tint="@color/light_teal" />
+
+                <TextView
+                    android:id="@+id/createdDateTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:backgroundTint="#00FFFFFF"
+                    android:drawableTint="#00FFFFFF"
+                    android:text="Created: December 19, 2002"
+                    android:textColor="@color/light_teal"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="25dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="#00FFFFFF"

@@ -630,7 +630,7 @@ class DialogUtil: OnItemClickListener {
         dialogPlusBinding.communityNameTV.text = communityModel.communityName
         AppUtil().showMoreAndLessWords(communityModel.communityDescription, dialogPlusBinding.communityDescriptionTV, 50)
         dialogPlusBinding.totalMembersCountTV.text = "${communityModel.communityMembers.size}"
-        dialogPlusBinding.createdDateTV.text =  DateAndTimeUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)
+        dialogPlusBinding.createdDateTV.text = "Created: ${DateAndTimeUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)}"
         AppUtil().setCommunityProfilePic(context, communityModel.communityId, dialogPlusBinding.communityProfileCIV)
         AppUtil().setCommunityBannerPic(context, communityModel.communityId, dialogPlusBinding.communityBannerIV)
         AppUtil().changeCommunityButtonStates(context, dialogPlusBinding.communityActionBtn, communityModel.communityId)

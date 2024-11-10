@@ -69,6 +69,7 @@
                     android:layout_height="130dp"
                     android:layout_alignParentBottom="true"
                     android:layout_centerInParent="true"
+                    app:civ_border_color="@color/darker_teal"
                     android:layout_gravity="center"
                     android:layout_marginTop="40dp"
                     android:src="@drawable/community_default_profile"

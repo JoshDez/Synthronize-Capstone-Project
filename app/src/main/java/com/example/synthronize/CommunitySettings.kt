@@ -24,6 +24,7 @@ import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DeleteCommunity
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -181,6 +182,7 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
         //Common Binds
         binding.communityNameTV.text = communityModel.communityName
         binding.communityCodeEdtTxt.setText(communityModel.communityCode)
+        binding.createdDateTV.text = "Created: ${DateAndTimeUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)}"
         AppUtil().setCommunityProfilePic(this, communityModel.communityId, binding.userProfileCIV)
         AppUtil().setCommunityBannerPic(this, communityModel.communityId, binding.communityBannerIV)
 
