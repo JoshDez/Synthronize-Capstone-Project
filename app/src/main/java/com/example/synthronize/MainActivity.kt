@@ -1,5 +1,6 @@
 package com.example.synthronize
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -7,11 +8,14 @@ import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.synthronize.databinding.ActivityMainBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.interfaces.OnNetworkRetryListener
+import com.example.synthronize.model.ChatroomModel
+import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
@@ -27,6 +31,8 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         AppUtil().logoutIfAccDisabled(this)
         onStartFragment()
         getFCMToken()
+        showUpdatesNotificationAlert()
+        showChatNotificationAlert()
 
         //BOTTOM NAVIGATION BUTTONS
         binding.communitiesBtn.setOnClickListener {
@@ -37,12 +43,14 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         }
         binding.updatesBtn.setOnClickListener {
             selectFragment("updates")
+            binding.updatesBtn.foreground = null
         }
         binding.profileBtn.setOnClickListener {
             selectFragment("profile")
         }
         binding.chatBtn.setOnClickListener {
             selectFragment("chat")
+            binding.chatBtn.foreground = null
         }
     }
     //Function that checks if the intent request for a specific fragment
@@ -155,6 +163,50 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
                 FirebaseUtil().currentUserDetails().update("fcmToken", token)
             }
         }
+    }
+
+
+    private fun showUpdatesNotificationAlert(){
+        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
+            if (it.result.exists()){
+                val userModel = it.result.toObject(UserModel::class.java)!!
+
+                if (userModel.communityInvitations.isNotEmpty()){
+
+                    binding.updatesBtn.foreground = ContextCompat.getDrawable(this, R.drawable.red_dot)
+                } else if (userModel.friendRequests.isNotEmpty()){
+
+                    binding.updatesBtn.foreground = ContextCompat.getDrawable(this, R.drawable.red_dot)
+                } else {
+                    for (key in userModel.notifications.keys){
+                        val tempList = userModel.notifications.getValue(key)
+                        try {
+                            if (tempList[6] == "not_seen"){
+
+                                binding.updatesBtn.foreground = ContextCompat.getDrawable(this, R.drawable.red_dot)
+                                break
+                            }
+                        } catch (e:Exception){
+                            com.google.android.exoplayer2.util.Log.d("Error", e.message.toString())
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showChatNotificationAlert(){
+        FirebaseUtil().retrieveAllChatRoomReferences()
+            .whereArrayContains("userIdList", FirebaseUtil().currentUserUid()).get().addOnSuccessListener {
+                for (document in it.documents){
+                    val chatroomModel = document.toObject(ChatroomModel::class.java)!!
+                    if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid())){
+                        //TODO to replace with actual alert
+                        binding.chatBtn.foreground = ContextCompat.getDrawable(this, R.drawable.red_dot)
+                        break
+                    }
+                }
+            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -141,6 +141,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="20dp"
             android:layout_toLeftOf="@id/communitiesBtn"
+            android:foregroundGravity="top|right"
             android:layout_centerInParent="true"
             android:backgroundTint="@color/light_teal"
             android:background="@drawable/notifications_not_selected"/>
@@ -157,6 +158,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="20dp"
             android:layout_toRightOf="@id/communitiesBtn"
+            android:foregroundGravity="top|right"
             android:layout_centerInParent="true"
             android:backgroundTint="@color/light_teal"
             android:background="@drawable/chat_not_selected"/>

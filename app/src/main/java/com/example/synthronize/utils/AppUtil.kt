@@ -14,8 +14,10 @@ import com.example.synthronize.MainActivity
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
 import com.example.synthronize.databinding.ActivityMainBinding
+import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
+import com.google.android.exoplayer2.util.Log
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FieldValue
 import com.google.auth.oauth2.ServiceAccountCredentials
