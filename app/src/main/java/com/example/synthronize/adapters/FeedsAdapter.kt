@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.synthronize.OtherUserProfile
@@ -142,11 +143,63 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
             }
         }
 
+        fun showUserSelectionDialog(typedText: String, mentionRange: IntRange) {
+            // Fetch users from Firestore
+            val query = FirebaseUtil().allUsersCollectionReference()
+                .whereGreaterThanOrEqualTo("username" , typedText)
+                .whereLessThanOrEqualTo("username", typedText + "\uf8ff")
+
+            query.get().addOnSuccessListener {
+                if (it.documents.isNotEmpty()){
+                    val options = FirestoreRecyclerOptions.Builder<UserModel>()
+                        .setQuery(query, UserModel::class.java)
+                        .build()
+
+                    feedBinding.userListRV.layoutManager = LinearLayoutManager(context)
+                    val adapter = ContentUsersAdapter(context, options, true, feedBinding.commentEdtTxt, mentionRange)
+                    feedBinding.userListRV.adapter = adapter
+                    adapter.startListening()
+                }
+            }
+        }
+
+        private fun sendNotificationsToMentionedUsers(comment:String){
+            // Use regex to find all occurrences of @ followed by word characters, excluding the "@" in the result
+            val mentionRegex = Regex("@(\\w+)")
+            val matches = mentionRegex.findAll(comment)
+
+            // Collect all matched usernames into a list without the "@"
+            val usernames = matches.map { it.groupValues[1] }.toList()
+
+            if (usernames.isNotEmpty()){
+                FirebaseUtil().allUsersCollectionReference().whereIn("username", usernames).get().addOnSuccessListener {
+                    for (document in it.documents){
+                        val userModel = document.toObject(UserModel::class.java)!!
+                        //sends notification
+                        NotificationUtil().sendNotificationToUser(context, postModel.postId, userModel.userID, "Mention",
+                            "0","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
+                    }
+                }
+            }
+        }
+
         private fun bindComment() {
 
             feedBinding.commentEdtTxt.addTextChangedListener(object: TextWatcher {
                 override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    s?.let { text ->
+                        // Detect "@username" pattern with any characters after '@'
+                        val mentionMatch = Regex("@(\\w+)$").find(text.subSequence(0, start + count))
+                        if (mentionMatch != null) {
+                            feedBinding.userListRV.visibility = View.VISIBLE
+                            val typedText = mentionMatch.groupValues[1] // Get text after @
+                            showUserSelectionDialog(typedText, mentionMatch.range)
+                        } else {
+                            feedBinding.userListRV.visibility = View.GONE
+                        }
+                    }
+                }
                 override fun afterTextChanged(s: Editable?) {
                     val comment = feedBinding.commentEdtTxt.text.toString()
                     if (comment.isNotEmpty()){
@@ -186,6 +239,9 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                                         feedBinding.commentEdtTxt.setText("")
                                         updateFeedStatus()
                                         Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
+                                        
+                                        //send mentioned users notification
+                                        sendNotificationsToMentionedUsers(comment)
 
                                         //gets comments count before sending the notification
                                         FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)

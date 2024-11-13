@@ -14,8 +14,10 @@ import com.example.synthronize.ViewThread
 import com.example.synthronize.databinding.FragmentCommunityBinding
 import com.example.synthronize.databinding.ItemForumPostBinding
 import com.example.synthronize.model.ForumModel
+import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
+import com.example.synthronize.utils.ContentUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -38,7 +40,7 @@ class ForumsAdapter(
     }
 
     override fun onBindViewHolder(holder: ForumsViewHolder, position: Int, model: ForumModel) {
-        holder.bind(model)
+        holder.checkAvailabilityBeforeBind(model)
     }
 
     override fun onDataChanged() {
@@ -59,28 +61,40 @@ class ForumsAdapter(
     }
 
     // VIEW HOLDER
-    inner class ForumsViewHolder(
-        private val mainBinding: FragmentCommunityBinding,
-        private val forumsBinding: ItemForumPostBinding,
-        private val context: Context
-    ) : RecyclerView.ViewHolder(forumsBinding.root) {
+    inner class ForumsViewHolder(private val mainBinding: FragmentCommunityBinding, private val forumsBinding: ItemForumPostBinding, private val context: Context) : RecyclerView.ViewHolder(forumsBinding.root) {
 
         private lateinit var forumsModel: ForumModel
         private lateinit var viewPageAdapter: ViewPageAdapter
         private var isUpvoted = false
         private var isDownvoted = false
 
-        fun bind(model: ForumModel) {
+
+        fun checkAvailabilityBeforeBind(model: ForumModel){
+            ContentUtil().verifyCommunityContentAvailability(model.ownerId, model.communityId){ isAvailable ->
+                if(isAvailable){
+                    bindForum(model)
+                } else {
+                    bindContentNotAvailable()
+                }
+            }
+        }
+
+        private fun bindContentNotAvailable(){
+            forumsBinding.descriptionTV.text = "Content Not Available"
+            forumsBinding.viewPager2.visibility = View.GONE
+        }
+
+        private fun bindForum(model: ForumModel) {
             this.forumsModel = model
 
-            // SETUP FEED
+            // SETUP FORUM
             FirebaseUtil().targetUserDetails(forumsModel.ownerId).get().addOnSuccessListener {
+
                 val owner = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, owner.userID, forumsBinding.profileCIV)
                 forumsBinding.usernameTV.text = owner.username
-                forumsBinding.descriptionTV.text = forumsModel.caption
-                forumsBinding.timestampTV.text =
-                    DateAndTimeUtil().getTimeAgo(forumsModel.createdTimestamp)
+                AppUtil().showMoreAndLessWords(forumsModel.caption, forumsBinding.descriptionTV, 150)
+                forumsBinding.timestampTV.text = DateAndTimeUtil().getTimeAgo(forumsModel.createdTimestamp)
                 forumsBinding.usernameTV.setOnClickListener {
                     headToUserProfile()
                 }

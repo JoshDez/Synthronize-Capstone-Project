@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.synthronize.MainActivity
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
 import com.example.synthronize.ViewCompetition
@@ -95,6 +96,10 @@ class NotificationsAdapter(private var context:Context,
                                 //adds action to the notification message
                                 binding.requestTV.text = binding.requestTV.text.toString() + "joined "
                             }
+                            "Mention" -> {
+                                //adds action to the notification message
+                                binding.requestTV.text = binding.requestTV.text.toString() + "mentioned you in a "
+                            }
                             "Winners" -> {
                                 //adds action to the notification message
                                 binding.requestTV.text = binding.requestTV.text.toString() + "announced the winners "
@@ -118,7 +123,7 @@ class NotificationsAdapter(private var context:Context,
                         }
 
                         //Binds community if the content type is for community
-                        val communityContentTypes = listOf("Post", "Competition", "Competition Winners", "File")
+                        val communityContentTypes = listOf("Post", "Competition", "Competition Winners", "File", "Event", "Forum", "Thread")
                         if (communityContentTypes.contains(value[3])){
                             bindCommunity()
                         }
@@ -163,20 +168,38 @@ class NotificationsAdapter(private var context:Context,
                             when(value[3]){
                                 "Post" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your post at ${communityModel.communityName} "
+                                    if (value[1] == "Mention"){
+                                        binding.requestTV.text = binding.requestTV.text.toString() + "post at ${communityModel.communityName} "
+                                    } else {
+                                        binding.requestTV.text = binding.requestTV.text.toString() + "your post at ${communityModel.communityName} "
+                                    }
                                     binding.requestContainerLayout.setOnClickListener {
                                         //head to main activity first
-                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                            //go straight to community
+                                            AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        } else {
+                                            headToMainActivity()
+                                        }
                                         changeNotificationStateToSeen()
                                         viewPost()
                                     }
                                 }
                                 "File" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your file at ${communityModel.communityName} "
+                                    if (value[1] == "Mention"){
+                                        binding.requestTV.text = binding.requestTV.text.toString() + "file at ${communityModel.communityName} "
+                                    } else {
+                                        binding.requestTV.text = binding.requestTV.text.toString() + "your file at ${communityModel.communityName} "
+                                    }
                                     binding.requestContainerLayout.setOnClickListener {
                                         //head to main activity first
-                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                            //go straight to community
+                                            AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        } else {
+                                            headToMainActivity()
+                                        }
                                         changeNotificationStateToSeen()
                                         headToViewFile()
                                     }
@@ -186,7 +209,12 @@ class NotificationsAdapter(private var context:Context,
                                     binding.requestTV.text = binding.requestTV.text.toString() + "your competition at ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
                                         //head to main activity first
-                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                            //go straight to community
+                                            AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        } else {
+                                            headToMainActivity()
+                                        }
                                         changeNotificationStateToSeen()
                                         headToCompetition()
                                     }
@@ -196,27 +224,50 @@ class NotificationsAdapter(private var context:Context,
                                     binding.requestTV.text = binding.requestTV.text.toString() + "of the competition at ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
                                         //head to main activity first
-                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                            //go straight to community
+                                            AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        } else {
+                                            headToMainActivity()
+                                        }
                                         changeNotificationStateToSeen()
                                         headToCompetition()
                                     }
                                 }
                                 "Forum" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your thread at ${communityModel.communityName} "
+                                    if (value[1] == "Mention"){
+                                        binding.requestTV.text = binding.requestTV.text.toString() + "thread at ${communityModel.communityName} "
+                                    } else {
+                                        binding.requestTV.text = binding.requestTV.text.toString() + "your thread at ${communityModel.communityName} "
+                                    }
                                     binding.requestContainerLayout.setOnClickListener {
                                         //head to main activity first
-                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                            //go straight to community
+                                            AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        } else {
+                                            headToMainActivity()
+                                        }
                                         changeNotificationStateToSeen()
                                         viewThread()
                                     }
                                 }
                                 "Thread" -> {
                                     //adds content type to the notification message
-                                    binding.requestTV.text = binding.requestTV.text.toString() + "your thread comment at ${communityModel.communityName} "
+                                    if (value[1] == "Mention"){
+                                        binding.requestTV.text = binding.requestTV.text.toString() + "thread comment at ${communityModel.communityName} "
+                                    } else {
+                                        binding.requestTV.text = binding.requestTV.text.toString() + "your thread comment at ${communityModel.communityName} "
+                                    }
                                     binding.requestContainerLayout.setOnClickListener {
                                         //head to main activity first
-                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                            //go straight to community
+                                            AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        } else {
+                                            headToMainActivity()
+                                        }
                                         changeNotificationStateToSeen()
                                         viewThread()
                                     }
@@ -226,12 +277,19 @@ class NotificationsAdapter(private var context:Context,
                                     binding.requestTV.text = binding.requestTV.text.toString() + "your event at ${communityModel.communityName} "
                                     binding.requestContainerLayout.setOnClickListener {
                                         //head to main activity first
-                                        AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                            //go straight to community
+                                            AppUtil().headToMainActivity(context, "community", 0, communityModel.communityId)
+                                        } else {
+                                            headToMainActivity()
+                                        }
                                         changeNotificationStateToSeen()
                                         viewThread()
                                     }
                                 }
                             }
+
+
                         } else {
                             //deletes notification
                             deleteNotification()
@@ -242,6 +300,11 @@ class NotificationsAdapter(private var context:Context,
             }
         }
 
+        private fun headToMainActivity(){
+            val intent = Intent(context, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+            context.startActivity(intent)
+        }
         private fun changeNotificationStateToSeen(){
             val mapUpdate = hashMapOf<String, Any>(
                 "notifications.$contentId" to listOf(value[0], value[1], value[2], value[3], value[4], value[5], "seen")

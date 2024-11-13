@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.AsyncTask
 import android.util.Log
 import com.example.synthronize.Chatroom
+import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.google.auth.oauth2.ServiceAccountCredentials
 import okhttp3.MediaType
@@ -16,6 +17,29 @@ import java.io.IOException
 import java.io.InputStream
 
 class NotificationUtil {
+
+
+    private fun checkIfUserIsAllowedToReceive(communityId: String, userID: String, callback: (Boolean) -> Unit){
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {
+            if (it.isSuccessful && it.result.exists()){
+                val communityModel = it.result.toObject(CommunityModel::class.java)!!
+                if (communityModel.communityType == "Private"){
+                    //community is private
+                    if (AppUtil().isIdOnList(communityModel.communityMembers.keys, userID)){
+                        callback(true)
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    //community is public
+                    callback(true)
+                }
+            } else {
+                callback(false)
+            }
+        }
+    }
+
 
     //Sends a notification to the user
     fun sendNotificationToUser(context: Context, contentId:String, contentOwnerId:String, action:String,
@@ -29,11 +53,15 @@ class NotificationUtil {
                     val mapUpdate = hashMapOf<String, Any>(
                         "notifications.$contentId" to listOf(FirebaseUtil().currentUserUid(), action, repeatedAction, contentType, communityId, timestamp, "not_seen")
                     )
-                    FirebaseUtil().targetUserDetails(contentOwnerId).update(mapUpdate).addOnSuccessListener {
-                        FirebaseUtil().targetUserDetails(contentOwnerId).get().addOnCompleteListener {user ->
-                            if (user.result.exists()){
-                                val userModel = user.result.toObject(UserModel::class.java)!!
-                                sendPushNotifications(context, communityId, action, contentId, contentType, userModel.fcmToken)
+                    checkIfUserIsAllowedToReceive(communityId, contentOwnerId){isAllowed ->
+                        if(isAllowed){
+                            FirebaseUtil().targetUserDetails(contentOwnerId).update(mapUpdate).addOnSuccessListener {
+                                FirebaseUtil().targetUserDetails(contentOwnerId).get().addOnCompleteListener {user ->
+                                    if (user.result.exists()){
+                                        val userModel = user.result.toObject(UserModel::class.java)!!
+                                        sendPushNotifications(context, communityId, action, contentId, contentType, userModel.fcmToken)
+                                    }
+                                }
                             }
                         }
                     }
@@ -172,6 +200,10 @@ class NotificationUtil {
                         "Join" -> {
                             //adds action to the notification message
                             body = "${userModel.username} joined your ${contentType.lowercase()}"
+                        }
+                        "Mention" -> {
+                            //adds action to the notification message
+                            body = "${userModel.username} mentioned you in a ${contentType.lowercase()}"
                         }
                         "Winners" -> {
                             //adds action to the notification message

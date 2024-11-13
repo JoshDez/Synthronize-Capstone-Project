@@ -210,6 +210,18 @@
         </androidx.cardview.widget.CardView>
 
 
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/userListRV"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/input_rounded_corners"
+            android:backgroundTint="@color/darker_teal"
+            android:visibility="gone"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
+
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_marginBottom="20dp"

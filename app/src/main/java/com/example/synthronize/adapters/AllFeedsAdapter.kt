@@ -220,6 +220,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
             }
         }
 
+        //TODO FOR MENTION FUNCTION
         fun showUserSelectionDialog(typedText: String, mentionRange: IntRange) {
             // Fetch users from Firestore
             val query = FirebaseUtil().allUsersCollectionReference()
@@ -240,11 +241,33 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
             }
         }
 
+        //TODO FOR MENTION FUNCTION
+        private fun sendNotificationsToMentionedUsers(comment:String){
+            // Use regex to find all occurrences of @ followed by word characters, excluding the "@" in the result
+            val mentionRegex = Regex("@(\\w+)")
+            val matches = mentionRegex.findAll(comment)
+
+            // Collect all matched usernames into a list without the "@"
+            val usernames = matches.map { it.groupValues[1] }.toList()
+
+            if (usernames.isNotEmpty()){
+                FirebaseUtil().allUsersCollectionReference().whereIn("username", usernames).get().addOnSuccessListener {
+                    for (document in it.documents){
+                        val userModel = document.toObject(UserModel::class.java)!!
+                        //sends notification
+                        NotificationUtil().sendNotificationToUser(context, postModel.postId, userModel.userID, "Mention",
+                            "0","Post", postModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
+                    }
+                }
+            }
+        }
+
         private fun bindComment() {
 
             binding.commentEdtTxt.addTextChangedListener(object: TextWatcher {
                 override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    //TODO FOR MENTION FUNCTION
                     s?.let { text ->
                         // Detect "@username" pattern with any characters after '@'
                         val mentionMatch = Regex("@(\\w+)$").find(text.subSequence(0, start + count))
@@ -297,6 +320,10 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                                         updateFeedStatus()
 
                                         Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
+
+                                        //TODO FOR MENTION FUNCTION
+                                        //send mentioned users notification
+                                        sendNotificationsToMentionedUsers(comment)
 
                                         //gets comments count before sending notification
                                         FirebaseUtil().retrieveCommunityFeedsCollection(postModel.communityId).document(postModel.postId)

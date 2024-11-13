@@ -414,8 +414,10 @@ class AppUtil {
         val badWords = listOf(
             "fuck", "fucking", "fucked", "fucks", "shit", "shitting", "shits", "asshole", "assholes", "cunt", "cunts", "bastard", "bitch", "bitches",
             "bitched", "nigga", "niggas", "nigger", "niggers", "motherfucker",
-            "cock", "wanker", "crap", "gyatt", "ass", "cum", "cums", "cumming", "creampie", "cock", "cocksucker", "milf", // English swear words
-            "bobo", "bobong", "puta", "putang", "pota", "potaena", "pakshet", "gago", "gagong", "kupal", "tite", "inamo", "kantot", "kantotan", "burat",  "tarantado", "bakla" // Filipino bad words
+            "cock", "wanker", "crap", "gyatt", "ass", "cum", "cums", "cumming", "creampie", "cock", "cocksucker", "milf", "slut", "whore", "pornstar"
+            , "handjob", "blowjob", // English swear words
+            "bobo", "bobong", "puta", "putang", "pota", "potaena", "pakshet", "gago", "gagong", "kupal", "tite", "inamo", "kantot", "kantotan", "burat",  "tarantado",
+            "tangina", "bakla", "kantutan" // Filipino bad words
         )
 
         // Convert the input to lowercase and split the string by space

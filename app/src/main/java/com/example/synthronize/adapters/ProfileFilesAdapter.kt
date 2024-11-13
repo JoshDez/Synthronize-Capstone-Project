@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
@@ -25,6 +26,7 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NotificationUtil
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import java.io.File
@@ -137,11 +139,66 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
             context.startActivity(intent)
         }
 
+
+
+        fun showUserSelectionDialog(typedText: String, mentionRange: IntRange) {
+            // Fetch users from Firestore
+            val query = FirebaseUtil().allUsersCollectionReference()
+                .whereGreaterThanOrEqualTo("username" , typedText)
+                .whereLessThanOrEqualTo("username", typedText + "\uf8ff")
+
+            query.get().addOnSuccessListener {
+                if (it.documents.isNotEmpty()){
+                    val options = FirestoreRecyclerOptions.Builder<UserModel>()
+                        .setQuery(query, UserModel::class.java)
+                        .build()
+
+                    binding.userListRV.layoutManager = LinearLayoutManager(context)
+                    val adapter = ContentUsersAdapter(context, options, true, binding.commentEdtTxt, mentionRange)
+                    binding.userListRV.adapter = adapter
+                    adapter.startListening()
+                }
+            }
+        }
+
+        private fun sendNotificationsToMentionedUsers(comment:String){
+            // Use regex to find all occurrences of @ followed by word characters, excluding the "@" in the result
+            val mentionRegex = Regex("@(\\w+)")
+            val matches = mentionRegex.findAll(comment)
+
+            // Collect all matched usernames into a list without the "@"
+            val usernames = matches.map { it.groupValues[1] }.toList()
+
+            if (usernames.isNotEmpty()){
+                FirebaseUtil().allUsersCollectionReference().whereIn("username", usernames).get().addOnSuccessListener {
+                    for (document in it.documents){
+                        val userModel = document.toObject(UserModel::class.java)!!
+                        //sends notification
+                        NotificationUtil().sendNotificationToUser(context, fileModel.fileId, userModel.userID, "Mention",
+                            "0","File", fileModel.communityId, DateAndTimeUtil().timestampToString(Timestamp.now()))
+                    }
+                }
+            }
+        }
+
+
         private fun bindComment() {
 
             binding.commentEdtTxt.addTextChangedListener(object: TextWatcher {
                 override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    s?.let { text ->
+                        // Detect "@username" pattern with any characters after '@'
+                        val mentionMatch = Regex("@(\\w+)$").find(text.subSequence(0, start + count))
+                        if (mentionMatch != null) {
+                            binding.userListRV.visibility = View.VISIBLE
+                            val typedText = mentionMatch.groupValues[1] // Get text after @
+                            showUserSelectionDialog(typedText, mentionMatch.range)
+                        } else {
+                            binding.userListRV.visibility = View.GONE
+                        }
+                    }
+                }
                 override fun afterTextChanged(s: Editable?) {
                     val comment = binding.commentEdtTxt.text.toString()
                     if (comment.isNotEmpty()){
@@ -178,6 +235,10 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
                                         binding.commentEdtTxt.setText("")
                                         updateFeedStatus()
                                         Toast.makeText(context, "Comment sent", Toast.LENGTH_SHORT).show()
+
+
+                                        //send mentioned users notification
+                                        sendNotificationsToMentionedUsers(comment)
 
                                         //gets comments count before sending the notification
                                         FirebaseUtil().retrieveCommunityFilesCollection(fileModel.communityId).document(fileModel.fileId).collection("comments").get().addOnSuccessListener { comments ->

@@ -61,7 +61,12 @@ class Splash : AppCompatActivity() {
                                     }
 
                                     //head to main activity first
-                                    AppUtil().headToMainActivity(this, "community", 0, communityId)
+                                    if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                        //go straight to community
+                                        AppUtil().headToMainActivity(this, "community", 0, communityId)
+                                    } else {
+                                        headToMainActivity()
+                                    }
 
                                     Handler().postDelayed({
                                         //then to the content

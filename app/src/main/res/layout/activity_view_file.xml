@@ -73,7 +73,7 @@
             android:id="@+id/scrollViewLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/divider4"
+            android:layout_above="@id/userListRV"
             android:layout_below="@id/divider1">
 
             <LinearLayout
@@ -246,6 +246,19 @@
 
             </LinearLayout>
         </ScrollView>
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/userListRV"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/input_rounded_corners"
+            android:backgroundTint="@color/dark_teal"
+            android:layout_above="@id/divider4"
+            android:visibility="gone"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider4"
