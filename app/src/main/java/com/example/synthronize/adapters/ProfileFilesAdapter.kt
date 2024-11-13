@@ -239,6 +239,9 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
                 .document(fileModel.fileId).get().addOnSuccessListener {
                     val tempFileModel = it.toObject(fileModel::class.java)!!
                     binding.lovesCountTV.text = tempFileModel.loveList.size.toString()
+                    binding.lovesCountTV.setOnClickListener {
+                        DialogUtil().openInteractionUsersList(context, inflater, tempFileModel.loveList)
+                    }
                 }
                 .addOnFailureListener {
                     //if Offline

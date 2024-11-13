@@ -19,6 +19,7 @@ import com.example.synthronize.CreateThread
 import com.example.synthronize.CreateUploadFile
 import com.example.synthronize.R
 import com.example.synthronize.adapters.ChatroomAdapter
+import com.example.synthronize.adapters.ContentUsersAdapter
 import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.DialogForwardContentBinding
@@ -630,7 +631,7 @@ class DialogUtil: OnItemClickListener {
         dialogPlusBinding.communityNameTV.text = communityModel.communityName
         AppUtil().showMoreAndLessWords(communityModel.communityDescription, dialogPlusBinding.communityDescriptionTV, 50)
         dialogPlusBinding.totalMembersCountTV.text = "${communityModel.communityMembers.size}"
-        dialogPlusBinding.createdDateTV.text = "Created: ${DateAndTimeUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)}"
+        dialogPlusBinding.createdDateTV.text = DateAndTimeUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)
         AppUtil().setCommunityProfilePic(context, communityModel.communityId, dialogPlusBinding.communityProfileCIV)
         AppUtil().setCommunityBannerPic(context, communityModel.communityId, dialogPlusBinding.communityBannerIV)
         AppUtil().changeCommunityButtonStates(context, dialogPlusBinding.communityActionBtn, communityModel.communityId)
@@ -638,6 +639,88 @@ class DialogUtil: OnItemClickListener {
         Handler().postDelayed({
             dialogPlus.show()
         }, 500)
+    }
+
+
+
+    //Content interaction user list
+    fun openInteractionUsersList(context: Context, layoutInflater:LayoutInflater, contentUserList:List<String>){
+        val usersBinding = DialogListBinding.inflate(layoutInflater)
+        val usersDialog = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(usersBinding.root))
+            .create()
+
+        var searchQuery = ""
+
+        if (contentUserList.isNotEmpty())
+            setupUserListRV(context, searchQuery, usersBinding.listRV, contentUserList)
+
+        usersBinding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                searchQuery = usersBinding.searchEdtTxt.text.toString()
+                if (contentUserList.isNotEmpty())
+                    setupUserListRV(context, searchQuery, usersBinding.listRV, contentUserList)
+            }
+
+        })
+
+        usersBinding.toolbarTitleTV.text = "Users"
+
+        usersBinding.backBtn.setOnClickListener {
+            usersDialog.dismiss()
+        }
+
+        usersDialog.show()
+    }
+
+    private fun setupUserListRV(context: Context, searchQuery:String, contentUserRV:RecyclerView, contentUserList:List<String>) {
+        if (searchQuery.isNotEmpty()){
+            if (searchQuery[0] == '@'){
+                //search for username
+                val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                    .whereIn("userID", contentUserList)
+                    .whereGreaterThanOrEqualTo("username", searchQuery.removePrefix("@"))
+
+                val options: FirestoreRecyclerOptions<UserModel> =
+                    FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+                //set up searched users recycler view
+                contentUserRV.layoutManager = LinearLayoutManager(context)
+                val contentUsersAdapter = ContentUsersAdapter(context, options)
+                contentUserRV.adapter = contentUsersAdapter
+                contentUsersAdapter.startListening()
+
+            } else {
+                //search for fullName
+                val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                    .whereIn("userID", contentUserList)
+                    .whereGreaterThanOrEqualTo("fullName", searchQuery)
+
+                val options: FirestoreRecyclerOptions<UserModel> =
+                    FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+                //set up searched users recycler view
+                contentUserRV.layoutManager = LinearLayoutManager(context)
+                val contentUsersAdapter = ContentUsersAdapter(context, options)
+                contentUserRV.adapter = contentUsersAdapter
+                contentUsersAdapter.startListening()
+            }
+        } else {
+            //query all users
+            val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                .whereIn("userID", contentUserList)
+
+            val options: FirestoreRecyclerOptions<UserModel> =
+                FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+
+            //set up searched users recycler view
+            contentUserRV.layoutManager = LinearLayoutManager(context)
+            val contentUsersAdapter = ContentUsersAdapter(context, options)
+            contentUserRV.adapter = contentUsersAdapter
+            contentUsersAdapter.startListening()
+        }
     }
 
     override fun onItemClick(id: String, isChecked: Boolean) {}

@@ -243,6 +243,9 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                     val tempPostModel = it.toObject(PostModel::class.java)!!
                     feedBinding.lovesCountTV.text = tempPostModel.loveList.size.toString()
                     feedBinding.sentPostCountTV.text = tempPostModel.sendPostList.size.toString()
+                    feedBinding.lovesCountTV.setOnClickListener {
+                        DialogUtil().openInteractionUsersList(context, inflater, tempPostModel.loveList)
+                    }
                 }
                 .addOnFailureListener {
                     //if Offline

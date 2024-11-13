@@ -75,7 +75,7 @@ class EventsAdapter(
 
             }
             binding.participantsCountTV.setOnClickListener {
-                openParticipantsListDialog(inflater)
+                DialogUtil().openInteractionUsersList(context, inflater, eventModel.eventParticipants)
             }
             binding.mainLayout.setOnClickListener {
                 val intent = Intent(context, ViewEvent::class.java)
@@ -133,87 +133,6 @@ class EventsAdapter(
                 binding.participateBtn.visibility = View.GONE
             }
         }
-
-
-        private fun openParticipantsListDialog(layoutInflater: LayoutInflater){
-            val participantsBinding = DialogListBinding.inflate(layoutInflater)
-            val friendsDialog = DialogPlus.newDialog(context)
-                .setContentHolder(ViewHolder(participantsBinding.root))
-                .create()
-
-            var searchQuery = ""
-
-            if (eventModel.eventParticipants.isNotEmpty())
-                setupParticipantsRV(context, searchQuery, participantsBinding.listRV)
-
-            participantsBinding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    searchQuery = participantsBinding.searchEdtTxt.text.toString()
-                    if (eventModel.eventParticipants.isNotEmpty())
-                        setupParticipantsRV(context, searchQuery, participantsBinding.listRV)
-                }
-
-            })
-
-            participantsBinding.toolbarTitleTV.text = "Participants"
-
-            participantsBinding.backBtn.setOnClickListener {
-                friendsDialog.dismiss()
-            }
-
-            friendsDialog.show()
-        }
-
-        private fun setupParticipantsRV(context: Context, searchQuery:String, participantsRV:RecyclerView) {
-            if (searchQuery.isNotEmpty()){
-                if (searchQuery[0] == '@'){
-                    //search for username
-                    val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
-                        .whereIn("userID", eventModel.eventParticipants)
-                        .whereGreaterThanOrEqualTo("username", searchQuery.removePrefix("@"))
-
-                    val options: FirestoreRecyclerOptions<UserModel> =
-                        FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
-
-                    //set up searched users recycler view
-                    participantsRV.layoutManager = LinearLayoutManager(context)
-                    val searchUserAdapter = SearchUserAdapter(context = context, options, listener = listener)
-                    participantsRV.adapter = searchUserAdapter
-                    searchUserAdapter.startListening()
-
-                } else {
-                    //search for fullName
-                    val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
-                        .whereIn("userID", eventModel.eventParticipants)
-                        .whereGreaterThanOrEqualTo("fullName", searchQuery)
-
-                    val options: FirestoreRecyclerOptions<UserModel> =
-                        FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
-
-                    //set up searched users recycler view
-                    participantsRV.layoutManager = LinearLayoutManager(context)
-                    val searchUserAdapter = SearchUserAdapter(context = context, options, listener = listener)
-                    participantsRV.adapter = searchUserAdapter
-                    searchUserAdapter.startListening()
-                }
-            } else {
-                //query all users
-                val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
-                    .whereIn("userID", eventModel.eventParticipants)
-
-                val options: FirestoreRecyclerOptions<UserModel> =
-                    FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
-
-                //set up searched users recycler view
-                participantsRV.layoutManager = LinearLayoutManager(context)
-                val searchUserAdapter = SearchUserAdapter(context = context, options, listener = listener)
-                participantsRV.adapter = searchUserAdapter
-                searchUserAdapter.startListening()
-            }
-        }
-
         private fun formatEventDate(timestamp: Timestamp): String {
             val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
             return sdf.format(timestamp.toDate())

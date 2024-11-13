@@ -344,6 +344,9 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                     val tempPostModel = it.toObject(PostModel::class.java)!!
                     binding.lovesCountTV.text = tempPostModel.loveList.size.toString()
                     binding.sentPostCountTV.text = tempPostModel.sendPostList.size.toString()
+                    binding.lovesCountTV.setOnClickListener {
+                        DialogUtil().openInteractionUsersList(context, inflater, tempPostModel.loveList)
+                    }
                 }
                 .addOnFailureListener {
                     //if Offline
