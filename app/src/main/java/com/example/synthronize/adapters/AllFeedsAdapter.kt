@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +27,7 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NotificationUtil
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import kotlin.random.Random
@@ -217,11 +220,43 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
             }
         }
 
+        fun showUserSelectionDialog(typedText: String, mentionRange: IntRange) {
+            // Fetch users from Firestore
+            val query = FirebaseUtil().allUsersCollectionReference()
+                .whereGreaterThanOrEqualTo("username" , typedText)
+                .whereLessThanOrEqualTo("username", typedText + "\uf8ff")
+
+            query.get().addOnSuccessListener {
+                if (it.documents.isNotEmpty()){
+                    val options = FirestoreRecyclerOptions.Builder<UserModel>()
+                        .setQuery(query, UserModel::class.java)
+                        .build()
+
+                    binding.userListRV.layoutManager = LinearLayoutManager(context)
+                    val adapter = ContentUsersAdapter(context, options, true, binding.commentEdtTxt, mentionRange)
+                    binding.userListRV.adapter = adapter
+                    adapter.startListening()
+                }
+            }
+        }
+
         private fun bindComment() {
 
             binding.commentEdtTxt.addTextChangedListener(object: TextWatcher {
                 override fun beforeTextChanged( s: CharSequence?, start: Int, count: Int, after: Int ) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    s?.let { text ->
+                        // Detect "@username" pattern with any characters after '@'
+                        val mentionMatch = Regex("@(\\w+)$").find(text.subSequence(0, start + count))
+                        if (mentionMatch != null) {
+                            binding.userListRV.visibility = View.VISIBLE
+                            val typedText = mentionMatch.groupValues[1] // Get text after @
+                            showUserSelectionDialog(typedText, mentionMatch.range)
+                        } else {
+                            binding.userListRV.visibility = View.GONE
+                        }
+                    }
+                }
                 override fun afterTextChanged(s: Editable?) {
                     val comment = binding.commentEdtTxt.text.toString()
                     if (comment.isNotEmpty()){

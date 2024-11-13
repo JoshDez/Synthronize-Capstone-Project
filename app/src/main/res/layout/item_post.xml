@@ -171,6 +171,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="7dp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:autoLink="web"
@@ -178,13 +179,22 @@
             android:contentDescription="@string/feed_description"
             android:textColor="@color/light_teal" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/userListRV"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/input_rounded_corners"
+            android:backgroundTint="@color/darker_teal"
+            android:visibility="gone"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
-            android:layout_marginTop="7dp"
             android:gravity="center"
             android:orientation="horizontal">
 

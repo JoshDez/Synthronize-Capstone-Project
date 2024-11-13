@@ -1,111 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/userMainLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <RelativeLayout
-        android:id="@+id/userContainerRL"
-        android:padding="10dp"
-        android:layout_toLeftOf="@id/buttonLayout"
+
+    <LinearLayout
+        android:id="@+id/userMainLayout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/userPositionTV"
-            android:layout_width="50dp"
-            android:layout_height="70dp"
-            android:textSize="20dp"
-            android:contentDescription="@string/full_name"
-            android:gravity="center"
-            android:visibility="gone"
-            android:textColor="@color/light_teal"/>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/userCircleImageView"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/userPositionTV"
-            android:src="@drawable/user_default_profile"/>
-        <TextView
-            android:id="@+id/userFullNameTV"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/userContainerRL"
+            android:padding="10dp"
             android:layout_toLeftOf="@id/buttonLayout"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textSize="20dp"
-            android:contentDescription="@string/full_name"
-            android:textColor="@color/light_teal"
-            android:layout_toRightOf="@id/userCircleImageView"/>
-
-        <TextView
-            android:id="@+id/usernameTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/buttonLayout"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_below="@id/userFullNameTV"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textSize="16dp"
-            android:contentDescription="@string/username"
-            android:textColor="@color/light_teal"
-            android:layout_toRightOf="@id/userCircleImageView"/>
-
-        <LinearLayout
-            android:id="@+id/buttonLayout"
-            android:orientation="horizontal"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <CheckBox
-                android:id="@+id/selectUserCB"
+            <TextView
+                android:id="@+id/userPositionTV"
+                android:layout_width="50dp"
+                android:layout_height="70dp"
+                android:textSize="20dp"
+                android:contentDescription="@string/full_name"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/light_teal"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userCircleImageView"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/userPositionTV"
+                android:src="@drawable/user_default_profile"/>
+            <TextView
+                android:id="@+id/userFullNameTV"
+                android:layout_width="wrap_content"
+                android:layout_toLeftOf="@id/buttonLayout"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="20dp"
+                android:contentDescription="@string/full_name"
+                android:textColor="@color/light_teal"
+                android:layout_toRightOf="@id/userCircleImageView"/>
+
+            <TextView
+                android:id="@+id/usernameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:buttonTint="@color/light_teal" />
+                android:layout_toLeftOf="@id/buttonLayout"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/userFullNameTV"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="16dp"
+                android:contentDescription="@string/username"
+                android:textColor="@color/light_teal"
+                android:layout_toRightOf="@id/userCircleImageView"/>
 
-            <ImageButton
-                android:id="@+id/rejectBtn"
+            <LinearLayout
+                android:id="@+id/buttonLayout"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/selectUserCB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:buttonTint="@color/light_teal" />
+
+                <ImageButton
+                    android:id="@+id/rejectBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/red_cancel_button"
+                    android:visibility="gone"/>
+
+
+                <ImageButton
+                    android:id="@+id/acceptBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/check_icon"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/unbanBtn"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Unban"
+                    app:backgroundTint="@color/teal2"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/userMentionMainLayout"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <RelativeLayout
+            android:id="@+id/userMentionContainerRL"
+            android:padding="5dp"
+            android:layout_toLeftOf="@id/buttonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userMentionCircleImageView"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="10dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/red_cancel_button"
-                android:visibility="gone"/>
+                android:layout_centerVertical="true"
+                android:src="@drawable/user_default_profile"/>
 
-
-            <ImageButton
-                android:id="@+id/acceptBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="10dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/check_icon"
-                android:visibility="gone" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/unbanBtn"
-                android:visibility="gone"
+            <TextView
+                android:id="@+id/usernameMentionTV"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="Unban"
-                app:backgroundTint="@color/teal2"/>
-
-
-        </LinearLayout>
-
-    </RelativeLayout>
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="16dp"
+                android:contentDescription="@string/username"
+                android:textColor="@color/light_teal"
+                android:layout_toRightOf="@id/userMentionCircleImageView"/>
+        </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>
