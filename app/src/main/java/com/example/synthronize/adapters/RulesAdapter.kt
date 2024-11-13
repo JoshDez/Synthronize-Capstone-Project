@@ -46,7 +46,7 @@ class RulesAdapter(private val context: Context, private val rules: HashMap<Stri
                     val newRule = ruleBinding.ruleEdtTxt.text.toString()
                     if (newRule.isEmpty()){
                         Toast.makeText(context, "Please type your rule", Toast.LENGTH_SHORT).show()
-                    } else if (AppUtil().containsBadWord(newRule)) {
+                    } else if (AppUtil().containsSensitiveWords(newRule)) {
                         Toast.makeText(context, "Your rule contains sensitive words", Toast.LENGTH_SHORT).show()
                     } else {
                         listener.modifiedRule(key, newRule)

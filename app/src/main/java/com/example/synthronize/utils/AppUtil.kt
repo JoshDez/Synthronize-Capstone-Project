@@ -2,7 +2,6 @@ package com.example.synthronize.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Handler
 import android.view.View
 import android.widget.ImageView
@@ -14,26 +13,11 @@ import com.example.synthronize.MainActivity
 import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
 import com.example.synthronize.databinding.ActivityMainBinding
-import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
-import com.google.android.exoplayer2.util.Log
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FieldValue
-import com.google.auth.oauth2.ServiceAccountCredentials
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
-import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.InputStream
 
 
 class AppUtil {
@@ -425,12 +409,13 @@ class AppUtil {
     }
 
     //Detects any bad words
-    fun containsBadWord(input: String): Boolean {
+    fun containsSensitiveWords(input: String): Boolean {
         // List of bad words in English and Filipino
         val badWords = listOf(
-            "fuck", "fucking", "fucked", "fucks", "shit", "shitting", "shits", "asshole", "cunt", "bastard",
-            "cock", "wanker", "crap", "gyatt", "ass", "cum", "creampie", "cock", "cocksucker", "milf", // English swear words
-            "bobo", "puta", "putang", "pota", "potaena", "pakshet", "gago", "gagong", "kupal", "tite", "inamo", "kantot", "kantotan", "burat", "leche", "tarantado", "bakla" // Filipino bad words
+            "fuck", "fucking", "fucked", "fucks", "shit", "shitting", "shits", "asshole", "assholes", "cunt", "cunts", "bastard", "bitch", "bitches",
+            "bitched", "nigga", "niggas", "nigger", "niggers", "motherfucker",
+            "cock", "wanker", "crap", "gyatt", "ass", "cum", "cums", "cumming", "creampie", "cock", "cocksucker", "milf", // English swear words
+            "bobo", "bobong", "puta", "putang", "pota", "potaena", "pakshet", "gago", "gagong", "kupal", "tite", "inamo", "kantot", "kantotan", "burat",  "tarantado", "bakla" // Filipino bad words
         )
 
         // Convert the input to lowercase and split the string by space

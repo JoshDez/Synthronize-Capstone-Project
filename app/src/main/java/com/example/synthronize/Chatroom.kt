@@ -216,7 +216,7 @@ class Chatroom : AppCompatActivity() {
     private fun bindChatroomButtons(){
         binding.sendMsgBtn.setOnClickListener {
             val message = binding.chatBoxEdtTxt.text.toString()
-            if (AppUtil().containsBadWord(message)){
+            if (AppUtil().containsSensitiveWords(message)){
                 Toast.makeText(this, "Your message contains sensitive words", Toast.LENGTH_SHORT).show()
             } else {
                 if (message.isNotEmpty()){

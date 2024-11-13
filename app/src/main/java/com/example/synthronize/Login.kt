@@ -134,7 +134,7 @@ class Login : AppCompatActivity() {
 
             } else {
                 loadingDialog.dismiss()
-                Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, it.exception?.message ?: "Registration failed", Toast.LENGTH_SHORT).show()
             }
         }
     }

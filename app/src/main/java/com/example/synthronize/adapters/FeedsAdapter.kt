@@ -167,7 +167,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
                 val comment = feedBinding.commentEdtTxt.text.toString()
                 if (comment.isEmpty()){
                     Toast.makeText(context, "Please type your comment", Toast.LENGTH_SHORT).show()
-                } else if(AppUtil().containsBadWord(comment)){
+                } else if(AppUtil().containsSensitiveWords(comment)){
                     Toast.makeText(context, "Your comment contains sensitive words", Toast.LENGTH_SHORT).show()
                 } else {
                     val commentModel = CommentModel()

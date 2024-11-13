@@ -16,7 +16,6 @@ import com.example.synthronize.databinding.ActivityViewFileBinding
 import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.CommentModel
 import com.example.synthronize.model.FileModel
-import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.ContentUtil
@@ -190,11 +189,11 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
         val extension = fileModel.fileName.split('.').last()
 
         if (extension == "pdf"){
-            binding.fileIV.setImageResource(R.drawable.pdf_icon)
+            binding.fileIV.setImageResource(R.drawable.pdf_100)
         } else if (extension == "docx"){
-            binding.fileIV.setImageResource(R.drawable.docx_icon)
-        } else if (extension == "excel"){
-            binding.fileIV.setImageResource(R.drawable.excel_icon)
+            binding.fileIV.setImageResource(R.drawable.word_100)
+        } else if (extension == "xls" || extension == "xlsx"){
+            binding.fileIV.setImageResource(R.drawable.xls_100)
         }
     }
 
@@ -216,7 +215,7 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
 
             if (comment.isEmpty()){
                 Toast.makeText(this, "Please type your comment", Toast.LENGTH_SHORT).show()
-            } else if(AppUtil().containsBadWord(comment)){
+            } else if(AppUtil().containsSensitiveWords(comment)){
                 Toast.makeText(this, "Your comment contains sensitive words", Toast.LENGTH_SHORT).show()
             } else {
                 commentAdapter.stopListening()

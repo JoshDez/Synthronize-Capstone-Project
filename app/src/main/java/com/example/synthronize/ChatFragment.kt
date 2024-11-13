@@ -11,10 +11,8 @@ import android.util.Log
 import android.view.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -25,7 +23,6 @@ import com.example.synthronize.adapters.CommunityChatroomsAdapter
 import com.example.synthronize.adapters.FriendsAdapter
 import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.ActivityMainBinding
-import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.DialogCreateGroupchatBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.FragmentChatBinding
@@ -35,7 +32,6 @@ import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
-import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.orhanobut.dialogplus.DialogPlus
@@ -351,7 +347,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
         val groupChatName = dialogPlusBinding.groupChatNameEdtTxt.text.toString()
         if (groupChatName.isEmpty() || groupChatName.length < 3){
             Toast.makeText(context, "Group chat name should at least have 3 or more characters", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(groupChatName)) {
+        } else if (AppUtil().containsSensitiveWords(groupChatName)) {
             Toast.makeText(context, "The name contains sensitive word/s", Toast.LENGTH_SHORT).show()
         } else if (selectedUserList.size < 2) {
             Toast.makeText(context, "Members should be more than 1", Toast.LENGTH_SHORT).show()

@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.nfc.Tag
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -156,7 +155,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         binding.nextBtn.setOnClickListener {
             if (communityName.isEmpty()){
                 binding.communityNameEdtTxt.error = "Enter community name"
-            } else if (AppUtil().containsBadWord(communityName)){
+            } else if (AppUtil().containsSensitiveWords(communityName)){
                 binding.communityNameEdtTxt.error = "Your community name contains sensitive words"
             } else if (communityType.isEmpty()){
                 Toast.makeText(this, "Select community type", Toast.LENGTH_SHORT).show()

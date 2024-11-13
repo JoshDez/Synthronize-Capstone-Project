@@ -216,7 +216,7 @@ class CreateThread : AppCompatActivity() {
 
         if (caption.isEmpty()){
             Toast.makeText(this, "Please write your topic", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(caption)){
+        } else if (AppUtil().containsSensitiveWords(caption)){
             Toast.makeText(this, "Caption contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (forumId == "null" || forumId.isEmpty()){
             //Upload new forum

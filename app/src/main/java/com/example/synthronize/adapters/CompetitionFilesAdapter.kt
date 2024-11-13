@@ -130,7 +130,7 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
                 binding.fileIconIV.setImageResource(R.drawable.pdf_icon)
             } else if (extension == "docx"){
                 binding.fileIconIV.setImageResource(R.drawable.docx_icon)
-            } else if (extension == "excel"){
+            } else if (extension == "xls" || extension == "xlsx"){
                 binding.fileIconIV.setImageResource(R.drawable.excel_icon)
             }
         }

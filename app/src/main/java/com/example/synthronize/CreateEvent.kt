@@ -17,21 +17,16 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreateEventBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.EventModel
-import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.GlideApp
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 import java.text.SimpleDateFormat
@@ -157,17 +152,17 @@ class CreateEvent : AppCompatActivity() {
         //Validation
         if (eventName.isEmpty()){
             Toast.makeText(this, "Please add event name", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(eventName)){
+        } else if (AppUtil().containsSensitiveWords(eventName)){
             Toast.makeText(this, "Event name contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (dateAndTime.isEmpty()){
             Toast.makeText(this, "Please add event date and time", Toast.LENGTH_SHORT).show()
         } else if (eventLocation.isEmpty()){
             Toast.makeText(this, "Please add event location", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(eventLocation)){
+        } else if (AppUtil().containsSensitiveWords(eventLocation)){
             Toast.makeText(this, "Event location contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (eventDesc.isEmpty()){
             Toast.makeText(this, "Please add event description", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(eventDesc)){
+        } else if (AppUtil().containsSensitiveWords(eventDesc)){
             Toast.makeText(this, "Event description contains sensitive words", Toast.LENGTH_SHORT).show()
         } else {
             // Convert date and time to Timestamp

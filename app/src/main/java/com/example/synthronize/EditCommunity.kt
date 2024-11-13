@@ -25,7 +25,6 @@ import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.CommunityModel
-import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.Timestamp
@@ -122,7 +121,7 @@ class EditCommunity : AppCompatActivity() {
         if (binding.communityNameEdtTxt.text.toString().isEmpty()) {
             binding.communityNameEdtTxt.error = "full name should not be blank"
 
-        } else if (AppUtil().containsBadWord(binding.communityDescEdtTxt.text.toString())) {
+        } else if (AppUtil().containsSensitiveWords(binding.communityDescEdtTxt.text.toString())) {
             binding.communityDescEdtTxt.error = "Your description contains sensitive words"
 
         } else if (isCommunityNameValid) {
@@ -320,7 +319,7 @@ class EditCommunity : AppCompatActivity() {
                     if (name.isEmpty()){
                         binding.communityNameEdtTxt.error = "Community name should not be empty"
                         isCommunityNameValid = false
-                    } else if(AppUtil().containsBadWord(name)){
+                    } else if(AppUtil().containsSensitiveWords(name)){
                         binding.communityNameEdtTxt.error = "Your community name contains sensitive words"
                         isCommunityNameValid = false
                     } else {

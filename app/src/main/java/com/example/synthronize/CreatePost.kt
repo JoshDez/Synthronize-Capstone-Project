@@ -23,8 +23,6 @@ import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreatePostBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
-import com.example.synthronize.model.CompetitionModel
-import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.PostModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -394,7 +392,7 @@ class CreatePost : AppCompatActivity() {
         val caption = binding.captionEdtTxt.text.toString()
         var delay:Long = 1000
 
-        if (AppUtil().containsBadWord(caption)){
+        if (AppUtil().containsSensitiveWords(caption)){
             Toast.makeText(this, "Caption contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (canPost && postId == "null" || postId.isEmpty()){
             //Upload new post

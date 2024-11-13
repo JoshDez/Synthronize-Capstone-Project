@@ -5,7 +5,6 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.provider.OpenableColumns
 import android.view.Gravity
 import android.view.View
@@ -15,12 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.synthronize.databinding.ActivityCreateUploadFileBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
-import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.FileModel
-import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
-import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
@@ -100,9 +96,9 @@ class CreateUploadFile : AppCompatActivity() {
 
         if (fileName.isEmpty()){
             Toast.makeText(this, "Please attach your file", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(fileName)){
+        } else if (AppUtil().containsSensitiveWords(fileName)){
             Toast.makeText(this, "Your file name contains sensitive words", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(caption)){
+        } else if (AppUtil().containsSensitiveWords(caption)){
             Toast.makeText(this, "Your caption contains sensitive words", Toast.LENGTH_SHORT).show()
         } else {
             if (::selectedFileUri.isInitialized){

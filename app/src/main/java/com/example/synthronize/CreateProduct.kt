@@ -17,8 +17,6 @@ import androidx.core.util.TypedValueCompat
 import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreateProductBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
-import com.example.synthronize.databinding.DialogWarningMessageBinding
-import com.example.synthronize.model.PostModel
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -214,11 +212,11 @@ class CreateProduct : AppCompatActivity() {
         //Validation
         if (productName.isEmpty()){
             Toast.makeText(this, "Please add product name", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(productName)){
+        } else if (AppUtil().containsSensitiveWords(productName)){
             Toast.makeText(this, "Product name contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (productDesc.isEmpty()){
             Toast.makeText(this, "Please add product description", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(productDesc)){
+        } else if (AppUtil().containsSensitiveWords(productDesc)){
             Toast.makeText(this, "Product description contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (!hasProductImages()){
             Toast.makeText(this, "Please add images of your product", Toast.LENGTH_SHORT).show()

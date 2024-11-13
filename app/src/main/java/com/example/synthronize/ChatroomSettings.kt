@@ -2,7 +2,6 @@ package com.example.synthronize
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -34,7 +33,6 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.toObject
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -313,7 +311,7 @@ class ChatroomSettings : AppCompatActivity(), OnItemClickListener, OnRefreshList
             val name = binding.chatroomNameEdtTxt.text.toString()
             if (name.length < 3){
                 Toast.makeText(this, "Chatroom name should at least have 3 or more characters", Toast.LENGTH_SHORT).show()
-            } else if (AppUtil().containsBadWord(name)){
+            } else if (AppUtil().containsSensitiveWords(name)){
                 Toast.makeText(this, "The name contains sensitive word/s", Toast.LENGTH_SHORT).show()
             } else {
                 //updates name

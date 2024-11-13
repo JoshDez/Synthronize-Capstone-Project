@@ -50,7 +50,7 @@ class InstructionsAdapter(private val context: Context, private val instructionM
                     val newInstruction = instructionBinding.instructionEdtTxt.text.toString()
                     if (newInstruction.isEmpty()){
                         Toast.makeText(context, "Please type your instruction", Toast.LENGTH_SHORT).show()
-                    } else if (AppUtil().containsBadWord(newInstruction)) {
+                    } else if (AppUtil().containsSensitiveWords(newInstruction)) {
                         Toast.makeText(context, "Your instruction contains sensitive words", Toast.LENGTH_SHORT).show()
                     } else {
                         instructionModel.instruction = newInstruction

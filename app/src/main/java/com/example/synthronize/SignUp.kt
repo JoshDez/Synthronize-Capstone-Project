@@ -3,7 +3,6 @@ package com.example.synthronize
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Html
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -13,7 +12,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.example.synthronize.databinding.ActivitySignUpBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.databinding.DialogPrivacyPolicyBinding
-import com.example.synthronize.databinding.DialogReportBinding
 import com.example.synthronize.model.AccTypeRequestModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -129,19 +127,16 @@ class SignUp : AppCompatActivity() {
             if (fullName.isEmpty()) {
                 Toast.makeText(this, "Please enter your Full Name", Toast.LENGTH_SHORT).show()
                 loadingDialog.dismiss()
-            } else if(AppUtil().containsBadWord(fullName)) {
+            } else if(AppUtil().containsSensitiveWords(fullName)) {
                 Toast.makeText(this, "Your full name contains sensitive words", Toast.LENGTH_SHORT).show()
                 loadingDialog.dismiss()
             } else if(email.isEmpty()) {
                 Toast.makeText(this, "Please enter your Email", Toast.LENGTH_SHORT).show()
                 loadingDialog.dismiss()
-            } else if(!email.endsWith("@neu.edu.ph")) {
-                Toast.makeText(this, "Please enter your institutional email", Toast.LENGTH_SHORT).show()
-                loadingDialog.dismiss()
             } else if(pass.isEmpty()) {
                 Toast.makeText(this, "Please enter your Password", Toast.LENGTH_SHORT).show()
                 loadingDialog.dismiss()
-            } else if(AppUtil().containsBadWord(pass)) {
+            } else if(AppUtil().containsSensitiveWords(pass)) {
                 Toast.makeText(this, "Your password contains sensitive words", Toast.LENGTH_SHORT).show()
                 loadingDialog.dismiss()
             } else if (pass.length < 6) {
@@ -196,7 +191,7 @@ class SignUp : AppCompatActivity() {
                             }
                         }
                     } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, it.exception?.message ?: "Registration failed", Toast.LENGTH_SHORT).show()
                         loadingDialog.dismiss()
                     }
                 }

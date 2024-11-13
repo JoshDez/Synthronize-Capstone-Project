@@ -16,7 +16,6 @@ import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.interfaces.OnInstructionModified
 import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.InstructionModel
-import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -201,15 +200,15 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
 
         if (competitionName.isEmpty() || competitionName.length < 3){
             Toast.makeText(this, "The competition name should at least have more than 3 characters", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(competitionName)){
+        } else if (AppUtil().containsSensitiveWords(competitionName)){
             Toast.makeText(this, "The competition name contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (competitionDesc.isEmpty() || competitionDesc.length < 3){
             Toast.makeText(this, "The competition description should at least have more than 3 characters", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(competitionDesc)){
+        } else if (AppUtil().containsSensitiveWords(competitionDesc)){
             Toast.makeText(this, "The competition description contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (rewards.isEmpty() || rewards.length < 2){
             Toast.makeText(this, "The competition rewards should at least have more than 2 characters", Toast.LENGTH_SHORT).show()
-        } else if (AppUtil().containsBadWord(rewards)){
+        } else if (AppUtil().containsSensitiveWords(rewards)){
             Toast.makeText(this, "The competition rewards contains sensitive words", Toast.LENGTH_SHORT).show()
         } else if (deadline.isEmpty()){
             Toast.makeText(this, "Please select the deadline of the competition", Toast.LENGTH_SHORT).show()

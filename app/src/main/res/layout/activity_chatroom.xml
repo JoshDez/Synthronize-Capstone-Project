@@ -124,9 +124,8 @@
                 android:layout_height="20dp"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="end"
-                android:src="@drawable/cancel_icon"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/red"/>
+                android:src="@drawable/red_cancel_button"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
             <LinearLayout
                 android:id="@+id/postOwnerProfileLayout"
                 android:orientation="horizontal"

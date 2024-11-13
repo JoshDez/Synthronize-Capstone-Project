@@ -112,7 +112,7 @@ class AppSettings : AppCompatActivity() {
                 Toast.makeText(context, "Please select feedback type", Toast.LENGTH_SHORT).show()
             } else if(reason.isEmpty()){
                 Toast.makeText(context, "Please write your reason", Toast.LENGTH_SHORT).show()
-            } else if(AppUtil().containsBadWord(reason)){
+            } else if(AppUtil().containsSensitiveWords(reason)){
                 Toast.makeText(context, "The reason contains sensitive words", Toast.LENGTH_SHORT).show()
             } else {
                 val temp = FeedbackModel()

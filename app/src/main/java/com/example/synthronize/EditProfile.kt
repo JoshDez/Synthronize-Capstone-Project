@@ -7,9 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -19,7 +17,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -31,7 +28,6 @@ import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
-import com.example.synthronize.utils.GlideApp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.orhanobut.dialogplus.DialogPlus
@@ -120,9 +116,9 @@ class EditProfile : AppCompatActivity() {
 
         if (fullName.isEmpty()) {
             binding.fullNameEdtTxt.error = "full name should not be blank"
-        } else if (AppUtil().containsBadWord(fullName)) {
+        } else if (AppUtil().containsSensitiveWords(fullName)) {
             binding.fullNameEdtTxt.error = "Your full name contains sensitive words"
-        } else if (AppUtil().containsBadWord(description)) {
+        } else if (AppUtil().containsSensitiveWords(description)) {
             binding.descriptionEdtTxt.error = "Your description contains sensitive words"
         } else if (isUsernameValid) {
             //Set User Details to userModel
@@ -373,7 +369,7 @@ class EditProfile : AppCompatActivity() {
                     if (username.length < 3){
                         binding.usernameEdtTxt.error = "username should be more than 3 characters"
                         isUsernameValid = false
-                    } else if(AppUtil().containsBadWord(username)) {
+                    } else if(AppUtil().containsSensitiveWords(username)) {
                         binding.usernameEdtTxt.error = "Your password contains sensitive words"
                         isUsernameValid = false
                     } else if (isUsernameContainsSpecialCharacters(username)){

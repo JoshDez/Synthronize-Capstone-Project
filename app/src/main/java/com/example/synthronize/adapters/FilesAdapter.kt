@@ -143,7 +143,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                 val comment = binding.commentEdtTxt.text.toString()
                 if (comment.isEmpty()){
                     Toast.makeText(context, "Please type your comment", Toast.LENGTH_SHORT).show()
-                } else if(AppUtil().containsBadWord(comment)){
+                } else if(AppUtil().containsSensitiveWords(comment)){
                     Toast.makeText(context, "Your comment contains sensitive words", Toast.LENGTH_SHORT).show()
                 } else {
                     val commentModel = CommentModel()
@@ -283,7 +283,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                 binding.fileIconIV.setImageResource(R.drawable.pdf_icon)
             } else if (extension == "docx"){
                 binding.fileIconIV.setImageResource(R.drawable.docx_icon)
-            } else if (extension == "excel"){
+            } else if (extension == "xls" || extension == "xlsx"){
                 binding.fileIconIV.setImageResource(R.drawable.excel_icon)
             }
         }
