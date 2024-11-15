@@ -23,18 +23,16 @@
 
             <ImageButton
                 android:id="@+id/deleteInstructionBtn"
-                android:layout_width="23dp"
-                android:layout_height="23dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="end"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:background="@color/white"
-                android:src="@drawable/cancel_icon"
+                android:background="@drawable/red_cancel_button"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                app:tint="@color/red" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/instructionTV"

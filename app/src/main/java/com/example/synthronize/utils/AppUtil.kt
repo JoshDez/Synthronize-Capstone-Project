@@ -79,7 +79,7 @@ class AppUtil {
                         GlideApp.with(context)
                             //storage reference
                             .load(FirebaseUtil().retrieveUserCoverPicRef(imageUrl))
-                            .error(R.drawable.baseline_image_24)
+                            .error(R.color.black)
                             //image view
                             .into(cover)
                     }
@@ -132,7 +132,7 @@ class AppUtil {
                     GlideApp.with(context)
                         //storage reference
                         .load(FirebaseUtil().retrieveCommunityBannerPicRef(imageUrl))
-                        .error(R.drawable.baseline_image_24)
+                        .error(R.color.black)
                         //image view
                         .into(imageView)
                 }

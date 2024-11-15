@@ -20,6 +20,8 @@ import com.example.synthronize.CreateUploadFile
 import com.example.synthronize.R
 import com.example.synthronize.adapters.ChatroomAdapter
 import com.example.synthronize.adapters.ContentUsersAdapter
+import com.example.synthronize.adapters.PreviewRulesAdapter
+import com.example.synthronize.adapters.RulesAdapter
 import com.example.synthronize.adapters.SearchUserAdapter
 import com.example.synthronize.databinding.DialogCommunityPreviewBinding
 import com.example.synthronize.databinding.DialogForwardContentBinding
@@ -631,7 +633,6 @@ class DialogUtil: OnItemClickListener {
         dialogPlusBinding.communityNameTV.text = communityModel.communityName
         AppUtil().showMoreAndLessWords(communityModel.communityDescription, dialogPlusBinding.communityDescriptionTV, 50)
         dialogPlusBinding.totalMembersCountTV.text = "${communityModel.communityMembers.size}"
-        dialogPlusBinding.createdDateTV.text = DateAndTimeUtil().formatTimestampToDate(communityModel.communityCreatedTimestamp)
         AppUtil().setCommunityProfilePic(context, communityModel.communityId, dialogPlusBinding.communityProfileCIV)
         AppUtil().setCommunityBannerPic(context, communityModel.communityId, dialogPlusBinding.communityBannerIV)
         AppUtil().changeCommunityButtonStates(context, dialogPlusBinding.communityActionBtn, communityModel.communityId)
@@ -639,6 +640,52 @@ class DialogUtil: OnItemClickListener {
         Handler().postDelayed({
             dialogPlus.show()
         }, 500)
+
+        dialogPlusBinding.viewRulesBtn.setOnClickListener {
+
+            dialogPlus.dismiss()
+
+            Handler().postDelayed({
+
+                val dialogRulesBinding = DialogListBinding.inflate(layoutInflater)
+                val rulesDialog = DialogPlus.newDialog(context)
+                    .setContentHolder(ViewHolder(dialogRulesBinding.root))
+                    .setExpanded(false)
+                    .setOnDismissListener {
+                        Handler().postDelayed({
+                            dialogPlus.show()
+                        }, 500)
+                    }
+                    .create()
+
+
+                var ruleMap:HashMap<String, String> = HashMap()
+                var ctr = 0
+
+                dialogRulesBinding.toolbarTitleTV.text = "Community Rules"
+                dialogRulesBinding.searchContainerLL.visibility = View.GONE
+
+                //bind rules
+                for (rule in communityModel.communityRules){
+                    ruleMap[ctr.toString()] = rule
+                    ctr += 1
+                }
+                dialogRulesBinding.listRV.layoutManager = LinearLayoutManager(context)
+                val rulesAdapter = PreviewRulesAdapter(ruleMap)
+                dialogRulesBinding.listRV.adapter = rulesAdapter
+                dialogRulesBinding.listRV.smoothScrollToPosition(ruleMap.size)
+
+
+                dialogRulesBinding.backBtn.setOnClickListener {
+                    rulesDialog.dismiss()
+                    Handler().postDelayed({
+                        dialogPlus.show()
+                    }, 500)
+                }
+                rulesDialog.show()
+
+            }, 500)
+        }
     }
 
 
