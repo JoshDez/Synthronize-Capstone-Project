@@ -168,9 +168,9 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginEnd="8dp"
-                        android:backgroundTint="@color/dark_teal"
+                        android:backgroundTint="@color/desaturated_red"
+                        android:textColor="@color/white"
                         android:text="Report User"
-                        android:textColor="@color/light_teal"
                         android:textSize="16sp" />
 
                     <com.google.android.material.button.MaterialButton
@@ -180,9 +180,9 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginEnd="8dp"
-                        android:backgroundTint="@color/dark_teal"
+                        android:backgroundTint="@color/desaturated_red"
+                        android:textColor="@color/white"
                         android:text="Ban User From Community"
-                        android:textColor="@color/light_teal"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
@@ -193,9 +193,9 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginEnd="8dp"
-                        android:backgroundTint="@color/dark_teal"
+                        android:backgroundTint="@color/desaturated_red"
+                        android:textColor="@color/white"
                         android:text="@string/kick_user"
-                        android:textColor="@color/light_teal"
                         android:textSize="16sp"
                         android:visibility="gone" />
                 </LinearLayout>
