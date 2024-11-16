@@ -101,6 +101,12 @@ class Members : AppCompatActivity(), OnItemClickListener {
                     startActivity(intent)
                     dialogPlus.dismiss()
                 }
+                dialogPlusBinding.reportProfileBtn.setOnClickListener {
+                    dialogPlus.dismiss()
+                    Handler().postDelayed({
+                        DialogUtil().openReportDialog(this, layoutInflater, "User", id)
+                    }, 500)
+                }
 
                 //additional buttons
                 if (forChatroomMembers){
@@ -111,8 +117,6 @@ class Members : AppCompatActivity(), OnItemClickListener {
 
 
                 AppUtil().changeFriendsButtonState(this, dialogPlusBinding.friendBtn, userModel)
-
-                showReportButton(id, dialogPlusBinding)
 
                 dialogPlus.show()
             }
@@ -280,13 +284,6 @@ class Members : AppCompatActivity(), OnItemClickListener {
                     warningDialog.show()
                 }, 500)
             }
-        }
-    }
-
-    //REPORT BUTTON
-    private fun showReportButton(id:String, dialogBinding:DialogUserMenuBinding) {
-        dialogBinding.reportProfileBtn.setOnClickListener {
-            DialogUtil().openReportDialog(this, layoutInflater, "User", id)
         }
     }
 
