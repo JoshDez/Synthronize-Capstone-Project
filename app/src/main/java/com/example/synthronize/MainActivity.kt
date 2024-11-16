@@ -186,9 +186,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
                                 binding.updatesBtn.foreground = ContextCompat.getDrawable(this, R.drawable.red_dot)
                                 break
                             }
-                        } catch (e:Exception){
-                            com.google.android.exoplayer2.util.Log.d("Error", e.message.toString())
-                        }
+                        } catch (e:Exception){}
                     }
                 }
             }
@@ -201,7 +199,6 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
                 for (document in it.documents){
                     val chatroomModel = document.toObject(ChatroomModel::class.java)!!
                     if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid())){
-                        //TODO to replace with actual alert
                         binding.chatBtn.foreground = ContextCompat.getDrawable(this, R.drawable.red_dot)
                         break
                     }

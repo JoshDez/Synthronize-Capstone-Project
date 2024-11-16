@@ -10,6 +10,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -61,6 +63,7 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
         if (isUserAdmin){
             binding.navigationLayout.visibility = View.VISIBLE
             binding.divider2.visibility = View.VISIBLE
+            showCommunityNotificationsAlert(this, communityId, binding.adminBtn)
         }
 
         binding.backBtn.setOnClickListener {
@@ -95,15 +98,35 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
             setupAdminLayout()
             binding.adminBtn.setTextColor(selectedColor)
             binding.adminBtn.textSize = 16f
+            binding.adminBtn.foreground = null
+
+        }
+    }
+
+
+
+    private fun showCommunityNotificationsAlert(context: Context, communityId: String, button: Button) {
+        NotificationUtil().showJoinRequestNotificationsAlert(context, communityId){hasNotification ->
+            if (hasNotification){
+                button.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+            }
+        }
+        NotificationUtil().showReportsNotificationsAlert(context, communityId){hasNotification ->
+            if (hasNotification){
+                button.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+            }
         }
     }
 
     private fun setupAdminLayout() {
         binding.adminLayout.visibility = View.VISIBLE
+        NotificationUtil().showReportsNotificationsAlert(this, communityModel.communityId, binding.viewCommunityReportsBtn){}
+        NotificationUtil().showJoinRequestNotificationsAlert(this, communityModel.communityId, binding.viewJoinRequestsBtn){}
 
         if (communityModel.communityType == "Private"){
             binding.viewJoinRequestsBtn.visibility = View.VISIBLE
             binding.viewJoinRequestsBtn.setOnClickListener {
+                binding.viewJoinRequestsBtn.foreground = null
                 val intent = Intent(this, Requests::class.java)
                 intent.putExtra("communityId", communityModel.communityId)
                 startActivity(intent)
@@ -122,6 +145,7 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
 
         binding.viewCommunityReportsBtn.setOnClickListener {
             val intent = Intent(this, Reports::class.java)
+            binding.viewCommunityReportsBtn.foreground = null
             intent.putExtra("communityId", communityModel.communityId)
             startActivity(intent)
         }

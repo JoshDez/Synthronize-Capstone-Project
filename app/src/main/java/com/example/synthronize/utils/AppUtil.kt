@@ -171,6 +171,7 @@ class AppUtil {
         binding.hamburgerMenuBtn.visibility = View.GONE
         binding.searchBtn.visibility = View.GONE
         binding.toolbarImageCIV.setImageResource(R.drawable.header_logo)
+        binding.hamburgerMenuBtn.foreground = null
 
         //resetting main toolbar setOnClickListeners
         binding.searchBtn.setOnClickListener(null)

@@ -4,10 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.util.Log
+import android.widget.ImageButton
+import androidx.core.content.ContextCompat
 import com.example.synthronize.Chatroom
+import com.example.synthronize.R
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
+import com.google.android.material.button.MaterialButton
 import com.google.auth.oauth2.ServiceAccountCredentials
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.toObject
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -17,6 +23,46 @@ import java.io.IOException
 import java.io.InputStream
 
 class NotificationUtil {
+
+    //For Community Notifications
+    fun showJoinRequestNotificationsAlert(context: Context, communityId: String, button:MaterialButton = MaterialButton(context), callback: (Boolean) -> Unit){
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {
+            if (it.result.exists()){
+                val communityModel = it.result.toObject(CommunityModel::class.java)!!
+
+                if (communityModel.joinRequestList.isNotEmpty()){
+                    button.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                    callback(true)
+                } else {
+                    button.foreground = null
+                    callback(false)
+                }
+            } else {
+                callback(false)
+            }
+        }
+    }
+    //For Community Notifications
+    fun showReportsNotificationsAlert(context: Context, communityId: String, button:MaterialButton = MaterialButton(context), reportType:String = "", callback: (Boolean) -> Unit){
+
+        var query = FirebaseUtil().retrieveCommunityReportsCollection(communityId).whereEqualTo("reviewed", false)
+
+        if (reportType.isNotEmpty()){
+            query = query.whereEqualTo("reportType", reportType)
+        }
+
+        query.get().addOnSuccessListener {
+                if (it.documents.isNotEmpty()){
+                    button.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                    callback(true)
+                } else {
+                    button.foreground = null
+                    callback(false)
+                }
+            }.addOnFailureListener {
+                callback(false)
+            }
+    }
 
 
     private fun checkIfUserIsAllowedToReceive(communityId: String, userID: String, callback: (Boolean) -> Unit){

@@ -27,6 +27,7 @@
             android:id="@+id/notificationsIconIV"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:foregroundGravity="top|right"
             android:src="@drawable/notifications_not_selected"
             app:tint="@color/light_teal"/>
 
@@ -52,6 +53,7 @@
             android:id="@+id/communityInviteIconIV"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:foregroundGravity="top|right"
             android:src="@drawable/community_invitations_not_selected"
             app:tint="@color/light_teal"/>
 
@@ -76,6 +78,7 @@
         <ImageView
             android:id="@+id/friendRequestIconIV"
             android:layout_width="30dp"
+            android:foregroundGravity="top|right"
             android:layout_height="30dp"
             android:src="@drawable/friend_requests_not_selected"
             app:tint="@color/light_teal"/>

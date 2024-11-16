@@ -86,6 +86,7 @@
                 android:id="@+id/hamburgerMenuBtn"
                 android:visibility="gone"
                 android:layout_width="40dp"
+                android:foregroundGravity="top|right"
                 android:layout_height="40dp"
                 android:layout_marginEnd="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"

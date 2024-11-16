@@ -38,6 +38,7 @@ import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 import android.net.Uri
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.Timestamp
 
@@ -107,6 +108,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
                 setupChatroomListForCommunity()
                 setupChatroomListForInbox()
                 setupFriendsList()
+                showChatNotificationAlert()
 
                 //set default tab
                 navigate("inbox")
@@ -152,12 +154,14 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
             binding.communityChatsRV.visibility = View.VISIBLE
             binding.communityChatsIV.setImageResource(R.drawable.community_selected)
             currentTab = "community_chat"
+            binding.communityChatsIV.foreground = null
             if (toRefresh)
                 setupChatroomListForCommunity()
         }else if (tab == "inbox"){
             binding.inboxRV.visibility = View.VISIBLE
             binding.inboxIconIV.setImageResource(R.drawable.inbox_selected)
             currentTab = "inbox"
+            binding.inboxIconIV.foreground = null
             if (toRefresh)
                 setupChatroomListForInbox()
         }else if (tab == "friends_list"){
@@ -248,6 +252,34 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
         friendsAdapter = FriendsAdapter(context, options)
         binding.friendsListRV.adapter = friendsAdapter
         friendsAdapter.startListening()
+    }
+
+
+    private fun showChatNotificationAlert(){
+        //direct message and group chat
+        FirebaseUtil().retrieveAllChatRoomReferences()
+            .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
+            .whereIn("chatroomType", listOf("group_chat", "direct_message")).get().addOnSuccessListener {
+                for (document in it.documents){
+                    val chatroomModel = document.toObject(ChatroomModel::class.java)!!
+                    if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid())){
+                        binding.inboxIconIV.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                        break
+                    }
+                }
+            }
+        //community chat
+        FirebaseUtil().retrieveAllChatRoomReferences()
+            .whereArrayContains("userIdList", FirebaseUtil().currentUserUid())
+            .whereEqualTo("chatroomType", "community_chat").get().addOnSuccessListener {
+                for (document in it.documents){
+                    val chatroomModel = document.toObject(ChatroomModel::class.java)!!
+                    if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid())){
+                        binding.communityChatsIV.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                        break
+                    }
+                }
+            }
     }
 
 

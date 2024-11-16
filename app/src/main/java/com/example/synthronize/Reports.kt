@@ -17,6 +17,7 @@ import com.example.synthronize.interfaces.OnNetworkRetryListener
 import com.example.synthronize.model.ReportModel
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import com.orhanobut.dialogplus.DialogPlus
@@ -50,21 +51,32 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
             navigate("personal")
 
         } else {
+            NotificationUtil().showReportsNotificationsAlert(this, communityId, binding.feedsBtn, "Post"){}
             binding.feedsBtn.setOnClickListener {
                 navigate("feeds")
             }
+
+            NotificationUtil().showReportsNotificationsAlert(this, communityId, binding.eventsBtn, "Event"){}
             binding.eventsBtn.setOnClickListener {
                 navigate("events")
             }
+
+            NotificationUtil().showReportsNotificationsAlert(this, communityId, binding.forumsBtn, "Forum"){}
             binding.forumsBtn.setOnClickListener {
                 navigate("forums")
             }
+
+            NotificationUtil().showReportsNotificationsAlert(this, communityId, binding.marketBtn, "Product"){}
             binding.marketBtn.setOnClickListener {
                 navigate("market")
             }
+
+            NotificationUtil().showReportsNotificationsAlert(this, communityId, binding.competitionsBtn, "Competition"){}
             binding.competitionsBtn.setOnClickListener {
                 navigate("competitions")
             }
+
+            NotificationUtil().showReportsNotificationsAlert(this, communityId, binding.filesBtn, "File"){}
             binding.filesBtn.setOnClickListener {
                 navigate("files")
             }
@@ -80,26 +92,32 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
     private fun navigate(tab:String){
         binding.reportsRV.visibility = View.GONE
         if (tab == "feeds"){
+            binding.feedsBtn.foreground = null
             openListDialog("Post")
             currentTab = "feeds"
 
         } else if (tab == "events") {
+            binding.eventsBtn.foreground = null
             openListDialog("Event")
             currentTab = "events"
 
         }  else if (tab == "forums") {
+            binding.forumsBtn.foreground = null
             openListDialog("Forum")
             currentTab = "forums"
 
         } else if (tab == "market") {
+            binding.marketBtn.foreground = null
             openListDialog("Product")
             currentTab = "market"
 
         } else if (tab == "competitions") {
+            binding.competitionsBtn.foreground = null
             openListDialog("Competition")
             currentTab = "competitions"
 
         }  else if (tab == "files") {
+            binding.filesBtn.foreground = null
             openListDialog("File")
             currentTab = "files"
 

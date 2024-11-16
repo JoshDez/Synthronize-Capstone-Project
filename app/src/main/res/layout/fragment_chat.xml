@@ -31,6 +31,7 @@
                 android:id="@+id/inboxIconIV"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:foregroundGravity="top|right"
                 android:src="@drawable/inbox_not_selected"
                 app:tint="@color/light_teal"/>
 
@@ -56,6 +57,7 @@
                 android:id="@+id/communityChatsIV"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:foregroundGravity="top|right"
                 android:src="@drawable/community_not_selected"
                 app:tint="@color/light_teal"/>
 
@@ -81,6 +83,7 @@
                 android:id="@+id/friendsIV"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:foregroundGravity="top|right"
                 android:src="@drawable/friends_not_selected"
                 app:tint="@color/light_teal"/>
 

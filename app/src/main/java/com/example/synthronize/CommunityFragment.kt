@@ -10,7 +10,11 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.ChatroomAdapter
@@ -25,6 +29,7 @@ import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
+import com.example.synthronize.utils.NotificationUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
@@ -124,6 +129,27 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         }
     }
 
+    private fun showCommunityNotificationsAlert(context: Context, communityId: String, kebabMenuBtn: ImageButton = ImageButton(context), imageView: ImageView = ImageView(context)) {
+        NotificationUtil().showJoinRequestNotificationsAlert(context, communityId){hasNotification ->
+            if (hasNotification){
+                kebabMenuBtn.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                imageView.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+            } else {
+                kebabMenuBtn.foreground = null
+                imageView.foreground = null
+            }
+        }
+        NotificationUtil().showReportsNotificationsAlert(context, communityId){hasNotification ->
+            if (hasNotification){
+                kebabMenuBtn.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                imageView.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+            } else {
+                kebabMenuBtn.foreground = null
+                imageView.foreground = null
+            }
+        }
+    }
+
     private fun replaceFragment(fragment: Fragment) {
         // Check if the fragment is added to its activity
         if (isAdded && isVisible) {
@@ -137,29 +163,28 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
         mainBinding.backBtn.visibility = View.VISIBLE
         mainBinding.hamburgerMenuBtn.visibility = View.VISIBLE
 
+        if (isUserAdmin)
+            showCommunityNotificationsAlert(context, communityId, mainBinding.hamburgerMenuBtn)
+
+
         //bind buttons
         binding.feedsBtn.setOnClickListener {
-            //TODO: changes to buttons
             replaceFragment(FeedsFragment(binding, menuDialog, menuBinding, communityId))
             selectNavigation("feeds")
         }
         binding.eventsBtn.setOnClickListener {
-            //TODO: changes to buttons
             replaceFragment(EventsFragment(binding, menuDialog, menuBinding, communityId))
             selectNavigation("events")
         }
         binding.forumsBtn.setOnClickListener {
-            //TODO: changes to buttons
             replaceFragment(ForumsFragment(binding, menuDialog, menuBinding, communityId))
             selectNavigation("forums")
         }
         binding.marketBtn.setOnClickListener {
-            //TODO: changes to buttons
             replaceFragment(MarketFragment(binding, menuDialog, menuBinding, communityId))
             selectNavigation("market")
         }
         binding.activitiesBtn.setOnClickListener {
-            //TODO: changes to buttons
             replaceFragment(ActivitiesFragment(binding, menuDialog, menuBinding, communityId, isUserAdmin))
             selectNavigation("activities")
         }
@@ -204,13 +229,20 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             }, 500)
         }
 
-
         //Option 3: Community Settings
         menuBinding.option3.visibility = View.VISIBLE
         menuBinding.optionIcon3.setImageResource(R.drawable.admin_settings)
+
+        if (isUserAdmin)
+            showCommunityNotificationsAlert(context, communityId, imageView = menuBinding.optionIcon3)
+
         menuBinding.optiontitle3.text = "Community Settings"
         menuBinding.optiontitle3.setOnClickListener {
             menuDialog.dismiss()
+
+            if (isUserAdmin)
+                showCommunityNotificationsAlert(context, communityId, mainBinding.hamburgerMenuBtn, menuBinding.optionIcon3)
+
             val intent = Intent(context, CommunitySettings::class.java)
             intent.putExtra("communityId", communityModel.communityId)
             intent.putExtra("isUserAdmin", isUserAdmin)

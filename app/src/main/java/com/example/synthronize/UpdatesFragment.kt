@@ -24,7 +24,6 @@ import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 
 class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(), NotificationOnDataChange, OnRefreshListener, OnNetworkRetryListener {
-    // TODO: Rename and change types of parameters
     private lateinit var binding: FragmentUpdatesBinding
     private lateinit var requestsAdapter: RequestsAdapter
     private lateinit var invitationsAdapter: RequestsAdapter
@@ -63,7 +62,8 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
                 //reset main toolbar
                 AppUtil().resetMainToolbar(mainBinding)
 
-                bindButtons()
+                //show notification alert
+                showUpdatesNotificationAlert()
 
                 navigate("notifications")
 
@@ -92,6 +92,7 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
         if (tab == "notifications"){
             binding.notificationsIconIV.setImageResource(R.drawable.notifications_selected)
             binding.notificationRV.visibility = View.VISIBLE
+            binding.notificationsIconIV.foreground = null
             currentTab = "notifications"
             if (toRefresh || !::notificationsAdapter.isInitialized)
                 setupNotifications()
@@ -101,12 +102,14 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
             binding.communityInviteIconIV.setImageResource(R.drawable.community_invitations_selected)
             binding.invitationsRV.visibility = View.VISIBLE
             currentTab = "community_invitations"
+            binding.communityInviteIconIV.foreground = null
             if (toRefresh || !::invitationsAdapter.isInitialized)
                 setupRVForCommunityInvitations()
 
         } else if (tab == "friend_requests") {
             binding.friendRequestIconIV.setImageResource(R.drawable.friend_requests_selected)
             binding.requestsRV.visibility = View.VISIBLE
+            binding.friendRequestIconIV.foreground = null
             currentTab = "friend_requests"
             if (toRefresh || !::requestsAdapter.isInitialized)
                 setupRVForFriendRequests()
@@ -168,13 +171,6 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
         }
     }
 
-
-    private fun bindButtons(){
-        mainBinding.searchBtn.setOnClickListener {
-            Toast.makeText(activity, "To be implemented", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onChangeRequests(type: String) {
         //Refreshes adapter
         if (type == "community_invitations"){
@@ -183,6 +179,38 @@ class UpdatesFragment(private val mainBinding: ActivityMainBinding): Fragment(),
             setupRVForFriendRequests()
         } else if (type == "notifications"){
             setupNotifications()
+        }
+    }
+
+
+
+    private fun showUpdatesNotificationAlert(){
+        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
+            if (it.result.exists()){
+                val userModel = it.result.toObject(UserModel::class.java)!!
+
+                //for community invitations
+                if (userModel.communityInvitations.isNotEmpty()){
+                    binding.communityInviteIconIV.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                }
+
+                //for friend requests
+                if (userModel.friendRequests.isNotEmpty()){
+                    binding.friendRequestIconIV.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                }
+
+                //for notifications
+                for (key in userModel.notifications.keys){
+                    val tempList = userModel.notifications.getValue(key)
+                    try {
+                        if (tempList[6] == "not_seen"){
+
+                            binding.notificationsIconIV.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                            break
+                        }
+                    } catch (e:Exception){}
+                }
+            }
         }
     }
 
