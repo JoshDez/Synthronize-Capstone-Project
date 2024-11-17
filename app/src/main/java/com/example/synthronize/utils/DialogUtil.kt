@@ -274,7 +274,7 @@ class DialogUtil: OnItemClickListener {
 
                     if (contentOwnerId == FirebaseUtil().currentUserUid() ||
                         AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), FirebaseUtil().currentUserUid()) ||
-                        userModel.userType == "AppAdmin"){
+                        userModel.userType == "AppAdmin" || userModel.userType == "WebAdmin" ){
 
                         //displays delete post option if the user is the owner or admin of the community
                         menuDialogBinding.option1.visibility = View.VISIBLE

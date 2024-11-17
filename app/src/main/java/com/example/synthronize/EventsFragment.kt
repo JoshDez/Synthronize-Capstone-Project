@@ -145,7 +145,7 @@ class EventsFragment(private val mainBinding: FragmentCommunityBinding, private 
             FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
                 val model = it.toObject(CommunityModel::class.java)!!
                 if (AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(model.communityMembers, "Admin"), FirebaseUtil().currentUserUid()) ||
-                    userModel.userType == "AppAdmin"){
+                    userModel.userType == "AppAdmin" || userModel.userType == "WebAdmin"){
                     callback(true)
                 } else {
                     callback(false)

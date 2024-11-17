@@ -116,7 +116,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
 
     private fun assignUserRole(myModel: UserModel) {
         for (user in communityModel.communityMembers){
-            if (myModel.userType == "AppAdmin"){
+            if (myModel.userType == "AppAdmin"  || myModel.userType == "WebAdmin"){
                 //User is AppAdmin
                 isUserAdmin = true
             } else if (user.value == "Admin" && myModel.userID == user.key){
@@ -288,7 +288,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
             val myModel = it.toObject(UserModel::class.java)!!
             var role = ""
 
-            if (myModel.userType == "AppAdmin"){
+            if (myModel.userType == "AppAdmin"  || myModel.userType == "WebAdmin"){
                 role = "AppAdmin"
             } else if (isUserAdmin){
                 role = "Admin"

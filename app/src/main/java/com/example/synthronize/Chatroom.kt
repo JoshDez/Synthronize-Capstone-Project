@@ -38,7 +38,6 @@ class Chatroom : AppCompatActivity() {
     private var postId = ""
     private var productId = ""
     private var communityIdOfPost = ""
-    private var isSeen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -225,12 +224,12 @@ class Chatroom : AppCompatActivity() {
                     binding.postLayout.visibility = View.GONE
                     postId = ""
                     communityIdOfPost = ""
-                } else if (postId.isNotEmpty() || postId != "null"){
+                } else if (postId.isNotEmpty() && postId != "null"){
                     sendMessage("")
                     binding.postLayout.visibility = View.GONE
                     postId = ""
                     communityIdOfPost = ""
-                } else if (productId.isNotEmpty() || productId != "null"){
+                } else if (productId.isNotEmpty() && productId != "null"){
                     sendMessage("")
                     binding.postLayout.visibility = View.GONE
                     productId = ""
@@ -289,10 +288,10 @@ class Chatroom : AppCompatActivity() {
                 chatroomModel.lastMsgTimestamp = Timestamp.now()
                 chatroomModel.usersSeen = listOf(FirebaseUtil().currentUserUid())
 
-                if (message.isEmpty() && postId.isNotEmpty() && postId != "null"){
+                if (message.isEmpty() && messageModel.postID.isNotEmpty() && messageModel.postID != "null"){
                     //"sent a post" as the last message
                     chatroomModel.lastMessage = "Sent a post"
-                } else if (message.isEmpty() && productId.isNotEmpty() && productId != "null"){
+                } else if (message.isEmpty() && messageModel.productID.isNotEmpty() && messageModel.productID != "null"){
                     //"sent a post" as the last message
                     chatroomModel.lastMessage = "Sent a product"
                 } else {

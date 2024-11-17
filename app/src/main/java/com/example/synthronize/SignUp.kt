@@ -80,23 +80,23 @@ class SignUp : AppCompatActivity() {
 
         binding.studentRB.setOnClickListener {
             if (binding.studentRB.isChecked){
-                binding.teacherRB.isChecked = false
+                binding.professorRB.isChecked = false
                 binding.appAdminRB.isChecked = false
                 userType = "Student"
                 binding.warningMessageTV.visibility = View.INVISIBLE
             }
         }
-        binding.teacherRB.setOnClickListener {
-            if (binding.teacherRB.isChecked){
+        binding.professorRB.setOnClickListener {
+            if (binding.professorRB.isChecked){
                 binding.studentRB.isChecked = false
                 binding.appAdminRB.isChecked = false
-                userType = "Teacher"
+                userType = "Professor"
                 binding.warningMessageTV.visibility = View.VISIBLE
             }
         }
         binding.appAdminRB.setOnClickListener {
             if (binding.appAdminRB.isChecked){
-                binding.teacherRB.isChecked = false
+                binding.professorRB.isChecked = false
                 binding.studentRB.isChecked = false
                 userType = "AppAdmin"
                 binding.warningMessageTV.visibility = View.VISIBLE

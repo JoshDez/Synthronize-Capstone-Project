@@ -51,7 +51,7 @@ class Splash : AppCompatActivity() {
 
                                     //assign current user role
                                     for (member in communityModel.communityMembers){
-                                        if (currentUserModel.userType == "AppAdmin"){
+                                        if (currentUserModel.userType == "AppAdmin" || currentUserModel.userType == "WebAdmin"){
                                             //User is AppAdmin
                                             isUserAdmin = true
                                         } else if (member.value == "Admin" && currentUserModel.userID == member.key){

@@ -155,7 +155,7 @@ class NotificationsAdapter(private var context:Context,
 
                             //assign current user role
                             for (user in communityModel.communityMembers){
-                                if (myModel.userType == "AppAdmin"){
+                                if (myModel.userType == "AppAdmin" || myModel.userType == "WebAdmin"){
                                     //User is AppAdmin
                                     isUserAdmin = true
                                 } else if (user.value == "Admin" && myModel.userID == user.key){

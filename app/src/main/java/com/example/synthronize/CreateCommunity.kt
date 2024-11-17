@@ -141,7 +141,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
             binding.publicRB.isChecked = true
             communityType = "Public"
 
-        } else if (currentUserType == "AppAdmin" || currentUserType == "Teacher"){
+        } else if (currentUserType == "AppAdmin" || currentUserType == "Professor" || currentUserType == "WebAdmin"){
             binding.publicRB.setOnClickListener {
                 binding.privateRB.isChecked = false
                 communityType = "Public"
@@ -340,6 +340,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                         chatroomId = chatroom.id,
                         chatroomType = "community_chat",
                         userIdList = listOf(FirebaseUtil().currentUserUid()),
+                        chatroomAdminList = listOf(FirebaseUtil().currentUserUid()),
                         lastMsgTimestamp = Timestamp.now(),
                         lastMessage = "created general channel",
                         lastMessageUserId = FirebaseUtil().currentUserUid(),

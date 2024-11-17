@@ -233,32 +233,39 @@ class ChatroomSettings : AppCompatActivity(), OnItemClickListener, OnRefreshList
     }
 
     private fun showAdminButtons(){
-        if (AppUtil().isIdOnList(chatroomModel.chatroomAdminList, FirebaseUtil().currentUserUid())){
-            binding.editChatroomDetailsBtn.visibility = View.VISIBLE
-            binding.editChatroomDetailsBtn.setOnClickListener {
-                editChatroomDetails()
-            }
-            if (chatroomType == "community_chat"){
-                binding.deleteTextChannelBtn.visibility = View.VISIBLE
-                binding.deleteTextChannelBtn.setOnClickListener {
-                    val dialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
-                    val dialogPlus = DialogPlus.newDialog(this)
-                        .setContentHolder(ViewHolder(dialogBinding.root))
-                        .setGravity(Gravity.CENTER)
-                        .setBackgroundColorResId(R.color.transparent)
-                        .setCancelable(true)
-                        .create()
-                    dialogBinding.titleTV.text = "Are you sure?"
-                    dialogBinding.messageTV.text = "Are you sure you want to delete this text channel?"
-                    dialogBinding.yesBtn.setOnClickListener {
-                        FirebaseUtil().retrieveChatRoomReference(chatroomId).delete().addOnSuccessListener {
-                            this.finish()
+        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
+            if (it.result.exists()){
+                val currentUser = it.result.toObject(UserModel::class.java)!!
+
+                if (AppUtil().isIdOnList(chatroomModel.chatroomAdminList, FirebaseUtil().currentUserUid()) ||
+                    currentUser.userType == "AppAdmin" || currentUser.userType == "WebAdmin"){
+                    binding.editChatroomDetailsBtn.visibility = View.VISIBLE
+                    binding.editChatroomDetailsBtn.setOnClickListener {
+                        editChatroomDetails()
+                    }
+                    if (chatroomType == "community_chat"){
+                        binding.deleteTextChannelBtn.visibility = View.VISIBLE
+                        binding.deleteTextChannelBtn.setOnClickListener {
+                            val dialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+                            val dialogPlus = DialogPlus.newDialog(this)
+                                .setContentHolder(ViewHolder(dialogBinding.root))
+                                .setGravity(Gravity.CENTER)
+                                .setBackgroundColorResId(R.color.transparent)
+                                .setCancelable(true)
+                                .create()
+                            dialogBinding.titleTV.text = "Are you sure?"
+                            dialogBinding.messageTV.text = "Are you sure you want to delete this text channel?"
+                            dialogBinding.yesBtn.setOnClickListener {
+                                FirebaseUtil().retrieveChatRoomReference(chatroomId).delete().addOnSuccessListener {
+                                    this.finish()
+                                }
+                            }
+                            dialogBinding.NoBtn.setOnClickListener {
+                                dialogPlus.dismiss()
+                            }
+                            dialogPlus.show()
                         }
                     }
-                    dialogBinding.NoBtn.setOnClickListener {
-                        dialogPlus.dismiss()
-                    }
-                    dialogPlus.show()
                 }
             }
         }

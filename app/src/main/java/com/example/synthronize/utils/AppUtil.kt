@@ -304,7 +304,7 @@ class AppUtil {
                 FirebaseUtil().currentUserDetails().get().addOnSuccessListener {me ->
                     val myUserModel = me.toObject(UserModel::class.java)!!
 
-                    if (myUserModel.userType == "AppAdmin" && !AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())) {
+                    if ((myUserModel.userType == "AppAdmin"  || myUserModel.userType == "WebAdmin") && !AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())) {
                         //if user is an AppAdmin and not yet joined the community
                         communityButton.visibility = View.VISIBLE
                         communityButton.text = "Join"

@@ -119,7 +119,7 @@ class FirebaseUtil {
     fun isUserAppAdmin(userId: String, callback: (Boolean) -> Unit){
         FirebaseUtil().targetUserDetails(userId).get().addOnSuccessListener {
             val userModel = it.toObject(UserModel::class.java)!!
-            if (userModel.userType == "AppAdmin"){
+            if (userModel.userType == "AppAdmin" || userModel.userType == "WebAdmin"){
                 callback(true)
             } else {
                 callback(false)

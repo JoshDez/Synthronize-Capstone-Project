@@ -54,12 +54,12 @@
                 android:layout_height="25dp" />
 
             <RadioButton
-                android:id="@+id/teacherRB"
+                android:id="@+id/professorRB"
                 android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:paddingStart="12dp"
-                android:text="Teacher/Professor"
+                android:text="Professor"
                 android:textColor="@color/light_teal"
                 android:textSize="16sp"
                 app:buttonTint="@color/light_teal" />
@@ -149,7 +149,6 @@
                 app:layout_constraintHorizontal_bias="0.494"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
 
 
             <EditText

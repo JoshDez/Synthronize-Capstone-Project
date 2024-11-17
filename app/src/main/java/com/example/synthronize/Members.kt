@@ -129,7 +129,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
             FirebaseUtil().isUserAppAdmin(FirebaseUtil().currentUserUid()){isUserAppAdmin ->
                 if (isUserAppAdmin){
                     //Buttons only for App Admin
-                    if (userModel.userType != "AppAdmin"){
+                    if (userModel.userType != "AppAdmin" && userModel.userType != "WebAdmin"){
                         showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
                         if (AppUtil().isIdOnList(chatroomModel.chatroomAdminList, userModel.userID)){
                             showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Member")
@@ -139,7 +139,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
                     }
                 } else if (AppUtil().isIdOnList(chatroomModel.chatroomAdminList, FirebaseUtil().currentUserUid())){
                     //Buttons only for Chatroom Admin
-                    if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(chatroomModel.chatroomAdminList, userModel.userID)){
+                    if(userModel.userType != "AppAdmin" && userModel.userType != "WebAdmin" && !AppUtil().isIdOnList(chatroomModel.chatroomAdminList, userModel.userID)){
                         showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
                         showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
                     }
@@ -153,7 +153,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
         FirebaseUtil().isUserAppAdmin(FirebaseUtil().currentUserUid()){isUserAppAdmin ->
             if (isUserAppAdmin){
                 //Buttons only for App Admin
-                if (userModel.userType != "AppAdmin"){
+                if (userModel.userType != "AppAdmin" && userModel.userType != "WebAdmin"){
                     showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
                     if (!isUserAdmin(userModel.userID)){
                         showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
@@ -170,7 +170,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 }
             } else if (isUserAdmin(FirebaseUtil().currentUserUid())){
                 //Buttons only for Admin or Community Admin
-                if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), userModel.userID)){
+                if(userModel.userType != "AppAdmin" && userModel.userType != "WebAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), userModel.userID)){
                     showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
                     if (!isUserAdmin(userModel.userID)){
                         showChangeRoleButton(userModel.userID, dialogPlusBinding.changeUserRoleBtn, dialogPlus, "Admin")
@@ -187,7 +187,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 }
             } else if (isUserModerator(FirebaseUtil().currentUserUid())){
                 //Buttons only for Moderators
-                if(userModel.userType != "AppAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), userModel.userID)
+                if(userModel.userType != "AppAdmin" && userModel.userType != "WebAdmin" && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), userModel.userID)
                     && !AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), userModel.userID)){
                     showKickUserButton(userModel.userID, dialogPlusBinding, dialogPlus)
                     if (!isUserModerator(userModel.userID)){
