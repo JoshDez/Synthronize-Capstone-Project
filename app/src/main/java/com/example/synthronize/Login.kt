@@ -113,7 +113,6 @@ class Login : AppCompatActivity() {
                             val userModel = currentUser.result.toObject(UserModel::class.java)!!
                             if (userModel.userAccess.containsKey("Disabled")){
                                 if(userModel.userAccess["Disabled"].toString().isNotEmpty()){
-                                    val date = userModel.userAccess["Disabled"]
                                     openWarningDialog("Banned Account", "Your account has been banned until", userModel.userAccess.getValue("Disabled"))
                                 } else {
                                     openWarningDialog("Deactivated Account", "Your account is currently deactivated, do you want to activate it?")
@@ -183,11 +182,17 @@ class Login : AppCompatActivity() {
 
         } else {
             //For deactivated account
-            warningBinding.yesBtn.setOnClickListener {
+
+            warningBinding.yesBtn.visibility = View.GONE
+            warningBinding.NoBtn.visibility = View.GONE
+            warningBinding.yesBtn2.visibility = View.VISIBLE
+            warningBinding.NoBtn2.visibility = View.VISIBLE
+
+            warningBinding.yesBtn2.setOnClickListener {
                 warningDialog.dismiss()
                 enableUserAccess()
             }
-            warningBinding.NoBtn.setOnClickListener {
+            warningBinding.NoBtn2.setOnClickListener {
                 warningDialog.dismiss()
             }
         }

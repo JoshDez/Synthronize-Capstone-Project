@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.widget.Toast
 import com.example.synthronize.databinding.ActivitySplashBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
@@ -28,130 +29,163 @@ class Splash : AppCompatActivity() {
         setContentView(binding.root)
 
         if(FirebaseUtil().isLoggedIn() && intent.extras != null){
-            Handler().postDelayed({
-                //from notification
-                communityId = intent.getStringExtra("communityId").toString()
-                contentId = intent.getStringExtra("contentId").toString()
-                contentType = intent.getStringExtra("contentType").toString()
 
-                chatroomType = intent.getStringExtra("chatroomType").toString()
-                chatroomName = intent.getStringExtra("chatroomName").toString()
-                chatroomId = intent.getStringExtra("chatroomId").toString()
-                userID = intent.getStringExtra("userID").toString()
+            isUserAccountEnabled{accIsEnabled ->
+                if (accIsEnabled){
 
-                val communityContentTypes = listOf("Post", "Competition", "Competition Winners", "File", "Forum", "Thread", "Event")
-                if (communityContentTypes.contains(contentType)){
-                    //NOTIFICATIONS INSIDE COMMUNITY
-                    FirebaseUtil().currentUserDetails().get().addOnCompleteListener {user ->
-                        if (user.result.exists()){
-                            val currentUserModel = user.result.toObject(UserModel::class.java)!!
-                            FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {community ->
-                                if (community.result.exists()){
-                                    val communityModel = community.result.toObject(CommunityModel::class.java)!!
+                    Handler().postDelayed({
+                        //from notification
+                        communityId = intent.getStringExtra("communityId").toString()
+                        contentId = intent.getStringExtra("contentId").toString()
+                        contentType = intent.getStringExtra("contentType").toString()
 
-                                    //assign current user role
-                                    for (member in communityModel.communityMembers){
-                                        if (currentUserModel.userType == "AppAdmin" || currentUserModel.userType == "WebAdmin"){
-                                            //User is AppAdmin
-                                            isUserAdmin = true
-                                        } else if (member.value == "Admin" && currentUserModel.userID == member.key){
-                                            //User is Admin
-                                            isUserAdmin = true
+                        chatroomType = intent.getStringExtra("chatroomType").toString()
+                        chatroomName = intent.getStringExtra("chatroomName").toString()
+                        chatroomId = intent.getStringExtra("chatroomId").toString()
+                        userID = intent.getStringExtra("userID").toString()
+
+                        val communityContentTypes = listOf("Post", "Competition", "Competition Winners", "File", "Forum", "Thread", "Event")
+                        if (communityContentTypes.contains(contentType)){
+                            //NOTIFICATIONS INSIDE COMMUNITY
+                            FirebaseUtil().currentUserDetails().get().addOnCompleteListener {user ->
+                                if (user.result.exists()){
+                                    val currentUserModel = user.result.toObject(UserModel::class.java)!!
+                                    FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {community ->
+                                        if (community.result.exists()){
+                                            val communityModel = community.result.toObject(CommunityModel::class.java)!!
+
+                                            //assign current user role
+                                            for (member in communityModel.communityMembers){
+                                                if (currentUserModel.userType == "AppAdmin" || currentUserModel.userType == "WebAdmin"){
+                                                    //User is AppAdmin
+                                                    isUserAdmin = true
+                                                } else if (member.value == "Admin" && currentUserModel.userID == member.key){
+                                                    //User is Admin
+                                                    isUserAdmin = true
+                                                }
+                                            }
+
+                                            //head to main activity first
+                                            if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
+                                                //go straight to community
+                                                AppUtil().headToMainActivity(this, "community", 0, communityId)
+                                            } else {
+                                                headToMainActivity()
+                                            }
+
+                                            Handler().postDelayed({
+                                                //then to the content
+                                                when(contentType){
+                                                    "Post" -> {
+                                                        viewPost()
+                                                    }
+                                                    "File" -> {
+                                                        viewFile()
+                                                    }
+                                                    "Competition" -> {
+                                                        viewCompetition()
+                                                    }
+                                                    "Competition Winners" -> {
+                                                        viewCompetition()
+                                                    }
+                                                    "Forum" -> {
+                                                        viewThread()
+                                                    }
+                                                    "Thread" -> {
+                                                        viewThread()
+                                                    }
+                                                    "Event" -> {
+                                                        viewEvent()
+                                                    }
+                                                }
+                                            }, 500)
+
+                                        } else {
+                                            //if community didn't exist
+                                            headToMainActivity()
                                         }
                                     }
-
-                                    //head to main activity first
-                                    if (AppUtil().isIdOnList(communityModel.communityMembers.keys, FirebaseUtil().currentUserUid())){
-                                        //go straight to community
-                                        AppUtil().headToMainActivity(this, "community", 0, communityId)
-                                    } else {
-                                        headToMainActivity()
-                                    }
-
-                                    Handler().postDelayed({
-                                        //then to the content
-                                        when(contentType){
-                                            "Post" -> {
-                                                viewPost()
-                                            }
-                                            "File" -> {
-                                                viewFile()
-                                            }
-                                            "Competition" -> {
-                                                viewCompetition()
-                                            }
-                                            "Competition Winners" -> {
-                                                viewCompetition()
-                                            }
-                                            "Forum" -> {
-                                                viewThread()
-                                            }
-                                            "Thread" -> {
-                                                viewThread()
-                                            }
-                                            "Event" -> {
-                                                viewEvent()
-                                            }
-                                        }
-                                    }, 500)
 
                                 } else {
-                                    //if community didn't exist
-                                    headToMainActivity()
+                                    //if user didn't exist
+                                    headToLogin()
                                 }
                             }
+                        } else if (chatroomType.isNotEmpty() && chatroomType != "null") {
+                            //CHAT NOTIFICATIONS
 
+                            //head to main activity first
+                            headToMainActivity()
+
+                            //head to Chatroom
+                            when (chatroomType){
+                                "community_chat" -> {
+                                    val intent = Intent(this, Chatroom::class.java)
+                                    intent.putExtra("chatroomName", chatroomName)
+                                    intent.putExtra("chatroomId", chatroomId)
+                                    intent.putExtra("chatroomType", chatroomType)
+                                    intent.putExtra("communityId", communityId)
+                                    startActivity(intent)
+                                }
+                                "group_chat" -> {
+                                    val intent = Intent(this, Chatroom::class.java)
+                                    intent.putExtra("chatroomId", chatroomId)
+                                    intent.putExtra("chatroomType", chatroomType)
+                                    startActivity(intent)
+                                }
+                                "direct_message" -> {
+                                    val intent = Intent(this, Chatroom::class.java)
+                                    intent.putExtra("chatroomName", chatroomName)
+                                    intent.putExtra("userID", userID)
+                                    intent.putExtra("chatroomType", chatroomType)
+                                    startActivity(intent)
+                                }
+                            }
                         } else {
-                            //if user didn't exist
-                            headToLogin()
+                            headToMainActivity()
                         }
-                    }
-                } else if (chatroomType.isNotEmpty() && chatroomType != "null") {
-                    //CHAT NOTIFICATIONS
+                    }, 1000)
 
-                    //head to main activity first
-                    headToMainActivity()
-
-                    //head to Chatroom
-                    when (chatroomType){
-                        "community_chat" -> {
-                            val intent = Intent(this, Chatroom::class.java)
-                            intent.putExtra("chatroomName", chatroomName)
-                            intent.putExtra("chatroomId", chatroomId)
-                            intent.putExtra("chatroomType", chatroomType)
-                            intent.putExtra("communityId", communityId)
-                            startActivity(intent)
-                        }
-                        "group_chat" -> {
-                            val intent = Intent(this, Chatroom::class.java)
-                            intent.putExtra("chatroomId", chatroomId)
-                            intent.putExtra("chatroomType", chatroomType)
-                            startActivity(intent)
-                        }
-                        "direct_message" -> {
-                            val intent = Intent(this, Chatroom::class.java)
-                            intent.putExtra("chatroomName", chatroomName)
-                            intent.putExtra("userID", userID)
-                            intent.putExtra("chatroomType", chatroomType)
-                            startActivity(intent)
-                        }
-                    }
                 } else {
-                    headToMainActivity()
+                    FirebaseUtil().logoutUser(this)
                 }
-            }, 1000)
+            }
+
         } else {
             Handler().postDelayed({
                 if (FirebaseUtil().isLoggedIn()){
-                    //starts updating user last seen
-                    UserLastSeenUpdater().startUpdating()
-                    //head to main activity
-                    headToMainActivity()
+                    isUserAccountEnabled{accIsEnabled ->
+                        if (accIsEnabled){
+                            //starts updating user last seen
+                            UserLastSeenUpdater().startUpdating()
+                            //head to main activity
+                            headToMainActivity()
+                        } else {
+                            FirebaseUtil().logoutUser(this)
+                        }
+                    }
                 } else {
                     //head to login page
                     headToLogin()
                 }
             }, 1000)
+        }
+    }
+
+    //checks if the user access is enabled
+    private fun isUserAccountEnabled(callback: (Boolean) -> Unit){
+        FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
+            if(it.result.exists()){
+                val user = it.result.toObject(UserModel::class.java)!!
+                if (!user.userAccess.containsKey("Disabled")){
+                    callback(true)
+                } else {
+                    Toast.makeText(this, "Your account is currently disabled", Toast.LENGTH_SHORT).show()
+                    callback(false)
+                }
+            } else {
+                callback(false)
+            }
         }
     }
 

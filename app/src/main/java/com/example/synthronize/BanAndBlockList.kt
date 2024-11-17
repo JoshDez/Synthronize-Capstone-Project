@@ -3,6 +3,7 @@ package com.example.synthronize
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -136,7 +137,12 @@ class BanAndBlockList : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             warningBinding.messageTV.text = "Do you want to unblock this user?"
             warningBinding.titleTV.text = "Unblock User?"
 
-            warningBinding.yesBtn.setOnClickListener {
+            warningBinding.yesBtn.visibility = View.GONE
+            warningBinding.NoBtn.visibility = View.GONE
+            warningBinding.yesBtn2.visibility = View.VISIBLE
+            warningBinding.NoBtn2.visibility = View.VISIBLE
+
+            warningBinding.yesBtn2.setOnClickListener {
                 //removes user from the block list
                 FirebaseUtil().currentUserDetails().update("blockList", FieldValue.arrayRemove(id)).addOnSuccessListener {
                     warningDialog.dismiss()
@@ -147,7 +153,7 @@ class BanAndBlockList : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                 }
 
             }
-            warningBinding.NoBtn.setOnClickListener {
+            warningBinding.NoBtn2.setOnClickListener {
                 warningDialog.dismiss()
             }
             warningDialog.show()
@@ -164,7 +170,12 @@ class BanAndBlockList : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             warningBinding.messageTV.text = "Do you want to unban this user?"
             warningBinding.titleTV.text = "Unban User?"
 
-            warningBinding.yesBtn.setOnClickListener {
+            warningBinding.yesBtn.visibility = View.GONE
+            warningBinding.NoBtn.visibility = View.GONE
+            warningBinding.yesBtn2.visibility = View.VISIBLE
+            warningBinding.NoBtn2.visibility = View.VISIBLE
+
+            warningBinding.yesBtn2.setOnClickListener {
                 //removes user from the bannedUsers list of community
                 FirebaseUtil().retrieveCommunityDocument(communityId).update("bannedUsers", FieldValue.arrayRemove(id)).addOnSuccessListener {
                     warningDialog.dismiss()
@@ -175,7 +186,7 @@ class BanAndBlockList : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                 }
 
             }
-            warningBinding.NoBtn.setOnClickListener {
+            warningBinding.NoBtn2.setOnClickListener {
                 warningDialog.dismiss()
             }
             warningDialog.show()

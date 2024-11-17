@@ -317,7 +317,14 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                 warningBinding.messageTV.text = "Do you want to unblock this user?"
                 warningBinding.titleTV.text = "Unblock User?"
 
-                warningBinding.yesBtn.setOnClickListener {
+
+
+                warningBinding.yesBtn.visibility = View.GONE
+                warningBinding.NoBtn.visibility = View.GONE
+                warningBinding.yesBtn2.visibility = View.VISIBLE
+                warningBinding.NoBtn2.visibility = View.VISIBLE
+
+                warningBinding.yesBtn2.setOnClickListener {
                     //removes user from blockList
                     FirebaseUtil().currentUserDetails().update("blockList", FieldValue.arrayRemove(userID)).addOnSuccessListener {
                         Toast.makeText(this, "The user is now unblocked", Toast.LENGTH_SHORT).show()
@@ -326,7 +333,7 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                     }
                     warningDialog.dismiss()
                 }
-                warningBinding.NoBtn.setOnClickListener {
+                warningBinding.NoBtn2.setOnClickListener {
                     warningDialog.dismiss()
                 }
 

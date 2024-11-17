@@ -302,7 +302,14 @@ class Members : AppCompatActivity(), OnItemClickListener {
             warningBinding.messageTV.text = "Do you want to make this user $role?"
             warningBinding.titleTV.text = "Change User Role"
 
-            warningBinding.yesBtn.setOnClickListener {
+
+
+            warningBinding.yesBtn.visibility = View.GONE
+            warningBinding.NoBtn.visibility = View.GONE
+            warningBinding.yesBtn2.visibility = View.VISIBLE
+            warningBinding.NoBtn2.visibility = View.VISIBLE
+
+            warningBinding.yesBtn2.setOnClickListener {
 
                 if (forChatroomMembers){
                     //for chatroom members
@@ -333,7 +340,7 @@ class Members : AppCompatActivity(), OnItemClickListener {
                     }
                 }
             }
-            warningBinding.NoBtn.setOnClickListener {
+            warningBinding.NoBtn2.setOnClickListener {
                 warningDialog.dismiss()
                 Handler().postDelayed({
                     dialogPlus.show()
