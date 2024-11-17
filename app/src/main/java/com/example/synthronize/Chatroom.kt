@@ -305,6 +305,16 @@ class Chatroom : AppCompatActivity() {
                 //add message to chatroom
                 FirebaseUtil().retrieveChatsFromChatroom(chatroomId).add(messageModel).addOnSuccessListener {
 
+                    var tempMsg = message
+
+                    if (message.isEmpty() && messageModel.postID.isNotEmpty() && messageModel.postID != "null"){
+                        //"sent a post" as the last message
+                        tempMsg = "Sent a post"
+                    } else if (message.isEmpty() && messageModel.productID.isNotEmpty() && messageModel.productID != "null"){
+                        //"sent a post" as the last message
+                        tempMsg = "Sent a product"
+                    }
+
                     //send push notifications
                     val receiverIdList:ArrayList<String> = arrayListOf()
                     for (user in chatroomModel.userIdList){
@@ -318,10 +328,10 @@ class Chatroom : AppCompatActivity() {
                             if(chatroomType == "direct_message") {
                                 //changes chatroom name to sender username before sending notification
                                 NotificationUtil().sendPushNotificationsForChat(this, receiverIdList, chatroomType, chatroomId, currentUser.username,
-                                    currentUser.username, FirebaseUtil().currentUserUid(), message, communityId)
+                                    currentUser.username, FirebaseUtil().currentUserUid(), tempMsg, communityId)
                             } else {
                                 NotificationUtil().sendPushNotificationsForChat(this, receiverIdList, chatroomType, chatroomId, chatroomName,
-                                    currentUser.username, receiverUid, message, communityId)
+                                    currentUser.username, receiverUid, tempMsg, communityId)
                             }
                         }
                     }
