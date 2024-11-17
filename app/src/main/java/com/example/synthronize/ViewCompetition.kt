@@ -134,6 +134,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
                         //Bind action button
                         if (isUserAdmin){
+                            //select winner button
                             binding.actionBtn.visibility = View.VISIBLE
                             binding.actionBtn.text = "Select Winner"
                             binding.actionBtn.setOnClickListener {
@@ -141,6 +142,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                             }
                         } else if (!AppUtil().isIdOnList(competitionModel.contestants.keys, FirebaseUtil().currentUserUid())){
                             if (!isCompetitionDue){
+                                //join competition button
                                 binding.actionBtn.visibility = View.VISIBLE
                                 binding.actionBtn.setOnClickListener {
                                     val updates = hashMapOf<String, Any>(
@@ -157,6 +159,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                             }
                         } else {
                             if (!isCompetitionDue){
+                                //submit file button
                                 if (competitionModel.contestants.getValue(FirebaseUtil().currentUserUid()).isEmpty()){
                                     binding.actionBtn.visibility = View.VISIBLE
                                     binding.actionBtn.text = "Submit File"
@@ -168,6 +171,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                                         startActivity(intent)
                                     }
                                 } else {
+                                    //view submission button
                                     val fileUrl = competitionModel.contestants.getValue(FirebaseUtil().currentUserUid())
                                     FirebaseUtil().retrieveCommunityFilesCollection(communityId)
                                         .whereIn("fileUrl", listOf(fileUrl)).get().addOnSuccessListener {
@@ -393,6 +397,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                     Toast.makeText(this, "Successfully saved results", Toast.LENGTH_SHORT).show()
                     notifyContestants()
                     dialogPlus.dismiss()
+                    onRefresh()
                 }
         }
 
