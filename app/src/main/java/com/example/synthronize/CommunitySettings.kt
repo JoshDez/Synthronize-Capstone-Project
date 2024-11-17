@@ -168,17 +168,30 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
                 .setBackgroundColorResId(R.color.transparent)
                 .setGravity(Gravity.CENTER)
                 .create()
-            warningBinding.titleTV.text = "Warning"
-            warningBinding.messageTV.text = "Do you want to permanently delete this community?"
+            warningBinding.titleTV.text = "Warning!"
+            warningBinding.messageTV.text = "Confirm you want to delete this community by typing its name: ${communityModel.communityName}"
+            warningBinding.editText.visibility = View.VISIBLE
+
+            warningBinding.yesBtn.text = "Delete"
             warningBinding.yesBtn.setOnClickListener {
-                warningDialog.dismiss()
-                Handler().postDelayed({
-                    deleteCommunity()
-                }, 600)
+
+                val name = warningBinding.editText.text.toString()
+                if (name == communityModel.communityName){
+                    warningDialog.dismiss()
+                    Handler().postDelayed({
+                        deleteCommunity()
+                    }, 600)
+                } else {
+                    Toast.makeText(this, "The name you entered doesn't match the community name", Toast.LENGTH_SHORT).show()
+                }
+
             }
+
+            warningBinding.NoBtn.text = "Cancel"
             warningBinding.NoBtn.setOnClickListener {
                 warningDialog.dismiss()
             }
+
             warningDialog.show()
         }
     }
@@ -241,6 +254,7 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
 
                 dialogPlusBinding.titleTV.text = "Warning!"
                 dialogPlusBinding.messageTV.text = "Do you want to leave this community?"
+
                 dialogPlusBinding.yesBtn.setOnClickListener {
                     //removes user from community channels before leaving the community
                     FirebaseUtil().removeUserFromAllCommunityChannels(communityModel.communityId, FirebaseUtil().currentUserUid()){isSuccessful ->

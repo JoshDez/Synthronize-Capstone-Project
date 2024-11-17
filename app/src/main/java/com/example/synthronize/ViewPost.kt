@@ -302,6 +302,9 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                 val tempPostModel = it.toObject(PostModel::class.java)!!
                 binding.lovesCountTV.text = tempPostModel.loveList.size.toString()
                 binding.sentPostCountTV.text = tempPostModel.sendPostList.size.toString()
+                binding.lovesCountTV.setOnClickListener {
+                    DialogUtil().openInteractionUsersList(this, layoutInflater, tempPostModel.loveList)
+                }
             }
             .addOnFailureListener {
                 //if Offline

@@ -641,6 +641,47 @@ class DialogUtil: OnItemClickListener {
             dialogPlus.show()
         }, 500)
 
+        dialogPlusBinding.totalMembersCountTV.setOnClickListener {
+            dialogPlus.dismiss()
+            Handler().postDelayed({
+                val usersBinding = DialogListBinding.inflate(layoutInflater)
+                val usersDialog = DialogPlus.newDialog(context)
+                    .setContentHolder(ViewHolder(usersBinding.root))
+                    .setOnDismissListener {
+                        Handler().postDelayed({
+                            dialogPlus.show()
+                        }, 500)
+                    }
+                    .create()
+
+                var searchQuery = ""
+
+                var users = communityModel.communityMembers.keys.toList()
+
+                if (users.isNotEmpty())
+                    setupUserListRV(context, searchQuery, usersBinding.listRV, users)
+
+                usersBinding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    override fun afterTextChanged(s: Editable?) {
+                        searchQuery = usersBinding.searchEdtTxt.text.toString()
+                        if (users.isNotEmpty())
+                            setupUserListRV(context, searchQuery, usersBinding.listRV, users)
+                    }
+
+                })
+
+                usersBinding.toolbarTitleTV.text = "Members"
+
+                usersBinding.backBtn.setOnClickListener {
+                    usersDialog.dismiss()
+                }
+
+                usersDialog.show()
+            }, 500)
+        }
+
         dialogPlusBinding.viewRulesBtn.setOnClickListener {
 
             dialogPlus.dismiss()

@@ -365,6 +365,9 @@ class ViewFile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshListener 
             .document(fileModel.fileId).get().addOnSuccessListener {
                 val tempFileModel = it.toObject(FileModel::class.java)!!
                 binding.lovesCountTV.text = tempFileModel.loveList.size.toString()
+                binding.lovesCountTV.setOnClickListener {
+                    DialogUtil().openInteractionUsersList(this, layoutInflater, tempFileModel.loveList)
+                }
             }
             .addOnFailureListener {
                 //if Offline
