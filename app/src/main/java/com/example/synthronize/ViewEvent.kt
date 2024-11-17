@@ -86,9 +86,12 @@ class ViewEvent : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, OnI
                         binding.eventTimeTV.text = dateAndTime.split(", ")[1]
                         binding.participantsCountTV.text = eventModel.eventParticipants.size.toString()
 
-                        Glide.with(this)
-                            .load(FirebaseUtil().retrieveCommunityContentImageRef(eventModel.eventImageName))
-                            .into(binding.eventsCoverIV)
+                        if (eventModel.eventImageName.isNotEmpty()){
+                            binding.eventsCoverIV.visibility = View.VISIBLE
+                            Glide.with(this)
+                                .load(FirebaseUtil().retrieveCommunityContentImageRef(eventModel.eventImageName))
+                                .into(binding.eventsCoverIV)
+                        }
 
                         FirebaseUtil().targetUserDetails(eventModel.eventOwnerId).get().addOnCompleteListener {user ->
                             if (user.result.exists()){

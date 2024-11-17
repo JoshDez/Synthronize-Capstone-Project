@@ -93,6 +93,7 @@
                     android:id="@+id/eventsCoverIV"
                     android:layout_width="match_parent"
                     android:layout_height="170dp"
+                    android:visibility="gone"
                     android:background="@color/black"
                     android:src="@drawable/baseline_image_24_white" />
 
