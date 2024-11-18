@@ -603,10 +603,18 @@ class DialogUtil: OnItemClickListener {
         }
     }
 
-    private fun addCommunityIdToArchiveCommunity(communityId: String){
-        val data = hashMapOf( "communityId" to communityId )
-        FirebaseUtil().retrieveArchiveCollection().document(communityId)
-            .set(data)
+    private fun addCommunityIdToArchiveCommunity(communityId:String){
+        FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {
+            if (it.result.exists()){
+                val model = it.result.toObject(CommunityModel::class.java)!!
+                val data = hashMapOf(
+                    "communityId" to model.communityId,
+                    "communityName" to model.communityName
+                )
+                FirebaseUtil().retrieveArchiveCollection().document(communityId)
+                    .set(data)
+            }
+        }
     }
 
     private fun deleteMediaOrFile(mediaList:List<String>){
