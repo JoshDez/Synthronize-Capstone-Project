@@ -71,7 +71,7 @@ class ForumsAdapter(
 
         fun checkAvailabilityBeforeBind(model: ForumModel){
             ContentUtil().verifyCommunityContentAvailability(model.ownerId, model.communityId){ isAvailable ->
-                if(isAvailable){
+                if(isAvailable && model.forumId.isNotEmpty()){
                     bindForum(model)
                 } else {
                     bindContentNotAvailable()

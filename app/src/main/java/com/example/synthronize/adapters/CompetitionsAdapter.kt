@@ -32,7 +32,8 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
     }
 
     override fun onBindViewHolder(holder: CompetitionViewHolder, position: Int, model: CompetitionModel) {
-        holder.bind(model)
+        if(model.competitionId.isNotEmpty())
+            holder.bind(model)
     }
 
     inner class CompetitionViewHolder(private val binding: ItemCompetitionBinding, private val context: Context, private val inflater: LayoutInflater

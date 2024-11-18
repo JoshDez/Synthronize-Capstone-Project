@@ -56,7 +56,7 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
 
         fun checkAvailabilityBeforeBind(model: FileModel){
             ContentUtil().verifyCommunityContentAvailability(model.ownerId, model.communityId){ isAvailable ->
-                if(isAvailable){
+                if(isAvailable && model.fileId.isNotEmpty()){
                     bindFile(model)
                 } else {
                     bindContentNotAvailable()

@@ -57,7 +57,7 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
 
         fun checkAvailabilityBeforeBind(model: PostModel){
             ContentUtil().verifyCommunityContentAvailability(model.ownerId, model.communityId){ isAvailable ->
-                if(isAvailable){
+                if(isAvailable && model.postId.isNotEmpty()){
                     bindPost(model)
                 } else {
                     bindContentNotAvailable()

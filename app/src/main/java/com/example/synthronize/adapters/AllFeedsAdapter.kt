@@ -59,7 +59,7 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
 
         fun checkAvailabilityBeforeBind(model: PostModel){
            ContentUtil().verifyCommunityContentAvailability(model.ownerId, model.communityId){ isAvailable ->
-               if(isAvailable){
+               if(isAvailable && model.postId.isNotEmpty()){
                    bindPost(model)
                } else {
                    bindContentNotAvailable()

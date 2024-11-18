@@ -46,7 +46,8 @@ class EventsAdapter(
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int, model: EventModel) {
-        holder.bind(model)
+        if (model.eventId.isNotEmpty())
+            holder.bind(model)
     }
 
     inner class EventViewHolder(

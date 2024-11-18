@@ -46,7 +46,7 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
 
         fun checkAvailabilityBeforeBind(model: ProductModel){
             ContentUtil().verifyCommunityContentAvailability(model.ownerId, model.communityId){ isAvailable ->
-                if(isAvailable){
+                if(isAvailable && model.productId.isNotEmpty()){
                     bindProduct(model)
                 } else {
                     bindContentNotAvailable()

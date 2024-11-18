@@ -35,7 +35,8 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
     }
 
     override fun onBindViewHolder(holder: FileViewHolder, position: Int, model: FileModel) {
-        holder.bind(model)
+        if (model.fileId.isNotEmpty())
+            holder.bind(model)
     }
 
 
