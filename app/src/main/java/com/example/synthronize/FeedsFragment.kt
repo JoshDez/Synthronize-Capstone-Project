@@ -64,30 +64,37 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
 
         binding.feedsRefreshLayout.isRefreshing = true
 
-        val myQuery:Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId)
-            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+        AppUtil().showUserBlockList(communityId){list ->
+            var myQuery:Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId)
 
-        // Add a listener to handle success or failure of the query
-        myQuery.addSnapshotListener { _, e ->
-            if (e != null) {
-                // Handle the error here (e.g., log the error or show a message to the user)
-                Log.e("Firestore Error", "Error while fetching data", e)
-                return@addSnapshotListener
-            } else {
-                binding.feedsRefreshLayout.isRefreshing = false
+            if (list.isNotEmpty())
+                myQuery = myQuery.whereNotIn("ownerId", list)
+
+            myQuery = myQuery.orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+            // Add a listener to handle success or failure of the query
+            myQuery.addSnapshotListener { _, e ->
+                if (e != null) {
+                    // Handle the error here (e.g., log the error or show a message to the user)
+                    Log.e("Firestore Error", "Error while fetching data", e)
+                    binding.feedsRefreshLayout.isRefreshing = false
+                    return@addSnapshotListener
+                } else {
+                    binding.feedsRefreshLayout.isRefreshing = false
+                }
             }
+
+
+            //set options for firebase ui
+            val options: FirestoreRecyclerOptions<PostModel> =
+                FirestoreRecyclerOptions.Builder<PostModel>().setQuery(myQuery, PostModel::class.java).build()
+
+            recyclerView = binding.feedsRV
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            feedsAdapter = FeedsAdapter(mainBinding, context, options)
+            recyclerView.adapter = feedsAdapter
+            feedsAdapter.startListening()
         }
-
-
-        //set options for firebase ui
-        val options: FirestoreRecyclerOptions<PostModel> =
-            FirestoreRecyclerOptions.Builder<PostModel>().setQuery(myQuery, PostModel::class.java).build()
-
-        recyclerView = binding.feedsRV
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        feedsAdapter = FeedsAdapter(mainBinding, context, options)
-        recyclerView.adapter = feedsAdapter
-        feedsAdapter.startListening()
     }
 
     private fun bindButtons(){
@@ -117,30 +124,38 @@ class FeedsFragment(private val mainBinding: FragmentCommunityBinding, private v
     private fun searchFeedsRV(searchQuery:String){
         if (searchQuery.isNotEmpty()){
             binding.feedsRefreshLayout.isRefreshing = true
+            AppUtil().showUserBlockList(communityId){list ->
+                var myQuery:Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId)
 
-            val myQuery:Query = FirebaseUtil().retrieveCommunityFeedsCollection(communityId)
-                .whereGreaterThanOrEqualTo("caption", searchQuery)
-                .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+                if (list.isNotEmpty())
+                    myQuery = myQuery.whereNotIn("ownerId", list)
 
-            // Add a listener to handle success or failure of the query
-            myQuery.addSnapshotListener { _, e ->
-                if (e != null) {
-                    // Handle the error here (e.g., log the error or show a message to the user)
-                    Log.e("Firestore Error", "Error while fetching data", e)
-                    return@addSnapshotListener
-                } else {
-                    binding.feedsRefreshLayout.isRefreshing = false
+                myQuery = myQuery
+                    .whereGreaterThanOrEqualTo("caption", searchQuery)
+                    .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+                    .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+                // Add a listener to handle success or failure of the query
+                myQuery.addSnapshotListener { _, e ->
+                    if (e != null) {
+                        // Handle the error here (e.g., log the error or show a message to the user)
+                        Log.e("Firestore Error", "Error while fetching data", e)
+                        binding.feedsRefreshLayout.isRefreshing = false
+                        return@addSnapshotListener
+                    } else {
+                        binding.feedsRefreshLayout.isRefreshing = false
+                    }
                 }
-            }
-            //set options for firebase ui
-            val options: FirestoreRecyclerOptions<PostModel> =
-                FirestoreRecyclerOptions.Builder<PostModel>().setQuery(myQuery, PostModel::class.java).build()
+                //set options for firebase ui
+                val options: FirestoreRecyclerOptions<PostModel> =
+                    FirestoreRecyclerOptions.Builder<PostModel>().setQuery(myQuery, PostModel::class.java).build()
 
-            recyclerView = binding.feedsRV
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            feedsAdapter = FeedsAdapter(mainBinding, context, options)
-            recyclerView.adapter = feedsAdapter
-            feedsAdapter.startListening()
+                recyclerView = binding.feedsRV
+                recyclerView.layoutManager = LinearLayoutManager(context)
+                feedsAdapter = FeedsAdapter(mainBinding, context, options)
+                recyclerView.adapter = feedsAdapter
+                feedsAdapter.startListening()
+            }
         } else {
             setRecyclerView()
         }

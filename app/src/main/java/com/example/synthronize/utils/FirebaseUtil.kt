@@ -34,6 +34,24 @@ class FirebaseUtil {
         return FirebaseAuth.getInstance().uid != null
     }
 
+    fun getFCMToken() {
+        // Get Token For Receiving Notifications
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                FirebaseUtil().currentUserDetails().update("fcmToken", token)
+            }
+        }
+    }
+    fun removeFCMToken() {
+        // Get Token For Receiving Notifications
+        FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                FirebaseUtil().currentUserDetails().update("fcmToken", "")
+            }
+        }
+    }
+
     //For retrieving users documents
     fun currentUserDetails(): DocumentReference {
         return FirebaseFirestore.getInstance().collection("users").document(currentUserUid())

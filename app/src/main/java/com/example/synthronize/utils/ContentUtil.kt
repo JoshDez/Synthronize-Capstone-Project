@@ -128,30 +128,47 @@ class ContentUtil {
         if (ownerId.isEmpty() || communityId.isEmpty()){
             callback(false)
         } else {
-            FirebaseUtil().targetUserDetails(ownerId).get().addOnSuccessListener {user ->
-                val userModel = user.toObject(UserModel::class.java)!!
+            FirebaseUtil().currentUserDetails().get().addOnSuccessListener {currentUser ->
+                //CURRENT USER MODEL
+                val currentUserModel = currentUser.toObject(UserModel::class.java)!!
 
-                FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community ->
-                    val communityModel = community.toObject(CommunityModel::class.java)!!
+                FirebaseUtil().targetUserDetails(ownerId).get().addOnSuccessListener {user ->
+                    //USER MODEL
+                    val userModel = user.toObject(UserModel::class.java)!!
 
-                    //if the user is not banned from community and not blocked by the post owner
-                    if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid()) &&
-                        !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) &&
-                        !userModel.userAccess.containsKey("Disabled")){
+                    FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {community ->
+                        //COMMUNITY MODEL
+                        val communityModel = community.toObject(CommunityModel::class.java)!!
 
-                        if (communityModel.communityType == "Private"){
-                            //post is from private community
-                            if (AppUtil().isIdOnList(communityModel.communityMembers.keys.toList(), FirebaseUtil().currentUserUid())){
-                                //The user belongs to the private community
-                                callback(true)
+                        if (AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), currentUserModel.userID) ||
+                            AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), currentUserModel.userID) ||
+                            currentUserModel.userType == "AppAdmin" || currentUserModel.userType == "WebAdmin"){
+                            //RETURN TRUE IF THE CURRENT USER IS ADMIN OR MODERATOR
+                            callback(true)
+                        } else {
+                            //THE CURRENT USER IS NOT AN ADMIN NOR MODERATOR
+                            //if the user is not banned from community and not blocked by the post owner
+                            if (!AppUtil().isIdOnList(communityModel.bannedUsers, FirebaseUtil().currentUserUid()) &&
+                                !AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) &&
+                                !userModel.userAccess.containsKey("Disabled")){
+
+                                if (communityModel.communityType == "Private"){
+                                    //post is from private community
+                                    if (AppUtil().isIdOnList(communityModel.communityMembers.keys.toList(), FirebaseUtil().currentUserUid())){
+                                        //The user belongs to the private community
+                                        callback(true)
+                                    } else {
+                                        callback(false)
+                                    }
+                                } else {
+                                    //post is from public community
+                                    callback(true)
+                                }
                             } else {
                                 callback(false)
                             }
-                        } else {
-                            //post is from public community
-                            callback(true)
                         }
-                    } else {
+                    }.addOnFailureListener {
                         callback(false)
                     }
                 }.addOnFailureListener {

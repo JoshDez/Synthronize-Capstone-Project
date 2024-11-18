@@ -2,6 +2,7 @@ package com.example.synthronize
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
@@ -12,17 +13,22 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.synthronize.databinding.ActivityAppSettingsBinding
 import com.example.synthronize.databinding.DialogFeedbackBinding
 import com.example.synthronize.databinding.DialogMenuBinding
+import com.example.synthronize.databinding.DialogNotificationsSettingsBinding
 import com.example.synthronize.databinding.DialogPrivacyPolicyBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.FeedbackModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
 class AppSettings : AppCompatActivity() {
     private lateinit var binding: ActivityAppSettingsBinding
     private lateinit var context: Context
+    private val sharedPreferences: SharedPreferences by lazy {
+        getSharedPreferences("AppPreferences", MODE_PRIVATE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +45,15 @@ class AppSettings : AppCompatActivity() {
 
         binding.feedback.setOnClickListener {
             openFeedbackDialog()
+        }
+
+        binding.blockedUsersBtn.setOnClickListener {
+            val intent = Intent(this, BanAndBlockList::class.java)
+            startActivity(intent)
+        }
+
+        binding.notificationSettingsBtn.setOnClickListener {
+            openNotificationSettingsDialog()
         }
 
         // Open reports filed activity
@@ -73,6 +88,48 @@ class AppSettings : AppCompatActivity() {
             val intent = Intent(this, AccountManagement::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun openNotificationSettingsDialog() {
+        val dialogBinding = DialogNotificationsSettingsBinding.inflate(layoutInflater)
+        val dialog = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(dialogBinding.root))
+            .setCancelable(true)
+            .setExpanded(false)
+            .setGravity(Gravity.BOTTOM)
+            .create()
+
+        // Load the saved preference
+        val isNotificationsEnabled = sharedPreferences.getBoolean("notifications_enabled", true)
+        dialogBinding.notificationSwitch.isChecked = isNotificationsEnabled
+
+        dialogBinding.notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
+                if (NetworkUtil(this).isNetworkAvailable()){
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean("notifications_enabled", isChecked)
+                    editor.apply()
+
+                    if (isChecked) {
+                        // enables notification
+                        Toast.makeText(this, "Notifications enabled", Toast.LENGTH_SHORT).show()
+                        FirebaseUtil().getFCMToken()
+                    } else {
+                        // disables notification
+                        Toast.makeText(this, "Notifications disabled", Toast.LENGTH_SHORT).show()
+                        FirebaseUtil().removeFCMToken()
+                    }
+                } else {
+                    Toast.makeText(this, "Cannot make changes without an internet connection", Toast.LENGTH_SHORT).show()
+                    dialogBinding.notificationSwitch.isChecked = isNotificationsEnabled
+                }
+        }
+
+
+        dialogBinding.backBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun openFeedbackDialog() {

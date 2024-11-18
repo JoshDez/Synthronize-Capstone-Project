@@ -1,6 +1,7 @@
 package com.example.synthronize
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -24,13 +25,16 @@ import com.google.firebase.messaging.FirebaseMessaging
 class MainActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding: ActivityMainBinding
     private var currentFragment = ""
+    private val sharedPreferences: SharedPreferences by lazy {
+        getSharedPreferences("AppPreferences", MODE_PRIVATE)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         AppUtil().logoutIfAccDisabled(this)
         onStartFragment()
-        getFCMToken()
+        setupFCM()
         showUpdatesNotificationAlert()
         showChatNotificationAlert()
 
@@ -53,6 +57,21 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             binding.chatBtn.foreground = null
         }
     }
+
+    //Function that enables or disables push notifications
+    private fun setupFCM() {
+        // Load the saved preference
+        val isNotificationsEnabled = sharedPreferences.getBoolean("notifications_enabled", true)
+
+        if (isNotificationsEnabled){
+            //enables notification
+            FirebaseUtil().getFCMToken()
+        } else {
+            //disables notification
+            FirebaseUtil().removeFCMToken()
+        }
+    }
+
     //Function that checks if the intent request for a specific fragment
     private fun onStartFragment(){
         var fragmentRequest = intent.getStringExtra("fragment").toString()
@@ -151,16 +170,6 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             binding.chatBtn.id -> {
                 binding.chatBtn.setBackgroundResource(R.drawable.chat_selected)
 
-            }
-        }
-    }
-
-    private fun getFCMToken() {
-        // Get Token For Receiving Notifications
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val token = task.result
-                FirebaseUtil().currentUserDetails().update("fcmToken", token)
             }
         }
     }

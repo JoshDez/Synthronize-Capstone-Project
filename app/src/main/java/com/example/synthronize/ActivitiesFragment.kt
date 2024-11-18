@@ -258,72 +258,91 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
 
         var myQuery: Query
 
-        if (searchQuery.isNotEmpty()){
+        AppUtil().showUserBlockList(communityId) { list ->
+
             myQuery = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
-                .whereGreaterThanOrEqualTo("caption", searchQuery)
-                .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
-        } else {
-            myQuery = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+
+            if (list.isNotEmpty())
+                myQuery = myQuery.whereNotIn("ownerId", list)
+
+            if (searchQuery.isNotEmpty()){
+                myQuery = myQuery
+                    .whereGreaterThanOrEqualTo("caption", searchQuery)
+                    .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+            }
+
+            myQuery = myQuery
                 .whereEqualTo("forCompetition", false)
                 .whereEqualTo("shareFile", false)
                 .orderBy("createdTimestamp", Query.Direction.DESCENDING)
-        }
 
-        // Add a listener to handle success or failure of the query
-        myQuery.addSnapshotListener { _, e ->
-            if (e != null) {
-                // Handle the error here (e.g., log the error or show a message to the user)
-                Log.e("Firestore Error", "Error while fetching data", e)
-                return@addSnapshotListener
-            } else {
-                binding.activitiesRefreshLayout.isRefreshing = false
+            // Add a listener to handle success or failure of the query
+            myQuery.addSnapshotListener { _, e ->
+                if (e != null) {
+                    // Handle the error here (e.g., log the error or show a message to the user)
+                    Log.e("Firestore Error", "Error while fetching data", e)
+                    binding.activitiesRefreshLayout.isRefreshing = false
+                    return@addSnapshotListener
+                } else {
+                    binding.activitiesRefreshLayout.isRefreshing = false
+                }
             }
+
+            //set options for firebase ui
+            val options: FirestoreRecyclerOptions<FileModel> =
+                FirestoreRecyclerOptions.Builder<FileModel>().setQuery(myQuery, FileModel::class.java).build()
+
+            binding.resourcesRV.layoutManager = LinearLayoutManager(context)
+            resourcesAdapter = FilesAdapter(context, options)
+            binding.resourcesRV.adapter = resourcesAdapter
+            resourcesAdapter.startListening()
         }
 
-        //set options for firebase ui
-        val options: FirestoreRecyclerOptions<FileModel> =
-            FirestoreRecyclerOptions.Builder<FileModel>().setQuery(myQuery, FileModel::class.java).build()
 
-        binding.resourcesRV.layoutManager = LinearLayoutManager(context)
-        resourcesAdapter = FilesAdapter(context, options)
-        binding.resourcesRV.adapter = resourcesAdapter
-        resourcesAdapter.startListening()
     }
 
     private fun setupSharedFilesRV(searchQuery: String = ""){
         binding.activitiesRefreshLayout.isRefreshing = true
         var myQuery: Query
 
-        if (searchQuery.isNotEmpty()){
-            myQuery =  FirebaseUtil().retrieveCommunityFilesCollection(communityId)
-                .whereGreaterThanOrEqualTo("caption", searchQuery)
-                .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
-        } else {
+        AppUtil().showUserBlockList(communityId) { list ->
             myQuery = FirebaseUtil().retrieveCommunityFilesCollection(communityId)
+
+            if (list.isNotEmpty())
+                myQuery = myQuery.whereNotIn("ownerId", list)
+
+            if (searchQuery.isNotEmpty()){
+                myQuery =  myQuery
+                    .whereGreaterThanOrEqualTo("caption", searchQuery)
+                    .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+            }
+
+            myQuery = myQuery
                 .whereEqualTo("forCompetition", false)
                 .whereEqualTo("shareFile", true)
                 .orderBy("createdTimestamp", Query.Direction.DESCENDING)
-        }
 
-        // Add a listener to handle success or failure of the query
-        myQuery.addSnapshotListener { _, e ->
-            if (e != null) {
-                // Handle the error here (e.g., log the error or show a message to the user)
-                Log.e("Firestore Error", "Error while fetching data", e)
-                return@addSnapshotListener
-            } else {
-                binding.activitiesRefreshLayout.isRefreshing = false
+            // Add a listener to handle success or failure of the query
+            myQuery.addSnapshotListener { _, e ->
+                if (e != null) {
+                    // Handle the error here (e.g., log the error or show a message to the user)
+                    Log.e("Firestore Error", "Error while fetching data", e)
+                    binding.activitiesRefreshLayout.isRefreshing = false
+                    return@addSnapshotListener
+                } else {
+                    binding.activitiesRefreshLayout.isRefreshing = false
+                }
             }
+
+            //set options for firebase ui
+            val options: FirestoreRecyclerOptions<FileModel> =
+                FirestoreRecyclerOptions.Builder<FileModel>().setQuery(myQuery, FileModel::class.java).build()
+
+            binding.sharedFilesRV.layoutManager = LinearLayoutManager(context)
+            sharedFilesAdapter = FilesAdapter(context, options)
+            binding.sharedFilesRV.adapter = sharedFilesAdapter
+            sharedFilesAdapter.startListening()
         }
-
-        //set options for firebase ui
-        val options: FirestoreRecyclerOptions<FileModel> =
-            FirestoreRecyclerOptions.Builder<FileModel>().setQuery(myQuery, FileModel::class.java).build()
-
-        binding.sharedFilesRV.layoutManager = LinearLayoutManager(context)
-        sharedFilesAdapter = FilesAdapter(context, options)
-        binding.sharedFilesRV.adapter = sharedFilesAdapter
-        sharedFilesAdapter.startListening()
     }
 
 

@@ -86,15 +86,59 @@ class MarketFragment(private val mainBinding: FragmentCommunityBinding, private 
         if (searchQuery.isNotEmpty()){
             binding.marketRefreshLayout.isRefreshing = true
 
-            val myQuery: Query = FirebaseUtil().retrieveCommunityMarketCollection(communityId)
-                .whereGreaterThanOrEqualTo("productName", searchQuery)
-                .whereLessThanOrEqualTo("productName", searchQuery+"\uf8ff")
+            AppUtil().showUserBlockList(communityId) { list ->
+                var myQuery:Query = FirebaseUtil().retrieveCommunityMarketCollection(communityId)
+
+                if (list.isNotEmpty())
+                    myQuery = myQuery.whereNotIn("ownerId", list)
+
+                myQuery = myQuery
+                    .whereGreaterThanOrEqualTo("productName", searchQuery)
+                    .whereLessThanOrEqualTo("productName", searchQuery+"\uf8ff")
+                    .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+                // Add a listener to handle success or failure of the query
+                myQuery.addSnapshotListener { _, e ->
+                    if (e != null) {
+                        // Handle the error here (e.g., log the error or show a message to the user)
+                        Log.e("Firestore Error", "Error while fetching data", e)
+                        binding.marketRefreshLayout.isRefreshing = false
+                        return@addSnapshotListener
+                    } else {
+                        binding.marketRefreshLayout.isRefreshing = false
+                    }
+                }
+
+                //set options for firebase ui
+                val options: FirestoreRecyclerOptions<ProductModel> =
+                    FirestoreRecyclerOptions.Builder<ProductModel>().setQuery(myQuery, ProductModel::class.java).build()
+
+                binding.marketRV.layoutManager = LinearLayoutManager(context)
+                marketAdapter = MarketAdapter(context, options)
+                binding.marketRV.adapter = marketAdapter
+                marketAdapter.startListening()
+            }
+        } else {
+            setupMarketRV()
+        }
+    }
+
+    private fun setupMarketRV() {
+        binding.marketRefreshLayout.isRefreshing = true
+        AppUtil().showUserBlockList(communityId) { list ->
+            var myQuery:Query = FirebaseUtil().retrieveCommunityMarketCollection(communityId)
+
+            if (list.isNotEmpty())
+                myQuery = myQuery.whereNotIn("ownerId", list)
+
+            myQuery = myQuery.orderBy("createdTimestamp", Query.Direction.DESCENDING)
 
             // Add a listener to handle success or failure of the query
             myQuery.addSnapshotListener { _, e ->
                 if (e != null) {
                     // Handle the error here (e.g., log the error or show a message to the user)
                     Log.e("Firestore Error", "Error while fetching data", e)
+                    binding.marketRefreshLayout.isRefreshing = false
                     return@addSnapshotListener
                 } else {
                     binding.marketRefreshLayout.isRefreshing = false
@@ -109,36 +153,7 @@ class MarketFragment(private val mainBinding: FragmentCommunityBinding, private 
             marketAdapter = MarketAdapter(context, options)
             binding.marketRV.adapter = marketAdapter
             marketAdapter.startListening()
-        } else {
-            setupMarketRV()
         }
-    }
-
-    private fun setupMarketRV() {
-        binding.marketRefreshLayout.isRefreshing = true
-
-        val myQuery: Query = FirebaseUtil().retrieveCommunityMarketCollection(communityId)
-            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
-
-        // Add a listener to handle success or failure of the query
-        myQuery.addSnapshotListener { _, e ->
-            if (e != null) {
-                // Handle the error here (e.g., log the error or show a message to the user)
-                Log.e("Firestore Error", "Error while fetching data", e)
-                return@addSnapshotListener
-            } else {
-                binding.marketRefreshLayout.isRefreshing = false
-            }
-        }
-
-        //set options for firebase ui
-        val options: FirestoreRecyclerOptions<ProductModel> =
-            FirestoreRecyclerOptions.Builder<ProductModel>().setQuery(myQuery, ProductModel::class.java).build()
-
-        binding.marketRV.layoutManager = LinearLayoutManager(context)
-        marketAdapter = MarketAdapter(context, options)
-        binding.marketRV.adapter = marketAdapter
-        marketAdapter.startListening()
     }
     override fun onStart() {
         super.onStart()

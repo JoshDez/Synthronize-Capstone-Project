@@ -436,6 +436,69 @@ class AppUtil {
         return false
     }
 
+    fun showUserBlockList(communityId:String = "", isCurrentUserBlockList:Boolean = false, callback: (List<String>) -> Unit){
+        var arrayList = arrayListOf<String>()
+        if (isCurrentUserBlockList){
+            //For Current user profile
+            //List of users that the current user blocked
+            FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
+                if (it.result.exists()){
+                    val userModel = it.result.toObject(UserModel::class.java)!!
+                    callback(userModel.blockList)
+                } else {
+                    callback(arrayList)
+                }
+            }
+        } else {
+            //For Community
+            //List of users who blocked the current user as well as the users that the current user blocked
+            FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
+                if (it.result.exists()){
+                    val currentUserModel = it.result.toObject(UserModel::class.java)!!
+
+                    FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnCompleteListener {community ->
+                        if (community.result.exists()){
+
+                            val communityModel = community.result.toObject(CommunityModel::class.java)!!
+
+                            if (AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"), currentUserModel.userID) ||
+                                AppUtil().isIdOnList(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"), currentUserModel.userID) ||
+                                currentUserModel.userType == "AppAdmin" || currentUserModel.userType == "WebAdmin"){
+                                //RETURN IF THE CURRENT USER IS ADMIN OR MODERATOR
+                                callback(arrayList)
+                            } else {
+                                //THE CURRENT USER IS NOT ADMIN NOR MODERATOR
+                                //add current user's block list to arraylist
+                                arrayList = ArrayList(currentUserModel.blockList)
+
+                                FirebaseUtil().allUsersCollectionReference()
+                                    .whereArrayContains("blockList", FirebaseUtil().currentUserUid()).get()
+                                    .addOnSuccessListener {users ->
+                                        for (document in users.documents){
+                                            //add users who blocked the current user
+                                            if (!arrayList.contains(document.id))
+                                                arrayList.add(document.id)
+                                        }
+                                        callback(arrayList)
+                                    }
+                                    .addOnFailureListener {
+                                        callback(arrayList)
+                                    }
+                            }
+
+
+                        } else {
+                            callback(arrayList)
+                        }
+                    }
+
+                } else {
+                    callback(arrayList)
+                }
+            }
+        }
+    }
+
     fun logoutIfAccDisabled(context:Context){
         FirebaseUtil().currentUserDetails().get().addOnCompleteListener {
             if (it.result.exists()){

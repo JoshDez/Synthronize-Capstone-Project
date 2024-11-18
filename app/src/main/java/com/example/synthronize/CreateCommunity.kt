@@ -48,6 +48,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
     private var communityName: String = ""
     private var communityType: String = ""
     private var communityDesc: String = ""
+    private var communityCode: String = ""
     private var searchUserQuery = ""
     private var selectedUsersList: ArrayList<String> = ArrayList()
     private var isCommunityProfile = true
@@ -239,7 +240,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         }
 
         binding.nextBtn.setOnClickListener {
-            createCommunity()
+            generateCommunityCode()
         }
         binding.previousBtn.setOnClickListener {
             binding.nextBtn.text = "Next"
@@ -275,7 +276,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                 communityName = communityName,
                 communityDescription = communityDesc,
                 communityType = communityType,
-                communityCode = generateRandomCode(),
+                communityCode = communityCode,
                 communityMembers = mapOf(FirebaseUtil().currentUserUid() to "Admin")
             )
             //save community profile to firebase storage
@@ -455,6 +456,31 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
+
+    private fun generateRandomCode(): String {
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..10)
+            .map { allowedChars.random() }
+            .joinToString("")
+    }
+    private fun generateCommunityCode() {
+        var code = generateRandomCode()
+        FirebaseUtil().retrieveAllCommunityCollection().whereEqualTo("communityCode", code).get().addOnSuccessListener{
+            if (it.isEmpty){
+                //community code is available
+                communityCode = code
+
+                //Create Community
+                createCommunity()
+            } else {
+                //community code already exists
+                generateCommunityCode()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "An error occurred, please try again", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onBackPressed() {
         if (communityName.isNotEmpty() || communityType.isNotEmpty()){
             //hides keyboard
@@ -481,13 +507,6 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
         }
 
 
-    }
-
-    private fun generateRandomCode(): String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return (1..10)
-            .map { allowedChars.random() }
-            .joinToString("")
     }
 
     override fun onItemClick(id: String, isChecked: Boolean) {

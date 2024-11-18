@@ -63,29 +63,36 @@ class ForumsFragment(private val mainBinding: FragmentCommunityBinding, private 
     private fun setRecyclerView() {
         binding.forumsRefreshLayout.isRefreshing = true
 
-        val myQuery:Query = FirebaseUtil().retrieveCommunityForumsCollection(communityId)
-            .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+        AppUtil().showUserBlockList(communityId){list ->
+            var myQuery:Query = FirebaseUtil().retrieveCommunityForumsCollection(communityId)
 
-        // Add a listener to handle success or failure of the query
-        myQuery.addSnapshotListener { _, e ->
-            if (e != null) {
-                // Handle the error here (e.g., log the error or show a message to the user)
-                Log.e("Firestore Error", "Error while fetching data", e)
-                return@addSnapshotListener
-            } else {
-                binding.forumsRefreshLayout.isRefreshing = false
+            if (list.isNotEmpty())
+                myQuery = myQuery.whereNotIn("ownerId", list)
+
+            myQuery = myQuery.orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+            // Add a listener to handle success or failure of the query
+            myQuery.addSnapshotListener { _, e ->
+                if (e != null) {
+                    // Handle the error here (e.g., log the error or show a message to the user)
+                    Log.e("Firestore Error", "Error while fetching data", e)
+                    return@addSnapshotListener
+                } else {
+                    binding.forumsRefreshLayout.isRefreshing = false
+                }
             }
+
+            //set options for firebase ui
+            val options: FirestoreRecyclerOptions<ForumModel> =
+                FirestoreRecyclerOptions.Builder<ForumModel>().setQuery(myQuery, ForumModel::class.java).build()
+
+            recyclerView = binding.threadsRV
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            forumsAdapter = ForumsAdapter(mainBinding, context, options)
+            recyclerView.adapter = forumsAdapter
+            forumsAdapter.startListening()
+
         }
-
-        //set options for firebase ui
-        val options: FirestoreRecyclerOptions<ForumModel> =
-            FirestoreRecyclerOptions.Builder<ForumModel>().setQuery(myQuery, ForumModel::class.java).build()
-
-        recyclerView = binding.threadsRV
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        forumsAdapter = ForumsAdapter(mainBinding, context, options)
-        recyclerView.adapter = forumsAdapter
-        forumsAdapter.startListening()
     }
 
     private fun bindButtons(){
@@ -116,31 +123,41 @@ class ForumsFragment(private val mainBinding: FragmentCommunityBinding, private 
     private fun searchForumsRV(searchQuery:String){
         if (searchQuery.isNotEmpty()){
             binding.forumsRefreshLayout.isRefreshing = true
-            val myQuery:Query = FirebaseUtil().retrieveCommunityForumsCollection(communityId)
-                .whereGreaterThanOrEqualTo("caption", searchQuery)
-                .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
 
+            AppUtil().showUserBlockList(communityId){list ->
 
-            // Add a listener to handle success or failure of the query
-            myQuery.addSnapshotListener { _, e ->
-                if (e != null) {
-                    // Handle the error here (e.g., log the error or show a message to the user)
-                    Log.e("Firestore Error", "Error while fetching data", e)
-                    return@addSnapshotListener
-                } else {
-                    binding.forumsRefreshLayout.isRefreshing = false
+                var myQuery:Query = FirebaseUtil().retrieveCommunityForumsCollection(communityId)
+
+                if (list.isNotEmpty())
+                    myQuery = myQuery.whereNotIn("ownerId", list)
+
+                myQuery = myQuery
+                    .whereGreaterThanOrEqualTo("caption", searchQuery)
+                    .whereLessThanOrEqualTo("caption", searchQuery+"\uf8ff")
+                    .orderBy("createdTimestamp", Query.Direction.DESCENDING)
+
+                // Add a listener to handle success or failure of the query
+                myQuery.addSnapshotListener { _, e ->
+                    if (e != null) {
+                        // Handle the error here (e.g., log the error or show a message to the user)
+                        Log.e("Firestore Error", "Error while fetching data", e)
+                        return@addSnapshotListener
+                        binding.forumsRefreshLayout.isRefreshing = false
+                    } else {
+                        binding.forumsRefreshLayout.isRefreshing = false
+                    }
                 }
+
+                //set options for firebase ui
+                val options: FirestoreRecyclerOptions<ForumModel> =
+                    FirestoreRecyclerOptions.Builder<ForumModel>().setQuery(myQuery, ForumModel::class.java).build()
+
+                recyclerView = binding.threadsRV
+                recyclerView.layoutManager = LinearLayoutManager(context)
+                forumsAdapter = ForumsAdapter(mainBinding, context, options)
+                recyclerView.adapter = forumsAdapter
+                forumsAdapter.startListening()
             }
-
-            //set options for firebase ui
-            val options: FirestoreRecyclerOptions<ForumModel> =
-                FirestoreRecyclerOptions.Builder<ForumModel>().setQuery(myQuery, ForumModel::class.java).build()
-
-            recyclerView = binding.threadsRV
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            forumsAdapter = ForumsAdapter(mainBinding, context, options)
-            recyclerView.adapter = forumsAdapter
-            forumsAdapter.startListening()
         } else {
             setRecyclerView()
         }
