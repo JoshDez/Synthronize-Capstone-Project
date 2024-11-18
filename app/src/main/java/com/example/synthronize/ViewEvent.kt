@@ -157,6 +157,7 @@ class ViewEvent : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, OnI
                 }
         } else {
             binding.actionBtn.visibility = View.GONE
+            binding.divider2.visibility = View.INVISIBLE
         }
 
     }

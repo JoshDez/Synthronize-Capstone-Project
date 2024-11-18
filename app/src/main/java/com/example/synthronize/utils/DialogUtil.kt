@@ -438,6 +438,8 @@ class DialogUtil: OnItemClickListener {
 
                     // Archive the post to the "deleted posts" collection
                     FirebaseUtil().retrieveDeletedPostsCollection(communityId).document(contentId).set(deletedPostModel).addOnSuccessListener {
+                        //add community Id to community archive
+                        addCommunityIdToArchiveCommunity(communityId)
                         // Deletes the original post after archiving
                         FirebaseUtil().retrieveCommunityFeedsCollection(communityId).document(contentId).delete()
                     }
@@ -501,6 +503,8 @@ class DialogUtil: OnItemClickListener {
 
                     // Archive the product to the "deleted Products" collection
                     FirebaseUtil().retrieveDeletedProductsCollection(communityId).document(contentId).set(deletedProductModel).addOnSuccessListener {
+                        //add community Id to community archive
+                        addCommunityIdToArchiveCommunity(communityId)
                         // Deletes the original product after archiving
                         FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(contentId).delete()
                     }
@@ -561,6 +565,8 @@ class DialogUtil: OnItemClickListener {
 
                     // Archive the forum to the "deleted Forums" collection
                     FirebaseUtil().retrieveDeletedForumsCollection(communityId).document(contentId).set(deletedForumsModel).addOnSuccessListener {
+                        //add community Id to community archive
+                        addCommunityIdToArchiveCommunity(communityId)
                         // Deletes the original forum after archiving
                         FirebaseUtil().retrieveCommunityForumsCollection(communityId).document(contentId).delete()
                     }
@@ -587,12 +593,20 @@ class DialogUtil: OnItemClickListener {
 
                     // Archive the event to the "deleted Events" collection
                     FirebaseUtil().retrieveDeletedEventsCollection(communityId).document(contentId).set(deletedEventModel).addOnSuccessListener {
+                        //add community Id to community archive
+                        addCommunityIdToArchiveCommunity(communityId)
                         // Deletes the original event after archiving
                         FirebaseUtil().retrieveCommunityEventsCollection(communityId).document(contentId).delete()
                     }
                 }
             }
         }
+    }
+
+    private fun addCommunityIdToArchiveCommunity(communityId: String){
+        val data = hashMapOf( "communityId" to communityId )
+        FirebaseUtil().retrieveArchiveCollection().document(communityId)
+            .set(data)
     }
 
     private fun deleteMediaOrFile(mediaList:List<String>){

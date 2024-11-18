@@ -200,7 +200,7 @@ class FirebaseUtil {
     }
 
     //Archive
-    private fun retrieveArchiveCollection():CollectionReference{
+    fun retrieveArchiveCollection():CollectionReference{
         return FirebaseFirestore.getInstance().collection("archive")
     }
 
