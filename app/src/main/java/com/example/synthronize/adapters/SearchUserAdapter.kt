@@ -31,7 +31,8 @@ class SearchUserAdapter(private val context: Context, options: FirestoreRecycler
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int, model: UserModel) {
         totalItems += 1
-        holder.bind(model, position)
+        if (model.userID.isNotEmpty())
+            holder.bind(model, position)
     }
 
     fun getTotalItems():Int{

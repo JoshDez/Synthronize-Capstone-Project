@@ -35,7 +35,8 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
     }
 
     override fun onBindViewHolder(holder: ChatroomViewHolder, position: Int, model: ChatroomModel) {
-        holder.bind(model)
+        if (model.chatroomId.isNotEmpty())
+            holder.bind(model)
     }
 
 

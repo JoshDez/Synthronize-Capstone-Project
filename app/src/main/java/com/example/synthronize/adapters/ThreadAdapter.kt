@@ -36,7 +36,8 @@ class ThreadAdapter(
     }
 
     override fun onBindViewHolder(holder: ThreadViewHolder, position: Int, model: ThreadModel) {
-        holder.bind(model)
+        if (model.threadId.isNotEmpty())
+            holder.bind(model)
     }
 
     // Function to refresh the feed inside the adapter

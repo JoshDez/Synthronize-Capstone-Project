@@ -29,7 +29,8 @@ class ReportsAdapter(private val context: Context, options: FirestoreRecyclerOpt
     }
 
     override fun onBindViewHolder(holder: ReportsViewHolder, position: Int, model: ReportModel) {
-        holder.bind(model)
+        if (model.reportId.isNotEmpty())
+            holder.bind(model)
     }
 
 

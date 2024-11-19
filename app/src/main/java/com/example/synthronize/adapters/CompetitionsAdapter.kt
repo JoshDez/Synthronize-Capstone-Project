@@ -14,6 +14,7 @@ import com.example.synthronize.ViewCompetition
 import com.example.synthronize.databinding.ItemCompetitionBinding
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CompetitionModel
+import com.example.synthronize.model.EventModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.DialogUtil
@@ -32,14 +33,21 @@ class CompetitionsAdapter(private val context: Context, options: FirestoreRecycl
     }
 
     override fun onBindViewHolder(holder: CompetitionViewHolder, position: Int, model: CompetitionModel) {
-        if(model.competitionId.isNotEmpty())
-            holder.bind(model)
+        holder.checkIfAvailable(model)
     }
 
     inner class CompetitionViewHolder(private val binding: ItemCompetitionBinding, private val context: Context, private val inflater: LayoutInflater
     ): RecyclerView.ViewHolder(binding.root){
 
         private lateinit var competitionModel: CompetitionModel
+
+
+        fun checkIfAvailable(model: CompetitionModel){
+            if (model.competitionId.isNotEmpty())
+                bind(model)
+            else
+                binding.competitionNameTV.text = "Content Not Available"
+        }
 
         fun bind(model: CompetitionModel){
             competitionModel = model

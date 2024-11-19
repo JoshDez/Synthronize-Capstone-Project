@@ -33,7 +33,8 @@ class ContentUsersAdapter(private val context: Context, options: FirestoreRecycl
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int, model: UserModel) {
         totalItems += 1
-        holder.bind(model)
+        if (model.userID.isNotEmpty())
+            holder.bind(model)
     }
 
     inner class UserViewHolder(private val binding: ItemProfileBinding, private val context: Context): RecyclerView.ViewHolder(binding.root){

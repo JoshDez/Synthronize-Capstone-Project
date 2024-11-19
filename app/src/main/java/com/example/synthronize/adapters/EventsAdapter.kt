@@ -46,8 +46,7 @@ class EventsAdapter(
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int, model: EventModel) {
-        if (model.eventId.isNotEmpty())
-            holder.bind(model)
+        holder.checkIfAvailable(model)
     }
 
     inner class EventViewHolder(
@@ -57,6 +56,13 @@ class EventsAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private lateinit var eventModel: EventModel
+
+        fun checkIfAvailable(model: EventModel){
+            if (model.eventId.isNotEmpty())
+                bind(model)
+            else
+                binding.eventDescriptionTV.text = "Content Not Available"
+        }
 
         fun bind(model: EventModel) {
             eventModel = model

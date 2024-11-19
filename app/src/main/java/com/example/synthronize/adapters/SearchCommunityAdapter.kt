@@ -33,7 +33,8 @@ class SearchCommunityAdapter(private val context: Context, options: FirestoreRec
 
     override fun onBindViewHolder(holder: CommunityViewHolder, position: Int, model: CommunityModel) {
         totalItems += 1
-        holder.bind(model)
+        if (model.communityId.isNotEmpty())
+            holder.bind(model)
     }
     fun getTotalItems():Int{
         return totalItems

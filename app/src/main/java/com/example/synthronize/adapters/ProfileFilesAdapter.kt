@@ -58,7 +58,7 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
 
         fun checkAvailabilityBeforeBind(model: FileModel){
             ContentUtil().verifyCommunityContentAvailability(model.ownerId, model.communityId){ isAvailable ->
-                if(isAvailable){
+                if(isAvailable && model.fileId.isNotEmpty()){
                     bindFile(model)
                 } else {
                     bindContentNotAvailable()

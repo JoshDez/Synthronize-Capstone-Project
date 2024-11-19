@@ -28,7 +28,8 @@ class CommunityChatroomsAdapter(private val context: Context, options: Firestore
     }
 
     override fun onBindViewHolder(holder: CommunityChatroomViewHolder, position: Int, model: CommunityModel) {
-        holder.bind(model)
+        if (model.communityId.isNotEmpty())
+            holder.bind(model)
     }
 
 

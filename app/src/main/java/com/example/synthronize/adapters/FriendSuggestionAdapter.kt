@@ -26,9 +26,12 @@ class FriendSuggestionAdapter(private val context: Context, private val uidList:
     }
 
     override fun onBindViewHolder(holder: FriendSuggestionViewHolder, position: Int) {
-        FirebaseUtil().targetUserDetails(uidList[position]).get().addOnSuccessListener {
-            val userModel = it.toObject(UserModel::class.java)!!
-            holder.bind(userModel)
+        FirebaseUtil().targetUserDetails(uidList[position]).get().addOnCompleteListener {
+            if (it.result.exists()){
+                val userModel = it.result.toObject(UserModel::class.java)!!
+                if (userModel.userID.isNotEmpty())
+                    holder.bind(userModel)
+            }
         }
     }
 

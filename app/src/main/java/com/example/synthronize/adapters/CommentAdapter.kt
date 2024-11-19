@@ -31,7 +31,8 @@ class CommentAdapter(private val context: Context, options: FirestoreRecyclerOpt
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int, model: CommentModel) {
-        holder.bind(model)
+        if (model.commentId.isNotEmpty())
+            holder.bind(model)
     }
 
     inner class CommentViewHolder(private val binding: ItemCommentBinding, private val context: Context, private val inflater: LayoutInflater): RecyclerView.ViewHolder(binding.root){

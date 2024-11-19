@@ -13,6 +13,7 @@ import com.example.synthronize.OtherUserProfile
 import com.example.synthronize.R
 import com.example.synthronize.ViewFile
 import com.example.synthronize.databinding.ItemCompetitionFileBinding
+import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.FileModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
@@ -35,8 +36,7 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
     }
 
     override fun onBindViewHolder(holder: FileViewHolder, position: Int, model: FileModel) {
-        if (model.fileId.isNotEmpty())
-            holder.bind(model)
+        holder.checkIfAvailable(model)
     }
 
 
@@ -45,6 +45,14 @@ class CompetitionFilesAdapter(private val context: Context, options: FirestoreRe
     ): RecyclerView.ViewHolder(binding.root){
 
         private lateinit var fileModel: FileModel
+
+
+        fun checkIfAvailable(model: FileModel){
+            if (model.fileId.isNotEmpty())
+                bind(model)
+            else
+                binding.captionTV.text = "Content Not Available"
+        }
 
         fun bind(model: FileModel){
             fileModel = model

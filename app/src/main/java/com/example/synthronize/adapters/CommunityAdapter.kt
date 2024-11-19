@@ -26,7 +26,8 @@ class CommunityAdapter(private val mainBinding: ActivityMainBinding,
     }
 
     override fun onBindViewHolder(holder: CommunityViewHolder, position: Int, model: CommunityModel) {
-        holder.bind(model)
+        if (model.communityId.isNotEmpty())
+            holder.bind(model)
     }
 
     inner class CommunityViewHolder(private val mainBinding: ActivityMainBinding, private val communityBinding: ItemCommunityBinding,

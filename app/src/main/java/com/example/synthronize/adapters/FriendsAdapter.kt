@@ -37,7 +37,8 @@ class FriendsAdapter(private val context: Context, options: FirestoreRecyclerOpt
     }
 
     override fun onBindViewHolder(holder: FriendsViewHolder, position: Int, model: UserModel) {
-        holder.bind(model)
+        if (model.userID.isNotEmpty())
+            holder.bind(model)
     }
 
 
@@ -106,6 +107,8 @@ class FriendsAdapter(private val context: Context, options: FirestoreRecyclerOpt
                 context.startActivity(intent)
             }
             //message user button
+            dialogPlusBinding.reportProfileBtn.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_teal))
+            dialogPlusBinding.reportProfileBtn.setTextColor(ContextCompat.getColor(context, R.color.light_teal))
             dialogPlusBinding.reportProfileBtn.text = "Message User"
             dialogPlusBinding.reportProfileBtn.setOnClickListener {
                 val intent = Intent(context, Chatroom::class.java)

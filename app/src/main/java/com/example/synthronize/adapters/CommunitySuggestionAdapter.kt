@@ -27,9 +27,12 @@ class CommunitySuggestionAdapter(private val context: Context, private val commu
     }
 
     override fun onBindViewHolder(holder: CommunitySuggestionViewHolder, position: Int) {
-        FirebaseUtil().retrieveCommunityDocument(communityIdList[position]).get().addOnSuccessListener {
-            val communityModel = it.toObject(CommunityModel::class.java)!!
-            holder.bind(communityModel)
+        FirebaseUtil().retrieveCommunityDocument(communityIdList[position]).get().addOnCompleteListener {
+            if (it.result.exists()){
+                val communityModel = it.result.toObject(CommunityModel::class.java)!!
+                if (communityModel.communityId.isNotEmpty())
+                    holder.bind(communityModel)
+            }
         }
     }
 
