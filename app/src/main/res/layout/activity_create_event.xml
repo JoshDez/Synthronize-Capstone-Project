@@ -70,11 +70,10 @@
                     android:id="@+id/removeImageBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/cancel_icon"
+                    android:src="@drawable/red_cancel_button"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:layout_gravity="end"
-                    android:visibility="gone"
-                    app:tint="@color/red"/>
+                    android:visibility="gone"/>
             </FrameLayout>
 
             <Space

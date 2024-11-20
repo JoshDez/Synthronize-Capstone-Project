@@ -262,7 +262,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
             .whereIn("chatroomType", listOf("group_chat", "direct_message")).get().addOnSuccessListener {
                 for (document in it.documents){
                     val chatroomModel = document.toObject(ChatroomModel::class.java)!!
-                    if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid())){
+                    if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid()) && chatroomModel.lastMessage.isNotEmpty()){
                         binding.inboxIconIV.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
                         break
                     }
@@ -274,7 +274,7 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
             .whereEqualTo("chatroomType", "community_chat").get().addOnSuccessListener {
                 for (document in it.documents){
                     val chatroomModel = document.toObject(ChatroomModel::class.java)!!
-                    if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid())){
+                    if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid()) && chatroomModel.lastMessage.isNotEmpty()){
                         binding.communityChatsIV.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
                         break
                     }
@@ -288,15 +288,15 @@ class ChatFragment(private val mainBinding: ActivityMainBinding) : Fragment(), O
         val menuBinding = DialogMenuBinding.inflate(layoutInflater)
         val menuDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(menuBinding.root))
-            .setMargin(400, 0, 0, 0)
+            .setMargin(50,0,50,0)
             .setBackgroundColorResId(R.color.transparent)
-            .setGravity(Gravity.TOP)
             .setCancelable(true)
+            .setGravity(Gravity.BOTTOM)
             .create()
 
         //Option 1
         menuBinding.option1.visibility = View.VISIBLE
-        menuBinding.optiontitle1.text = "Settings"
+        menuBinding.optiontitle1.text = "App Settings"
         menuBinding.optionIcon1.setImageResource(R.drawable.gear_icon)
         menuBinding.optiontitle1.setOnClickListener {
             val intent = Intent(context, AppSettings::class.java)

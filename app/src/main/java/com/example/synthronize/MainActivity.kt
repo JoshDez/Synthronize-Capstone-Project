@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             .whereArrayContains("userIdList", FirebaseUtil().currentUserUid()).get().addOnSuccessListener {
                 for (document in it.documents){
                     val chatroomModel = document.toObject(ChatroomModel::class.java)!!
-                    if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid())){
+                    if (!AppUtil().isIdOnList(chatroomModel.usersSeen, FirebaseUtil().currentUserUid()) && chatroomModel.lastMessage.isNotEmpty()){
                         binding.chatBtn.foreground = ContextCompat.getDrawable(this, R.drawable.red_dot)
                         break
                     }

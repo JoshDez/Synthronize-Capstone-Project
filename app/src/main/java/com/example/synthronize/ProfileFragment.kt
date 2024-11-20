@@ -235,15 +235,15 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         val menuBinding = DialogMenuBinding.inflate(layoutInflater)
         val menuDialog = DialogPlus.newDialog(context)
             .setContentHolder(ViewHolder(menuBinding.root))
-            .setMargin(400, 0, 0, 0)
+            .setMargin(50,0,50,0)
             .setBackgroundColorResId(R.color.transparent)
-            .setGravity(Gravity.TOP)
             .setCancelable(true)
+            .setGravity(Gravity.BOTTOM)
             .create()
 
         //Option 1
         menuBinding.option1.visibility = View.VISIBLE
-        menuBinding.optiontitle1.text = "Search"
+        menuBinding.optiontitle1.text = "Search In Profile"
         menuBinding.optionIcon1.setImageResource(R.drawable.search_icon)
         menuBinding.optiontitle1.setOnClickListener {
             menuDialog.dismiss()
@@ -253,7 +253,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
         //Option 1
         menuBinding.option2.visibility = View.VISIBLE
-        menuBinding.optiontitle2.text = "Settings"
+        menuBinding.optiontitle2.text = "App Settings"
         menuBinding.optionIcon2.setImageResource(R.drawable.gear_icon)
         menuBinding.optiontitle2.setOnClickListener {
             headToSettings()
@@ -273,7 +273,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
         //Option 4
         menuBinding.option4.visibility = View.VISIBLE
-        menuBinding.optiontitle4.text = "Log out"
+        menuBinding.optiontitle4.text = "Log Out"
         menuBinding.optionIcon4.setImageResource(R.drawable.baseline_logout_24)
         menuBinding.optiontitle4.setOnClickListener {
             menuDialog.dismiss()

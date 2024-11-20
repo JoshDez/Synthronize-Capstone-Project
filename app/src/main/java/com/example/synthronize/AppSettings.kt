@@ -111,11 +111,11 @@ class AppSettings : AppCompatActivity() {
 
                     if (isChecked) {
                         // enables notification
-                        Toast.makeText(this, "Notifications enabled", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Push Notifications enabled", Toast.LENGTH_SHORT).show()
                         FirebaseUtil().getFCMToken()
                     } else {
                         // disables notification
-                        Toast.makeText(this, "Notifications disabled", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Push Notifications disabled", Toast.LENGTH_SHORT).show()
                         FirebaseUtil().removeFCMToken()
                     }
                 } else {

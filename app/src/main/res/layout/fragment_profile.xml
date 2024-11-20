@@ -242,6 +242,8 @@
                             android:id="@+id/birthdayLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_toLeftOf="@id/editProfileBtn"
                             android:orientation="horizontal"
                             android:visibility="invisible">
 
@@ -268,6 +270,8 @@
                         <LinearLayout
                             android:id="@+id/userRoleLayout"
                             android:layout_width="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_toLeftOf="@id/editProfileBtn"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/birthdayLayout"
                             android:orientation="horizontal"
@@ -298,6 +302,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
                             android:text="Edit Profile"
                             android:textStyle="bold"
                             android:textColor="@color/white"

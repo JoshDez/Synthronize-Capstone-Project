@@ -301,6 +301,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
+                            android:layout_alignParentStart="true"
+                            android:layout_toLeftOf="@id/messageUserBtn"
                             android:visibility="invisible">
 
                             <ImageView
@@ -327,6 +329,8 @@
                             android:id="@+id/userRoleLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_toLeftOf="@id/messageUserBtn"
                             android:layout_below="@id/birthdayLayout"
                             android:orientation="horizontal"
                             android:visibility="invisible">
@@ -357,6 +361,7 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:layout_toLeftOf="@id/friendBtn"
+                            android:layout_centerVertical="true"
                             android:background="#00D0ADF1"
                             android:src="@drawable/baseline_chat_bubble_24"
                             app:tint="@color/light_teal" />
@@ -365,6 +370,7 @@
                             android:id="@+id/friendBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
                             android:layout_alignParentEnd="true"
                             android:drawableLeft="@drawable/baseline_person_24"
                             android:drawableTint="@color/white"

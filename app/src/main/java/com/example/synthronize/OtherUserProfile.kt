@@ -1,6 +1,8 @@
 package com.example.synthronize
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -234,15 +236,15 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
         val menuBinding = DialogMenuBinding.inflate(layoutInflater)
         val menuDialog = DialogPlus.newDialog(this)
             .setContentHolder(ViewHolder(menuBinding.root))
-            .setMargin(400, 0, 0, 0)
+            .setMargin(50,0,50,0)
             .setBackgroundColorResId(R.color.transparent)
-            .setGravity(Gravity.TOP)
             .setCancelable(true)
+            .setGravity(Gravity.BOTTOM)
             .create()
 
         //Option 1
         menuBinding.option1.visibility = View.VISIBLE
-        menuBinding.optiontitle1.text = "Search"
+        menuBinding.optiontitle1.text = "Search In Profile"
         menuBinding.optionIcon1.setImageResource(R.drawable.search_icon)
         menuBinding.optiontitle1.setOnClickListener {
             menuDialog.dismiss()
@@ -256,7 +258,9 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
 
         //Option 3
         menuBinding.option3.visibility = View.VISIBLE
-        menuBinding.optiontitle3.text = "Report"
+        menuBinding.optiontitle3.text = "Report User"
+        menuBinding.optiontitle3.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+        menuBinding.optionIcon3.setColorFilter(ContextCompat.getColor(this, R.color.light_red), PorterDuff.Mode.SRC_IN)
         menuBinding.optionIcon3.setImageResource(R.drawable.baseline_edit_24)
         menuBinding.optiontitle3.setOnClickListener {
             menuDialog.dismiss()
@@ -270,7 +274,9 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
 
     private fun showBlockUserDialog(menuBinding: DialogMenuBinding, menuDialog: DialogPlus) {
         if (!AppUtil().isIdOnList(myUserModel.blockList, userID)){
-            menuBinding.optiontitle2.text = "Block"
+            menuBinding.optiontitle2.text = "Block User"
+            menuBinding.optiontitle2.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+            menuBinding.optionIcon2.setColorFilter(ContextCompat.getColor(this, R.color.light_red), PorterDuff.Mode.SRC_IN)
             menuBinding.optiontitle2.setOnClickListener {
                 //The user is not yet blocked
                 val warningBinding = DialogWarningMessageBinding.inflate(layoutInflater)
@@ -304,7 +310,9 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
             }
 
         } else {
-            menuBinding.optiontitle2.text = "Unblock"
+            menuBinding.optiontitle2.text = "Unblock User"
+            menuBinding.optiontitle2.setTextColor(ContextCompat.getColor(this, R.color.light_teal))
+            menuBinding.optionIcon2.setColorFilter(ContextCompat.getColor(this, R.color.light_teal), PorterDuff.Mode.SRC_IN)
             menuBinding.optiontitle2.setOnClickListener {
                 //The user is blocked
                 val warningBinding = DialogWarningMessageBinding.inflate(layoutInflater)

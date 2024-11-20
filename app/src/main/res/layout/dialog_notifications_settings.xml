@@ -68,7 +68,7 @@
             android:padding="20dp"
             android:trackTint="@color/light_teal"
             android:thumbTint="@color/light_teal"
-            android:text="Enable Notifications"
+            android:text="Enable Push Notifications"
             android:textColor="@color/light_teal"
             android:textSize="20sp" />
 
