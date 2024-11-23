@@ -82,7 +82,7 @@
                     android:singleLine="true"
                     android:layout_marginStart="20dp"
                     android:layout_marginBottom="8dp"
-                    android:textSize="17dp"
+                    android:textSize="16sp"
                     android:contentDescription="@string/full_name"
                     android:textColor="@color/light_teal"
                     android:layout_above="@id/usernameTV"
@@ -96,7 +96,7 @@
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:layout_marginBottom="8dp"
-                    android:textSize="15dp"
+                    android:textSize="14sp"
                     android:contentDescription="@string/Chats"
                     android:textColor="@color/light_teal"
                     android:layout_alignParentBottom="true"
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginBottom="8dp"
-                    android:textSize="15dp"
+                    android:textSize="14sp"
                     android:contentDescription="@string/timestamp"
                     android:textColor="@color/light_teal"
                     android:layout_marginEnd="15dp"
@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/light_teal"
                 android:layout_marginTop="20dp"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:contentDescription="reason"/>
 
 
@@ -174,15 +174,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:singleLine="true"
                     android:backgroundTint="#00FFFFFF"
                     android:contentDescription="@string/user_description"
                     android:drawableTint="#00FFFFFF"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -190,15 +190,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:singleLine="true"
                     android:backgroundTint="#00FFFFFF"
                     android:contentDescription="@string/user_description"
                     android:drawableTint="#00FFFFFF"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
-                    android:textSize="15sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/communityProfileDescriptionTV"
@@ -210,7 +210,7 @@
                     android:drawableTint="#00FFFFFF"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
-                    android:textSize="15sp" />
+                    android:textSize="16sp" />
 
 
                 <RelativeLayout
@@ -235,7 +235,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/baseline_calendar_month_24"
-                            app:tint="@color/light_teal" />
+                            app:tint="@color/less_saturated_light_teal" />
 
                         <TextView
                             android:id="@+id/createdDateOrBirthdateTV"
@@ -245,8 +245,8 @@
                             android:backgroundTint="#00FFFFFF"
                             android:contentDescription="Created: December 19, 2002"
                             android:drawableTint="#00FFFFFF"
-                            android:textColor="@color/light_teal"
-                            android:textSize="15sp" />
+                            android:textColor="@color/less_saturated_light_teal"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -275,14 +275,14 @@
 
             <LinearLayout
                 android:id="@+id/imageWithCaptionLayout"
-                android:visibility="gone"
-                android:background="@color/dark_teal"
-                android:padding="10dp"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/dark_teal"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -292,48 +292,51 @@
                         android:id="@+id/reportedUserCIV"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/profile_not_selected"/>
+                        android:src="@drawable/profile_not_selected" />
+
                     <TextView
                         android:id="@+id/reportedUserFullnameTV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:layout_marginBottom="8dp"
-                        android:textSize="12dp"
-                        android:contentDescription="@string/full_name"
-                        android:textColor="@color/light_teal"
                         android:layout_above="@id/reportedUsernameTV"
-                        android:layout_toRightOf="@id/reportedUserCIV"/>
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_toRightOf="@id/reportedUserCIV"
+                        android:contentDescription="@string/full_name"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/light_teal"
+                        android:textSize="16sp" />
+
                     <TextView
                         android:id="@+id/reportedUsernameTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
                         android:layout_marginStart="20dp"
                         android:layout_marginBottom="8dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:textSize="12dp"
-                        android:contentDescription="@string/Chats"
-                        android:textColor="@color/light_teal"
-                        android:layout_alignParentBottom="true"
+                        android:layout_toLeftOf="@id/reportedPostCreatedTS"
                         android:layout_toRightOf="@id/reportedUserCIV"
-                        android:layout_toLeftOf="@id/reportedPostCreatedTS"/>
+                        android:contentDescription="@string/Chats"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/light_teal"
+                        android:textSize="14sp" />
+
                     <TextView
                         android:id="@+id/reportedPostCreatedTS"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
                         android:layout_marginStart="20dp"
+                        android:layout_marginEnd="15dp"
                         android:layout_marginBottom="8dp"
-                        android:textSize="15dp"
                         android:contentDescription="@string/timestamp"
                         android:textColor="@color/light_teal"
-                        android:layout_marginEnd="15dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentEnd="true"/>
+                        android:textSize="14dp" />
 
                 </RelativeLayout>
 
@@ -348,10 +351,10 @@
                     android:id="@+id/contentCaptionTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/light_teal"
                     android:layout_marginTop="20dp"
-                    android:textSize="17sp"
-                    android:text="Caption"/>
+                    android:text="Caption"
+                    android:textColor="@color/light_teal"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton

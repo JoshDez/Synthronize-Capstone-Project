@@ -15,6 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.adapters.CompetitionFilesAdapter
 import com.example.synthronize.adapters.InstructionsAdapter
 import com.example.synthronize.adapters.SearchUserAdapter
+import com.example.synthronize.adapters.SelectedContestantsAdapter
 import com.example.synthronize.databinding.ActivityViewCompetitionBinding
 import com.example.synthronize.databinding.DialogSelectUserBinding
 import com.example.synthronize.interfaces.OnInstructionModified
@@ -36,6 +37,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Query.Direction
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 
@@ -43,10 +45,10 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
     private lateinit var binding:ActivityViewCompetitionBinding
     private lateinit var instructionsAdapter:InstructionsAdapter
     private lateinit var submissionsAdapter:CompetitionFilesAdapter
-    private lateinit var resultsAdapter:SearchUserAdapter
+    private lateinit var resultsAdapter:SelectedContestantsAdapter
+    private lateinit var selectedUsersAdapter:SelectedContestantsAdapter
     private lateinit var dialogPlusBinding:DialogSelectUserBinding
     private lateinit var searchUserAdapter:SearchUserAdapter
-    private lateinit var selectedUsersAdapter:SearchUserAdapter
     private lateinit var competitionModel:CompetitionModel
 
     private var communityId = ""
@@ -280,33 +282,38 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
     private fun setupResults() {
         binding.viewCompetitionRefresh.isRefreshing = true
+        FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).get().addOnCompleteListener { competition ->
+            if (competition.result.exists()){
+                val tempModel = competition.result.toObject(CompetitionModel::class.java)!!
+                selectedUserList = ArrayList(tempModel.results.getValue(resultType))
+                //setup rv
+                if (selectedUserList.isNotEmpty()){
+                    val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                        .whereIn("userID", selectedUserList)
 
-        //setup rv
-        if (selectedUserList.isNotEmpty()){
-            val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
-                .whereIn("userID", selectedUserList)
+                    myQuery.get().addOnSuccessListener { querySnapshot ->
+                        // Map Firestore documents to UserModel objects
+                        val users = querySnapshot.documents.mapNotNull { it.toObject(UserModel::class.java) }
 
-            val options: FirestoreRecyclerOptions<UserModel> =
-                FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+                        // Sort users based on the order in selectedUserList
+                        val sortedUsers = users.sortedBy { user ->
+                            selectedUserList.indexOf(user.userID)
+                        }
 
-            // Add a listener to handle success or failure of the query
-            myQuery.addSnapshotListener { _, e ->
-                if (e != null) {
-                    // Handle the error here (e.g., log the error or show a message to the user)
-                    Log.e("Firestore Error", "Error while fetching data", e)
-                    return@addSnapshotListener
+                        binding.resultsRV.layoutManager = LinearLayoutManager(this)
+                        resultsAdapter = SelectedContestantsAdapter(this, sortedUsers, this, selectedUserList, resultType)
+                        binding.resultsRV.adapter = resultsAdapter
+
+                    }.addOnFailureListener {
+                        binding.viewCompetitionRefresh.isRefreshing = false
+                    }
                 } else {
                     binding.viewCompetitionRefresh.isRefreshing = false
                 }
             }
-
-            binding.resultsRV.layoutManager = LinearLayoutManager(this)
-            resultsAdapter = SearchUserAdapter(this, options, this, "Top")
-            binding.resultsRV.adapter = resultsAdapter
-            resultsAdapter.startListening()
-        } else {
-            binding.viewCompetitionRefresh.isRefreshing = false
         }
+
+
     }
 
     private fun setupSubmissions(map:HashMap<String, String>) {
@@ -376,11 +383,13 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
         if (competitionModel.results.isNotEmpty()){
             val resultType = competitionModel.results.keys.toList()[0]
-            if (resultType == "Winners"){
-                dialogPlusBinding.resultsTypeTV.text = resultType
+            if (resultType == "All"){
+                dialogPlusBinding.resultsTypeTV.text = "Winners"
             } else {
-                val temp = resultType.split('/')
-                dialogPlusBinding.resultsTypeTV.text = "${temp[0]} ${temp[1]} Winners"
+                try {
+                    val temp = resultType.split('/')
+                    dialogPlusBinding.resultsTypeTV.text = "${temp[0]} ${temp[1]} Winners"
+                } catch (e:Exception){}
             }
         }
 
@@ -490,7 +499,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
     //For Select User Dialog
     private fun setupSelectedUsersRV(){
-        if (selectedUserList.isNotEmpty()){
+        if (selectedUserList.isNotEmpty()) {
 
             dialogPlusBinding.selectedUsersLayout.visibility = View.VISIBLE
             dialogPlusBinding.selectedUsersTV.text = "Selected Users (${selectedUserList.size})"
@@ -498,21 +507,30 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
                 .whereIn("userID", selectedUserList)
 
-            val options: FirestoreRecyclerOptions<UserModel> =
-                FirestoreRecyclerOptions.Builder<UserModel>().setQuery(myQuery, UserModel::class.java).build()
+            myQuery.get().addOnSuccessListener { querySnapshot ->
+                // Map Firestore documents to UserModel objects
+                val users = querySnapshot.documents.mapNotNull { it.toObject(UserModel::class.java) }
 
-            if (resultType == "Top"){
-                //get the total rank
-                val limit = resultType.split('/')[1].toInt()
-                //limits the selectedUserList
-                selectedUserList = ArrayList(selectedUserList.take(limit))
+                // Sort users based on the order in selectedUserList
+                var sortedUsers = users.sortedBy { user ->
+                    selectedUserList.indexOf(user.userID)
+                }
+
+                if (resultType == "Top") {
+                    // Get the limit
+                    val limit = resultType.split('/')[1].toInt()
+                    // Limit the sorted users
+                    sortedUsers = ArrayList(sortedUsers.take(limit))
+                }
+
+                // Set up the RecyclerView
+                dialogPlusBinding.selectedUsersRV.layoutManager = LinearLayoutManager(this)
+                selectedUsersAdapter = SelectedContestantsAdapter(this, sortedUsers, this, selectedUserList)
+                dialogPlusBinding.selectedUsersRV.adapter = selectedUsersAdapter
+            }.addOnFailureListener { e ->
+                // Handle any errors
+                Log.e("FirestoreError", "Error fetching users: ", e)
             }
-
-            //set up searched users recycler view
-            dialogPlusBinding.selectedUsersRV.layoutManager = LinearLayoutManager(this)
-            selectedUsersAdapter = SearchUserAdapter(context = this, options, listener = this, purpose = "SelectUser/${resultType.split('/')[0]}", selectedUserList)
-            dialogPlusBinding.selectedUsersRV.adapter = selectedUsersAdapter
-            selectedUsersAdapter.startListening()
 
         } else {
             dialogPlusBinding.selectedUsersTV.text = "Selected Users (0)"
@@ -534,17 +552,31 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
     }
 
     override fun onItemClick(id: String, isChecked: Boolean) {
+
         //Interface for select user adapter
         if (isChecked) {
             //add user to selected user list
             selectedUserList.add(id)
+            limitList()
             setupSelectedUsersRV()
             searchUsers()
         } else {
             //remove user to selected user list
             selectedUserList.remove(id)
+            limitList()
             setupSelectedUsersRV()
             searchUsers()
+        }
+    }
+
+    private fun limitList(){
+        //limit the list according to the result type
+        if (resultType != "All" && resultType.isNotEmpty()){
+            try {
+                val temp = resultType.split('/')
+                val limit = temp[1].toInt()
+                selectedUserList = ArrayList(selectedUserList.take(limit))
+            } catch (e:Exception){}
         }
     }
 
