@@ -34,8 +34,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/toolbarImageCIV"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/header_logo"/>
 

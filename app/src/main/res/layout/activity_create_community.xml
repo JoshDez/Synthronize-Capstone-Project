@@ -33,7 +33,7 @@
             android:layout_marginStart="10dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/backBtn"
-            android:textSize="25dp"
+            android:textSize="20dp"
             android:textColor="@color/light_teal"
             android:text="@string/create_community"/>
     </RelativeLayout>
@@ -181,33 +181,6 @@
                 android:textColor="@color/light_teal"
                 android:textSize="20dp" />
 
-            <LinearLayout
-                android:id="@+id/selectedUsersLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/selectedUsersTV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:text="Selected Users"
-                    android:textColor="@color/light_teal"
-                    android:textSize="17dp" />
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/selectedUsersRV"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp" />
-
-            </LinearLayout>
 
             <EditText
                 android:id="@+id/searchEdtTxt"
@@ -217,6 +190,44 @@
                 android:background="@drawable/input_rounded_corners"
                 android:hint="@string/Search"
                 android:padding="10dp" />
+
+            <LinearLayout
+                android:id="@+id/selectedUsersLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/selectedUsersTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Selected Users"
+                    android:textColor="@color/light_teal"
+                    android:textSize="16sp" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/selectedUsersRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:text="Users"
+                android:textColor="@color/light_teal"
+                android:textSize="16dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/searchedUsersRV"

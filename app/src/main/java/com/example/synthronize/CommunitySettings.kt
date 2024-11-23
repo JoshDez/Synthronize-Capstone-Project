@@ -335,7 +335,7 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
             dialogPlus.dismiss()
         }
 
-        dialogPlusBinding.resultsTypeTV.visibility = View.INVISIBLE
+        dialogPlusBinding.resultsTypeTV.visibility = View.GONE
         dialogPlusBinding.assignBtn.text = "Invite Members"
         dialogPlusBinding.assignBtn.setOnClickListener {
             if (selectedUsersList.isNotEmpty()){

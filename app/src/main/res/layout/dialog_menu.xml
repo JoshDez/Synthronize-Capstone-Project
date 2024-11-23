@@ -42,7 +42,7 @@
                     android:layout_marginStart="20dp"
                     android:contentDescription="@string/menuoption"
                     android:textColor="@color/light_teal"
-                    android:textSize="17sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
@@ -77,7 +77,7 @@
                     android:layout_marginStart="20dp"
                     android:contentDescription="@string/menuoption"
                     android:textColor="@color/light_teal"
-                    android:textSize="17sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
@@ -113,7 +113,7 @@
                     android:layout_marginStart="20dp"
                     android:contentDescription="@string/menuoption"
                     android:textColor="@color/light_teal"
-                    android:textSize="17sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
@@ -148,7 +148,7 @@
                     android:layout_marginStart="20dp"
                     android:contentDescription="@string/menuoption"
                     android:textColor="@color/light_teal"
-                    android:textSize="17sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
 

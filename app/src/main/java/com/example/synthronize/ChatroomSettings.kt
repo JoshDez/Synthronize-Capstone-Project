@@ -426,6 +426,7 @@ class ChatroomSettings : AppCompatActivity(), OnItemClickListener, OnRefreshList
             dialogPlus.dismiss()
         }
 
+        dialogPlusBinding.resultsTypeTV.visibility = View.GONE
         dialogPlusBinding.assignBtn.text = "Add Members"
         dialogPlusBinding.assignBtn.setOnClickListener {
             if (selectedUserList.isNotEmpty()){

@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:textSize="25dp"
+                android:textSize="20dp"
                 android:textColor="@color/light_teal"
                 android:text="@string/community_reports"/>
         </LinearLayout>
@@ -49,112 +49,119 @@
         android:layout_below="@id/mainToolbar"
         app:dividerColor="@color/light_teal" />
 
-    <LinearLayout
-        android:id="@+id/communityButtons"
+    <ScrollView
         android:layout_below="@id/divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/feedsBtn"
+        <LinearLayout
+            android:id="@+id/communityButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/dark_teal"
-            android:gravity="start"
-            android:padding="20dp"
-            android:foregroundGravity="top|right"
-            android:paddingStart="50dp"
-            android:text="Feeds"
-            android:textColor="@color/light_teal"
-            android:textSize="16sp" />
+            android:layout_below="@id/divider"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:visibility="visible">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/eventsBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/dark_teal"
-            android:gravity="start"
-            android:padding="20dp"
-            android:paddingStart="50dp"
-            android:text="Events"
-            android:foregroundGravity="top|right"
-            android:textColor="@color/light_teal"
-            android:textSize="16sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/forumsBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/dark_teal"
-            android:gravity="start"
-            android:padding="20dp"
-            android:paddingStart="50dp"
-            android:text="Forums"
-            android:foregroundGravity="top|right"
-            android:textColor="@color/light_teal"
-            android:textSize="16sp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/feedsBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/dark_teal"
+                android:foregroundGravity="top|right"
+                android:gravity="start"
+                android:padding="20dp"
+                android:paddingStart="50dp"
+                android:text="Feeds"
+                android:textColor="@color/light_teal"
+                android:textSize="17sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/marketBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/dark_teal"
-            android:gravity="start"
-            android:padding="20dp"
-            android:paddingStart="50dp"
-            android:foregroundGravity="top|right"
-            android:text="Market"
-            android:textColor="@color/light_teal"
-            android:textSize="16sp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/eventsBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/dark_teal"
+                android:foregroundGravity="top|right"
+                android:gravity="start"
+                android:padding="20dp"
+                android:paddingStart="50dp"
+                android:text="Events"
+                android:textColor="@color/light_teal"
+                android:textSize="17sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/competitionsBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/dark_teal"
-            android:gravity="start"
-            android:foregroundGravity="top|right"
-            android:padding="20dp"
-            android:paddingStart="50dp"
-            android:text="Competitions"
-            android:textColor="@color/light_teal"
-            android:textSize="16sp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/forumsBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/dark_teal"
+                android:foregroundGravity="top|right"
+                android:gravity="start"
+                android:padding="20dp"
+                android:paddingStart="50dp"
+                android:text="Forums"
+                android:textColor="@color/light_teal"
+                android:textSize="17sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/filesBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/dark_teal"
-            android:foregroundGravity="top|right"
-            android:gravity="start"
-            android:padding="20dp"
-            android:paddingStart="50dp"
-            android:text="Files"
-            android:textColor="@color/light_teal"
-            android:textSize="16sp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/marketBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/dark_teal"
+                android:foregroundGravity="top|right"
+                android:gravity="start"
+                android:padding="20dp"
+                android:paddingStart="50dp"
+                android:text="Market"
+                android:textColor="@color/light_teal"
+                android:textSize="17sp" />
 
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/competitionsBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/dark_teal"
+                android:foregroundGravity="top|right"
+                android:gravity="start"
+                android:padding="20dp"
+                android:paddingStart="50dp"
+                android:text="Competitions"
+                android:textColor="@color/light_teal"
+                android:textSize="17sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/filesBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/dark_teal"
+                android:foregroundGravity="top|right"
+                android:gravity="start"
+                android:padding="20dp"
+                android:paddingStart="50dp"
+                android:text="Files"
+                android:textColor="@color/light_teal"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/reportsRefreshLayout"
