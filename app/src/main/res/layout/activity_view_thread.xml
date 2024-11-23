@@ -30,6 +30,18 @@
                 android:src="@drawable/back_icon"
                 app:tint="@color/light_teal" />
 
+            <TextView
+                android:id="@+id/toolbarTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/backBtn"
+                android:layout_toLeftOf="@id/kebabMenuBtn"
+                android:textSize="20sp"
+                android:textColor="@color/light_teal"
+                android:text="Thread"/>
+
             <ImageButton
                 android:id="@+id/kebabMenuBtn"
                 android:layout_width="40dp"

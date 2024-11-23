@@ -29,12 +29,10 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:background="@color/white"
-                android:src="@drawable/cancel_icon"
+                android:background="@drawable/red_cancel_button"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                app:tint="@color/red" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/ruleTV"

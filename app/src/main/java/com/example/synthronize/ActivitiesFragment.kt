@@ -125,12 +125,13 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
     private fun navigate(tab: String, toRefresh:Boolean = false) {
         val unselectedColor = ContextCompat.getColor(context, R.color.less_saturated_light_teal)
         val selectedColor = ContextCompat.getColor(context, R.color.light_teal)
+        binding.addFab.visibility = View.GONE
         binding.competitionBtn.setTextColor(unselectedColor)
-        binding.competitionBtn.textSize = 13f
+        binding.competitionBtn.textSize = 12f
         binding.resourcesBtn.setTextColor(unselectedColor)
-        binding.resourcesBtn.textSize = 13f
+        binding.resourcesBtn.textSize = 12f
         binding.sharedFilesBtn.setTextColor(unselectedColor)
-        binding.sharedFilesBtn.textSize = 13f
+        binding.sharedFilesBtn.textSize = 12f
         binding.competitionsRV.visibility = View.GONE
         binding.resourcesRV.visibility = View.GONE
         binding.sharedFilesRV.visibility = View.GONE
@@ -139,7 +140,6 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         if (tab == "competitions"){
             currentTab = "competitions"
             binding.competitionBtn.setTextColor(selectedColor)
-            binding.addFab.visibility = View.GONE
             binding.competitionsRV.visibility = View.VISIBLE
             binding.competitionBtn.textSize = 14f
 
@@ -159,7 +159,6 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         }else if (tab == "resources") {
             currentTab = "resources"
             binding.resourcesBtn.setTextColor(selectedColor)
-            binding.addFab.visibility = View.GONE
             binding.resourcesRV.visibility = View.VISIBLE
             binding.resourcesBtn.textSize = 14f
 
@@ -181,19 +180,21 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         }else if (tab == "shared_files") {
             currentTab = "shared_files"
             binding.sharedFilesBtn.setTextColor(selectedColor)
-            binding.addFab.visibility = View.VISIBLE
             binding.sharedFilesRV.visibility = View.VISIBLE
             binding.sharedFilesBtn.textSize = 14f
 
             if (toRefresh || !::sharedFilesAdapter.isInitialized)
                 setupSharedFilesRV()
 
-            binding.addFab.setOnClickListener{
-                val intent = Intent(context, CreateUploadFile::class.java)
-                intent.putExtra("communityId", communityId)
-                intent.putExtra("isSharedFiles", true)
-                startActivity(intent)
-            }
+            Handler().postDelayed({
+                binding.addFab.visibility = View.VISIBLE
+                binding.addFab.setOnClickListener{
+                    val intent = Intent(context, CreateUploadFile::class.java)
+                    intent.putExtra("communityId", communityId)
+                    intent.putExtra("isSharedFiles", true)
+                    startActivity(intent)
+                }
+            }, 500)
         }
     }
 

@@ -12,7 +12,7 @@
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/darker_teal"
+        android:background="#AD12181E"
         android:padding="10dp">
 
         <ImageButton

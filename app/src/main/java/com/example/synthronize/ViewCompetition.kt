@@ -241,11 +241,11 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
         binding.submissionsRV.visibility = View.GONE
         binding.resultsRV.visibility = View.GONE
         binding.instructionsBtn.setTextColor(unselectedColor)
-        binding.instructionsBtn.textSize = 13f
+        binding.instructionsBtn.textSize = 12f
         binding.submissionsBtn.setTextColor(unselectedColor)
-        binding.submissionsBtn.textSize = 13f
+        binding.submissionsBtn.textSize = 12f
         binding.resultBtn.setTextColor(unselectedColor)
-        binding.resultBtn.textSize = 13f
+        binding.resultBtn.textSize = 12f
 
         if (tab == "instructions"){
             binding.instructionsRV.visibility = View.VISIBLE
@@ -374,6 +374,17 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
         searchUsers()
 
+        if (competitionModel.results.isNotEmpty()){
+            val resultType = competitionModel.results.keys.toList()[0]
+            if (resultType == "Winners"){
+                dialogPlusBinding.resultsTypeTV.text = resultType
+            } else {
+                val temp = resultType.split('/')
+                dialogPlusBinding.resultsTypeTV.text = "${temp[0]} ${temp[1]} Winners"
+            }
+        }
+
+        dialogPlusBinding.usersTV.text = "Contestants"
         dialogPlusBinding.searchEdtTxt.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}

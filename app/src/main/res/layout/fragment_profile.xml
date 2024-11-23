@@ -221,7 +221,6 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
-                        android:layout_marginBottom="10dp"
                         android:backgroundTint="#00FFFFFF"
                         android:contentDescription="@string/user_description"
                         android:drawableTint="#00FFFFFF"
@@ -234,6 +233,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="15dp"
+                        android:layout_marginTop="20dp"
                         android:orientation="horizontal"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp">
@@ -251,7 +251,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/birthday_icon"
-                                app:tint="@color/light_teal" />
+                                app:tint="@color/less_saturated_light_teal" />
 
                             <TextView
                                 android:id="@+id/birthdayTV"
@@ -262,8 +262,8 @@
                                 android:backgroundTint="#00FFFFFF"
                                 android:contentDescription="@string/user_description"
                                 android:drawableTint="#00FFFFFF"
-                                android:text="Birthday: December 19, 2002"
-                                android:textColor="@color/light_teal"
+                                android:text="December 19, 2002"
+                                android:textColor="@color/less_saturated_light_teal"
                                 android:textSize="15sp" />
                         </LinearLayout>
 
@@ -281,7 +281,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/user_role"
-                                app:tint="@color/light_teal" />
+                                app:tint="@color/less_saturated_light_teal" />
 
                             <TextView
                                 android:id="@+id/userRoleTV"
@@ -293,7 +293,7 @@
                                 android:contentDescription="@string/user_description"
                                 android:drawableTint="#00FFFFFF"
                                 android:text="Role"
-                                android:textColor="@color/light_teal"
+                                android:textColor="@color/less_saturated_light_teal"
                                 android:textSize="15sp" />
                         </LinearLayout>
 
@@ -305,6 +305,7 @@
                             android:layout_centerVertical="true"
                             android:text="Edit Profile"
                             android:textStyle="bold"
+                            android:layout_marginStart="5dp"
                             android:textColor="@color/white"
                             android:drawableLeft="@drawable/baseline_edit_24"
                             android:drawableTint="@color/white"

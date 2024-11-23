@@ -46,7 +46,7 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textSize="20dp"
+                android:textSize="16sp"
                 android:contentDescription="@string/full_name"
                 android:textColor="@color/light_teal"
                 android:layout_toRightOf="@id/userCircleImageView"/>
@@ -62,7 +62,7 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textSize="16dp"
+                android:textSize="14sp"
                 android:contentDescription="@string/username"
                 android:textColor="@color/light_teal"
                 android:layout_toRightOf="@id/userCircleImageView"/>

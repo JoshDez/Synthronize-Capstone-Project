@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/communityNameTV"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
@@ -47,7 +47,7 @@
             android:layout_toRightOf="@id/communityProfileCIV"
             android:contentDescription="@string/community_name"
             android:textColor="@color/light_teal"
-            android:textSize="17dp" />
+            android:textSize="16dp" />
 
     </LinearLayout>
 

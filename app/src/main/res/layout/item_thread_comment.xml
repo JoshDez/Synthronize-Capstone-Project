@@ -45,7 +45,7 @@
 
                 <TextView
                     android:id="@+id/usernameTV"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:maxLines="1"
@@ -58,7 +58,7 @@
 
                 <TextView
                     android:id="@+id/timestampTV"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/light_teal"
                     android:contentDescription="@string/timestamp"

@@ -84,20 +84,20 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
         val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_teal)
         val selectedColor = ContextCompat.getColor(this, R.color.light_teal)
         binding.generalBtn.setTextColor(unselectedColor)
-        binding.generalBtn.textSize = 14f
+        binding.generalBtn.textSize = 12f
         binding.adminBtn.setTextColor(unselectedColor)
-        binding.adminBtn.textSize = 14f
+        binding.adminBtn.textSize = 12f
         binding.generalLayout.visibility = View.GONE
         binding.adminLayout.visibility = View.GONE
 
         if (tab == "general"){
             setupGeneralLayout()
             binding.generalBtn.setTextColor(selectedColor)
-            binding.generalBtn.textSize = 16f
+            binding.generalBtn.textSize = 14f
         }else if (tab == "admin") {
             setupAdminLayout()
             binding.adminBtn.setTextColor(selectedColor)
-            binding.adminBtn.textSize = 16f
+            binding.adminBtn.textSize = 14f
             binding.adminBtn.foreground = null
 
         }
