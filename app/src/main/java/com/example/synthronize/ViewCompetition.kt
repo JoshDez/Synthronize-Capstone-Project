@@ -282,36 +282,30 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
 
     private fun setupResults() {
         binding.viewCompetitionRefresh.isRefreshing = true
-        FirebaseUtil().retrieveCommunityCompetitionsCollection(communityId).document(competitionId).get().addOnCompleteListener { competition ->
-            if (competition.result.exists()){
-                val tempModel = competition.result.toObject(CompetitionModel::class.java)!!
-                selectedUserList = ArrayList(tempModel.results.getValue(resultType))
-                //setup rv
-                if (selectedUserList.isNotEmpty()){
-                    val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
-                        .whereIn("userID", selectedUserList)
+        //setup rv
+        if (selectedUserList.isNotEmpty()){
+            val myQuery: Query = FirebaseUtil().allUsersCollectionReference()
+                .whereIn("userID", selectedUserList)
 
-                    myQuery.get().addOnSuccessListener { querySnapshot ->
-                        // Map Firestore documents to UserModel objects
-                        val users = querySnapshot.documents.mapNotNull { it.toObject(UserModel::class.java) }
+            myQuery.get().addOnSuccessListener { querySnapshot ->
+                // Map Firestore documents to UserModel objects
+                val users = querySnapshot.documents.mapNotNull { it.toObject(UserModel::class.java) }
 
-                        // Sort users based on the order in selectedUserList
-                        val sortedUsers = users.sortedBy { user ->
-                            selectedUserList.indexOf(user.userID)
-                        }
-
-                        binding.resultsRV.layoutManager = LinearLayoutManager(this)
-                        resultsAdapter = SelectedContestantsAdapter(this, sortedUsers, this, selectedUserList, resultType)
-                        binding.resultsRV.adapter = resultsAdapter
-                        binding.viewCompetitionRefresh.isRefreshing = false
-
-                    }.addOnFailureListener {
-                        binding.viewCompetitionRefresh.isRefreshing = false
-                    }
-                } else {
-                    binding.viewCompetitionRefresh.isRefreshing = false
+                // Sort users based on the order in selectedUserList
+                val sortedUsers = users.sortedBy { user ->
+                    selectedUserList.indexOf(user.userID)
                 }
+
+                binding.resultsRV.layoutManager = LinearLayoutManager(this)
+                resultsAdapter = SelectedContestantsAdapter(this, sortedUsers, this, selectedUserList, resultType)
+                binding.resultsRV.adapter = resultsAdapter
+                binding.viewCompetitionRefresh.isRefreshing = false
+
+            }.addOnFailureListener {
+                binding.viewCompetitionRefresh.isRefreshing = false
             }
+        } else {
+            binding.viewCompetitionRefresh.isRefreshing = false
         }
 
 
