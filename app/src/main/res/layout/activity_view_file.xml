@@ -118,7 +118,7 @@
                         android:singleLine="true"
                         android:paddingStart="10dp"
                         android:textColor="@color/light_teal"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/feedTimestampTV"
@@ -127,6 +127,7 @@
                         android:layout_below="@id/ownerUsernameTV"
                         android:layout_toRightOf="@id/profileCIV"
                         android:paddingStart="10dp"
+                        android:textSize="14sp"
                         android:textColor="@color/light_teal" />
 
 
@@ -137,7 +138,8 @@
                         android:layout_below="@id/feedTimestampTV"
                         android:layout_marginTop="5dp"
                         android:layout_toRightOf="@id/profileCIV"
-                        android:backgroundTint="@color/light_teal"
+                        android:backgroundTint="@color/transparent"
+                        android:textSize="16sp"
                         android:focusable="false"
                         android:padding="15dp"
                         android:textColor="@color/light_teal"
@@ -152,8 +154,8 @@
 
                     <ImageView
                         android:id="@+id/fileIV"
-                        android:layout_width="250dp"
-                        android:layout_height="250dp"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
                         android:layout_centerHorizontal="true"
                         android:src="@drawable/baseline_attach_file_24" />
 
@@ -166,7 +168,7 @@
                         android:contentDescription="file name"
                         android:textAlignment="center"
                         android:textColor="@color/light_teal"
-                        android:textSize="20sp" />
+                        android:textSize="16sp" />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -222,13 +224,13 @@
                 <TextView
                     android:id="@+id/commentsTV"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
+                    android:layout_height="wrap_content"
                     android:background="@color/dark_teal"
                     android:padding="8dp"
                     android:text="@string/comments"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
-                    android:textSize="20sp" />
+                    android:textSize="16sp"  />
 
 
                 <com.google.android.material.divider.MaterialDivider

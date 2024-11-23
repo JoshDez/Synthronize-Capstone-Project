@@ -303,6 +303,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
                         binding.resultsRV.layoutManager = LinearLayoutManager(this)
                         resultsAdapter = SelectedContestantsAdapter(this, sortedUsers, this, selectedUserList, resultType)
                         binding.resultsRV.adapter = resultsAdapter
+                        binding.viewCompetitionRefresh.isRefreshing = false
 
                     }.addOnFailureListener {
                         binding.viewCompetitionRefresh.isRefreshing = false

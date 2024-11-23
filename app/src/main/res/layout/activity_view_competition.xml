@@ -133,7 +133,7 @@
                     android:gravity="center_vertical"
                     android:padding="5dp"
                     android:textColor="@color/light_teal"
-                    android:textSize="12dp" />
+                    android:textSize="14sp" />
 
             </RelativeLayout>
 
@@ -148,7 +148,7 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:textColor="@color/light_teal"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
 
             <TextView
@@ -161,7 +161,7 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:textColor="@color/light_teal"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
 
             <TextView

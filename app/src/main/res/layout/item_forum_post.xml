@@ -115,6 +115,7 @@
             android:layout_height="wrap_content"
             android:autoLink="web"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:textColorLink="@color/light_blue"
             android:contentDescription="@string/feed_description"
             android:textColor="@color/light_teal" />
