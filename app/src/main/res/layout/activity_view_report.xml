@@ -79,6 +79,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:ellipsize="end"
+                    android:textStyle="bold"
                     android:singleLine="true"
                     android:layout_marginStart="20dp"
                     android:layout_marginBottom="8dp"
@@ -307,7 +308,8 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textColor="@color/light_teal"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/reportedUsernameTV"

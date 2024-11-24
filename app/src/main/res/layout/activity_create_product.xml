@@ -20,7 +20,8 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_toLeftOf="@id/uploadBtn"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true">
             <ImageButton
                 android:id="@+id/backBtn"
@@ -35,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_gravity="center_vertical"
                 android:textSize="20sp"
                 android:textColor="@color/light_teal"
                 android:text="Sell Product"/>
@@ -90,7 +92,7 @@
             <EditText
                 android:id="@+id/productNameEdtTxt"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content"
                 android:backgroundTint="@color/light_teal"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
@@ -113,7 +115,7 @@
             <EditText
                 android:id="@+id/competitionDescEdtTxt"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:backgroundTint="@color/light_teal"
@@ -137,7 +139,7 @@
             <EditText
                 android:id="@+id/productPriceEdtTxt"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:backgroundTint="@color/light_teal"

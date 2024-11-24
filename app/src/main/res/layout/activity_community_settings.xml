@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textColor="@color/light_teal"
                 android:text="Community Settings"/>
         </LinearLayout>
@@ -256,7 +256,7 @@
                 android:contentDescription="@string/full_name"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -272,7 +272,7 @@
                 android:drawableTint="#00FFFFFF"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:visibility="gone" />
 
 
@@ -304,7 +304,7 @@
                     android:drawableTint="#00FFFFFF"
                     android:text="Created: December 19, 2002"
                     android:textColor="@color/light_teal"
-                    android:textSize="15sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -343,7 +343,7 @@
                     android:focusable="false"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
-                    android:textSize="15sp" />
+                    android:textSize="14sp" />
 
                 <ImageButton
                     android:id="@+id/copyCodeBtn"

@@ -342,7 +342,6 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp"
-                        android:textStyle="bold"
                         android:clickable="true"
                         android:focusable="true" />
 
@@ -357,7 +356,6 @@
                         android:textAlignment="center"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp"
-                        android:textStyle="bold"
                         android:clickable="true"
                         android:focusable="true" />
 

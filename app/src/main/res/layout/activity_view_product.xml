@@ -115,6 +115,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:ellipsize="end"
+                        android:textStyle="bold"
                         android:singleLine="true"
                         android:layout_toRightOf="@id/profileCIV"
                         android:paddingStart="10dp"
@@ -138,6 +139,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
+                    android:textStyle="bold"
                     android:layout_marginEnd="20dp"
                     android:contentDescription="@string/community_name"
                     android:gravity="center"
@@ -257,16 +259,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:backgroundTint="@color/teal2"
+                android:backgroundTint="@color/teal"
                 android:drawableLeft="@drawable/baseline_chat_bubble_24"
-                android:drawableTint="@color/light_teal"
+                android:drawableTint="@color/white"
                 android:padding="10dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:text="Message User"
-                android:textColor="@color/light_teal"
+                android:textColor="@color/white"
                 android:textSize="17sp"
-                android:textStyle="bold"
                 android:visibility="gone" />
 
             <Button
@@ -274,14 +275,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:backgroundTint="@color/teal2"
+                android:backgroundTint="@color/teal"
                 android:padding="10dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:text="Message User"
-                android:textColor="@color/light_teal"
+                android:textColor="@color/white"
                 android:textSize="17sp"
-                android:textStyle="bold"
                 android:visibility="gone" />
 
         </LinearLayout>

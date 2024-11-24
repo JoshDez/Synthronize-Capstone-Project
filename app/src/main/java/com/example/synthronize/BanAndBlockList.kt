@@ -109,6 +109,11 @@ class BanAndBlockList : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
     }
 
     override fun onRefresh() {
+
+        if (::searchUserAdapter.isInitialized){
+            searchUserAdapter.stopListening()
+        }
+
         Handler().postDelayed({
             if (communityId == "null" || communityId.isEmpty()){
                 //Blocked users

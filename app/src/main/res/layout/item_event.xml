@@ -204,21 +204,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="15dp"
                 android:text="Participate"
-                android:backgroundTint="@color/light_teal"
+                android:backgroundTint="@color/teal"
                 />
 
         </RelativeLayout>
     </LinearLayout>
-
-    <!-- Post Header: User Profile Image, Username, Timestamp -->
-
-    <!-- Event Image -->
-
-    <!-- Event Description -->
-
-    <!-- Event Location -->
-
-    <!-- Event Date -->
-
-    <!-- Post Description -->
 </LinearLayout>

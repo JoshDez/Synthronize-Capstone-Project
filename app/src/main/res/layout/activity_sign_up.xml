@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:layout_height="570dp"
             android:orientation="vertical"
             android:paddingTop="20dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
 
             <TextView
@@ -89,7 +89,7 @@
                 android:text="Your role requires admin approval. After signing up, please wait for the role to take effect."
                 android:textAlignment="center"
                 android:textColor="#DFA746"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:visibility="invisible" />
 
             <com.google.android.material.button.MaterialButton
@@ -102,7 +102,7 @@
                 android:text="Next"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -113,14 +113,15 @@
 
         </LinearLayout>
 
-
         <LinearLayout
             android:id="@+id/secondSectionLayout"
             android:layout_width="match_parent"
             android:layout_height="570dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:visibility="gone">
 
 
             <ImageButton
@@ -128,7 +129,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="start"
-                android:layout_marginStart="30dp"
                 android:layout_marginTop="60dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/back_icon"
@@ -136,7 +136,7 @@
 
             <EditText
                 android:id="@+id/fullNameEdtTxt"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/input_rounded_corners"
@@ -145,6 +145,7 @@
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hint_color"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.494"
                 app:layout_constraintStart_toStartOf="parent"
@@ -153,7 +154,7 @@
 
             <EditText
                 android:id="@+id/emailEdtTxt"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/input_rounded_corners"
@@ -162,20 +163,21 @@
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hint_color"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.494"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fullNameEdtTxt" />
 
             <androidx.cardview.widget.CardView
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="24dp"
                 android:background="@color/white"
                 app:cardCornerRadius="15dp">
 
                 <LinearLayout
-                    android:layout_width="320dp"
+                    android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:orientation="horizontal">
 
@@ -188,7 +190,8 @@
                         android:inputType="textPassword"
                         android:padding="10dp"
                         android:textColor="@color/black"
-                        android:textColorHint="@color/hint_color" />
+                        android:textColorHint="@color/hint_color"
+                        android:textSize="16sp" />
 
                     <ImageButton
                         android:id="@+id/pwVisibilityBtn"
@@ -205,14 +208,14 @@
 
 
             <androidx.cardview.widget.CardView
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="24dp"
                 android:background="@color/white"
                 app:cardCornerRadius="15dp">
 
                 <LinearLayout
-                    android:layout_width="320dp"
+                    android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:orientation="horizontal">
 
@@ -226,6 +229,7 @@
                         android:padding="10dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/hint_color"
+                        android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.494"
                         app:layout_constraintStart_toStartOf="parent"
@@ -246,9 +250,10 @@
 
             <LinearLayout
                 android:id="@+id/dataPrivacyLayout"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -275,7 +280,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/signUpBtn"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="34dp"
                 android:backgroundTint="@color/teal"
@@ -291,7 +296,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/dataPrivacyLayout" />
         </LinearLayout>
 
-
         <androidx.cardview.widget.CardView
             android:id="@+id/line"
             android:layout_width="match_parent"
@@ -302,19 +306,22 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/signUpBtn" />
+
+        <TextView
+            android:id="@+id/loginTV"
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_marginBottom="100dp"
+            android:textSize="14sp"
+            android:text="@string/already_have_an_account"
+            android:textColor="@color/light_teal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mainLayout" />
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/loginTV"
-        app:layout_constraintTop_toBottomOf="@id/mainLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/already_have_an_account"
-        android:textColor="@color/light_teal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

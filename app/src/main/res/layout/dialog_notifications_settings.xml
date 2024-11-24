@@ -70,7 +70,7 @@
             android:thumbTint="@color/light_teal"
             android:text="Enable Push Notifications"
             android:textColor="@color/light_teal"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
 
     </LinearLayout>

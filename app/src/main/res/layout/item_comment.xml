@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:ellipsize="end"
+            android:textSize="14sp"
             android:singleLine="true"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="2dp"
@@ -40,6 +41,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="10dp"
+            android:textSize="14sp"
             android:layout_marginBottom="2dp"
             android:contentDescription="@string/timestamp"
             android:textColor="@color/light_teal" />
@@ -50,6 +52,7 @@
             android:layout_below="@id/userNameTV"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="5dp"
+            android:layout_marginTop="10dp"
             android:layout_toRightOf="@id/userProfileCIV"
             android:background="@drawable/input_rounded_corners"
             android:backgroundTint="@color/teal2"
@@ -63,7 +66,7 @@
                 android:textColorLink="@color/light_blue"
                 android:contentDescription="@string/comments"
                 android:textColor="@color/light_teal"
-                android:textSize="17sp" />
+                android:textSize="16sp" />
         </LinearLayout>
     </RelativeLayout>
 

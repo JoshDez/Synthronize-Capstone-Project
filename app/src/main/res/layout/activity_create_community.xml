@@ -33,9 +33,9 @@
             android:layout_marginStart="10dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/backBtn"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@color/light_teal"
-            android:text="@string/create_community"/>
+            android:text="Create Community"/>
     </RelativeLayout>
 
     <com.google.android.material.divider.MaterialDivider
@@ -71,12 +71,12 @@
                 android:layout_marginStart="20dp"
                 android:text="@string/community_name"
                 android:textColor="@color/light_teal"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/communityNameEdtTxt"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:backgroundTint="@color/light_teal"
@@ -95,12 +95,12 @@
                 android:layout_marginStart="20dp"
                 android:text="@string/community_description"
                 android:textColor="@color/light_teal"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/communityDescEdtTxt"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:backgroundTint="@color/light_teal"
@@ -121,7 +121,7 @@
                 android:text="@string/community_type"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <Space
                 android:layout_width="match_parent"
@@ -179,7 +179,7 @@
                 android:text="@string/invite_users"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="20dp" />
+                android:textSize="16dp" />
 
 
             <EditText
@@ -189,7 +189,8 @@
                 android:layout_margin="20dp"
                 android:background="@drawable/input_rounded_corners"
                 android:hint="@string/Search"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:id="@+id/selectedUsersLayout"
@@ -264,7 +265,8 @@
                 android:text="@string/set_community_profile_and_cover_photo"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="20dp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <Space
                 android:layout_width="match_parent"
@@ -280,7 +282,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="60dp" />
+                android:layout_height="40dp" />
 
             <TextView
                 android:id="@+id/nameTV"
@@ -291,7 +293,7 @@
                 android:contentDescription="@string/community_name"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="20dp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
 
@@ -315,7 +317,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="80dp" />
+                android:layout_height="50dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -323,7 +325,8 @@
                 android:text="Set Community Banner"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="20dp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <Space
                 android:layout_width="match_parent"
@@ -368,7 +371,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="60dp" />
+                android:layout_height="20dp" />
 
             <TextView
                 android:id="@+id/nameTV2"
@@ -379,7 +382,7 @@
                 android:contentDescription="@string/community_name"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="20dp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
 

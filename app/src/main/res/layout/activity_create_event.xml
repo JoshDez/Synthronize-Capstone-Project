@@ -189,7 +189,7 @@
                 android:text="Create Event"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="15dp"/>
 

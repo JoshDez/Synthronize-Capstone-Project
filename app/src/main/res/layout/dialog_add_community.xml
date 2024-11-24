@@ -25,7 +25,7 @@
                 android:drawableTint="@color/light_teal"
                 android:text="@string/join_community_via_code"
                 android:textColor="@color/light_teal"
-                android:textSize="20sp"/>
+                android:textSize="16sp"/>
 
             <Button
                 android:id="@+id/searchNewCommunityBtn"
@@ -36,7 +36,7 @@
                 android:drawableTint="@color/light_teal"
                 android:text="Search New Community"
                 android:textColor="@color/light_teal"
-                android:textSize="20sp"/>
+                android:textSize="16sp"/>
 
             <Button
                 android:id="@+id/createNewCommunityBtn"
@@ -47,7 +47,7 @@
                 android:drawableTint="@color/light_teal"
                 android:text="@string/create_new_community"
                 android:textColor="@color/light_teal"
-                android:textSize="20sp"/>
+                android:textSize="16sp"/>
 
 
         </LinearLayout>

@@ -114,6 +114,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
+                    android:textStyle="bold"
                     android:layout_marginTop="40dp"
                     android:layout_marginEnd="20dp"
                     android:contentDescription="@string/community_name"
@@ -285,7 +286,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/text_shadow_white"
             android:text="Participate"
-            app:backgroundTint="@color/light_teal"/>
+            app:backgroundTint="@color/teal"/>
 
     </LinearLayout>
 

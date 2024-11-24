@@ -78,6 +78,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="8dp"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
                             android:contentDescription="@string/username"
                             android:ellipsize="end"
                             android:maxLines="1"
@@ -102,6 +104,7 @@
                         android:contentDescription="@string/posts"
                         android:ellipsize="end"
                         android:maxLines="1"
+                        android:textSize="14sp"
                         android:singleLine="true"
                         android:textColor="@color/light_teal" />
                 </LinearLayout>
@@ -117,7 +120,7 @@
                     android:textColorLink="@color/light_blue"
                     android:contentDescription="@string/Chats"
                     android:textColor="@color/light_teal"
-                    android:textSize="17sp"/>
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <TextView
@@ -188,6 +191,8 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="8dp"
                             android:contentDescription="@string/username"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:singleLine="true"
@@ -211,6 +216,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:singleLine="true"
+                        android:textSize="14sp"
                         android:contentDescription="@string/posts"
                         android:textColor="@color/darker_teal" />
                 </LinearLayout>
@@ -225,7 +231,7 @@
                     android:autoLink="web"
                     android:textColorLink="@color/light_blue"
                     android:textColor="@color/darker_teal"
-                    android:textSize="17sp"
+                    android:textSize="16sp"
                     android:text=""/>
             </LinearLayout>
             <LinearLayout

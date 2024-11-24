@@ -96,7 +96,7 @@
                 android:layout_marginEnd="20dp"
                 android:text="Text Channel Name"
                 android:textColor="@color/light_teal"
-                android:textSize="17sp" />
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/textChannelNameEdtTxt"
@@ -124,7 +124,7 @@
                 android:text="Add users to channel"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="20dp" />
+                android:textSize="16sp" />
 
 
             <Space
@@ -190,7 +190,7 @@
                 android:text="Create Text Channel"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -25,7 +25,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/enter_community_code"
                 android:textColor="@color/light_teal"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.divider.MaterialDivider
@@ -46,7 +46,7 @@
                 android:background="@drawable/input_rounded_corners"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="17sp" />
+                android:textSize="16sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/confirmBtn"
