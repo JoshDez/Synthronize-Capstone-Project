@@ -253,7 +253,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
 
     private fun bindUpvote() {
         // Default
-        binding.upBtn.setImageResource(R.drawable.upbtn)
+        binding.upBtn.setImageResource(R.drawable.upvote_not_selected)
 
         // Update initial feed status
         updateFeedStatus()
@@ -261,7 +261,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
         // Check if current user has upvoted
         for (user in forumsModel.upvoteList) {
             if (user == FirebaseUtil().currentUserUid()) {
-                binding.upBtn.setImageResource(R.drawable.upbtn)
+                binding.upBtn.setImageResource(R.drawable.upvote_selected)
                 isUpvoted = true
             }
         }
@@ -275,7 +275,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
                     .document(forumsModel.forumId)
                     .update("upvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                     .addOnSuccessListener {
-                        binding.upBtn.setImageResource(R.drawable.upbtn)
+                        binding.upBtn.setImageResource(R.drawable.upvote_not_selected)
                         isUpvoted = false
                         updateFeedStatus()
                     }
@@ -287,7 +287,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
                     .document(forumsModel.forumId)
                     .update("upvoteList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
                     .addOnSuccessListener {
-                        binding.upBtn.setImageResource(R.drawable.upbtn)
+                        binding.upBtn.setImageResource(R.drawable.upvote_selected)
                         isUpvoted = true
                         // If previously downvoted, remove downvote
                         if (isDownvoted) {
@@ -297,6 +297,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
                                 .document(forumsModel.forumId)
                                 .update("downvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                                 .addOnSuccessListener {
+                                    binding.downBtn.setImageResource(R.drawable.downvote_not_selected)
                                     isDownvoted = false
                                     updateFeedStatus()
                                 }
@@ -312,7 +313,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
 
     private fun bindDownvote() {
         // Default
-        binding.downBtn.setImageResource(R.drawable.downbtn)
+        binding.downBtn.setImageResource(R.drawable.downvote_not_selected)
 
         // Update initial feed status
         updateFeedStatus()
@@ -320,7 +321,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
         // Check if current user has downvoted
         for (user in forumsModel.downvoteList) {
             if (user == FirebaseUtil().currentUserUid()) {
-                binding.downBtn.setImageResource(R.drawable.downbtn)
+                binding.downBtn.setImageResource(R.drawable.downvote_selected)
                 isDownvoted = true
             }
         }
@@ -334,7 +335,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
                     .document(forumsModel.forumId)
                     .update("downvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                     .addOnSuccessListener {
-                        binding.downBtn.setImageResource(R.drawable.downbtn)
+                        binding.downBtn.setImageResource(R.drawable.downvote_not_selected)
                         isDownvoted = false
                         updateFeedStatus()
                     }
@@ -346,7 +347,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
                     .document(forumsModel.forumId)
                     .update("downvoteList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
                     .addOnSuccessListener {
-                        binding.downBtn.setImageResource(R.drawable.downbtn)
+                        binding.downBtn.setImageResource(R.drawable.downvote_selected)
                         isDownvoted = true
                         // If previously upvoted, remove upvote
                         if (isUpvoted) {
@@ -356,6 +357,7 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
                                 .document(forumsModel.forumId)
                                 .update("upvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                                 .addOnSuccessListener {
+                                    binding.upBtn.setImageResource(R.drawable.upvote_not_selected)
                                     isUpvoted = false
                                     updateFeedStatus()
                                 }
@@ -374,6 +376,12 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
         FirebaseUtil().retrieveCommunityForumsCollection(forumsModel.communityId)
             .document(forumsModel.forumId).get().addOnSuccessListener {
                 val tempForumModel = it.toObject(ForumModel::class.java)!!
+
+                if (AppUtil().isIdOnList(tempForumModel.upvoteList, FirebaseUtil().currentUserUid()))
+                    binding.upBtn.setImageResource(R.drawable.upvote_selected)
+                if (AppUtil().isIdOnList(tempForumModel.downvoteList, FirebaseUtil().currentUserUid()))
+                    binding.downBtn.setImageResource(R.drawable.downvote_selected)
+
                 binding.upvoteCountTV.text = tempForumModel.upvoteList.size.toString()
                 binding.downvoteCountTV.text = tempForumModel.downvoteList.size.toString()
             }

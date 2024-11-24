@@ -141,7 +141,7 @@ class ForumsAdapter(
 
         private fun bindUpvote() {
             // Default
-            forumsBinding.upBtn.setImageResource(R.drawable.upbtn)
+            forumsBinding.upBtn.setImageResource(R.drawable.upvote_not_selected)
 
             // Update initial feed status
             updateThreadStatus()
@@ -149,7 +149,7 @@ class ForumsAdapter(
             // Check if current user has upvoted
             for (user in forumsModel.upvoteList) {
                 if (user == FirebaseUtil().currentUserUid()) {
-                    forumsBinding.upBtn.setImageResource(R.drawable.upbtn)
+                    forumsBinding.upBtn.setImageResource(R.drawable.upvote_selected)
                     isUpvoted = true
                 }
             }
@@ -163,7 +163,7 @@ class ForumsAdapter(
                         .document(forumsModel.forumId)
                         .update("upvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                         .addOnSuccessListener {
-                            forumsBinding.upBtn.setImageResource(R.drawable.upbtn)
+                            forumsBinding.upBtn.setImageResource(R.drawable.upvote_not_selected)
                             isUpvoted = false
                             updateThreadStatus()
                         }
@@ -175,7 +175,7 @@ class ForumsAdapter(
                         .document(forumsModel.forumId)
                         .update("upvoteList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
                         .addOnSuccessListener {
-                            forumsBinding.upBtn.setImageResource(R.drawable.upbtn)
+                            forumsBinding.upBtn.setImageResource(R.drawable.upvote_selected)
                             isUpvoted = true
                             // If previously downvoted, remove downvote
                             if (isDownvoted) {
@@ -200,7 +200,7 @@ class ForumsAdapter(
 
         private fun bindDownvote() {
             // Default
-            forumsBinding.downBtn.setImageResource(R.drawable.downbtn)
+            forumsBinding.downBtn.setImageResource(R.drawable.downvote_not_selected)
 
             // Update initial feed status
             updateThreadStatus()
@@ -208,7 +208,7 @@ class ForumsAdapter(
             // Check if current user has downvoted
             for (user in forumsModel.downvoteList) {
                 if (user == FirebaseUtil().currentUserUid()) {
-                    forumsBinding.downBtn.setImageResource(R.drawable.downbtn)
+                    forumsBinding.downBtn.setImageResource(R.drawable.downvote_selected)
                     isDownvoted = true
                 }
             }
@@ -222,7 +222,7 @@ class ForumsAdapter(
                         .document(forumsModel.forumId)
                         .update("downvoteList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid()))
                         .addOnSuccessListener {
-                            forumsBinding.downBtn.setImageResource(R.drawable.downbtn)
+                            forumsBinding.downBtn.setImageResource(R.drawable.downvote_not_selected)
                             isDownvoted = false
                             updateThreadStatus()
                         }
@@ -234,7 +234,7 @@ class ForumsAdapter(
                         .document(forumsModel.forumId)
                         .update("downvoteList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
                         .addOnSuccessListener {
-                            forumsBinding.downBtn.setImageResource(R.drawable.downbtn)
+                            forumsBinding.downBtn.setImageResource(R.drawable.downvote_selected)
                             isDownvoted = true
                             // If previously upvoted, remove upvote
                             if (isUpvoted) {
@@ -261,11 +261,8 @@ class ForumsAdapter(
             // Update UI with vote counts
             forumsBinding.upvoteCountTV.text = forumsModel.upvoteList.size.toString()
             forumsBinding.downvoteCountTV.text = forumsModel.downvoteList.size.toString()
-            FirebaseUtil().retrieveCommunityForumsCollection(
-                forumsModel.communityId
-            ).document(forumsModel.forumId)
+            FirebaseUtil().retrieveCommunityForumsCollection(forumsModel.communityId).document(forumsModel.forumId)
                 .collection("comments").get().addOnSuccessListener {
-
                     forumsBinding.commentsCountTV.text = it.size().toString()
                 }.addOnFailureListener {
                     forumsBinding.commentsCountTV.text = "0"

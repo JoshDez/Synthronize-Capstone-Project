@@ -32,7 +32,7 @@ class ThreadAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemThreadCommentBinding.inflate(inflater, parent, false)
-        return ThreadViewHolder(binding, context, forumId, communityId, inflater,::updateFeedStatus)
+        return ThreadViewHolder(binding, context, forumId, communityId, inflater,::updateThreadStatus)
     }
 
     override fun onBindViewHolder(holder: ThreadViewHolder, position: Int, model: ThreadModel) {
@@ -41,7 +41,7 @@ class ThreadAdapter(
     }
 
     // Function to refresh the feed inside the adapter
-    private fun updateFeedStatus() {
+    private fun updateThreadStatus() {
         notifyDataSetChanged()  // Refresh the adapter's data
     }
 
@@ -51,7 +51,7 @@ class ThreadAdapter(
         private val forumId: String,
         private val communityId: String,
         private val inflater: LayoutInflater,
-        private val updateFeedStatus: () -> Unit  // Callback to refresh feed
+        private val updateThreadStatus: () -> Unit  // Callback to refresh feed
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private lateinit var threadModel: ThreadModel
@@ -74,7 +74,7 @@ class ThreadAdapter(
 
             binding.upBtn.setOnClickListener {
                 updateVoteButtons()
-                updateFeedStatus
+                updateThreadStatus
                 handleUpvote()
             }
 
@@ -101,6 +101,7 @@ class ThreadAdapter(
                 // Remove upvote and decrement vote count
                 updates["upvoteList"] = FieldValue.arrayRemove(currentUserUid)
                 updates["voteCount"] = FieldValue.increment(-1)  // Decrement vote count
+                binding.upBtn.setImageResource(R.drawable.upvote_not_selected)
                 isUpvoted = false
                 updateVoteButtons()
             } else {
@@ -111,8 +112,10 @@ class ThreadAdapter(
                     // Remove downvote if previously downvoted
                     updates["downvoteList"] = FieldValue.arrayRemove(currentUserUid)
                     updates["voteCount"] = FieldValue.increment(1)  // Adjust vote count
+                    binding.downBtn.setImageResource(R.drawable.downvote_not_selected)
                     isDownvoted = false
                 }
+                binding.upBtn.setImageResource(R.drawable.upvote_selected)
                 isUpvoted = true
                 NotificationUtil().sendNotificationToUser(context, forumId, threadModel.commentOwnerId, "Upvote",
                     "${threadModel.upvoteList.size + 1}","Thread", communityId, DateAndTimeUtil().timestampToString(
@@ -122,7 +125,7 @@ class ThreadAdapter(
 
             docRef.update(updates).addOnSuccessListener {
                 updateVoteButtons()
-                updateFeedStatus()  // Call to refresh feed after upvote
+                updateThreadStatus()  // Call to refresh feed after upvote
             }
         }
 
@@ -135,9 +138,10 @@ class ThreadAdapter(
                 // Remove downvote and increment vote count
                 updates["downvoteList"] = FieldValue.arrayRemove(currentUserUid)
                 updates["voteCount"] = FieldValue.increment(1)  // Increment vote count
+                binding.downBtn.setImageResource(R.drawable.downvote_not_selected)
                 isDownvoted = false
                 updateVoteButtons()
-                updateFeedStatus
+                updateThreadStatus
             } else {
                 // Add downvote and decrement vote count
                 updates["downvoteList"] = FieldValue.arrayUnion(currentUserUid)
@@ -145,11 +149,13 @@ class ThreadAdapter(
                 if (isUpvoted) {
                     // Remove upvote if previously upvoted
                     updates["upvoteList"] = FieldValue.arrayRemove(currentUserUid)
-                    updates["voteCount"] = FieldValue.increment(-1)  // Adjust vote count
+                    updates["voteCount"] = FieldValue.increment(-1) // Adjust vote count
+                    binding.upBtn.setImageResource(R.drawable.upvote_not_selected)
                     isUpvoted = false
                 }
+                binding.downBtn.setImageResource(R.drawable.downvote_selected)
                 isDownvoted = true
-                updateFeedStatus
+                updateThreadStatus
                 NotificationUtil().sendNotificationToUser(context, forumId, threadModel.commentOwnerId, "Downvote",
                     "${threadModel.downvoteList.size + 1}","Thread", communityId, DateAndTimeUtil().timestampToString(
                         Timestamp.now()))
@@ -157,7 +163,7 @@ class ThreadAdapter(
 
             docRef.update(updates).addOnSuccessListener {
                 updateVoteButtons()
-                updateFeedStatus()  // Call to refresh feed after downvote
+                updateThreadStatus()  // Call to refresh feed after downvote
             }
         }
 
@@ -172,8 +178,8 @@ class ThreadAdapter(
                     isDownvoted = threadModel.downvoteList.contains(currentUserUid)
 
                     // Update button resources based on vote state
-                    binding.upBtn.setImageResource(if (isUpvoted) R.drawable.upbtn else R.drawable.upbtn)
-                    binding.downBtn.setImageResource(if (isDownvoted) R.drawable.downbtn else R.drawable.downbtn)
+                    binding.upBtn.setImageResource(if (isUpvoted) R.drawable.upvote_selected else R.drawable.upvote_not_selected)
+                    binding.downBtn.setImageResource(if (isDownvoted) R.drawable.downvote_selected else R.drawable.downvote_not_selected)
 
                     // Update vote counts
                     binding.upvoteCountTV.text = threadModel.upvoteList.size.toString()
