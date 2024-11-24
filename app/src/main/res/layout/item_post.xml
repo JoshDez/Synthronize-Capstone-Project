@@ -67,7 +67,7 @@
                     android:textAlignment="center"
                     android:textColor="@color/text_shadow_white"
                     android:textSize="13sp"
-                    app:backgroundTint="@color/teal" />
+                    app:backgroundTint="@color/teal2" />
             </LinearLayout>
         </LinearLayout>
 
@@ -331,12 +331,12 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/suggestionsRV"
-            android:visibility="gone"
-            android:orientation="horizontal"
-            tools:listitem="@layout/item_suggestion"
             android:layout_width="wrap_content"
+            android:layout_height="200dp"
             android:background="@color/gray3"
-            android:layout_height="200dp"/>
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:listitem="@layout/item_suggestion" />
 
     </LinearLayout>
 
