@@ -104,7 +104,8 @@ class AccountManagement : AppCompatActivity() {
             )
             FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
                 // Logout user
-                FirebaseUtil().logoutUser(context)
+                warningDialog.dismiss()
+                FirebaseUtil().logoutUser(context, layoutInflater)
             }
         }
 

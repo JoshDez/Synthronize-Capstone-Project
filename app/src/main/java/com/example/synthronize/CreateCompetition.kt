@@ -2,9 +2,11 @@ package com.example.synthronize
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.synthronize.adapters.InstructionsAdapter
 import com.example.synthronize.databinding.ActivityCreateCompetitionBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.interfaces.OnInstructionModified
 import com.example.synthronize.model.CompetitionModel
 import com.example.synthronize.model.InstructionModel
@@ -383,5 +386,53 @@ class CreateCompetition : AppCompatActivity(), OnInstructionModified {
             .createIntent {
                 imagePickerLauncher.launch(it)
             }
+    }
+
+
+
+
+    override fun onBackPressed() {
+        if (isModified()){
+            //hides keyboard
+            hideKeyboard()
+            //Dialog for saving user profile
+            val dialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+            val dialogPlus = DialogPlus.newDialog(this)
+                .setContentHolder(ViewHolder(dialogBinding.root))
+                .setGravity(Gravity.CENTER)
+                .setBackgroundColorResId(R.color.transparent)
+                .setCancelable(true)
+                .create()
+
+            dialogBinding.titleTV.text = "Warning"
+            dialogBinding.messageTV.text = "Do you want to exit without saving?"
+
+            dialogBinding.yesBtn.setOnClickListener {
+                //removes uploaded videos from firebase storage
+                dialogPlus.dismiss()
+                super.onBackPressed()
+            }
+            dialogBinding.NoBtn.setOnClickListener {
+                dialogPlus.dismiss()
+            }
+
+            dialogPlus.show()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+
+    private fun isModified(): Boolean {
+        return  binding.competitionNameEdtTxt.text.toString().isNotEmpty() ||
+                binding.competitionDescEdtTxt.text.toString().isNotEmpty() ||
+                binding.topEdtTxt.text.toString().isNotEmpty() ||
+                binding.deadlineEdtTxt.text.toString().isNotEmpty() ||
+                binding.competitionRewardsEdtTxt.text.toString().isNotEmpty()
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.backBtn.windowToken, 0)
     }
 }

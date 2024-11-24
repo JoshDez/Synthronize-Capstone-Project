@@ -303,7 +303,8 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         warningDialogBinding.messageTV.text = "Do you want to logout?"
 
         warningDialogBinding.yesBtn.setOnClickListener {
-            FirebaseUtil().logoutUser(context)
+            warningDialog.dismiss()
+            FirebaseUtil().logoutUser(context, layoutInflater)
         }
         warningDialogBinding.NoBtn.setOnClickListener {
             warningDialog.dismiss()
@@ -331,7 +332,8 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
             )
             FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
                 //logout user
-                FirebaseUtil().logoutUser(context)
+                warningDialog.dismiss()
+                FirebaseUtil().logoutUser(context, layoutInflater)
             }
         }
         warningDialogBinding.NoBtn.setOnClickListener {

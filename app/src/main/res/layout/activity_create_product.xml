@@ -113,7 +113,7 @@
                 android:text="Product Description"/>
 
             <EditText
-                android:id="@+id/competitionDescEdtTxt"
+                android:id="@+id/productDescEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

@@ -2,8 +2,15 @@ package com.example.synthronize.utils
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.os.Handler
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.synthronize.Login
+import com.example.synthronize.R
+import com.example.synthronize.databinding.DialogLoadingBinding
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.UserModel
@@ -15,13 +22,42 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class FirebaseUtil {
-
     //For Authentication
+    fun logoutUser(context: Context, layoutInflater:LayoutInflater){
+        Handler().postDelayed({
+            val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+            val loadingDialog = DialogPlus.newDialog(context)
+                .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+                .setCancelable(false)
+                .setBackgroundColorResId(R.color.transparent)
+                .setGravity(Gravity.CENTER)
+                .create()
+
+            dialogLoadingBinding.messageTV.text = "Loading..."
+
+            loadingDialog.show()
+
+            FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
+                loadingDialog.dismiss()
+                FirebaseAuth.getInstance().signOut()
+                //head to login
+                val intent = Intent(context, Login::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
+            }.addOnFailureListener {
+                loadingDialog.dismiss()
+                Toast.makeText(context, it.message ?: "Registration failed", Toast.LENGTH_SHORT).show()
+            }
+        }, 500)
+    }
     fun logoutUser(context: Context){
         FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
             FirebaseAuth.getInstance().signOut()
+            //head to login
             val intent = Intent(context, Login::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intent)

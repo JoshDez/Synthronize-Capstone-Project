@@ -5,154 +5,147 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="20dp">
+        android:layout_height="match_parent"
+        android:background="@drawable/rounded_dialog_bg"
+        android:backgroundTint="@color/darker_teal"
+        android:paddingTop="20dp">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/option1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/darker_teal"
-            android:paddingTop="20dp">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:visibility="gone">
 
-            <LinearLayout
-                android:id="@+id/option1"
+            <ImageView
+                android:id="@+id/optionIcon1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                app:tint="@color/light_teal" />
+
+            <TextView
+                android:id="@+id/optiontitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/optionIcon1"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="20dp"
-                    app:tint="@color/light_teal" />
-
-                <TextView
-                    android:id="@+id/optiontitle1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:contentDescription="@string/menuoption"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:dividerColor="@color/less_saturated_light_teal" />
-
-            <LinearLayout
-                android:id="@+id/option2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/optionIcon2"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_gravity="center_vertical"
-                    app:tint="@color/light_teal" />
-
-                <TextView
-                    android:id="@+id/optiontitle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:contentDescription="@string/menuoption"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:dividerColor="@color/less_saturated_light_teal" />
-
-            <LinearLayout
-                android:id="@+id/option3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/optionIcon3"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:foregroundGravity="top|right"
-                    android:layout_marginStart="20dp"
-                    android:layout_gravity="center_vertical"
-                    app:tint="@color/light_teal" />
-
-                <TextView
-                    android:id="@+id/optiontitle3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:contentDescription="@string/menuoption"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:dividerColor="@color/less_saturated_light_teal" />
-
-            <LinearLayout
-                android:id="@+id/option4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/optionIcon4"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_gravity="center_vertical"
-                    app:tint="@color/light_teal" />
-
-                <TextView
-                    android:id="@+id/optiontitle4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:contentDescription="@string/menuoption"
-                    android:textColor="@color/light_teal"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                android:layout_marginStart="20dp"
+                android:contentDescription="@string/menuoption"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:dividerColor="@color/less_saturated_light_teal" />
 
+        <LinearLayout
+            android:id="@+id/option2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/optionIcon2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                app:tint="@color/light_teal" />
+
+            <TextView
+                android:id="@+id/optiontitle2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:contentDescription="@string/menuoption"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:dividerColor="@color/less_saturated_light_teal" />
+
+        <LinearLayout
+            android:id="@+id/option3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/optionIcon3"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:foregroundGravity="top|right"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                app:tint="@color/light_teal" />
+
+            <TextView
+                android:id="@+id/optiontitle3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:contentDescription="@string/menuoption"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:dividerColor="@color/less_saturated_light_teal" />
+
+        <LinearLayout
+            android:id="@+id/option4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/optionIcon4"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                app:tint="@color/light_teal" />
+
+            <TextView
+                android:id="@+id/optiontitle4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:contentDescription="@string/menuoption"
+                android:textColor="@color/light_teal"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

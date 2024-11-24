@@ -1,5 +1,6 @@
 package com.example.synthronize
 
+import UserLastSeenUpdater
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -244,7 +245,8 @@ class AppSettings : AppCompatActivity() {
 
         // Set up 'Yes' button to confirm logout
         warningDialogBinding.yesBtn.setOnClickListener {
-            FirebaseUtil().logoutUser(context)
+            warningDialog.dismiss()
+            FirebaseUtil().logoutUser(context, layoutInflater)
         }
 
         // Set up 'No' button to cancel the dialog

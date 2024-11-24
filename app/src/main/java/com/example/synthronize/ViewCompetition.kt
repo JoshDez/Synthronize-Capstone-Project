@@ -273,7 +273,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             binding.resultBtn.setTextColor(selectedColor)
             binding.resultBtn.textSize = 14f
             currentTab = "results"
-            if (!::submissionsAdapter.isInitialized || refreshAdapters){
+            if (!::resultsAdapter.isInitialized || refreshAdapters){
                 setupResults()
                 refreshAdapters = false
             }

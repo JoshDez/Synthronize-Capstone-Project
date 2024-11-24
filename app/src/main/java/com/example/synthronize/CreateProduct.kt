@@ -1,11 +1,13 @@
 package com.example.synthronize
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -17,6 +19,7 @@ import androidx.core.util.TypedValueCompat
 import com.bumptech.glide.Glide
 import com.example.synthronize.databinding.ActivityCreateProductBinding
 import com.example.synthronize.databinding.DialogLoadingBinding
+import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.ProductModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
@@ -53,7 +56,7 @@ class CreateProduct : AppCompatActivity() {
             FirebaseUtil().retrieveCommunityMarketCollection(communityId).document(productId).get().addOnSuccessListener {
                 existingProductModel = it.toObject(ProductModel::class.java)!!
                 binding.productNameEdtTxt.setText(existingProductModel.productName)
-                binding.competitionDescEdtTxt.setText(existingProductModel.productDesc)
+                binding.productDescEdtTxt.setText(existingProductModel.productDesc)
                 binding.productPriceEdtTxt.setText(existingProductModel.price.toString())
                 communityId = existingProductModel.communityId
                 if (existingProductModel.imageList.isNotEmpty()){
@@ -105,7 +108,7 @@ class CreateProduct : AppCompatActivity() {
                 }
         }
         binding.backBtn.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         if (productId.isNotEmpty() && productId != "null"){
@@ -201,7 +204,7 @@ class CreateProduct : AppCompatActivity() {
     private fun uploadProduct(){
         val tempModel = ProductModel()
         val productName = binding.productNameEdtTxt.text.toString()
-        val productDesc = binding.competitionDescEdtTxt.text.toString()
+        val productDesc = binding.productDescEdtTxt.text.toString()
         var delay:Long = 1000
         var price:Long = 0
 
@@ -344,5 +347,53 @@ class CreateProduct : AppCompatActivity() {
             }
         }
         return false
+    }
+
+
+
+
+
+
+    override fun onBackPressed() {
+        if (isModified()){
+            //hides keyboard
+            hideKeyboard()
+            //Dialog for saving user profile
+            val dialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
+            val dialogPlus = DialogPlus.newDialog(this)
+                .setContentHolder(ViewHolder(dialogBinding.root))
+                .setGravity(Gravity.CENTER)
+                .setBackgroundColorResId(R.color.transparent)
+                .setCancelable(true)
+                .create()
+
+            dialogBinding.titleTV.text = "Warning"
+            dialogBinding.messageTV.text = "Do you want to exit without saving?"
+
+            dialogBinding.yesBtn.setOnClickListener {
+                //removes uploaded videos from firebase storage
+                dialogPlus.dismiss()
+                super.onBackPressed()
+            }
+            dialogBinding.NoBtn.setOnClickListener {
+                dialogPlus.dismiss()
+            }
+
+            dialogPlus.show()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+
+    private fun isModified(): Boolean {
+        return  binding.productNameEdtTxt.text.toString().isNotEmpty() ||
+                binding.productPriceEdtTxt.text.toString().isNotEmpty() ||
+                binding.productDescEdtTxt.text.toString().isNotEmpty() || hasProductImages()
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.backBtn.windowToken, 0)
     }
 }
