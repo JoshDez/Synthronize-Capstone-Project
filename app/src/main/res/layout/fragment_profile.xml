@@ -50,6 +50,7 @@
                                 android:layout_height="120dp"
                                 app:civ_border_color="@color/darker_teal"
                                 app:civ_border_width="3dp"
+                                android:foregroundGravity="bottom|right"
                                 android:layout_centerInParent="true"
                                 android:layout_alignParentBottom="true"
                                 android:src="@drawable/user_default_profile" />

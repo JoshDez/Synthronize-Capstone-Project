@@ -15,6 +15,7 @@ import com.example.synthronize.databinding.ActivityAppSettingsBinding
 import com.example.synthronize.databinding.DialogFeedbackBinding
 import com.example.synthronize.databinding.DialogMenuBinding
 import com.example.synthronize.databinding.DialogNotificationsSettingsBinding
+import com.example.synthronize.databinding.DialogOnlineStatusBinding
 import com.example.synthronize.databinding.DialogPrivacyPolicyBinding
 import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.FeedbackModel
@@ -55,6 +56,10 @@ class AppSettings : AppCompatActivity() {
 
         binding.notificationSettingsBtn.setOnClickListener {
             openNotificationSettingsDialog()
+        }
+
+        binding.activeStatusBtn.setOnClickListener {
+            openOnlineStatusDialog()
         }
 
         // Open reports filed activity
@@ -133,6 +138,48 @@ class AppSettings : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun openOnlineStatusDialog() {
+        val dialogBinding = DialogOnlineStatusBinding.inflate(layoutInflater)
+        val dialog = DialogPlus.newDialog(context)
+            .setContentHolder(ViewHolder(dialogBinding.root))
+            .setCancelable(true)
+            .setExpanded(false)
+            .setGravity(Gravity.BOTTOM)
+            .create()
+
+        // Load the saved preference
+        val isOnlineStatusEnabled = sharedPreferences.getBoolean("online_status_enable", true)
+        dialogBinding.accStatusSwitch.isChecked = isOnlineStatusEnabled
+
+        dialogBinding.accStatusSwitch.setOnCheckedChangeListener { _, isChecked ->
+                if (NetworkUtil(this).isNetworkAvailable()){
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean("online_status_enable", isChecked)
+                    editor.apply()
+
+                    if (isChecked) {
+                        // enables notification
+                        Toast.makeText(this, "Online Status Enabled", Toast.LENGTH_SHORT).show()
+                        FirebaseUtil().getFCMToken()
+                    } else {
+                        // disables notification
+                        Toast.makeText(this, "Online Status Disabled", Toast.LENGTH_SHORT).show()
+                        FirebaseUtil().removeFCMToken()
+                    }
+                } else {
+                    Toast.makeText(this, "Cannot make changes without an internet connection", Toast.LENGTH_SHORT).show()
+                    dialogBinding.accStatusSwitch.isChecked = isOnlineStatusEnabled
+                }
+        }
+
+
+        dialogBinding.backBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
     private fun openFeedbackDialog() {
         val dialogFeedbackBinding = DialogFeedbackBinding.inflate(layoutInflater)
         val dialogFeedback = DialogPlus.newDialog(context)
@@ -189,7 +236,7 @@ class AppSettings : AppCompatActivity() {
                 }
             }
         }
-        dialogFeedbackBinding.downBtn.setOnClickListener {
+        dialogFeedbackBinding.backBtn.setOnClickListener {
             dialogFeedback.dismiss()
         }
 

@@ -157,7 +157,7 @@ class Splash : AppCompatActivity() {
                     isUserAccountEnabled{accIsEnabled ->
                         if (accIsEnabled){
                             //starts updating user last seen
-                            UserLastSeenUpdater().startUpdating()
+                            UserLastSeenUpdater(this).startUpdating()
                             //head to main activity
                             headToMainActivity()
                         } else {

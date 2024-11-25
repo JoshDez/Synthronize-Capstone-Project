@@ -413,12 +413,12 @@ class AppUtil {
     fun containsSensitiveWords(input: String): Boolean {
         // List of bad words in English and Filipino
         val badWords = listOf(
-            "fuck", "fucking", "fucked", "fucks", "shit", "shitting", "shits", "asshole", "assholes", "cunt", "cunts", "bastard", "bitch", "bitches",
-            "bitched", "nigga", "niggas", "nigger", "niggers", "motherfucker",
-            "cock", "wanker", "crap", "gyatt", "ass", "cum", "cums", "cumming", "creampie", "cock", "cocksucker", "milf", "slut", "whore", "pornstar"
-            , "handjob", "blowjob", // English swear words
-            "bobo", "bobong", "puta", "putang", "pota", "potaena", "pakshet", "gago", "gagong", "kupal", "tite", "inamo", "kantot", "kantotan", "burat",  "tarantado",
-            "tangina", "bakla", "kantutan" // Filipino bad words
+            "fuck", "fucking", "fucked", "fucks", "shit", "shitting", "shits", "asshole", "assholes", "cunt", "cunts", "bastard", "bastards", "bitch", "bitches",
+            "bitched", "nigga", "niggas", "nigger", "niggers", "motherfucker", "motherfuckers", "porn", "faggot", "wanker", "wankers", "boner",
+            "crap", "ass", "cum", "cums", "cumming", "creampie", "cocksucker", "milf", "slut", "sluts", "whore", "whores", "pornstar", "pornstars",
+            "handjob","handjobs", "blowjob", "blowjobs", // English swear words
+            "bobo", "bobong", "puta", "putang", "pota", "potaena", "pakshet", "gago", "gagong", "kupal", "tite", "titeng", "titi", "titing", "inamo", "kantot", "kantotan", "burat",  "tarantado",
+            "tangina", "bakla", "bading", "bayot", "kantutan", "ulol", "lintik", "punyeta", "tanga", "bwisit", "libog", "betlog", "puki", "puking", "iyot", "jakol", "jakolero"// Filipino bad words
         )
 
         // Convert the input to lowercase and split the string by space

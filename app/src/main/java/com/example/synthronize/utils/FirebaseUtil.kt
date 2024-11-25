@@ -44,10 +44,20 @@ class FirebaseUtil {
             FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
                 loadingDialog.dismiss()
                 FirebaseAuth.getInstance().signOut()
+
+                //set the online status setting to enable
+                val sharedPreferences: SharedPreferences by lazy {
+                    context.getSharedPreferences("AppPreferences", AppCompatActivity.MODE_PRIVATE)
+                }
+                val editor = sharedPreferences.edit()
+                editor.putBoolean("online_status_enable", true)
+                editor.apply()
+
                 //head to login
                 val intent = Intent(context, Login::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intent)
+
             }.addOnFailureListener {
                 loadingDialog.dismiss()
                 Toast.makeText(context, it.message ?: "Registration failed", Toast.LENGTH_SHORT).show()
@@ -57,6 +67,15 @@ class FirebaseUtil {
     fun logoutUser(context: Context){
         FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
             FirebaseAuth.getInstance().signOut()
+
+            //set the online status setting to enable
+            val sharedPreferences: SharedPreferences by lazy {
+                context.getSharedPreferences("AppPreferences", AppCompatActivity.MODE_PRIVATE)
+            }
+            val editor = sharedPreferences.edit()
+            editor.putBoolean("online_status_enable", true)
+            editor.apply()
+
             //head to login
             val intent = Intent(context, Login::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK

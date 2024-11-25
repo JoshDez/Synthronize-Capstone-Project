@@ -7,29 +7,46 @@
     android:background="@color/darker_teal"
     tools:context=".Search">
 
+
+
     <RelativeLayout
-        android:id="@+id/headerLayout"
+        android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/dark_teal"
+        android:layout_height="80dp"
+        android:background="@color/darker_teal"
         android:padding="10dp">
 
-        <ImageButton
-            android:id="@+id/downBtn"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="10dp"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/baseline_keyboard_arrow_down_24"
-            app:tint="@color/light_teal" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerVertical="true">
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_marginStart="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/back_icon"
+                app:tint="@color/light_teal" />
+            <TextView
+                android:id="@+id/toolbarTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="20sp"
+                android:textColor="@color/light_teal"
+                android:text="Active Status"/>
+        </LinearLayout>
+
     </RelativeLayout>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/headerLayout"
+        android:layout_below="@id/mainToolbar"
         android:background="@color/light_teal"
         app:dividerColor="@color/teal2" />
 
@@ -170,7 +187,7 @@
             <EditText
                 android:id="@+id/reasonEdtTxt"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:background="@drawable/input_rounded_corners"
                 android:hint="Write your reason..."

@@ -2,6 +2,7 @@ package com.example.synthronize
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
@@ -41,6 +43,9 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     private lateinit var binding: FragmentProfileBinding
     private lateinit var context: Context
     private lateinit var userId: String
+    private val sharedPreferences: SharedPreferences by lazy {
+        context.getSharedPreferences("AppPreferences", AppCompatActivity.MODE_PRIVATE)
+    }
     //For OnItemClickListener
     private var isFriendsList = false
     private var currentTab = ""
@@ -151,6 +156,7 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
                 //binds userProfilePic
                 AppUtil().setUserProfilePic(context, userId, binding.userProfileCIV)
                 AppUtil().setUserCoverPic(context, userId, binding.userCoverIV)
+                displayOnlineStatus()
 
                 //bind counts
                 ProfileUtil().getCommunitiesCount(userId) { communityCount ->
@@ -228,6 +234,15 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
                 binding.profileRefreshLayout.isRefreshing = false
             }
+        }
+    }
+
+    private fun displayOnlineStatus(){
+        val isOnlineStatusEnabled = sharedPreferences.getBoolean("online_status_enable", true)
+        if (isOnlineStatusEnabled){
+            binding.userProfileCIV.foreground = ContextCompat.getDrawable(context, R.drawable.green_dot)
+        } else {
+            binding.userProfileCIV.foreground = null
         }
     }
 

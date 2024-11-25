@@ -119,7 +119,7 @@ class Login : AppCompatActivity() {
                                 }
                             } else {
                                 //starts updating user last seen
-                                UserLastSeenUpdater().startUpdating()
+                                UserLastSeenUpdater(this).startUpdating()
                                 //head to main activity
                                 val intent = Intent(this, MainActivity::class.java)
                                 startActivity(intent)
