@@ -53,7 +53,7 @@ class NotificationUtil {
 
         query.get().addOnSuccessListener {
                 if (it.documents.isNotEmpty()){
-                    button.foreground = ContextCompat.getDrawable(context, R.drawable.red_dot)
+                    button.foreground = ContextCompat.getDrawable(context, R.drawable.alert_icon)
                     callback(true)
                 } else {
                     button.foreground = null

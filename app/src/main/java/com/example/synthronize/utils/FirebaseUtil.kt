@@ -37,7 +37,7 @@ class FirebaseUtil {
                 .setGravity(Gravity.CENTER)
                 .create()
 
-            dialogLoadingBinding.messageTV.text = "Loading..."
+            dialogLoadingBinding.messageTV.text = "Logging out..."
 
             loadingDialog.show()
 

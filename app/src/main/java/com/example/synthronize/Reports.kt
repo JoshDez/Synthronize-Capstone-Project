@@ -148,7 +148,7 @@ class Reports : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener {
         
         val query = FirebaseUtil().retrieveCommunityReportsCollection(communityId)
             .whereEqualTo("reportType", reportType)
-            .whereEqualTo("reviewed", false)
+            .orderBy("reviewed", Query.Direction.ASCENDING)
             .orderBy("createdTimestamp", Query.Direction.DESCENDING)
 
 

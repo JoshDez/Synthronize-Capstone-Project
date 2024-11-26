@@ -2,12 +2,11 @@ package com.example.synthronize
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.synthronize.databinding.ActivityViewReportBinding
 import com.example.synthronize.model.CommunityModel
 import com.example.synthronize.model.CompetitionModel
@@ -25,7 +24,7 @@ import com.example.synthronize.utils.DialogUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.firestore.toObject
 
-class ViewReport : AppCompatActivity() {
+class ViewReport : AppCompatActivity(), OnRefreshListener {
     private lateinit var binding:ActivityViewReportBinding
     private var communityId = ""
     private var reportId = ""
@@ -42,6 +41,18 @@ class ViewReport : AppCompatActivity() {
         reportId = intent.getStringExtra("reportId").toString()
         toReview = intent.getBooleanExtra("toReview", false)
         isCommunityContent = communityId.isNotEmpty() && communityId != "null"
+
+        bindReport()
+
+        binding.reportRefreshLayout.setOnRefreshListener(this)
+
+        binding.backBtn.setOnClickListener {
+            onBackPressed()
+        }
+    }
+
+    private fun bindReport(){
+        binding.reportRefreshLayout.isRefreshing = true
 
         if (isCommunityContent){
             //Within Community (Feeds, Market, Forums, Files)
@@ -62,13 +73,27 @@ class ViewReport : AppCompatActivity() {
                 bindDetails()
 
                 if (toReview){
-                    binding.markAsReviewedBtn.visibility = View.VISIBLE
-                    binding.markAsReviewedBtn.setOnClickListener {
-                        FirebaseUtil().retrieveCommunityReportsCollection(communityId).document(reportId).update("reviewed", true).addOnSuccessListener {
-                            Toast.makeText(this, "Report is successfully reviewed", Toast.LENGTH_SHORT).show()
-                            onBackPressed()
-                        }.addOnFailureListener {
-                            Toast.makeText(this, "An error has occurred, please try again", Toast.LENGTH_SHORT).show()
+                    if(reportModel.reviewed){
+                        binding.markAsReviewedBtn.visibility = View.GONE
+                        binding.markAsNotReviewedBtn.visibility = View.VISIBLE
+                        binding.markAsNotReviewedBtn.setOnClickListener {
+                            FirebaseUtil().retrieveCommunityReportsCollection(communityId).document(reportId).update("reviewed", false).addOnSuccessListener {
+                                Toast.makeText(this, "Marked as not reviewed", Toast.LENGTH_SHORT).show()
+                                onRefresh()
+                            }.addOnFailureListener {
+                                Toast.makeText(this, "An error has occurred, please try again", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        binding.markAsNotReviewedBtn.visibility = View.GONE
+                        binding.markAsReviewedBtn.visibility = View.VISIBLE
+                        binding.markAsReviewedBtn.setOnClickListener {
+                            FirebaseUtil().retrieveCommunityReportsCollection(communityId).document(reportId).update("reviewed", true).addOnSuccessListener {
+                                Toast.makeText(this, "Marked as reviewed", Toast.LENGTH_SHORT).show()
+                                onRefresh()
+                            }.addOnFailureListener {
+                                Toast.makeText(this, "An error has occurred, please try again", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 } else {
@@ -88,6 +113,7 @@ class ViewReport : AppCompatActivity() {
                     }
 
                 }
+                binding.reportRefreshLayout.isRefreshing = false
             }
         } else {
             //Outside Community (User, Community)
@@ -114,11 +140,9 @@ class ViewReport : AppCompatActivity() {
                         }
                     }
                 }
+                binding.reportRefreshLayout.isRefreshing = false
 
             }
-        }
-        binding.backBtn.setOnClickListener {
-            onBackPressed()
         }
     }
 
@@ -375,5 +399,11 @@ class ViewReport : AppCompatActivity() {
             binding.createdTimestampTV.text = DateAndTimeUtil().formatTimestampToDate(reportModel.createdTimestamp)
             binding.reasonTV.text = "The ${reportModel.reportType} is reported as '${reportModel.reason}'"
         }
+    }
+
+    override fun onRefresh() {
+        Handler().postDelayed({
+            bindReport()
+        }, 1000)
     }
 }

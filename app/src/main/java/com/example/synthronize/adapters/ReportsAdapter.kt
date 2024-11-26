@@ -5,8 +5,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.synthronize.OtherUserProfile
+import com.example.synthronize.R
 import com.example.synthronize.ViewReport
 import com.example.synthronize.databinding.ItemReportBinding
 import com.example.synthronize.model.ReportModel
@@ -74,6 +76,7 @@ class ReportsAdapter(private val context: Context, options: FirestoreRecyclerOpt
                     binding.reviewStatusTV.setTextColor(Color.GREEN)
                 } else {
                     binding.reviewStatusTV.text = "Status: To be reviewed"
+                    binding.reviewStatusTV.setTextColor(ContextCompat.getColor(context, R.color.less_saturated_light_teal))
                 }
             }
         }

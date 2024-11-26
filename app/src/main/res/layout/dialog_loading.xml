@@ -31,7 +31,10 @@
             android:layout_marginEnd="20dp"
             android:textAlignment="center"
             android:textColor="@color/light_teal"
-            android:textSize="14sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeStepGranularity="1sp"
             android:text="Loading..."/>
     </LinearLayout>
 
