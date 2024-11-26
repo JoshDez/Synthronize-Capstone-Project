@@ -200,8 +200,10 @@
                     android:id="@+id/fileNameTV"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="File.txt"
                     android:paddingStart="20dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:singleLine="true"
                     android:gravity="center_vertical"
                     android:textColor="@color/light_teal"
                     android:textSize="16sp"/>
@@ -215,7 +217,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/userListRV"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/input_rounded_corners"
             android:backgroundTint="@color/darker_teal"
             android:visibility="gone"

@@ -2,6 +2,7 @@ package com.example.synthronize
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -127,11 +128,11 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
         val selectedColor = ContextCompat.getColor(context, R.color.light_teal)
         binding.addFab.visibility = View.GONE
         binding.competitionBtn.setTextColor(unselectedColor)
-        binding.competitionBtn.textSize = 12f
+        binding.competitionBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.resourcesBtn.setTextColor(unselectedColor)
-        binding.resourcesBtn.textSize = 12f
+        binding.resourcesBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.sharedFilesBtn.setTextColor(unselectedColor)
-        binding.sharedFilesBtn.textSize = 12f
+        binding.sharedFilesBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.competitionsRV.visibility = View.GONE
         binding.resourcesRV.visibility = View.GONE
         binding.sharedFilesRV.visibility = View.GONE
@@ -141,7 +142,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             currentTab = "competitions"
             binding.competitionBtn.setTextColor(selectedColor)
             binding.competitionsRV.visibility = View.VISIBLE
-            binding.competitionBtn.textSize = 14f
+            binding.competitionBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 
             if (toRefresh || !::competitionsAdapter.isInitialized)
                 setupCompetitionsRV()
@@ -160,7 +161,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             currentTab = "resources"
             binding.resourcesBtn.setTextColor(selectedColor)
             binding.resourcesRV.visibility = View.VISIBLE
-            binding.resourcesBtn.textSize = 14f
+            binding.resourcesBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 
             if (toRefresh || !::resourcesAdapter.isInitialized)
                 setupResourcesRV()
@@ -181,7 +182,7 @@ class ActivitiesFragment(private val mainBinding: FragmentCommunityBinding, priv
             currentTab = "shared_files"
             binding.sharedFilesBtn.setTextColor(selectedColor)
             binding.sharedFilesRV.visibility = View.VISIBLE
-            binding.sharedFilesBtn.textSize = 14f
+            binding.sharedFilesBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 
             if (toRefresh || !::sharedFilesAdapter.isInitialized)
                 setupSharedFilesRV()

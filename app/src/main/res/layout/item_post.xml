@@ -183,7 +183,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/userListRV"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/input_rounded_corners"
             android:backgroundTint="@color/darker_teal"
             android:visibility="gone"
@@ -302,6 +302,9 @@
                 android:layout_width="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_height="43dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:textSize="13dp"
                 android:background="@drawable/input_rounded_corners"
                 android:hint="Write your comment"/>

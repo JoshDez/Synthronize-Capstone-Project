@@ -55,35 +55,32 @@
         android:layout_height="50dp"
         android:layout_below="@id/divider"
         android:background="@drawable/gradient_teal"
-
         android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/generalBtn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:text="@string/general"
-            android:textAlignment="center"
+            android:gravity="center"
             android:textColor="@color/light_teal"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/adminBtn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:foregroundGravity="top|right"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:text="@string/admin"
-            android:textAlignment="center"
+            android:gravity="center"
             android:textColor="@color/light_teal"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="16sp"/>
     </LinearLayout>
 
 

@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -84,20 +85,20 @@ class CommunitySettings : AppCompatActivity(), OnItemClickListener {
         val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_teal)
         val selectedColor = ContextCompat.getColor(this, R.color.light_teal)
         binding.generalBtn.setTextColor(unselectedColor)
-        binding.generalBtn.textSize = 12f
+        binding.generalBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.adminBtn.setTextColor(unselectedColor)
-        binding.adminBtn.textSize = 12f
+        binding.adminBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.generalLayout.visibility = View.GONE
         binding.adminLayout.visibility = View.GONE
 
         if (tab == "general"){
             setupGeneralLayout()
             binding.generalBtn.setTextColor(selectedColor)
-            binding.generalBtn.textSize = 14f
+            binding.generalBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
         }else if (tab == "admin") {
             setupAdminLayout()
             binding.adminBtn.setTextColor(selectedColor)
-            binding.adminBtn.textSize = 14f
+            binding.adminBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             binding.adminBtn.foreground = null
 
         }

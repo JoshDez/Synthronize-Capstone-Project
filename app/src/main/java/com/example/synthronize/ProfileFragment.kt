@@ -3,6 +3,7 @@ package com.example.synthronize
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -87,23 +88,23 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         val selectedColor = ContextCompat.getColor(context, R.color.light_teal)
 
         binding.postsBtn.setTextColor(unselectedColor)
-        binding.postsBtn.textSize = 12f
+        binding.postsBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.filesBtn.setTextColor(unselectedColor)
-        binding.filesBtn.textSize = 12f
+        binding.filesBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.postsRV.visibility = View.GONE
         binding.filesRV.visibility = View.GONE
 
         if (tab == "posts"){
             binding.postsBtn.setTextColor(selectedColor)
             binding.postsRV.visibility = View.VISIBLE
-            binding.postsBtn.textSize = 14f
+            binding.postsBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             currentTab = "posts"
             if (toRefresh)
                 setupPostsRV()
         }else if (tab == "files"){
             binding.filesBtn.setTextColor(selectedColor)
             binding.filesRV.visibility = View.VISIBLE
-            binding.filesBtn.textSize = 14f
+            binding.filesBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             currentTab = "files"
             if (toRefresh)
                 setupFilesRV()
@@ -320,36 +321,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
         warningDialogBinding.yesBtn.setOnClickListener {
             warningDialog.dismiss()
             FirebaseUtil().logoutUser(context, layoutInflater)
-        }
-        warningDialogBinding.NoBtn.setOnClickListener {
-            warningDialog.dismiss()
-        }
-
-        warningDialog.show()
-    }
-
-    private fun deactivateWarningDialog(){
-        val warningDialogBinding = DialogWarningMessageBinding.inflate(layoutInflater)
-        val warningDialog = DialogPlus.newDialog(context)
-            .setContentHolder(ViewHolder(warningDialogBinding.root))
-            .setBackgroundColorResId(R.color.transparent)
-            .setGravity(Gravity.CENTER)
-            .setCancelable(true)
-            .create()
-
-        warningDialogBinding.titleTV.text = "Deactivate Account"
-        warningDialogBinding.messageTV.text = "Do you want to deactivate your account? (You can reactivate your account by signing in)"
-
-        warningDialogBinding.yesBtn.setOnClickListener {
-            val updates = mapOf(
-                "userAccess.Disabled" to "",
-                "userAccess.Enabled" to FieldValue.delete()
-            )
-            FirebaseUtil().currentUserDetails().update(updates).addOnSuccessListener {
-                //logout user
-                warningDialog.dismiss()
-                FirebaseUtil().logoutUser(context, layoutInflater)
-            }
         }
         warningDialogBinding.NoBtn.setOnClickListener {
             warningDialog.dismiss()

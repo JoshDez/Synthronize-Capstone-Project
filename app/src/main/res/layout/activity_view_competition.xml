@@ -255,10 +255,12 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
-                    android:textStyle="bold"
                     android:text="Instructions"
                     android:textColor="@color/light_teal"
-                    android:textSize="14sp"  />
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeMaxTextSize="14sp"
+                    android:autoSizeStepGranularity="1sp"  />
 
                 <TextView
                     android:id="@+id/submissionsBtn"
@@ -268,11 +270,13 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
-                    android:textStyle="bold"
                     android:text="Submissions"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
-                    android:textSize="14sp"  />
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeMaxTextSize="14sp"
+                    android:autoSizeStepGranularity="1sp"   />
 
                 <TextView
                     android:id="@+id/resultBtn"
@@ -281,12 +285,14 @@
                     android:layout_weight="1"
                     android:clickable="true"
                     android:focusable="true"
-                    android:textStyle="bold"
                     android:gravity="center"
                     android:text="Results"
                     android:textAlignment="center"
                     android:textColor="@color/light_teal"
-                    android:textSize="14sp"  />
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeMaxTextSize="14sp"
+                    android:autoSizeStepGranularity="1sp" />
             </LinearLayout>
 
 

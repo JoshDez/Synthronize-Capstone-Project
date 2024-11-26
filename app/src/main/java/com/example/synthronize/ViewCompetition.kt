@@ -1,6 +1,7 @@
 package com.example.synthronize
 
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -243,16 +244,16 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
         binding.submissionsRV.visibility = View.GONE
         binding.resultsRV.visibility = View.GONE
         binding.instructionsBtn.setTextColor(unselectedColor)
-        binding.instructionsBtn.textSize = 12f
+        binding.instructionsBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.submissionsBtn.setTextColor(unselectedColor)
-        binding.submissionsBtn.textSize = 12f
+        binding.submissionsBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.resultBtn.setTextColor(unselectedColor)
-        binding.resultBtn.textSize = 12f
+        binding.resultBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
 
         if (tab == "instructions"){
             binding.instructionsRV.visibility = View.VISIBLE
             binding.instructionsBtn.setTextColor(selectedColor)
-            binding.instructionsBtn.textSize = 14f
+            binding.instructionsBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             currentTab = "instructions"
             if (!::instructionsAdapter.isInitialized || refreshAdapters){
                 setupInstructions(competitionModel.instruction)
@@ -261,7 +262,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
         } else if (tab == "submissions") {
             binding.submissionsRV.visibility = View.VISIBLE
             binding.submissionsBtn.setTextColor(selectedColor)
-            binding.submissionsBtn.textSize = 14f
+            binding.submissionsBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             currentTab = "submissions"
             if (!::submissionsAdapter.isInitialized || refreshAdapters){
                 setupSubmissions(competitionModel.contestants)
@@ -271,7 +272,7 @@ class ViewCompetition : AppCompatActivity(), OnRefreshListener, OnNetworkRetryLi
             binding.resultsTypeTV.visibility = View.VISIBLE
             binding.resultsRV.visibility = View.VISIBLE
             binding.resultBtn.setTextColor(selectedColor)
-            binding.resultBtn.textSize = 14f
+            binding.resultBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             currentTab = "results"
             if (!::resultsAdapter.isInitialized || refreshAdapters){
                 setupResults()

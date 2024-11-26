@@ -3,6 +3,7 @@ package com.example.synthronize
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -73,23 +74,23 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
         val unselectedColor = ContextCompat.getColor(this, R.color.less_saturated_light_teal)
         val selectedColor = ContextCompat.getColor(this, R.color.light_teal)
         binding.postsBtn.setTextColor(unselectedColor)
-        binding.postsBtn.textSize = 12f
+        binding.postsBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.filesBtn.setTextColor(unselectedColor)
-        binding.filesBtn.textSize = 12f
+        binding.filesBtn.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
         binding.postsRV.visibility = View.GONE
         binding.filesRV.visibility = View.GONE
 
         if (tab == "posts"){
             binding.postsBtn.setTextColor(selectedColor)
             binding.postsRV.visibility = View.VISIBLE
-            binding.postsBtn.textSize = 14f
+            binding.postsBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             currentTab = "posts"
             if (toRefresh)
                 setupPostsRV()
         }else if (tab == "files"){
             binding.filesBtn.setTextColor(selectedColor)
             binding.filesRV.visibility = View.VISIBLE
-            binding.filesBtn.textSize = 14f
+            binding.filesBtn.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             currentTab = "files"
             if (toRefresh)
                 setupFilesRV()

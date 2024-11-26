@@ -13,43 +13,49 @@
         android:background="@color/dark_teal"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="45dp">
+        android:layout_height="43dp">
 
         <Button
             android:id="@+id/competitionBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="1.1"
             android:text="Competitions"
-            android:textStyle="bold"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center"
             android:textColor="@color/light_teal"
-            android:textSize="12sp"/>
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="16sp"
+            android:autoSizeStepGranularity="1sp"/>
 
         <Button
             android:id="@+id/resourcesBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Resources"
-            android:textStyle="bold"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center"
             android:textColor="@color/light_teal"
-            android:textSize="12sp"/>
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="16sp"
+            android:autoSizeStepGranularity="1sp"/>
 
         <Button
             android:id="@+id/sharedFilesBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textStyle="bold"
             android:text="Shared Files"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center"
             android:textColor="@color/light_teal"
-            android:textSize="12sp"/>
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="16sp"
+            android:autoSizeStepGranularity="1sp"/>
     </LinearLayout>
 
     <com.google.android.material.divider.MaterialDivider
