@@ -47,20 +47,22 @@ class AppUtil {
                 // The activity is not in a valid state to load images
                 return
             } else {
-                FirebaseUtil().targetUserDetails(uid).get().addOnSuccessListener {
-                    var user = it.toObject(UserModel::class.java)!!
+                FirebaseUtil().targetUserDetails(uid).get().addOnCompleteListener {
+                    if(it.result.exists()){
+                        var user = it.result.toObject(UserModel::class.java)!!
 
-                    if (user.userMedia.containsKey("profile_photo")){
-                        //get the image url from the key
-                        var imageUrl = user.userMedia["profile_photo"]!!
+                        if (user.userMedia.containsKey("profile_photo")){
+                            //get the image url from the key
+                            var imageUrl = user.userMedia["profile_photo"]!!
 
-                        GlideApp.with(context)
-                            //storage reference
-                            .load(FirebaseUtil().retrieveUserProfilePicRef(imageUrl))
-                            .error(R.drawable.user_default_profile)
-                            .apply(RequestOptions.circleCropTransform())
-                            //image view
-                            .into(civ)
+                            GlideApp.with(context)
+                                //storage reference
+                                .load(FirebaseUtil().retrieveUserProfilePicRef(imageUrl))
+                                .error(R.drawable.user_default_profile)
+                                .apply(RequestOptions.circleCropTransform())
+                                //image view
+                                .into(civ)
+                        }
                     }
                 }
             }
@@ -260,32 +262,54 @@ class AppUtil {
             if (AppUtil().isIdOnList(userModel.friendsList, FirebaseUtil().currentUserUid())){
                 friendButton.text = "Unfriend"
                 friendButton.setOnClickListener {
-                    userModel.friendsList = userModel.friendsList.filterNot { it == FirebaseUtil().currentUserUid() }
-                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                        changeFriendsButtonState(context, friendButton, userModel)
+                    FirebaseUtil().currentUserDetails().update("friendsList", FieldValue.arrayRemove(userModel.userID)).addOnSuccessListener{
+                        FirebaseUtil().targetUserDetails(userModel.userID).update("friendsList", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener{
+                            FirebaseUtil().targetUserDetails(userModel.userID).get().addOnCompleteListener {targetUser ->
+                                if (targetUser.result.exists()){
+                                    val model = targetUser.result.toObject(UserModel::class.java)!!
+                                    changeFriendsButtonState(context, friendButton, model)
+                                }
+                            }
+                        }
                     }
                 }
 
             } else if (AppUtil().isIdOnList(userModel.friendRequests, FirebaseUtil().currentUserUid())){
                 friendButton.text = "Cancel Request"
                 friendButton.setOnClickListener {
-                    userModel.friendRequests = userModel.friendRequests.filterNot { it == FirebaseUtil().currentUserUid() }
-                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                        changeFriendsButtonState(context, friendButton, userModel)
+                    FirebaseUtil().targetUserDetails(userModel.userID).update("friendRequests", FieldValue.arrayRemove(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                        FirebaseUtil().targetUserDetails(userModel.userID).get().addOnCompleteListener {targetUser ->
+                            if (targetUser.result.exists()){
+                                val model = targetUser.result.toObject(UserModel::class.java)!!
+                                changeFriendsButtonState(context, friendButton, model)
+                            }
+                        }
                     }
                 }
             } else if (AppUtil().isIdOnList(myUserModel.friendRequests, userModel.userID)){
                 friendButton.text = "Accept Request"
                 friendButton.setOnClickListener {
-                    FirebaseUtil().currentUserDetails().update("friendsList", FieldValue.arrayUnion(userModel.userID))
-                    FirebaseUtil().targetUserDetails(userModel.userID).update("friendsList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid()))
+                    FirebaseUtil().currentUserDetails().update("friendsList", FieldValue.arrayUnion(userModel.userID)).addOnSuccessListener{
+                        FirebaseUtil().targetUserDetails(userModel.userID).update("friendsList", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener{
+                            FirebaseUtil().targetUserDetails(userModel.userID).get().addOnCompleteListener {targetUser ->
+                                if (targetUser.result.exists()){
+                                    val model = targetUser.result.toObject(UserModel::class.java)!!
+                                    changeFriendsButtonState(context, friendButton, model)
+                                }
+                            }
+                        }
+                    }
                 }
             } else {
                 friendButton.text = "Add Friend"
                 friendButton.setOnClickListener {
-                    userModel.friendRequests = userModel.friendRequests.plus(FirebaseUtil().currentUserUid())
-                    FirebaseUtil().targetUserDetails(userModel.userID).set(userModel).addOnSuccessListener {
-                        changeFriendsButtonState(context, friendButton, userModel)
+                    FirebaseUtil().targetUserDetails(userModel.userID).update("friendRequests", FieldValue.arrayUnion(FirebaseUtil().currentUserUid())).addOnSuccessListener {
+                        FirebaseUtil().targetUserDetails(userModel.userID).get().addOnCompleteListener {targetUser ->
+                            if (targetUser.result.exists()){
+                                val model = targetUser.result.toObject(UserModel::class.java)!!
+                                changeFriendsButtonState(context, friendButton, model)
+                            }
+                        }
                         NotificationUtil().sendPushNotificationsForRequestsAndInvitations(context, userModel.userID, "Friend Request")
                     }
                 }
