@@ -430,9 +430,31 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 communityModel = it.toObject(CommunityModel::class.java)!!
 
                 //FOR MEMBERS
-                val membersQuery:Query = FirebaseUtil().allUsersCollectionReference()
+                var membersQuery:Query = FirebaseUtil().allUsersCollectionReference()
                     .whereIn("userID", communityModel.communityMembers.keys.toList())
-                    .whereGreaterThanOrEqualTo("fullName", searchQuery)
+
+
+                if (searchQuery.isNotEmpty()){
+                    if (searchQuery[0] == '@'){
+                        //search user by username
+                        membersQuery = membersQuery
+                            .whereGreaterThanOrEqualTo("username", searchQuery.removePrefix("@"))
+                            .whereLessThanOrEqualTo("username", searchQuery.removePrefix("@")+"\uf8ff")
+                    } else {
+                        //search user by full name
+                        membersQuery = membersQuery
+                            .whereGreaterThanOrEqualTo("fullName", searchQuery)
+                            .whereLessThanOrEqualTo("fullName", searchQuery+"\uf8ff")
+                    }
+                }
+
+                membersQuery.get().addOnCompleteListener {query ->
+                    if (query.result.isEmpty)
+                        binding.membersTV.visibility = View.GONE
+                    else
+                        binding.membersTV.visibility = View.VISIBLE
+                }
+
 
                 val membersOptions:FirestoreRecyclerOptions<UserModel> =
                     FirestoreRecyclerOptions.Builder<UserModel>().setQuery(membersQuery, UserModel::class.java).build()
@@ -443,9 +465,30 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 //FOR ADMINS
                 val admins = AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin")
                 if (admins.isNotEmpty()){
-                    val adminsQuery:Query = FirebaseUtil().allUsersCollectionReference()
+                    var adminsQuery:Query = FirebaseUtil().allUsersCollectionReference()
                         .whereIn("userID", admins)
-                        .whereGreaterThanOrEqualTo("fullName", searchQuery)
+
+
+                    if (searchQuery.isNotEmpty()){
+                        if (searchQuery[0] == '@'){
+                            //search user by username
+                            adminsQuery = adminsQuery
+                                .whereGreaterThanOrEqualTo("username", searchQuery.removePrefix("@"))
+                                .whereLessThanOrEqualTo("username", searchQuery.removePrefix("@")+"\uf8ff")
+                        } else {
+                            //search user by full name
+                            adminsQuery = adminsQuery
+                                .whereGreaterThanOrEqualTo("fullName", searchQuery)
+                                .whereLessThanOrEqualTo("fullName", searchQuery+"\uf8ff")
+                        }
+                    }
+
+                    adminsQuery.get().addOnCompleteListener {query ->
+                        if (query.result.isEmpty)
+                            binding.adminTV.visibility = View.GONE
+                        else
+                            binding.adminTV.visibility = View.VISIBLE
+                    }
 
                     val adminsOptions:FirestoreRecyclerOptions<UserModel> =
                         FirestoreRecyclerOptions.Builder<UserModel>().setQuery(adminsQuery, UserModel::class.java).build()
@@ -456,9 +499,30 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 //FOR MODERATORS
                 val moderators = AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator")
                 if (moderators.isNotEmpty()){
-                    val moderatorQuery:Query = FirebaseUtil().allUsersCollectionReference()
+                    var moderatorQuery:Query = FirebaseUtil().allUsersCollectionReference()
                         .whereIn("userID", moderators)
-                        .whereGreaterThanOrEqualTo("fullName", searchQuery)
+
+
+                    if (searchQuery.isNotEmpty()){
+                        if (searchQuery[0] == '@'){
+                            //search user by username
+                            moderatorQuery = moderatorQuery
+                                .whereGreaterThanOrEqualTo("username", searchQuery.removePrefix("@"))
+                                .whereLessThanOrEqualTo("username", searchQuery.removePrefix("@")+"\uf8ff")
+                        } else {
+                            //search user by full name
+                            moderatorQuery = moderatorQuery
+                                .whereGreaterThanOrEqualTo("fullName", searchQuery)
+                                .whereLessThanOrEqualTo("fullName", searchQuery+"\uf8ff")
+                        }
+                    }
+
+                    moderatorQuery.get().addOnCompleteListener {query ->
+                        if (query.result.isEmpty)
+                            binding.moderatorTV.visibility = View.GONE
+                        else
+                            binding.moderatorTV.visibility = View.VISIBLE
+                    }
 
                     val moderatorOptions:FirestoreRecyclerOptions<UserModel> =
                         FirestoreRecyclerOptions.Builder<UserModel>().setQuery(moderatorQuery, UserModel::class.java).build()
@@ -476,9 +540,30 @@ class Members : AppCompatActivity(), OnItemClickListener {
                 chatroomModel = it.toObject(ChatroomModel::class.java)!!
 
                 //FOR MEMBERS
-                val membersQuery:Query = FirebaseUtil().allUsersCollectionReference()
+                var membersQuery:Query = FirebaseUtil().allUsersCollectionReference()
                     .whereIn("userID", chatroomModel.userIdList)
-                    .whereGreaterThanOrEqualTo("fullName", searchQuery)
+
+
+                if (searchQuery.isNotEmpty()){
+                    if (searchQuery[0] == '@'){
+                        //search user by username
+                        membersQuery = membersQuery
+                            .whereGreaterThanOrEqualTo("username", searchQuery.removePrefix("@"))
+                            .whereLessThanOrEqualTo("username", searchQuery.removePrefix("@")+"\uf8ff")
+                    } else {
+                        //search user by full name
+                        membersQuery = membersQuery
+                            .whereGreaterThanOrEqualTo("fullName", searchQuery)
+                            .whereLessThanOrEqualTo("fullName", searchQuery+"\uf8ff")
+                    }
+                }
+
+                membersQuery.get().addOnCompleteListener {query ->
+                    if (query.result.isEmpty)
+                        binding.membersTV.visibility = View.GONE
+                    else
+                        binding.membersTV.visibility = View.VISIBLE
+                }
 
                 val membersOptions:FirestoreRecyclerOptions<UserModel> =
                     FirestoreRecyclerOptions.Builder<UserModel>().setQuery(membersQuery, UserModel::class.java).build()
@@ -488,9 +573,29 @@ class Members : AppCompatActivity(), OnItemClickListener {
 
                 //FOR ADMINS
                 if (chatroomModel.chatroomAdminList.isNotEmpty()){
-                    val adminsQuery:Query = FirebaseUtil().allUsersCollectionReference()
+                    var adminsQuery:Query = FirebaseUtil().allUsersCollectionReference()
                         .whereIn("userID", chatroomModel.chatroomAdminList)
-                        .whereGreaterThanOrEqualTo("fullName", searchQuery)
+
+                    if (searchQuery.isNotEmpty()){
+                        if (searchQuery[0] == '@'){
+                            //search user by username
+                            adminsQuery = adminsQuery
+                                .whereGreaterThanOrEqualTo("username", searchQuery.removePrefix("@"))
+                                .whereLessThanOrEqualTo("username", searchQuery.removePrefix("@")+"\uf8ff")
+                        } else {
+                            //search user by full name
+                            adminsQuery = adminsQuery
+                                .whereGreaterThanOrEqualTo("fullName", searchQuery)
+                                .whereLessThanOrEqualTo("fullName", searchQuery+"\uf8ff")
+                        }
+                    }
+
+                    adminsQuery.get().addOnCompleteListener {query ->
+                        if (query.result.isEmpty)
+                            binding.adminTV.visibility = View.GONE
+                        else
+                            binding.adminTV.visibility = View.VISIBLE
+                    }
 
                     val adminsOptions:FirestoreRecyclerOptions<UserModel> =
                         FirestoreRecyclerOptions.Builder<UserModel>().setQuery(adminsQuery, UserModel::class.java).build()
