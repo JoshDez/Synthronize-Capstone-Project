@@ -17,6 +17,7 @@ import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.messaging.FirebaseMessaging
 import com.orhanobut.dialogplus.DialogPlus
 import com.orhanobut.dialogplus.ViewHolder
 import java.text.ParseException
@@ -128,6 +129,9 @@ class Login : AppCompatActivity() {
                         }
                     }
                 } else {
+                    loadingDialog.dismiss()
+                    FirebaseMessaging.getInstance().deleteToken()
+                    FirebaseAuth.getInstance().signOut()
                     Toast.makeText(this, "Your email is not yet verified", Toast.LENGTH_SHORT).show()
                 }
 

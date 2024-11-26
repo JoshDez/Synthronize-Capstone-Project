@@ -160,6 +160,7 @@ class SignUp : AppCompatActivity() {
                         //putting user info to UserModel
                         userModel = UserModel(
                             fullName =  fullName,
+                            email = email,
                             createdTimestamp = Timestamp.now(),
                             userID = FirebaseUtil().currentUserUid(),
                             userType = "Student"
@@ -186,7 +187,6 @@ class SignUp : AppCompatActivity() {
                                         )
                                         FirebaseUtil().retrieveAllUserTypeRequests().document(accTypeModel.requestId).set(accTypeModel)
                                     }
-
                                 }
                             } else {
                                 Toast.makeText(this, "User Registration failed, please try again", Toast.LENGTH_SHORT).show()

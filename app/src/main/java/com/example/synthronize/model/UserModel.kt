@@ -9,6 +9,8 @@ data class UserModel(
     var userType:String = "",
     //Full name of user
     var fullName: String = "",
+    //email of user
+    var email:String = "",
     //description of user
     var description:String = "",
     //username of user
