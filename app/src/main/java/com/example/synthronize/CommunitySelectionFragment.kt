@@ -205,6 +205,7 @@ class CommunitySelectionFragment(private val mainBinding: ActivityMainBinding, p
             if (e != null) {
                 // Handle the error here (e.g., log the error or show a message to the user)
                 Log.e("Firestore Error", "Error while fetching data", e)
+                binding.selectionRefreshLayout.isRefreshing = false
                 return@addSnapshotListener
             } else {
                 binding.selectionRefreshLayout.isRefreshing = false
