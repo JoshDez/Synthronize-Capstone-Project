@@ -68,7 +68,7 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
                 }
             } else if (chatroomModel.chatroomType == "group_chat"){
                 bindGroupChat()
-            } else {
+            } else if (chatroomModel.chatroomType == "community_chat"){
                 bindCommunityChat()
             }
         }
@@ -79,84 +79,97 @@ class ChatroomAdapter(private val context: Context, options: FirestoreRecyclerOp
             binding.lastUserMessageTV.text = chatroomModel.lastMessage
             binding.lastTimestampTV.text = DateAndTimeUtil().getTimeAgo(chatroomModel.lastMsgTimestamp)
 
-            FirebaseUtil().targetUserDetails(chatroomModel.lastMessageUserId).get().addOnSuccessListener {user ->
-                val userModel = user.toObject(UserModel::class.java)!!
-                if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
-                //if the message is not from the current user
-                    binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
-                else
-                //if the message is from the current user
-                    binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
-
-                binding.chatroomLayout.setOnClickListener {
-                    seenMessage()
-                    val intent = Intent(context, Chatroom::class.java)
-                    intent.putExtra("chatroomName", chatroomModel.chatroomName)
-                    intent.putExtra("chatroomId", chatroomModel.chatroomId)
-                    intent.putExtra("chatroomType", chatroomModel.chatroomType)
-                    intent.putExtra("communityId", chatroomModel.communityId)
-                    intent.putExtra("postId", postId)
-                    intent.putExtra("communityIdOfPost", communityIdOfPost)
-                    context.startActivity(intent)
+            if (chatroomModel.lastMessageUserId.isNotEmpty()){
+                FirebaseUtil().targetUserDetails(chatroomModel.lastMessageUserId).get().addOnCompleteListener {user ->
+                    if (user.result.exists()){
+                        val userModel = user.result.toObject(UserModel::class.java)!!
+                        if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
+                        //if the message is not from the current user
+                            binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
+                        else
+                        //if the message is from the current user
+                            binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
+                    }
                 }
+            }
+
+            binding.chatroomLayout.setOnClickListener {
+                seenMessage()
+                val intent = Intent(context, Chatroom::class.java)
+                intent.putExtra("chatroomName", chatroomModel.chatroomName)
+                intent.putExtra("chatroomId", chatroomModel.chatroomId)
+                intent.putExtra("chatroomType", chatroomModel.chatroomType)
+                intent.putExtra("communityId", chatroomModel.communityId)
+                intent.putExtra("postId", postId)
+                intent.putExtra("communityIdOfPost", communityIdOfPost)
+                context.startActivity(intent)
             }
         }
 
         private fun bindGroupChat() {
-             FirebaseUtil().targetUserDetails(chatroomModel.lastMessageUserId).get().addOnSuccessListener {
-                val userModel = it.toObject(UserModel::class.java)!!
+            binding.chatroomNameTV.text = chatroomModel.chatroomName
+            binding.lastTimestampTV.text = DateAndTimeUtil().getTimeAgo(chatroomModel.lastMsgTimestamp)
+            if (chatroomModel.chatroomProfileUrl.isNotEmpty()){
+                AppUtil().setGroupChatProfilePic(context, chatroomModel.chatroomProfileUrl, binding.userCircleImageView)
+            }
 
-                 binding.chatroomNameTV.text = chatroomModel.chatroomName
-                 binding.lastTimestampTV.text = DateAndTimeUtil().getTimeAgo(chatroomModel.lastMsgTimestamp)
-                 if (chatroomModel.chatroomProfileUrl.isNotEmpty()){
-                     AppUtil().setGroupChatProfilePic(context, chatroomModel.chatroomProfileUrl, binding.userCircleImageView)
-                 }
 
-                if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
-                //if the message is not from the current user
-                    binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
-                else
-                //if the message is from the current user
-                    binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
+            if (chatroomModel.lastMessageUserId.isNotEmpty()){
+                FirebaseUtil().targetUserDetails(chatroomModel.lastMessageUserId).get().addOnCompleteListener {user ->
+                    if (user.result.exists()){
+                        val userModel = user.result.toObject(UserModel::class.java)!!
+                        if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
+                        //if the message is not from the current user
+                            binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
+                        else
+                        //if the message is from the current user
+                            binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
+                    }
+                }
+            }
 
-                 binding.chatroomLayout.setOnClickListener {
-                     seenMessage()
-                     val intent = Intent(context, Chatroom::class.java)
-                     intent.putExtra("chatroomId", chatroomModel.chatroomId)
-                     intent.putExtra("chatroomType", chatroomModel.chatroomType)
-                     intent.putExtra("postId", postId)
-                     intent.putExtra("communityIdOfPost", communityIdOfPost)
-                     context.startActivity(intent)
-                 }
+            binding.chatroomLayout.setOnClickListener {
+                seenMessage()
+                val intent = Intent(context, Chatroom::class.java)
+                intent.putExtra("chatroomId", chatroomModel.chatroomId)
+                intent.putExtra("chatroomType", chatroomModel.chatroomType)
+                intent.putExtra("postId", postId)
+                intent.putExtra("communityIdOfPost", communityIdOfPost)
+                context.startActivity(intent)
             }
         }
         private fun bindDirectMessage(uid:String){
-            FirebaseUtil().targetUserDetails(uid).get().addOnCompleteListener {
-                if (it.isSuccessful && it.result.exists()){
+            if (uid.isNotEmpty()){
+                FirebaseUtil().targetUserDetails(uid).get().addOnCompleteListener {
+                    if (it.isSuccessful && it.result.exists()){
+                        val userModel = it.result.toObject(UserModel::class.java)!!
+                        binding.chatroomNameTV.text = userModel.fullName
+                        binding.lastTimestampTV.text = DateAndTimeUtil().getTimeAgo(chatroomModel.lastMsgTimestamp)
+                        //other fields
+                        AppUtil().setUserProfilePic(context, userModel.userID, binding.userCircleImageView)
+                        if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
+                        //if the message is not from the current user
+                            binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
+                        else
+                        //if the message is from the current user
+                            binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
 
-                    val userModel = it.result.toObject(UserModel::class.java)!!
-                    binding.chatroomNameTV.text = userModel.fullName
-                    binding.lastTimestampTV.text = DateAndTimeUtil().getTimeAgo(chatroomModel.lastMsgTimestamp)
-                    //other fields
-                    AppUtil().setUserProfilePic(context, userModel.userID, binding.userCircleImageView)
-                    if (chatroomModel.lastMessageUserId != FirebaseUtil().currentUserUid())
-                    //if the message is not from the current user
-                        binding.lastUserMessageTV.text = AppUtil().sliceMessage("${userModel.fullName}: ${chatroomModel.lastMessage}", 30)
-                    else
-                    //if the message is from the current user
-                        binding.lastUserMessageTV.text = AppUtil().sliceMessage(chatroomModel.lastMessage, 30)
-
-                    binding.chatroomLayout.setOnClickListener {
-                        seenMessage()
-                        val intent = Intent(context, Chatroom::class.java)
-                        intent.putExtra("chatroomName", userModel.fullName)
-                        intent.putExtra("userID", uid)
-                        intent.putExtra("chatroomType", chatroomModel.chatroomType)
-                        intent.putExtra("postId", postId)
-                        intent.putExtra("communityIdOfPost", communityIdOfPost)
-                        context.startActivity(intent)
+                        binding.chatroomLayout.setOnClickListener {
+                            seenMessage()
+                            val intent = Intent(context, Chatroom::class.java)
+                            intent.putExtra("chatroomName", userModel.fullName)
+                            intent.putExtra("userID", uid)
+                            intent.putExtra("chatroomType", chatroomModel.chatroomType)
+                            intent.putExtra("postId", postId)
+                            intent.putExtra("communityIdOfPost", communityIdOfPost)
+                            context.startActivity(intent)
+                        }
+                    } else if (!it.result.exists()) {
+                        binding.lastUserMessageTV.text = "Chatroom Not Available"
                     }
                 }
+            } else {
+                binding.lastUserMessageTV.text = "Chatroom Not Available"
             }
         }
         private fun seenMessage(){

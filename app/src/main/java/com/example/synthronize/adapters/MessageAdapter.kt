@@ -94,12 +94,16 @@ class MessageAdapter(private val context: Context, options: FirestoreRecyclerOpt
                 bindPostMessage(model, false)
                 bindProductMessage(model, false)
                 //retrieve sender user data
-                FirebaseUtil().targetUserDetails(model.senderID).get().addOnCompleteListener {
-                    if (it.isSuccessful && it.result.exists()){
-                        val userModel = it.result.toObject(UserModel::class.java)!!
-                        binding.userNameTV.text = userModel.fullName
-                        AppUtil().setUserProfilePic(context, userModel.userID, binding.userProfileCIV)
+                if (model.senderID.isNotEmpty()){
+                    FirebaseUtil().targetUserDetails(model.senderID).get().addOnCompleteListener {
+                        if (it.isSuccessful && it.result.exists()){
+                            val userModel = it.result.toObject(UserModel::class.java)!!
+                            binding.userNameTV.text = userModel.fullName
+                            AppUtil().setUserProfilePic(context, userModel.userID, binding.userProfileCIV)
+                        }
                     }
+                } else {
+                    binding.userNameTV.text = "Unknown User"
                 }
 
                 binding.receiverMsgTV.setOnClickListener {
