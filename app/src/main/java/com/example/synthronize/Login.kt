@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
@@ -15,6 +16,14 @@ import com.example.synthronize.databinding.DialogWarningMessageBinding
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.DateAndTimeUtil
 import com.example.synthronize.utils.FirebaseUtil
+import com.example.synthronize.utils.NetworkUtil
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.FirebaseApp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.messaging.FirebaseMessaging
@@ -27,7 +36,15 @@ import java.util.Locale
 class Login : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
     private var isPasswordVisible = false
+    private val RC_SIGN_IN = 100
+
+    //for signing in with google
+    private var email = ""
+    private var fullName = ""
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -88,8 +105,143 @@ class Login : AppCompatActivity() {
             startActivity(intent)
             this.finish()
         }
+
+        // Configure Google Sign-In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        binding.signInWithGoogleBtn.setOnClickListener {
+            googleSignInClient.signOut()
+            signInWithGoogle()
+        }
     }
 
+
+
+    //SIGN IN WITH GOOGLE
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                Log.e("GoogleSignIn", "Google Sign-In failed: ${e.message}")
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign-in success
+                    val user = firebaseAuth.currentUser
+                    val email = user?.email
+
+                    if (email != null && email.endsWith("@neu.edu.ph")) {
+                        this.email = user.email!!
+                        this.fullName = user.displayName!!
+                        checkIfAccountAlreadyExists(FirebaseUtil().currentUserUid())
+                    } else {
+                        // Sign out if the email is not valid
+                        googleSignInClient.signOut()
+                        firebaseAuth.signOut()
+                        Toast.makeText(this, "Only NEU institutional emails are allowed.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // Sign-in failed
+                    Log.e("FirebaseAuth", "Firebase Sign-In failed: ${task.exception?.message}")
+                    Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun checkIfAccountAlreadyExists(uid:String) {
+        //loading
+        val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
+        val loadingDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(dialogLoadingBinding.root))
+            .setCancelable(false)
+            .setBackgroundColorResId(R.color.transparent)
+            .setGravity(Gravity.CENTER)
+            .create()
+
+        dialogLoadingBinding.messageTV.text = "Logging In..."
+
+        loadingDialog.show()
+
+
+        FirebaseUtil().targetUserDetails(uid).get().addOnCompleteListener {
+            if (it.result.exists()){
+                //User account already exists
+                loadingDialog.dismiss()
+                FirebaseUtil().currentUserDetails().get().addOnCompleteListener {currentUser ->
+                    if (currentUser.result.exists()){
+                        val userModel = currentUser.result.toObject(UserModel::class.java)!!
+                        if (userModel.userAccess.containsKey("Disabled")){
+                            if(userModel.userAccess["Disabled"].toString().isNotEmpty()){
+                                openWarningDialog("Banned Account", "Your account has been banned until", userModel.userAccess.getValue("Disabled"))
+                            } else {
+                                openWarningDialog("Deactivated Account", "Your account is currently deactivated, do you want to activate it?")
+                            }
+                        } else {
+                            //starts updating user last seen
+                            UserLastSeenUpdater(this).startUpdating()
+                            //head to main activity
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                            this.finish()
+                        }
+                    }
+                }
+
+            } else if (NetworkUtil(this).isNetworkAvailable()) {
+                //Sign up user
+                val userModel = UserModel(
+                    fullName =  fullName,
+                    email = email,
+                    createdTimestamp = Timestamp.now(),
+                    userID = uid,
+                    userType = "Student"
+                )
+                FirebaseUtil().targetUserDetails(uid).set(userModel).addOnSuccessListener {
+                    //starts updating user last seen
+                    UserLastSeenUpdater(this).startUpdating()
+                    //head to main activity
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("firstTimeSignIn", true)
+                    startActivity(intent)
+                    this.finish()
+                }
+            } else {
+                // Sign out if cannot connect to firebase
+                loadingDialog.dismiss()
+                googleSignInClient.signOut()
+                FirebaseUtil().logoutUser(this)
+            }
+        }
+
+
+
+
+    }
+
+
+
+
+    //NORMAL SIGN IN
     private fun signInUser(email:String, pass:String){
         //loading
         val dialogLoadingBinding = DialogLoadingBinding.inflate(layoutInflater)
@@ -100,7 +252,7 @@ class Login : AppCompatActivity() {
             .setGravity(Gravity.CENTER)
             .create()
 
-        dialogLoadingBinding.messageTV.text = "Loading..."
+        dialogLoadingBinding.messageTV.text = "Logging In..."
 
         loadingDialog.show()
 
@@ -186,7 +338,6 @@ class Login : AppCompatActivity() {
 
         } else {
             //For deactivated account
-
             warningBinding.yesBtn.visibility = View.GONE
             warningBinding.NoBtn.visibility = View.GONE
             warningBinding.yesBtn2.visibility = View.VISIBLE

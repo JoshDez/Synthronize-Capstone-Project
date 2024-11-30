@@ -13,7 +13,20 @@
           "package_name": "com.example.synthronize"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "360481503787-a1bh1qe8n0bst1i1gk8qmdokg2a9qotr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.synthronize",
+            "certificate_hash": "2f7788ab3e269c488dc92edc813e909762121239"
+          }
+        },
+        {
+          "client_id": "360481503787-kbbn4veu4fg1429dltli6b3bd205sm9o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDSRqL2MpsiQh1Z9UjisN0wK3xVNgbIewM"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "360481503787-kbbn4veu4fg1429dltli6b3bd205sm9o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -32,7 +50,12 @@
           "package_name": "com.labactivity.synthronize"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "360481503787-kbbn4veu4fg1429dltli6b3bd205sm9o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDSRqL2MpsiQh1Z9UjisN0wK3xVNgbIewM"
@@ -40,7 +63,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "360481503787-kbbn4veu4fg1429dltli6b3bd205sm9o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

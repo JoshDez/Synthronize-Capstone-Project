@@ -95,14 +95,28 @@
                 app:backgroundTint="@color/teal"
                 app:cornerRadius="15dp"  />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/signInWithGoogleBtn"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="24dp"
+                android:hapticFeedbackEnabled="true"
+                android:text="Sign in with Google"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:drawableLeft="@drawable/google_icon"
+                app:backgroundTint="@color/light_blue"
+                app:cornerRadius="15dp"  />
+
 
             <TextView
-                android:id="@+id/signUpTV"
+                android:id="@+id/resetPassTV"
                 android:layout_width="match_parent"
                 android:textAlignment="center"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="@string/don_t_have_an_account_sign_up_now"
+                android:text="@string/forgot_password"
                 android:textColor="@color/light_teal"  />
         </LinearLayout>
 
@@ -119,12 +133,13 @@
             app:layout_constraintTop_toBottomOf="@+id/resetPassTV" />
 
         <TextView
-            android:id="@+id/resetPassTV"
+            android:id="@+id/signUpTV"
             android:layout_width="match_parent"
             android:textAlignment="center"
+            android:layout_marginBottom="20dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="@string/forgot_password"
+            android:text="@string/don_t_have_an_account_sign_up_now"
             android:textColor="@color/light_teal"
             android:textSize="14sp"  />
     </LinearLayout>

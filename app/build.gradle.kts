@@ -79,6 +79,7 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-firestore:8.0.2")
     implementation("com.firebaseui:firebase-ui-storage:8.0.2")
     implementation("com.github.denzcoskun:ImageSlideshow:0.1.2")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("me.relex:circleindicator:2.1.6")
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
 

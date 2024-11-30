@@ -101,6 +101,7 @@
     <string name="name">Name</string>
     <string name="group_name">Group Name</string>
     <string name="community_reports">Community Reports</string>
+    <string name="default_web_client_id">360481503787-kbbn4veu4fg1429dltli6b3bd205sm9o.apps.googleusercontent.com</string>
 
 
 </resources>

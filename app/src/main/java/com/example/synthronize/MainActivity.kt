@@ -8,23 +8,29 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.synthronize.databinding.ActivityMainBinding
+import com.example.synthronize.databinding.DialogSelectRoleBinding
 import com.example.synthronize.interfaces.OnItemClickListener
 import com.example.synthronize.interfaces.OnNetworkRetryListener
+import com.example.synthronize.model.AccTypeRequestModel
 import com.example.synthronize.model.ChatroomModel
 import com.example.synthronize.model.UserModel
 import com.example.synthronize.utils.AppUtil
 import com.example.synthronize.utils.FirebaseUtil
 import com.example.synthronize.utils.NetworkUtil
 import com.google.firebase.messaging.FirebaseMessaging
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.ViewHolder
 
 class MainActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding: ActivityMainBinding
     private var currentFragment = ""
+    private var isFirstTimeSignInWithGoogle = false
     private val sharedPreferences: SharedPreferences by lazy {
         getSharedPreferences("AppPreferences", MODE_PRIVATE)
     }
@@ -56,6 +62,71 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             selectFragment("chat")
             binding.chatBtn.foreground = null
         }
+
+        isFirstTimeSignInWithGoogle = intent.getBooleanExtra("firstTimeSignIn", false)
+        if (isFirstTimeSignInWithGoogle){
+            openSelectRoleDialog()
+        }
+
+    }
+
+    private fun openSelectRoleDialog() {
+        val selectRoleBinding = DialogSelectRoleBinding.inflate(layoutInflater)
+        val selectRoleDialog = DialogPlus.newDialog(this)
+            .setContentHolder(ViewHolder(selectRoleBinding.root))
+            .create()
+
+        var userType = ""
+
+        selectRoleBinding.studentRB.setOnClickListener {
+            if (selectRoleBinding.studentRB.isChecked){
+                selectRoleBinding.professorRB.isChecked = false
+                selectRoleBinding.appAdminRB.isChecked = false
+                userType = "Student"
+                selectRoleBinding.warningMessageTV.visibility = View.INVISIBLE
+            }
+        }
+        selectRoleBinding.professorRB.setOnClickListener {
+            if (selectRoleBinding.professorRB.isChecked){
+                selectRoleBinding.studentRB.isChecked = false
+                selectRoleBinding.appAdminRB.isChecked = false
+                userType = "Professor"
+                selectRoleBinding.warningMessageTV.visibility = View.VISIBLE
+            }
+        }
+        selectRoleBinding.appAdminRB.setOnClickListener {
+            if (selectRoleBinding.appAdminRB.isChecked){
+                selectRoleBinding.professorRB.isChecked = false
+                selectRoleBinding.studentRB.isChecked = false
+                userType = "AppAdmin"
+                selectRoleBinding.warningMessageTV.visibility = View.VISIBLE
+            }
+        }
+        selectRoleBinding.confirmBtn.setOnClickListener {
+            if (userType.isNotEmpty()){
+                if (userType != "Student"){
+                    val tempModel = AccTypeRequestModel()
+                    FirebaseUtil().retrieveAllUserTypeRequests().add(tempModel).addOnSuccessListener {acc ->
+                        val accTypeModel = AccTypeRequestModel(
+                            requestId = acc.id,
+                            userId = FirebaseUtil().currentUserUid(),
+                            reqAccType = userType
+                        )
+                        FirebaseUtil().retrieveAllUserTypeRequests().document(accTypeModel.requestId).set(accTypeModel)
+                        selectRoleDialog.dismiss()
+                    }.addOnFailureListener {
+                        Toast.makeText(this, "An error occurred, please try again.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    selectRoleDialog.dismiss()
+                }
+            } else {
+                Toast.makeText(this, "Please select your role", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        selectRoleDialog.show()
+
     }
 
     //Function that enables or disables push notifications
