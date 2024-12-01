@@ -79,7 +79,22 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
             FirebaseUtil().targetUserDetails(fileModel.ownerId).get().addOnSuccessListener {
                 val user = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, fileModel.ownerId, binding.profileCIV)
-                binding.usernameTV.text = user.username
+
+                if (user.nickname.isNotEmpty()){
+                    binding.displayNameTV.text = user.nickname
+                    binding.displayNameTV2.text = "@${user.username}"
+                } else if(user.username.isNotEmpty()){
+                    binding.displayNameTV.text = user.username
+                } else {
+                    binding.displayNameTV.text = user.fullName
+                }
+
+                binding.displayNameTV.setOnClickListener {
+                    headToUserProfile()
+                }
+                binding.displayNameTV2.setOnClickListener {
+                    headToUserProfile()
+                }
             }
 
             //SETUP WRAPPER FOR COMMUNITY
@@ -114,9 +129,6 @@ class ProfileFilesAdapter(private val context: Context, private val filesList: A
             }
 
             binding.profileCIV.setOnClickListener {
-                headToUserProfile()
-            }
-            binding.usernameTV.setOnClickListener {
                 headToUserProfile()
             }
 

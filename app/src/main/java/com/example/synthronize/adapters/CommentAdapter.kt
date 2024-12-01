@@ -42,10 +42,12 @@ class CommentAdapter(private val context: Context, options: FirestoreRecyclerOpt
             commentModel = model
             binding.commentTV.text = commentModel.comment
             binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(commentModel.commentTimestamp)
-            FirebaseUtil().targetUserDetails(commentModel.commentOwnerId).get().addOnSuccessListener {
-                val user = it.toObject(UserModel::class.java)!!
-                binding.userNameTV.text = user.username
-                AppUtil().setUserProfilePic(context, user.userID, binding.userProfileCIV)
+            FirebaseUtil().targetUserDetails(commentModel.commentOwnerId).get().addOnCompleteListener {
+                if (it.result.exists()){
+                    val user = it.result.toObject(UserModel::class.java)!!
+                    binding.userNameTV.text = user.username
+                    AppUtil().setUserProfilePic(context, user.userID, binding.userProfileCIV)
+                }
             }
             binding.userNameTV.setOnClickListener {
                 headToUserProfile()

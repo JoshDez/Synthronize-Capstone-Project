@@ -162,7 +162,6 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                 }
 
                 AppUtil().setUserProfilePic(context, owner.userID, binding.profileCIV)
-                binding.usernameTV.text = owner.username
                 AppUtil().showMoreAndLessWords(postModel.caption, binding.descriptionTV, 150)
                 binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
                 binding.feedWrapperLayout.setOnClickListener {
@@ -171,13 +170,27 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
                         DialogUtil().openCommunityPreviewDialog(context, inflater, community)
                     }
                 }
+
+                if (owner.nickname.isNotEmpty()){
+                    binding.displayNameTV.text = owner.nickname
+                    binding.displayNameTV2.text = "@${owner.username}"
+                } else if(owner.username.isNotEmpty()){
+                    binding.displayNameTV.text = owner.username
+                } else {
+                    binding.displayNameTV.text = owner.fullName
+                }
+
+                binding.displayNameTV.setOnClickListener {
+                    headToUserProfile()
+                }
+                binding.displayNameTV2.setOnClickListener {
+                    headToUserProfile()
+                }
+
                 binding.menuBtn.setOnClickListener {
                     DialogUtil().openMenuDialog(context, inflater, "Post", postModel.postId, postModel.ownerId, postModel.communityId){}
                 }
                 binding.profileCIV.setOnClickListener {
-                    headToUserProfile()
-                }
-                binding.usernameTV.setOnClickListener {
                     headToUserProfile()
                 }
                 binding.commentBtn.setOnClickListener {

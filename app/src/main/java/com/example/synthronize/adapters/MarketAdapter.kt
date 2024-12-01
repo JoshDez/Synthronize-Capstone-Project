@@ -66,7 +66,6 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
             FirebaseUtil().targetUserDetails(productModel.ownerId).get().addOnSuccessListener {
                 val model = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, model.userID, binding.profileCIV)
-                binding.usernameTV.text = model.username
 
                 if (model.userID == FirebaseUtil().currentUserUid()){
                     binding.messageUserBtn.visibility = View.GONE
@@ -87,6 +86,22 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
                 binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(productModel.createdTimestamp)
                 binding.priceTV.text = format.format(productModel.price)
 
+                if (model.nickname.isNotEmpty()){
+                    binding.displayNameTV.text = model.nickname
+                    binding.displayNameTV2.text = "@${model.username}"
+                } else if(model.username.isNotEmpty()){
+                    binding.displayNameTV.text = model.username
+                } else {
+                    binding.displayNameTV.text = model.fullName
+                }
+
+                binding.displayNameTV.setOnClickListener {
+                    headToUserProfile()
+                }
+                binding.displayNameTV2.setOnClickListener {
+                    headToUserProfile()
+                }
+
                 binding.mainLayout.setOnClickListener {
                     val intent = Intent(context, ViewProduct::class.java)
                     intent.putExtra("communityId", productModel.communityId)
@@ -95,10 +110,6 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
                 }
 
                 binding.profileCIV.setOnClickListener {
-                    headToUserProfile()
-                }
-
-                binding.usernameTV.setOnClickListener {
                     headToUserProfile()
                 }
 

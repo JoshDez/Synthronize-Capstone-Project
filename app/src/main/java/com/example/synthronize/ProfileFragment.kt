@@ -130,7 +130,6 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
     private fun bindUserDetails() {
 
         AppUtil().resetMainToolbar(mainBinding)
-
         binding.profileRefreshLayout.isRefreshing = true
 
         FirebaseUtil().targetUserDetails(FirebaseUtil().currentUserUid()).get().addOnCompleteListener {
@@ -139,11 +138,24 @@ class ProfileFragment(private var mainBinding: ActivityMainBinding) : Fragment()
 
                 userId = userModel.userID
 
-                binding.userDisplayNameTV.text = userModel.fullName
                 AppUtil().showMoreAndLessWords(userModel.description, binding.userDescriptionTV, 50)
-                if (userModel.username.isNotEmpty()){
-                    binding.userNameTV.text = "@${userModel.username}"
+
+                if (userModel.nickname.isNotEmpty()){
+                    binding.userDisplayNameTV2.visibility = View.VISIBLE
+                    binding.userDisplayNameTV2.text = userModel.fullName
+                    binding.userDisplayNameTV.text = userModel.nickname
+                } else {
+                    binding.userDisplayNameTV2.visibility = View.GONE
+                    binding.userDisplayNameTV.text = userModel.fullName
                 }
+
+                if (userModel.username.isNotEmpty()){
+                    binding.userNameTV.visibility = View.VISIBLE
+                    binding.userNameTV.text = "@${userModel.username}"
+                } else {
+                    binding.userNameTV.visibility = View.GONE
+                }
+
                 if (userModel.birthday.isNotEmpty()){
                     binding.birthdayLayout.visibility = View.VISIBLE
                     binding.birthdayTV.text = DateAndTimeUtil().formatDateFromMMDDYYYY(userModel.birthday)

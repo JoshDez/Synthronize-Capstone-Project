@@ -92,12 +92,25 @@ class ForumsAdapter(
 
                 val owner = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, owner.userID, forumsBinding.profileCIV)
-                forumsBinding.usernameTV.text = owner.username
                 AppUtil().showMoreAndLessWords(forumsModel.caption, forumsBinding.descriptionTV, 150)
                 forumsBinding.timestampTV.text = DateAndTimeUtil().getTimeAgo(forumsModel.createdTimestamp)
-                forumsBinding.usernameTV.setOnClickListener {
+
+                if (owner.nickname.isNotEmpty()){
+                    forumsBinding.displayNameTV.text = owner.nickname
+                    forumsBinding.displayNameTV2.text = "@${owner.username}"
+                } else if(owner.username.isNotEmpty()){
+                    forumsBinding.displayNameTV.text = owner.username
+                } else {
+                    forumsBinding.displayNameTV.text = owner.fullName
+                }
+
+                forumsBinding.displayNameTV.setOnClickListener {
                     headToUserProfile()
                 }
+                forumsBinding.displayNameTV2.setOnClickListener {
+                    headToUserProfile()
+                }
+
                 forumsBinding.descriptionTV.setOnClickListener {
                     viewThread()
                 }

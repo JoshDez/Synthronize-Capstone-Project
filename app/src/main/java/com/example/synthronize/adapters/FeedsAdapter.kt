@@ -82,12 +82,25 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
 
                 val owner = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, owner.userID, feedBinding.profileCIV)
-                feedBinding.usernameTV.text = owner.username
                 AppUtil().showMoreAndLessWords(postModel.caption, feedBinding.descriptionTV, 150)
                 feedBinding.timestampTV.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
-                feedBinding.usernameTV.setOnClickListener {
+
+                if (owner.nickname.isNotEmpty()){
+                    feedBinding.displayNameTV.text = owner.nickname
+                    feedBinding.displayNameTV2.text = "@${owner.username}"
+                } else if(owner.username.isNotEmpty()){
+                    feedBinding.displayNameTV.text = owner.username
+                } else {
+                    feedBinding.displayNameTV.text = owner.fullName
+                }
+
+                feedBinding.displayNameTV.setOnClickListener {
                     headToUserProfile()
                 }
+                feedBinding.displayNameTV2.setOnClickListener {
+                    headToUserProfile()
+                }
+
                 feedBinding.commentBtn.setOnClickListener {
                     viewPost()
                 }

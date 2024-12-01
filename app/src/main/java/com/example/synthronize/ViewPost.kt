@@ -69,8 +69,26 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
 
                         FirebaseUtil().targetUserDetails(postModel.ownerId).get().addOnSuccessListener {result ->
                             val user = result.toObject(UserModel::class.java)!!
-                            binding.ownerUsernameTV.text = user.username
                             AppUtil().setUserProfilePic(this, user.userID, binding.profileCIV)
+
+
+                            if (user.nickname.isNotEmpty()){
+                                binding.displayNameTV.text = user.nickname
+                                binding.displayNameTV2.text = "@${user.username}"
+                            } else if(user.username.isNotEmpty()){
+                                binding.displayNameTV.text = user.username
+                            } else {
+                                binding.displayNameTV.text = user.fullName
+                            }
+
+                            binding.displayNameTV.setOnClickListener {
+                                headToUserProfile()
+                            }
+                            binding.displayNameTV2.setOnClickListener {
+                                headToUserProfile()
+                            }
+
+
                         }
 
                         binding.kebabMenuBtn.setOnClickListener {
@@ -85,10 +103,6 @@ class ViewPost : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListener 
                         }
 
                         binding.profileCIV.setOnClickListener {
-                            headToUserProfile()
-                        }
-
-                        binding.ownerUsernameTV.setOnClickListener {
                             headToUserProfile()
                         }
 

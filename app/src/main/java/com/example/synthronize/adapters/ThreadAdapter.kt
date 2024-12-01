@@ -63,10 +63,20 @@ class ThreadAdapter(
 
             binding.descriptionTV.text = model.comment
             binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(model.commentTimestamp)
-            FirebaseUtil().targetUserDetails(model.commentOwnerId).get().addOnSuccessListener {
-                val user = it.toObject(UserModel::class.java)!!
-                binding.usernameTV.text = user.username
-                AppUtil().setUserProfilePic(context, user.userID, binding.profileCIV)
+            FirebaseUtil().targetUserDetails(model.commentOwnerId).get().addOnCompleteListener {
+                if (it.result.exists()){
+                    val user = it.result.toObject(UserModel::class.java)!!
+                    AppUtil().setUserProfilePic(context, user.userID, binding.profileCIV)
+
+                    if (user.nickname.isNotEmpty()){
+                        binding.displayNameTV.text = user.nickname
+                        binding.displayNameTV2.text = "@${user.username}"
+                    } else if(user.username.isNotEmpty()){
+                        binding.displayNameTV.text = user.username
+                    } else {
+                        binding.displayNameTV.text = user.fullName
+                    }
+                }
             }
 
             // Initialize upvote and downvote state

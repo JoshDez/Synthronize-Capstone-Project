@@ -115,7 +115,6 @@
                     </FrameLayout>
 
 
-
                     <TextView
                         android:id="@+id/userDisplayNameTV"
                         android:layout_width="match_parent"
@@ -142,18 +141,34 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
                         android:layout_marginStart="20dp"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginEnd="20dp"
                         android:contentDescription="@string/username"
                         android:textAlignment="center"
                         android:textColor="@color/light_teal"
                         android:textSize="16sp" />
 
+                    <TextView
+                        android:id="@+id/userDisplayNameTV2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/userDisplayNameTV"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="@string/username"
+                        android:textAlignment="center"
+                        android:visibility="gone"
+                        android:textColor="@color/less_saturated_light_teal"
+                        android:textSize="14sp" />
 
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="20dp"
                         android:layout_height="wrap_content">
                         <LinearLayout
                             android:id="@+id/postsContainer"

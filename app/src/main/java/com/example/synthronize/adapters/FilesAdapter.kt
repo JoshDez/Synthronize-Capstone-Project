@@ -78,12 +78,26 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
             FirebaseUtil().targetUserDetails(fileModel.ownerId).get().addOnSuccessListener {
                 val user = it.toObject(UserModel::class.java)!!
                 AppUtil().setUserProfilePic(context, fileModel.ownerId, binding.profileCIV)
-                binding.usernameTV.text = user.username
-
                 binding.timestampTV.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
                 AppUtil().showMoreAndLessWords(fileModel.caption, binding.captionTV, 150)
                 binding.fileNameTV.text = fileModel.fileName
                 displayFileIcon()
+
+                if (user.nickname.isNotEmpty()){
+                    binding.displayNameTV.text = user.nickname
+                    binding.displayNameTV2.text = "@${user.username}"
+                } else if(user.username.isNotEmpty()){
+                    binding.displayNameTV.text = user.username
+                } else {
+                    binding.displayNameTV.text = user.fullName
+                }
+
+                binding.displayNameTV.setOnClickListener {
+                    headToUserProfile()
+                }
+                binding.displayNameTV2.setOnClickListener {
+                    headToUserProfile()
+                }
 
                 binding.fileLayout.setOnClickListener {
                     downloadFileFromFirebase()
@@ -95,9 +109,6 @@ class FilesAdapter(private val context: Context, options: FirestoreRecyclerOptio
                 }
 
                 binding.profileCIV.setOnClickListener {
-                    headToUserProfile()
-                }
-                binding.usernameTV.setOnClickListener {
                     headToUserProfile()
                 }
 

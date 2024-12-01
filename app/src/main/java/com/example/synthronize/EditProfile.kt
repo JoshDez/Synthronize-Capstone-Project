@@ -78,7 +78,7 @@ class EditProfile : AppCompatActivity() {
         bindSetOnClickListeners()
     }
     private fun isModified(): Boolean {
-        return binding.fullNameEdtTxt.text.toString() != userModel.fullName ||
+        return binding.nicknameEdtTxt.text.toString() != userModel.nickname ||
                 binding.usernameEdtTxt.text.toString() != userModel.username ||
                 binding.descriptionEdtTxt.text.toString() != userModel.description ||
                 binding.birthdayEdtTxt.text.toString() != userModel.birthday ||
@@ -91,7 +91,7 @@ class EditProfile : AppCompatActivity() {
                 userModel = it.result.toObject(UserModel::class.java)!!
 
                 //bind user details
-                binding.fullNameEdtTxt.setText(userModel.fullName)
+                binding.nicknameEdtTxt.setText(userModel.nickname)
                 binding.usernameEdtTxt.setText(userModel.username)
                 binding.descriptionEdtTxt.setText(userModel.description)
                 binding.birthdayEdtTxt.setText(userModel.birthday)
@@ -109,20 +109,18 @@ class EditProfile : AppCompatActivity() {
     }
 
     private fun validateUserProfileDetails() {
-        val fullName = binding.fullNameEdtTxt.text.toString()
+        val nickname = binding.nicknameEdtTxt.text.toString()
         val description = binding.descriptionEdtTxt.text.toString()
         val username = binding.usernameEdtTxt.text.toString().lowercase()
         val birthday = binding.birthdayEdtTxt.text.toString()
 
-        if (fullName.isEmpty()) {
-            binding.fullNameEdtTxt.error = "full name should not be blank"
-        } else if (AppUtil().containsSensitiveWords(fullName)) {
-            binding.fullNameEdtTxt.error = "Your full name contains sensitive words"
+        if (AppUtil().containsSensitiveWords(nickname)) {
+            binding.nicknameEdtTxt.error = "Your nickname contains sensitive words"
         } else if (AppUtil().containsSensitiveWords(description)) {
             binding.descriptionEdtTxt.error = "Your description contains sensitive words"
         } else if (isUsernameValid) {
             //Set User Details to userModel
-            userModel.fullName = fullName
+            userModel.nickname = nickname
             userModel.username = username
             userModel.description = description
             userModel.birthday = birthday

@@ -100,9 +100,9 @@
                 android:layout_marginStart="10dp"
                 android:textColor="@color/light_teal"
                 android:textSize="14sp"
-                android:text="@string/full_name"/>
+                android:text="Nickname"/>
             <EditText
-                android:id="@+id/fullNameEdtTxt"
+                android:id="@+id/nicknameEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/light_teal"

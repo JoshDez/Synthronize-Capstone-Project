@@ -132,11 +132,23 @@ class OtherUserProfile : AppCompatActivity(), OnNetworkRetryListener, OnRefreshL
                     if (!AppUtil().isIdOnList(userModel.blockList, FirebaseUtil().currentUserUid()) && !userModel.userAccess.containsKey("Disabled")){
                         //displays the profile
                         AppUtil().showMoreAndLessWords(userModel.description, binding.userDescriptionTV, 50)
-                        binding.userDisplayNameTV.text = userModel.fullName
+
+                        if (userModel.nickname.isNotEmpty()){
+                            binding.userDisplayNameTV2.visibility = View.VISIBLE
+                            binding.userDisplayNameTV2.text = userModel.fullName
+                            binding.userDisplayNameTV.text = userModel.nickname
+                        } else {
+                            binding.userDisplayNameTV2.visibility = View.GONE
+                            binding.userDisplayNameTV.text = userModel.fullName
+                        }
 
                         if (userModel.username.isNotEmpty()){
+                            binding.userNameTV.visibility = View.VISIBLE
                             binding.userNameTV.text = "@${userModel.username}"
+                        } else {
+                            binding.userNameTV.visibility = View.GONE
                         }
+
                         if (userModel.birthday.isNotEmpty()){
                             binding.birthdayLayout.visibility = View.VISIBLE
                             binding.birthdayTV.text =  DateAndTimeUtil().formatDateFromMMDDYYYY(userModel.birthday)

@@ -66,7 +66,6 @@ class ViewProduct : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListen
 
                         FirebaseUtil().targetUserDetails(productModel.ownerId).get().addOnSuccessListener { result ->
                             val user = result.toObject(UserModel::class.java)!!
-                            binding.ownerUsernameTV.text = user.username
                             AppUtil().setUserProfilePic(this, user.userID, binding.profileCIV)
 
                             if (!productModel.available){
@@ -80,6 +79,24 @@ class ViewProduct : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListen
                                 binding.productAvailableTV.text = "Available"
                                 binding.productAvailableTV.setTextColor(green)
                             }
+
+
+                            if (user.nickname.isNotEmpty()){
+                                binding.displayNameTV.text = user.nickname
+                                binding.displayNameTV2.text = "@${user.username}"
+                            } else if(user.username.isNotEmpty()){
+                                binding.displayNameTV.text = user.username
+                            } else {
+                                binding.displayNameTV.text = user.fullName
+                            }
+
+                            binding.displayNameTV.setOnClickListener {
+                                headToUserProfile()
+                            }
+                            binding.displayNameTV2.setOnClickListener {
+                                headToUserProfile()
+                            }
+
 
 
                             //Bottom layout buttons
@@ -149,6 +166,14 @@ class ViewProduct : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListen
             } else {
                 hideContent()
             }
+        }
+    }
+
+    private fun headToUserProfile() {
+        if (productModel.ownerId != FirebaseUtil().currentUserUid()){
+            val intent = Intent(this, OtherUserProfile::class.java)
+            intent.putExtra("userID", productModel.ownerId)
+            startActivity(intent)
         }
     }
 
