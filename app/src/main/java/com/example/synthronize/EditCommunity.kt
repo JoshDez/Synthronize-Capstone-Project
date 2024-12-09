@@ -85,7 +85,6 @@ class EditCommunity : AppCompatActivity() {
     private fun isModified(): Boolean {
         return binding.communityNameEdtTxt.text.toString() != communityModel.communityName ||
                 binding.communityDescEdtTxt.text.toString() != communityModel.communityDescription ||
-                currentCommunityType != communityModel.communityType ||
                 ::selectedCommunityProfileUri.isInitialized || ::selectedBannerPicUri.isInitialized
     }
     private fun retrieveAndBindCommunityDetails() {
@@ -97,13 +96,7 @@ class EditCommunity : AppCompatActivity() {
                 //bind community details
                 binding.communityNameEdtTxt.setText(communityModel.communityName)
                 binding.communityDescEdtTxt.setText(communityModel.communityDescription)
-
                 currentCommunityType = communityModel.communityType
-                if (currentCommunityType == "Private"){
-                    binding.privateRB.isChecked = true
-                } else {
-                    binding.publicRB.isChecked = true
-                }
 
                 //adds text watcher to username edit text to validate username
                 bindCommunityNameEdtTxtTextWatcher(communityModel.communityName)
@@ -294,16 +287,6 @@ class EditCommunity : AppCompatActivity() {
             } else {
                 launchImagePicker()
             }
-        }
-
-        binding.publicRB.setOnClickListener {
-            binding.privateRB.isChecked = false
-            currentCommunityType = "Public"
-        }
-
-        binding.privateRB.setOnClickListener {
-            binding.publicRB.isChecked = false
-            currentCommunityType = "Private"
         }
     }
     private fun bindCommunityNameEdtTxtTextWatcher(currentUsername: String){

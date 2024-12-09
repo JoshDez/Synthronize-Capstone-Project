@@ -359,6 +359,7 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
                         lastMessage = "Created the text channel",
                         lastMessageUserId = FirebaseUtil().currentUserUid(),
                         chatroomName = name,
+                        encrypted = (communityModel.communityType == "Private"),
                         communityId = communityId,
                         chatroomAdminList = AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin")
                     )

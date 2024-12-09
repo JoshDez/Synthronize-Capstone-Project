@@ -342,6 +342,7 @@ class CreateCommunity : AppCompatActivity(), OnItemClickListener {
                         chatroomType = "community_chat",
                         userIdList = listOf(FirebaseUtil().currentUserUid()),
                         chatroomAdminList = listOf(FirebaseUtil().currentUserUid()),
+                        encrypted = (communityType == "Private"),
                         lastMsgTimestamp = Timestamp.now(),
                         lastMessage = "created general channel",
                         lastMessageUserId = FirebaseUtil().currentUserUid(),

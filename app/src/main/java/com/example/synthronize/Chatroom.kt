@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -196,6 +197,8 @@ class Chatroom : AppCompatActivity() {
                 FirebaseUtil().retrieveCommunityDocument(communityId).get().addOnSuccessListener {
                     val community = it.toObject(CommunityModel::class.java)!!
                     binding.chatRoomNameTV.text = "$chatroomName | ${community.communityName}"
+                    if (community.communityType == "Private")
+                        disableChatroomScreenshot()
                 }.addOnFailureListener {
                     binding.chatRoomNameTV.text = chatroomName
                 }
@@ -210,6 +213,13 @@ class Chatroom : AppCompatActivity() {
         }
         bindChatroomButtons()
         setupChatRV()
+    }
+
+    private fun disableChatroomScreenshot() {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
     }
 
     private fun bindChatroomButtons(){

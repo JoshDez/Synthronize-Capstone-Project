@@ -9,6 +9,7 @@ data class ChatroomModel(
     var lastMsgTimestamp:Timestamp = Timestamp.now(),
     var lastMessage:String = "",
     var lastMessageUserId:String = "",
+    var encrypted:Boolean = false,
     var chatroomName:String = "",
     var chatroomProfileUrl:String = "",
     var chatroomAdminList:List<String> = listOf(),
