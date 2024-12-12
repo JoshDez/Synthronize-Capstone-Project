@@ -7,6 +7,7 @@ import android.text.InputType
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.example.synthronize.databinding.ActivitySignUpBinding
@@ -74,8 +75,12 @@ class SignUp : AppCompatActivity() {
         }
 
         binding.backBtn.setOnClickListener {
-            binding.firstSectionLayout.visibility = View.VISIBLE
-            binding.secondSectionLayout.visibility = View.GONE
+            if (binding.firstSectionLayout.isVisible){
+                onBackPressed()
+            } else {
+                binding.firstSectionLayout.visibility = View.VISIBLE
+                binding.secondSectionLayout.visibility = View.GONE
+            }
         }
 
         binding.studentRB.setOnClickListener {
@@ -203,9 +208,7 @@ class SignUp : AppCompatActivity() {
         }
 
         binding.loginTV.setOnClickListener {
-            val intent = Intent(this, Login::class.java)
-            startActivity(intent)
-            this.finish()
+            onBackPressed()
         }
 
         binding.privacyPolicyBtn.setOnClickListener {
@@ -226,6 +229,13 @@ class SignUp : AppCompatActivity() {
         }
 
         dialogPrivacyPolicy.show()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, Login::class.java)
+        startActivity(intent)
+        this.finish()
     }
 
 

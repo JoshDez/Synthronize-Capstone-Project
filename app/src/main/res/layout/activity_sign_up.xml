@@ -16,23 +16,54 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent">
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="60dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="start"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/back_icon"
+                app:tint="@color/light_teal" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create your account"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/light_teal"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/firstSectionLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="20dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="120dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginEnd="30dp"
                 android:text="Please select your role"
                 android:textAlignment="center"
                 android:textColor="@color/light_teal"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <Space
                 android:layout_width="match_parent"
@@ -131,24 +162,13 @@
             android:orientation="vertical"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
-            android:visibility="visible">
-
-
-            <ImageButton
-                android:id="@+id/backBtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="start"
-                android:layout_marginTop="60dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/back_icon"
-                app:tint="@color/light_teal" />
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/fullNameEdtTxt"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/input_rounded_corners"
                 android:hint="Full Name (cannot be changed)"
                 android:inputType="text"
