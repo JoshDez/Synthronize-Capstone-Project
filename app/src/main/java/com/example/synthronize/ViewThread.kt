@@ -82,7 +82,8 @@ class ViewThread : AppCompatActivity(), OnRefreshListener, OnNetworkRetryListene
 
                                 if (user.nickname.isNotEmpty()){
                                     binding.displayNameTV.text = user.nickname
-                                    binding.displayNameTV2.text = "@${user.username}"
+                                    if (user.username.isNotEmpty())
+                                        binding.displayNameTV2.text = "@${user.username}"
                                 } else if(user.username.isNotEmpty()){
                                     binding.displayNameTV.text = user.username
                                 } else {

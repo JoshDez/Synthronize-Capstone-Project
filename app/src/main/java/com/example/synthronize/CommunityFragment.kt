@@ -319,32 +319,14 @@ class CommunityFragment(private val mainBinding: ActivityMainBinding, private va
 
         dialogTextChannelsBinding.saveBtn.setOnClickListener {
             val name = dialogTextChannelsBinding.textChannelNameEdtTxt.text.toString()
-            val roles:ArrayList<String> = ArrayList()
             val chatroomMembers:ArrayList<String> = ArrayList()
 
-            if (dialogTextChannelsBinding.adminCB.isChecked){
-                roles.add("Admin")
-                chatroomMembers.addAll(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"))
-            }
-            if (dialogTextChannelsBinding.moderatorCB.isChecked){
-                roles.add("Moderator")
-                chatroomMembers.addAll(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Moderator"))
-            }
-            if (dialogTextChannelsBinding.memberCB.isChecked){
-                roles.add("Member")
-                chatroomMembers.addAll(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Member"))
-            }
-
-            if (!dialogTextChannelsBinding.adminCB.isChecked){
-                chatroomMembers.addAll(AppUtil().extractKeysFromMapByValue(communityModel.communityMembers, "Admin"))
-            }
+            chatroomMembers.addAll(communityModel.communityMembers.keys)
 
             if (name.isEmpty() || name.length < 2){
                 Toast.makeText(context, "Name should at least have more than 2 characters", Toast.LENGTH_SHORT).show()
             } else if (AppUtil().containsSensitiveWords(name)) {
                 Toast.makeText(context, "The name contains sensitive word/s", Toast.LENGTH_SHORT).show()
-            } else if (roles.isEmpty()) {
-                Toast.makeText(context, "Select at least one user type", Toast.LENGTH_SHORT).show()
             } else {
 
                 var chatroomModel = ChatroomModel()

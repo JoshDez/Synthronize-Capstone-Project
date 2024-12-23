@@ -173,7 +173,8 @@ class AllFeedsAdapter(private val context: Context, private val feedList: ArrayL
 
                 if (owner.nickname.isNotEmpty()){
                     binding.displayNameTV.text = owner.nickname
-                    binding.displayNameTV2.text = "@${owner.username}"
+                    if (owner.username.isNotEmpty())
+                        binding.displayNameTV2.text = "@${owner.username}"
                 } else if(owner.username.isNotEmpty()){
                     binding.displayNameTV.text = owner.username
                 } else {

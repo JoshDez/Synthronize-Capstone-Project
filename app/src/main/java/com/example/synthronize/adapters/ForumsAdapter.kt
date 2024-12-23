@@ -97,7 +97,8 @@ class ForumsAdapter(
 
                 if (owner.nickname.isNotEmpty()){
                     forumsBinding.displayNameTV.text = owner.nickname
-                    forumsBinding.displayNameTV2.text = "@${owner.username}"
+                    if (owner.username.isNotEmpty())
+                        forumsBinding.displayNameTV2.text = "@${owner.username}"
                 } else if(owner.username.isNotEmpty()){
                     forumsBinding.displayNameTV.text = owner.username
                 } else {

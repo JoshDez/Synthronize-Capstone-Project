@@ -71,8 +71,10 @@ class Requests : AppCompatActivity(), OnItemClickListener {
             FirebaseUtil().retrieveCommunityDocument(communityId).update(updatedMap).addOnSuccessListener {
                 FirebaseUtil().retrieveCommunityDocument(communityId).update("joinRequestList", FieldValue.arrayRemove(id)).addOnSuccessListener {
                     Toast.makeText(this, "User Accepted", Toast.LENGTH_SHORT).show()
-
-                    setupRecycleView()
+                    FirebaseUtil().addUserToAllCommunityChannels(communityId, id){isSuccessful ->
+                        if (isSuccessful)
+                            setupRecycleView()
+                    }
                 }
             }
         } else {

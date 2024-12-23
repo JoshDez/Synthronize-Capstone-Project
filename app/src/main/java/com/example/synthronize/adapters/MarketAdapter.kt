@@ -88,7 +88,8 @@ class MarketAdapter(private val context: Context, options: FirestoreRecyclerOpti
 
                 if (model.nickname.isNotEmpty()){
                     binding.displayNameTV.text = model.nickname
-                    binding.displayNameTV2.text = "@${model.username}"
+                    if (model.username.isNotEmpty())
+                        binding.displayNameTV2.text = "@${model.username}"
                 } else if(model.username.isNotEmpty()){
                     binding.displayNameTV.text = model.username
                 } else {

@@ -45,7 +45,11 @@ class CommentAdapter(private val context: Context, options: FirestoreRecyclerOpt
             FirebaseUtil().targetUserDetails(commentModel.commentOwnerId).get().addOnCompleteListener {
                 if (it.result.exists()){
                     val user = it.result.toObject(UserModel::class.java)!!
-                    binding.userNameTV.text = user.username
+                    if (user.username.isNotEmpty()){
+                        binding.userNameTV.text = user.username
+                    } else {
+                        binding.userNameTV.text = user.fullName
+                    }
                     AppUtil().setUserProfilePic(context, user.userID, binding.userProfileCIV)
                 }
             }

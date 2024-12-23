@@ -156,9 +156,10 @@ class ViewReport : AppCompatActivity(), OnRefreshListener {
                     if (user.isSuccessful){
                         val reportedUser = user.result.toObject(UserModel::class.java)!!
                         AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
-                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
                         binding.reportedUserFullnameTV.text = reportedUser.fullName
                         binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(forumModel.createdTimestamp)
+                        if (reportedUser.username.isNotEmpty())
+                            binding.reportedUsernameTV.text = "@${reportedUser.username}"
                     }
                 }
                 if (forumModel.contentList.isNotEmpty()){
@@ -189,9 +190,10 @@ class ViewReport : AppCompatActivity(), OnRefreshListener {
                     if (user.isSuccessful){
                         val reportedUser = user.result.toObject(UserModel::class.java)!!
                         AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
-                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
                         binding.reportedUserFullnameTV.text = reportedUser.fullName
                         binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(eventModel.createdTimestamp)
+                        if (reportedUser.username.isNotEmpty())
+                            binding.reportedUsernameTV.text = "@${reportedUser.username}"
                     }
                 }
 
@@ -222,9 +224,10 @@ class ViewReport : AppCompatActivity(), OnRefreshListener {
                     if (user.isSuccessful){
                         val reportedUser = user.result.toObject(UserModel::class.java)!!
                         AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
-                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
                         binding.reportedUserFullnameTV.text = reportedUser.fullName
                         binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(fileModel.createdTimestamp)
+                        if (reportedUser.username.isNotEmpty())
+                            binding.reportedUsernameTV.text = "@${reportedUser.username}"
                     }
                 }
 
@@ -266,9 +269,10 @@ class ViewReport : AppCompatActivity(), OnRefreshListener {
                     if (user.isSuccessful){
                         val reportedUser = user.result.toObject(UserModel::class.java)!!
                         AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
-                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
                         binding.reportedUserFullnameTV.text = reportedUser.fullName
                         binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(competitionModel.createdTimestamp)
+                        if (reportedUser.username.isNotEmpty())
+                            binding.reportedUsernameTV.text = "@${reportedUser.username}"
                     }
                 }
 
@@ -295,9 +299,10 @@ class ViewReport : AppCompatActivity(), OnRefreshListener {
                     if (user.isSuccessful){
                         val reportedUser = user.result.toObject(UserModel::class.java)!!
                         AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
-                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
                         binding.reportedUserFullnameTV.text = reportedUser.fullName
                         binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(productModel.createdTimestamp)
+                        if (reportedUser.username.isNotEmpty())
+                            binding.reportedUsernameTV.text = "@${reportedUser.username}"
                     }
                 }
                 if (productModel.imageList.isNotEmpty()){
@@ -327,8 +332,9 @@ class ViewReport : AppCompatActivity(), OnRefreshListener {
                 AppUtil().setUserCoverPic(this, userModel.userID, binding.bannerCoverIV)
 
                 binding.communityProfileNameTV.text = userModel.fullName
-                binding.communityProfileUserNameTV.text = "@${userModel.username}"
                 binding.communityProfileDescriptionTV.text = userModel.description
+                if (userModel.username.isNotEmpty())
+                    binding.communityProfileUserNameTV.text = "@${userModel.username}"
 
                 binding.profileCommunityLayout.setOnClickListener {
                     AppUtil().headToUserProfile(this, userModel.userID)
@@ -367,9 +373,10 @@ class ViewReport : AppCompatActivity(), OnRefreshListener {
                     if (user.isSuccessful){
                         val reportedUser = user.result.toObject(UserModel::class.java)!!
                         AppUtil().setUserProfilePic(this, reportedUser.userID, binding.reportedUserCIV)
-                        binding.reportedUsernameTV.text = "@${reportedUser.username}"
                         binding.reportedUserFullnameTV.text = reportedUser.fullName
                         binding.reportedPostCreatedTS.text = DateAndTimeUtil().getTimeAgo(postModel.createdTimestamp)
+                        if (reportedUser.username.isNotEmpty())
+                            binding.reportedUsernameTV.text = "@${reportedUser.username}"
                     }
                 }
                 if (postModel.contentList.isNotEmpty()){
@@ -395,9 +402,10 @@ class ViewReport : AppCompatActivity(), OnRefreshListener {
 
             AppUtil().setUserProfilePic(this, userModel.userID, binding.userCircleImageView)
             binding.fullnameTV.text = userModel.fullName
-            binding.usernameTV.text = "@${userModel.username}"
             binding.createdTimestampTV.text = DateAndTimeUtil().formatTimestampToDate(reportModel.createdTimestamp)
             binding.reasonTV.text = "The ${reportModel.reportType} is reported as '${reportModel.reason}'"
+            if (userModel.username.isNotEmpty())
+                binding.usernameTV.text = "@${userModel.username}"
         }
     }
 

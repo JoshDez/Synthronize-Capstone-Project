@@ -87,7 +87,8 @@ class FeedsAdapter(private val mainBinding: FragmentCommunityBinding, private va
 
                 if (owner.nickname.isNotEmpty()){
                     feedBinding.displayNameTV.text = owner.nickname
-                    feedBinding.displayNameTV2.text = "@${owner.username}"
+                    if (owner.username.isNotEmpty())
+                        feedBinding.displayNameTV2.text = "@${owner.username}"
                 } else if(owner.username.isNotEmpty()){
                     feedBinding.displayNameTV.text = owner.username
                 } else {
